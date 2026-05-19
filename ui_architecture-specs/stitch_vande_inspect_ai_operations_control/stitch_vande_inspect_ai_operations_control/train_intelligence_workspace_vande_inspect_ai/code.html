@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Train Workspace - VANDE_INSPECT_AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#051a3e",
+                        "on-surface-variant": "#434654",
+                        "on-secondary-fixed": "#091c35",
+                        "inverse-surface": "#1d3054",
+                        "primary": "#003d9b",
+                        "surface-container-highest": "#d8e2ff",
+                        "surface-container": "#e9edff",
+                        "on-primary-fixed": "#001848",
+                        "on-error-container": "#93000a",
+                        "background": "#faf9ff",
+                        "secondary": "#4f5f7b",
+                        "on-tertiary-fixed": "#001f27",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#faf9ff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "secondary-fixed-dim": "#b7c7e8",
+                        "primary-container": "#0052cc",
+                        "on-surface": "#051a3e",
+                        "inverse-primary": "#b2c5ff",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#006477",
+                        "surface": "#faf9ff",
+                        "tertiary-fixed": "#afecff",
+                        "surface-variant": "#d8e2ff",
+                        "tertiary-fixed-dim": "#48d7f9",
+                        "surface-tint": "#0c56d0",
+                        "outline-variant": "#c3c6d6",
+                        "on-primary-container": "#c4d2ff",
+                        "outline": "#737685",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#004b59",
+                        "primary-fixed": "#dae2ff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e1e8ff",
+                        "on-tertiary-fixed-variant": "#004e5d",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#ccdaff",
+                        "on-tertiary-container": "#76e2ff",
+                        "inverse-on-surface": "#edf0ff",
+                        "surface-container-low": "#f1f3ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#51617e",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-secondary-fixed-variant": "#374763",
+                        "secondary-container": "#cdddff",
+                        "primary-fixed-dim": "#b2c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "margin-desktop": "24px",
+                        "base": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "data-mono": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pipeline-pulse {
+            animation: pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-border {
+            0%, 100% { border-color: #0052cc; opacity: 1; }
+            50% { border-color: transparent; opacity: 0.5; }
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c3c6d6; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden h-screen flex flex-col">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface dark:bg-on-background text-primary dark:text-primary-fixed-dim border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center w-full px-margin-desktop py-base z-50">
+<div class="flex items-center gap-lg">
+<span class="text-headline-md font-headline-md font-bold tracking-tighter text-primary dark:text-inverse-primary">VANDE_INSPECT_AI</span>
+<nav class="hidden md:flex items-center gap-md">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">Pipeline</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-primary transition-colors font-label-md text-label-md" href="#">Telemetry</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-primary transition-colors font-label-md text-label-md" href="#">Compliance</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Session: #V-9012</span>
+<div class="flex items-center gap-sm">
+<button class="p-base hover:bg-surface-container dark:hover:bg-inverse-surface transition-colors rounded">
+<span class="material-symbols-outlined text-body-md">sync</span>
+</button>
+<button class="p-base hover:bg-surface-container dark:hover:bg-inverse-surface transition-colors rounded">
+<span class="material-symbols-outlined text-body-md">analytics</span>
+</button>
+<button class="p-base hover:bg-surface-container dark:hover:bg-inverse-surface transition-colors rounded">
+<span class="material-symbols-outlined text-body-md">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<aside class="bg-surface-container-low dark:bg-on-background border-r border-outline-variant dark:border-on-surface-variant flex flex-col h-full w-64 p-md shrink-0">
+<div class="flex items-center gap-md mb-xl">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">train</span>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface leading-tight">Inspection Hub</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">Vande Bharat Exp</p>
+</div>
+</div>
+<nav class="flex-1 space-y-base">
+<button class="flex items-center gap-md w-full p-sm bg-secondary-container text-on-secondary-container font-semibold rounded-lg transition-all scale-[0.98]">
+<span class="material-symbols-outlined">train</span>
+<span class="text-label-md">Trains</span>
+</button>
+<button class="flex items-center gap-md w-full p-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">directions_railway</span>
+<span class="text-label-md">Coaches</span>
+</button>
+<button class="flex items-center gap-md w-full p-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">videocam</span>
+<span class="text-label-md">Cameras</span>
+</button>
+<button class="flex items-center gap-md w-full p-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">photo_library</span>
+<span class="text-label-md">Frames</span>
+</button>
+<button class="flex items-center gap-md w-full p-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">report_problem</span>
+<span class="text-label-md">Defects</span>
+</button>
+</nav>
+<button class="mt-xl w-full bg-primary text-white py-sm rounded-lg font-label-md hover:bg-primary-container transition-colors">
+                New Session
+            </button>
+<div class="mt-auto border-t border-outline-variant pt-md space-y-base">
+<button class="flex items-center gap-md w-full p-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">settings_suggest</span>
+<span class="text-label-md">Diagnostics</span>
+</button>
+<button class="flex items-center gap-md w-full p-sm text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-md">Settings</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-background">
+<!-- 1. Top Train Header -->
+<div class="bg-surface-container-lowest border-b border-outline-variant px-lg py-sm flex items-center justify-between shadow-sm z-10">
+<div class="flex items-center gap-xl">
+<div class="flex flex-col">
+<h1 class="text-headline-sm font-headline-sm text-primary flex items-center gap-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">train</span>
+                            Train: VB22901
+                        </h1>
+<span class="text-label-md font-label-md text-outline uppercase tracking-widest">INS-2026-0045</span>
+</div>
+<div class="h-10 w-px bg-outline-variant"></div>
+<div class="flex gap-lg">
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-outline">Status</span>
+<span class="text-body-md font-bold text-primary flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                Synchronizing Coaches...
+                            </span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-outline">Telemetry</span>
+<div class="flex gap-md text-data-mono font-data-mono text-on-surface-variant">
+<span>Frames: <b class="text-on-surface">14,221</b></span>
+<span>Cameras: <b class="text-on-surface">6</b></span>
+<span>Defects: <b class="text-error font-bold">2</b></span>
+<span>Sync: <b class="text-on-surface">98%</b></span>
+<span>OCR: <b class="text-on-surface">96%</b></span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="px-md py-sm border border-outline-variant rounded hover:bg-surface-container transition-colors flex items-center gap-sm font-label-md text-primary">
+<span class="material-symbols-outlined text-body-md">replay</span>
+                        Replay
+                    </button>
+<button class="px-md py-sm bg-primary text-white rounded hover:bg-primary-container transition-colors flex items-center gap-sm font-label-md">
+<span class="material-symbols-outlined text-body-md">description</span>
+                        Export Report
+                    </button>
+</div>
+</div>
+<!-- 2. Pipeline Timeline -->
+<div class="bg-surface-container-low border-b border-outline-variant px-lg py-xs">
+<div class="flex items-center gap-base">
+<div class="flex-1 flex items-center gap-sm bg-surface-container-lowest p-xs rounded border border-outline-variant">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant text-sm">check_circle</span>
+<span class="text-label-md font-label-md text-on-surface-variant">Frame Extraction</span>
+</div>
+<div class="w-4 h-px bg-outline-variant"></div>
+<div class="flex-1 flex items-center gap-sm bg-surface-container-lowest p-xs rounded border border-outline-variant">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant text-sm">check_circle</span>
+<span class="text-label-md font-label-md text-on-surface-variant">OCR Detection</span>
+</div>
+<div class="w-4 h-px bg-outline-variant"></div>
+<div class="flex-1 flex items-center gap-sm bg-primary-container/10 p-xs rounded border border-primary pipeline-pulse">
+<span class="material-symbols-outlined text-primary text-sm animate-spin">sync</span>
+<span class="text-label-md font-label-md text-primary font-bold">Synchronization</span>
+</div>
+<div class="w-4 h-px bg-outline-variant"></div>
+<div class="flex-1 flex items-center gap-sm bg-surface-container-low p-xs rounded border border-outline-variant opacity-50">
+<span class="material-symbols-outlined text-outline text-sm">pending</span>
+<span class="text-label-md font-label-md text-outline">Component Detection</span>
+</div>
+<div class="w-4 h-px bg-outline-variant"></div>
+<div class="flex-1 flex items-center gap-sm bg-surface-container-low p-xs rounded border border-outline-variant opacity-50">
+<span class="material-symbols-outlined text-outline text-sm">pending</span>
+<span class="text-label-md font-label-md text-outline">Defect Analysis</span>
+</div>
+</div>
+</div>
+<div class="flex-1 flex overflow-hidden">
+<!-- 3. Left Hierarchy Panel -->
+<nav class="w-64 border-r border-outline-variant bg-surface-container-lowest flex flex-col overflow-y-auto custom-scrollbar">
+<div class="p-md">
+<h3 class="text-label-md font-label-md text-outline uppercase mb-sm">Fleet Hierarchy</h3>
+<div class="space-y-sm">
+<!-- Train Level -->
+<div class="flex items-center gap-sm text-body-md font-bold text-on-surface">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+<span class="material-symbols-outlined text-primary text-md">train</span>
+                                VB22901
+                            </div>
+<!-- Coach Level - Active -->
+<div class="ml-md">
+<div class="flex items-center justify-between p-xs bg-surface-container-highest rounded-sm border-l-4 border-primary">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+<span class="material-symbols-outlined text-sm">directions_railway</span>
+<span class="text-body-md font-bold">Coach B1</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-error"></span>
+</div>
+<!-- Coach Detail -->
+<div class="ml-lg mt-xs space-y-xs border-l border-outline-variant pl-sm">
+<button class="flex items-center justify-between w-full p-xs hover:bg-surface-container transition-colors text-label-md font-label-md text-on-surface-variant rounded">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-sm">photo_library</span> OCR Frames</span>
+<span class="bg-surface-container text-primary px-xs rounded">142</span>
+</button>
+<button class="flex items-center justify-between w-full p-xs hover:bg-surface-container transition-colors text-label-md font-label-md text-on-surface-variant rounded">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-sm">hardware</span> Components</span>
+<span class="bg-surface-container text-primary px-xs rounded">28</span>
+</button>
+<button class="flex items-center justify-between w-full p-xs bg-error-container text-on-error-container rounded font-bold text-label-md">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">report</span> Defects</span>
+<span class="bg-error text-white px-xs rounded">2</span>
+</button>
+</div>
+</div>
+<!-- Other Coaches -->
+<div class="ml-md">
+<div class="flex items-center gap-sm p-xs text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="material-symbols-outlined text-sm">directions_railway</span>
+<span class="text-body-md font-medium">Coach B2</span>
+</div>
+</div>
+<div class="ml-md">
+<div class="flex items-center gap-sm p-xs text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="material-symbols-outlined text-sm">directions_railway</span>
+<span class="text-body-md font-medium">Coach B3</span>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<!-- 4. Center Evidence Viewer -->
+<section class="flex-1 flex flex-col bg-on-background relative p-base">
+<div class="grid grid-cols-2 grid-rows-1 gap-base h-full">
+<!-- Camera View 01 -->
+<div class="relative bg-black rounded overflow-hidden group">
+<img class="w-full h-full object-cover opacity-90" data-alt="A high-resolution industrial inspection photo of a train's underside machinery, including the brake assembly and hydraulic systems. The scene is lit with bright, cold white industrial stadium lights, casting sharp shadows and highlighting metallic textures. Digital blue semi-transparent bounding boxes outline the brake disc and calipers. The aesthetic is extremely technical and precise, following a professional engineering software design language." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp-yAqkawZsis3uLYwWIUKYT54GH2yrk8_IIFBZ2maBB7EsgRiOljlWVRm0d3nbYYpbu-T0fI46IEoqlID21Lbb6d8I5QRoZHU1pQ1AEP8GX-6gKi0u1VT1QdwXjHgvUazZqhEYBIGoye0ErfNQNfye_rmmsr2ZhNZ0TzvbSjQykgwIGHUvLK46uqW1fzp24zoFF0FUoiFnbyJzoskjVunABk2vwoPyXmJfIbuVLg4V_yCOjP4Rn98jBWgr6npexnsF2jXbtgcuDpJ"/>
+<!-- Overlays -->
+<div class="absolute inset-0 border-2 border-primary/20 pointer-events-none"></div>
+<div class="absolute top-sm left-sm bg-black/60 px-sm py-xs rounded text-data-mono text-label-md text-white backdrop-blur">CAM_01: UNDER_CARRIAGE_L</div>
+<!-- Bounding Boxes -->
+<div class="absolute top-[40%] left-[20%] w-[30%] h-[25%] border-2 border-primary-container bg-primary-container/20">
+<div class="absolute -top-6 left-0 bg-primary-container text-white px-sm text-label-md">Brake Assembly [98.4%]</div>
+</div>
+</div>
+<!-- Camera View 04 -->
+<div class="relative bg-black rounded overflow-hidden">
+<img class="w-full h-full object-cover opacity-90" data-alt="A focused digital photograph of a train bogie and suspension coil system during inspection. The environment is a professional rail maintenance facility with neutral grey tones. Overlaid on the image is a bright red pulsing bounding box highlighting a missing component. Text tags in a high-contrast mono font indicate the exact location of the discrepancy. The overall mood is serious, analytical, and highly technical." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAREsnjdkzZ8kGeUuGm4ltRMazYeuhowNjkMYy_bpp7Qyy8HJMcXhoLGUuUHflOkLk6QblN5cZPcDnQePR2IDXg2Wtr6dDSUcvSp4jTamaQDDMGiRqLinAOac69IBCYu_yM6ezehmlzPmjW01Mq4cRRV-r1_BBV4r9XLRp67vpv3r4ApxQY2VHHlcV8K4gZIKewRL3EloYK0NnbIyiVbj3FHzNJyXdtflzC8rGXgR1gZXb2oaLbJPAKszsqLi4PU5Hhrk0FaiQdtOrX"/>
+<div class="absolute top-sm left-sm bg-black/60 px-sm py-xs rounded text-data-mono text-label-md text-white backdrop-blur">CAM_04: WHEEL_INTERFACE_R</div>
+<!-- Defect Overlay -->
+<div class="absolute top-[25%] left-[50%] w-[20%] h-[20%] border-2 border-error bg-error/20 animate-pulse">
+<div class="absolute -top-6 left-0 bg-error text-white px-sm text-label-md">⚠ MISSING PIN [99.1%]</div>
+</div>
+<div class="absolute top-[60%] left-[10%] w-[40%] h-[30%] border-2 border-primary-container bg-primary-container/20">
+<div class="absolute -top-6 left-0 bg-primary-container text-white px-sm text-label-md">Suspension Unit [97.2%]</div>
+</div>
+</div>
+</div>
+<!-- AI Status Indicator Float -->
+<div class="absolute bottom-lg left-1/2 -translate-x-1/2 bg-surface-container-lowest/90 backdrop-blur border border-outline-variant px-md py-sm rounded-full flex items-center gap-md shadow-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary animate-spin">donut_large</span>
+<span class="text-label-md font-bold text-on-surface">Neural Engine Active</span>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex gap-md">
+<span class="text-label-md text-on-surface-variant">FPS: <b class="text-on-surface">24</b></span>
+<span class="text-label-md text-on-surface-variant">Latency: <b class="text-on-surface">12ms</b></span>
+</div>
+</div>
+</section>
+<!-- 5. Right Intelligence Panel -->
+<aside class="w-80 border-l border-outline-variant bg-surface flex flex-col overflow-y-auto custom-scrollbar">
+<!-- Tabs Header -->
+<div class="flex border-b border-outline-variant">
+<button class="flex-1 py-md text-label-md font-bold text-primary border-b-2 border-primary">Intelligence</button>
+<button class="flex-1 py-md text-label-md font-bold text-on-surface-variant hover:bg-surface-container transition-colors">OCR Logs</button>
+</div>
+<div class="p-md space-y-lg">
+<!-- Critical Defects -->
+<section>
+<h4 class="text-label-md font-label-md text-error flex items-center gap-xs uppercase tracking-wider mb-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">warning</span>
+                                Critical Defects (2)
+                            </h4>
+<div class="space-y-sm">
+<div class="p-sm bg-error-container/20 border border-error-container rounded-sm">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-body-md font-bold text-on-error-container">⚠ Brake Disc Crack</span>
+<span class="text-label-md bg-error text-white px-xs rounded">H-RISK</span>
+</div>
+<p class="text-label-md text-on-error-container opacity-80">Coach B1, Axle 3, Left. Visual confirmation required.</p>
+<button class="mt-sm text-label-md font-bold text-error underline">Verify Evidence</button>
+</div>
+<div class="p-sm bg-error-container/20 border border-error-container rounded-sm">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-body-md font-bold text-on-error-container">⚠ Missing Suspension Pin</span>
+<span class="text-label-md bg-error text-white px-xs rounded">H-RISK</span>
+</div>
+<p class="text-label-md text-on-error-container opacity-80">Coach B1, Secondary Suspension Unit R1.</p>
+<button class="mt-sm text-label-md font-bold text-error underline">Verify Evidence</button>
+</div>
+</div>
+</section>
+<div class="h-px bg-outline-variant"></div>
+<!-- Detected Components -->
+<section>
+<h4 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-sm">Detected Components (28)</h4>
+<div class="space-y-xs">
+<div class="flex items-center justify-between p-xs text-body-md border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Brake Assembly A1</span>
+<span class="text-data-mono text-primary">98.4%</span>
+</div>
+<div class="flex items-center justify-between p-xs text-body-md border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Brake Assembly A2</span>
+<span class="text-data-mono text-primary">97.8%</span>
+</div>
+<div class="flex items-center justify-between p-xs text-body-md border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Suspension Coil L1</span>
+<span class="text-data-mono text-primary">99.1%</span>
+</div>
+<div class="flex items-center justify-between p-xs text-body-md border-b border-outline-variant/50">
+<span class="text-on-surface-variant">Wheel Flange R1</span>
+<span class="text-data-mono text-primary">96.5%</span>
+</div>
+</div>
+</section>
+<!-- OCR Insights -->
+<section>
+<h4 class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider mb-sm">OCR Insights</h4>
+<div class="bg-surface-container-low p-sm rounded border border-outline-variant">
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between text-label-md">
+<span class="text-outline">Coach Label</span>
+<span class="text-on-surface font-bold">22901/B1/CAR-X</span>
+</div>
+<div class="flex justify-between text-label-md">
+<span class="text-outline">Safety Tag</span>
+<span class="text-on-surface font-bold">VAL-2026-90</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</aside>
+</div>
+<!-- 6. Bottom Frame Strip -->
+<div class="h-32 bg-surface-container border-t border-outline-variant flex flex-col shrink-0">
+<div class="px-md py-xs flex items-center justify-between bg-surface-container-high border-b border-outline-variant">
+<span class="text-label-md font-bold text-on-surface-variant">Synchronized Timeline Scrub</span>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-error"></span>
+<span class="text-label-md text-on-surface-variant">Defect</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-label-md text-on-surface-variant">OCR Anchor</span>
+</div>
+</div>
+</div>
+<div class="flex-1 relative overflow-x-auto custom-scrollbar flex items-center px-md gap-xs">
+<!-- Frame Thumbnails -->
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant relative cursor-pointer hover:border-primary">
+<img class="w-full h-full object-cover opacity-50" data-alt="Small thumbnail of train bogie inspection." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAR7ZbpaxfL1HPZjjDstLRszdnyLN_TTaL9VjNNhvlsKN9Ia-fcz7QspOyO6TWls6N25ZUikMFNBOEQaP55axfkFLGQ5RpdmeZDceUK6A7nORCIJEKpXYqeYCcdtERfYPuaQTE6Fb7IFggCZlPRFR1HKYRs_qqC-76SRAfr9RrBV8w0CRE2pr3CWuIZmwPciqxQ0Hy0b09VfG4KkWD4DKD65nKyb4HAMMeIlXddmfshDvO0dZjHBIq9uOeVMT6d98YhdUvQ1rFj_vd6"/>
+</div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border-2 border-primary relative cursor-pointer ring-2 ring-primary/20">
+<img class="w-full h-full object-cover" data-alt="Small thumbnail of train bogie inspection." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByQ9SimdZcyIClLY8ie9ri_ZH5BfIsvN4nNtAtRCq48E2xAbtK09HzMVtW6Mu6A8dLxtxNPslPd-viyyv433LPFVCkG-VS8NUbylJFspP206oUj2JmauRUvQdU2Dfqcg91bt1fbgjKqQ60O8zfSy6FYEo-2PRs8TgMQpM0lY9-snosy0wws9udJjH6QO-J4S66cekg5nTlDfRx1pS2r03rWFdJhZSE3x9kCz68TJitAZnujx4WuR-xuF_biDqlORuxSfYLhIRCtd_a"/>
+<div class="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-primary rounded-full border border-white"></div>
+</div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border-2 border-error relative cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="Small thumbnail of train bogie inspection showing a defect." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLlLt72byTN6gSVOmZLkmLDojUK7FphGNPGqo3B-5lktIz8GGgGT7K3UBILEo5phEZRyoko6DCTuSIEvsMcpx2fS4cod88RU7U8CnppP5iT8KJgsBRQBCzoyiGMBQsdjs03KMu0L3VBFputuvEr-3D9qJy4wMvvKDCqcW56Nc_RGC6_CMbHYvV6SqlS1RdGKIDh4uQAU_g-XHn1a0KGKnhYHPsUxU55MrUk7KXhiUVfPvmMRrhlCoKjdC3Pow7X4Akz83PYqqKZyw6"/>
+<div class="absolute -top-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-error rounded-full border border-white"></div>
+</div>
+<!-- Repeated patterns for scrub effect -->
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+<div class="flex-none w-24 h-16 bg-black/20 rounded border border-outline-variant opacity-40"></div>
+</div>
+<!-- Playhead Scrub -->
+<div class="h-1 w-full bg-outline-variant relative">
+<div class="absolute top-0 left-[20%] w-[15%] h-full bg-primary shadow-[0_0_8px_rgba(0,82,204,0.5)]"></div>
+<div class="absolute -top-3 left-[27%] w-1 h-8 bg-primary z-20"></div>
+</div>
+</div>
+</main>
+</div>
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => btn.classList.add('opacity-80'));
+            btn.addEventListener('mouseup', () => btn.classList.remove('opacity-80'));
+        });
+
+        // Toggle hierarchy expansion (visual only for demo)
+        const coachItems = document.querySelectorAll('.hierarchy-item');
+        coachItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Expansion logic would go here
+            });
+        });
+    </script>
+</body></html>

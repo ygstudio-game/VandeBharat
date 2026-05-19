@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VANDE_INSPECT_AI | Component + Defect Detection Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#d8e2ff",
+                    "on-background": "#051a3e",
+                    "on-primary-fixed": "#001848",
+                    "primary-fixed": "#dae2ff",
+                    "primary": "#003d9b",
+                    "tertiary": "#004b59",
+                    "on-tertiary-fixed": "#001f27",
+                    "on-tertiary-fixed-variant": "#004e5d",
+                    "secondary-container": "#cdddff",
+                    "on-surface": "#051a3e",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#ccdaff",
+                    "inverse-on-surface": "#edf0ff",
+                    "tertiary-fixed": "#afecff",
+                    "tertiary-container": "#006477",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#e9edff",
+                    "on-primary-container": "#c4d2ff",
+                    "surface-tint": "#0c56d0",
+                    "on-secondary-container": "#51617e",
+                    "tertiary-fixed-dim": "#48d7f9",
+                    "surface-bright": "#faf9ff",
+                    "secondary": "#4f5f7b",
+                    "primary-container": "#0052cc",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#374763",
+                    "surface-container-low": "#f1f3ff",
+                    "on-surface-variant": "#434654",
+                    "inverse-primary": "#b2c5ff",
+                    "on-tertiary-container": "#76e2ff",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c3c6d6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#091c35",
+                    "on-primary-fixed-variant": "#0040a2",
+                    "surface-variant": "#d8e2ff",
+                    "inverse-surface": "#1d3054",
+                    "outline": "#737685",
+                    "surface-container-high": "#e1e8ff",
+                    "secondary-fixed-dim": "#b7c7e8",
+                    "on-secondary": "#ffffff",
+                    "background": "#faf9ff",
+                    "secondary-fixed": "#d6e3ff",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "error": "#ba1a1a",
+                    "surface": "#faf9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "sm": "8px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "24px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "data-mono": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .pulse-red {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0.7); border-color: rgba(186, 26, 26, 1); }
+            70% { box-shadow: 0 0 0 10px rgba(186, 26, 26, 0); border-color: rgba(186, 26, 26, 0.5); }
+            100% { box-shadow: 0 0 0 0 rgba(186, 26, 26, 0); border-color: rgba(186, 26, 26, 1); }
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c3c6d6; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden flex flex-col h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-margin-desktop h-16 max-w-full z-50">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">VANDE_INSPECT_AI</span>
+<nav class="hidden md:flex gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Live Queue</a>
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1" href="#">Inspections</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Reports</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<span class="font-label-md text-label-md text-primary flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                System Status: Active
+            </span>
+<div class="flex gap-sm">
+<button class="p-2 hover:bg-surface-container-low transition-all rounded-lg"><span class="material-symbols-outlined text-on-surface-variant">notifications</span></button>
+<button class="p-2 hover:bg-surface-container-low transition-all rounded-lg"><span class="material-symbols-outlined text-on-surface-variant">settings</span></button>
+<button class="p-2 hover:bg-surface-container-low transition-all rounded-lg"><span class="material-symbols-outlined text-on-surface-variant">help</span></button>
+</div>
+<img alt="Operator Profile" class="w-8 h-8 rounded-full border border-outline-variant" data-alt="A professional headshot of a senior railway systems engineer in a clean, modern control room. He is wearing a smart navy blue uniform with a subtle company logo. The background is slightly blurred, showing glowing blue monitoring screens and high-tech industrial equipment in a bright, light-mode environment. The lighting is crisp and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKN7ajMTOY-7rxhl-p6bcMZz8-rpGKSMXFcUvxLA8HC9ew4l71WjzutHYtlXhmM5ZsIi4Nvhl9XiHuaoV1kYzS5sEh2C5vgaRZ7RPxyujKLTaL1eT7-n8wU9HEpSK-2Xljh1CeHoL46D_nOTYsaB-OacIP6rCvaOkTrdQjuyNQPSyb09AAv0O0Kr6Cax73PbnlHaWR9XVukpCOIlBdNndIKF91cMyLDUX5qKkS9TNti0wq7g73ez3omeD8NIu1GALfg-DCWroJy9F9"/>
+</div>
+</header>
+<!-- Industrial Telemetry Header -->
+<section class="bg-surface-container-low border-b border-outline-variant px-margin-desktop py-sm flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-md">
+<div class="flex flex-col">
+<span class="font-label-md text-[10px] text-outline uppercase tracking-wider">Train Unit</span>
+<span class="font-headline-md text-headline-md font-bold">VB22901</span>
+</div>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-[10px] text-outline uppercase tracking-wider">Session</span>
+<span class="font-data-mono text-data-mono font-bold">INS-2026-0045</span>
+</div>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex flex-col">
+<span class="font-label-md text-[10px] text-outline uppercase tracking-wider">Coach ID</span>
+<span class="font-data-mono text-data-mono font-bold">B2</span>
+</div>
+<div class="ml-xl flex items-center gap-sm bg-primary/5 px-md py-xs rounded-lg border border-primary/20">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-md text-label-md font-semibold text-primary">Structural Validation Running</span>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-xs px-md py-2 border border-outline-variant text-on-surface hover:bg-surface-container-highest transition-all rounded-lg font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">ios_share</span> Export Evidence
+                </button>
+<button class="flex items-center gap-xs px-md py-2 border border-outline-variant text-on-surface hover:bg-surface-container-highest transition-all rounded-lg font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">replay</span> Replay
+                </button>
+<button class="flex items-center gap-xs px-md py-2 border border-outline-variant text-on-surface hover:bg-surface-container-highest transition-all rounded-lg font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">description</span> Open Report
+                </button>
+<button class="flex items-center gap-xs px-md py-2 bg-error text-on-error hover:opacity-90 transition-all rounded-lg font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">warning</span> Escalate Defect
+                </button>
+</div>
+</div>
+<!-- Metric Grid -->
+<div class="flex gap-xl py-xs">
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-outline">Components Detected:</span>
+<span class="font-data-mono text-data-mono font-bold text-on-surface">42</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-outline">Missing:</span>
+<span class="font-data-mono text-data-mono font-bold text-error">1</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-outline">Critical Defects:</span>
+<span class="font-data-mono text-data-mono font-bold text-error">2</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-outline">Sync Confidence:</span>
+<span class="font-data-mono text-data-mono font-bold text-tertiary">98%</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-outline">AI Confidence:</span>
+<span class="font-data-mono text-data-mono font-bold text-primary">94%</span>
+</div>
+</div>
+</section>
+<!-- Detection Status Timeline -->
+<div class="bg-surface px-margin-desktop py-xs border-b border-outline-variant">
+<div class="flex items-center justify-between gap-md overflow-x-auto py-2">
+<div class="flex items-center gap-sm shrink-0">
+<span class="material-symbols-outlined text-green-600 text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md text-on-surface">Synchronization Complete</span>
+</div>
+<div class="h-px bg-outline-variant grow min-w-[20px]"></div>
+<div class="flex items-center gap-sm shrink-0">
+<span class="material-symbols-outlined text-green-600 text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-md text-label-md text-on-surface">Components Identified</span>
+</div>
+<div class="h-px bg-primary grow min-w-[20px]"></div>
+<div class="flex items-center gap-sm shrink-0">
+<span class="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin"></span>
+<span class="font-label-md text-label-md text-primary font-bold">Structural Validation Running</span>
+</div>
+<div class="h-px bg-outline-variant grow min-w-[20px]"></div>
+<div class="flex items-center gap-sm shrink-0">
+<span class="material-symbols-outlined text-outline text-[18px]">radio_button_unchecked</span>
+<span class="font-label-md text-label-md text-outline">Defect Correlation Pending</span>
+</div>
+<div class="h-px bg-outline-variant grow min-w-[20px]"></div>
+<div class="flex items-center gap-sm shrink-0">
+<span class="material-symbols-outlined text-outline text-[18px]">radio_button_unchecked</span>
+<span class="font-label-md text-label-md text-outline">Report Evidence Pending</span>
+</div>
+</div>
+</div>
+<main class="flex grow overflow-hidden">
+<!-- Left Control Panel -->
+<aside class="w-72 bg-surface-container-low border-r border-outline-variant flex flex-col shrink-0 overflow-y-auto">
+<div class="p-md border-b border-outline-variant">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest mb-md">Overlay Controls</h3>
+<div class="space-y-md">
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-md text-body-md text-on-surface">AI Overlays</span>
+<div class="relative w-10 h-5 bg-primary rounded-full transition-colors">
+<div class="absolute top-1 left-5 w-3 h-3 bg-white rounded-full transition-all"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-md text-body-md text-on-surface">Bounding Boxes</span>
+<div class="relative w-10 h-5 bg-primary rounded-full transition-colors">
+<div class="absolute top-1 left-5 w-3 h-3 bg-white rounded-full transition-all"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-md text-body-md text-on-surface">Heatmaps</span>
+<div class="relative w-10 h-5 bg-outline-variant rounded-full transition-colors">
+<div class="absolute top-1 left-1 w-3 h-3 bg-white rounded-full transition-all"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="font-body-md text-body-md text-on-surface">Compliance Mode</span>
+<div class="relative w-10 h-5 bg-primary rounded-full transition-colors">
+<div class="absolute top-1 left-5 w-3 h-3 bg-white rounded-full transition-all"></div>
+</div>
+</label>
+</div>
+</div>
+<div class="p-md border-b border-outline-variant bg-surface-container-lowest">
+<h3 class="font-label-md text-label-md text-outline uppercase tracking-widest mb-md">Model Telemetry</h3>
+<div class="grid grid-cols-2 gap-sm mb-md">
+<div class="bg-surface p-sm border border-outline-variant rounded">
+<span class="block font-label-md text-[10px] text-outline uppercase">Version</span>
+<span class="font-data-mono text-data-mono font-bold text-on-surface">v4.2_STRUCT</span>
+</div>
+<div class="bg-surface p-sm border border-outline-variant rounded">
+<span class="block font-label-md text-[10px] text-outline uppercase">Cluster</span>
+<span class="font-data-mono text-data-mono font-bold text-on-surface">G_03_PRI</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-surface p-sm border border-outline-variant rounded">
+<span class="font-label-md text-label-md text-outline">Real-time FPS</span>
+<span class="font-data-mono text-data-mono font-bold text-tertiary">42 FPS</span>
+</div>
+</div>
+<div class="p-md space-y-lg">
+<div class="space-y-sm">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface">Confidence Threshold</span>
+<span class="font-data-mono text-data-mono text-primary">85%</span>
+</div>
+<input class="w-full accent-primary h-1.5 bg-outline-variant rounded-lg appearance-none cursor-pointer" type="range" value="85"/>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between">
+<span class="font-label-md text-label-md text-on-surface">Sensitivity</span>
+<span class="font-data-mono text-data-mono text-primary">High</span>
+</div>
+<input class="w-full accent-primary h-1.5 bg-outline-variant rounded-lg appearance-none cursor-pointer" type="range" value="90"/>
+</div>
+</div>
+</aside>
+<!-- Center AI Evidence Viewer -->
+<section class="grow bg-surface-container-high relative overflow-hidden flex flex-col">
+<div class="grow relative group cursor-crosshair">
+<div class="absolute inset-0 bg-black">
+<img alt="Main Inspection Frame" class="w-full h-full object-cover opacity-90" data-alt="A high-resolution, industrial-grade photograph of a train's undercarriage brake assembly, taken from a low angle. The scene is lit with bright, neutral inspection floodlights that highlight metallic textures and mechanical details. The image is crisp and clear, showing bolts, springs, and thick steel plates with a technical, engineering aesthetic. Overlayed on the image is a red pulsing digital bounding box highlighting a potential crack in a structural component." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqXWpSq29iBzYIS-vjX4hrkP-1C75qu6wM4C5bgqgaNPZNNTOE5l_hX7I9iLrUyitf3S7EGgtHQ8alcrh8sdF3GdWKGWe06EBnEFsMbyuXpnd8N9BStnLj5BwOIbQyRjyI4o6Ucwh4apF7fi0xu4SlCK2OJkN6Yu7gmjlsZJoR3Q5ArGcgi-A8DDIVqMy2p7fseDU_Wf1EXgDcLIR6mit2CkeLf-3pwpq47UZyiQD0R-An_x_vcUqj29M2IKy4QlH-dlqAVN-XzW4p"/>
+</div>
+<!-- Bounding Box Overlays -->
+<div class="absolute top-1/4 left-1/4 w-32 h-40 border-2 border-primary/60 bg-primary/10 flex items-start p-1 pointer-events-none">
+<span class="bg-primary text-white text-[10px] px-1 font-bold rounded-sm uppercase">Suspension</span>
+</div>
+<div class="absolute bottom-1/3 right-1/4 w-48 h-32 border-2 border-primary/60 bg-primary/10 flex items-start p-1 pointer-events-none">
+<span class="bg-primary text-white text-[10px] px-1 font-bold rounded-sm uppercase">Axle Assembly</span>
+</div>
+<!-- Critical Defect Box -->
+<div class="absolute top-1/2 left-1/3 w-24 h-24 border-2 border-error bg-error/20 flex items-start p-1 pulse-red cursor-pointer pointer-events-auto group/defect">
+<span class="bg-error text-white text-[10px] px-1 font-bold rounded-sm uppercase flex items-center gap-xs">
+<span class="material-symbols-outlined text-[12px]">warning</span> Brake Crack
+                    </span>
+<div class="absolute top-full left-0 mt-2 bg-surface p-md rounded shadow-xl border border-error w-48 opacity-0 group-hover/defect:opacity-100 transition-opacity z-10 pointer-events-none">
+<p class="font-label-md text-label-md text-error font-bold mb-xs">⚠ Critical Defect Detected</p>
+<p class="font-body-md text-[12px] text-on-surface">Geometric mismatch in brake pad surface. Potential 4mm fissure across primary mount.</p>
+</div>
+</div>
+<!-- Viewer Controls -->
+<div class="absolute bottom-md left-1/2 -translate-x-1/2 flex items-center gap-sm bg-surface-container-lowest/90 backdrop-blur-sm px-lg py-sm rounded-full border border-outline-variant shadow-lg">
+<button class="p-2 hover:bg-surface-container-low transition-all rounded-full"><span class="material-symbols-outlined text-on-surface">zoom_in</span></button>
+<button class="p-2 hover:bg-surface-container-low transition-all rounded-full"><span class="material-symbols-outlined text-on-surface">zoom_out</span></button>
+<div class="h-6 w-px bg-outline-variant mx-1"></div>
+<button class="p-2 hover:bg-surface-container-low transition-all rounded-full"><span class="material-symbols-outlined text-on-surface">pan_tool</span></button>
+<button class="p-2 hover:bg-primary/10 text-primary transition-all rounded-full"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">compare</span></button>
+<div class="h-6 w-px bg-outline-variant mx-1"></div>
+<span class="font-data-mono text-data-mono text-on-surface px-md">Frame 4,289 / 12,050</span>
+<button class="p-2 hover:bg-surface-container-low transition-all rounded-full"><span class="material-symbols-outlined text-on-surface">fullscreen</span></button>
+</div>
+</div>
+<!-- Bottom Multi-Camera Timeline -->
+<div class="h-48 bg-surface border-t border-outline-variant flex flex-col shrink-0">
+<div class="flex border-b border-outline-variant overflow-x-auto">
+<div class="min-w-[180px] border-r border-outline-variant p-2 bg-surface-container-low">
+<span class="font-label-md text-[10px] text-outline uppercase font-bold">Cam 01: OCR Anchor</span>
+<div class="h-20 bg-black mt-1 overflow-hidden">
+<img class="w-full h-full object-cover opacity-80 grayscale" data-alt="Technical close-up of a train coach number plate, showing the alphanumeric identification characters in high contrast black on a metallic surface. The lighting is direct and industrial." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBavFb6dRt71ScX4XlmzWAlaX6gjgKjaGHYAhnhhrW7wTbowFMRcYTuMZ932PSfm1FzDCFq-qFCcriMb893RfgJSJvf8fwaoQLJD2PaD38PSPrSSeMh9gV8c5FvtbheMAttZgOeqOws8rAsqqJAKEufWXLN4zIdlg1PmAhiG5R-MfmfCdVdzJ8xVNHj5eXmvzcRx05XYupCkdk_Wxz7YOdJjrbuBZgQtfkJQGM9uuZPkKPpsg_wcawGMziPwaZDyJO3dZlP28FK_u-o"/>
+</div>
+</div>
+<div class="min-w-[180px] border-r border-outline-variant p-2 bg-primary/5">
+<span class="font-label-md text-[10px] text-primary uppercase font-bold">Cam 02: Bogie Left</span>
+<div class="h-20 bg-black mt-1 overflow-hidden relative border-2 border-primary/40">
+<img class="w-full h-full object-cover" data-alt="A technical, detailed view of the left side of a heavy-duty railway bogie, showing the wheels, suspension springs, and axle mountings. The style is clean, sharp, and industrial." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5ojWB0_37vntxekqHlmeHIDQHf9QNmqO9UgcNPol56ZzO1EoI5kTIwG2Ppwd7auxXfHBT13gWDnUcBxKhDQfiUnIhdpfedzX5Fr5KIJsuAsqZAKeUpKXZDuGnVGnH6Q2ZR2qIgVYXd1lIDTEBzIyMfPdQSyfsKMYgRN52A8w0e598JgswC4455Kq-0pcGgYLoo1gJlYl4IDRXdyRjjk2tjansxLBTjrcMSC76mwEUhFhFuMTgpWAp5h4exfa4OyFbAY44EpiXgPnn"/>
+</div>
+</div>
+<div class="min-w-[180px] border-r border-outline-variant p-2">
+<span class="font-label-md text-[10px] text-outline uppercase font-bold">Cam 03: Bogie Right</span>
+<div class="h-20 bg-black mt-1 overflow-hidden">
+<img class="w-full h-full object-cover opacity-60" data-alt="A technical, detailed view of the right side of a heavy-duty railway bogie. The image is sharp and lit with inspection-grade lighting to reveal every bolt and surface detail." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC02ODZoVhz_feTaxak6SKubRDezZw-O5E806jvzWiiB4hK1lyFyJM3enFTXz6vzSBIHo9nvI_FGeyZ3Zl-fTowtuKC-Efah8BdD5NYsC6pOeniyvHO-753qpVJEXCA7X7BgAAMuyuKbuvuxcB9nK9E7FCtIb5-KO9n8QTMqg8HOoxOIgWQXQZrnFiSq2At-t8HrEw9KQDl2oazHnK35AQSuhTt3g3rgKiNC89P-4b702dJPazJeZo5zfjNUDXqY-xBEYmJ0kiFUdLQ"/>
+</div>
+</div>
+<div class="min-w-[180px] border-r border-outline-variant p-2">
+<span class="font-label-md text-[10px] text-outline uppercase font-bold">Cam 04: Undercarriage</span>
+<div class="h-20 bg-black mt-1 overflow-hidden">
+<img class="w-full h-full object-cover opacity-60" data-alt="A perspective-shifted technical view of the complex mechanical system beneath a railway carriage, featuring various pipes, conduits, and heavy steel structures. High-key industrial lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRu_cs3V5i3JUSeprDAHvY9d1ufbQGebpAK2nytYhyYq-HBBwholbfco_n-CA9o82N_faGSIj8omYnVn3vMhbmTP4pEF5hps1NFcnhqHDuWTrCu5ngCML7Jh52hhLrbe8nOVDhE6MPW4XQQpMAliRoBypKWNEBkDxpffCLHUlE_0R9tMBb_tHrut2Qr9yhz6PqOf186h-en5yw_njcvwqGk43ejpqNX7e2atdH2N_IefZ_WxvRsP24nFRhKUOJd5zlMkukaQ8yivvq"/>
+</div>
+</div>
+<div class="grow flex flex-col justify-center px-lg bg-surface-container-lowest">
+<div class="relative h-12 w-full flex items-center">
+<div class="absolute h-1 w-full bg-outline-variant rounded-full"></div>
+<div class="absolute h-1 w-2/3 bg-primary rounded-full"></div>
+<!-- Markers -->
+<div class="absolute left-1/4 -top-2">
+<span class="material-symbols-outlined text-error text-[16px]" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute left-1/2 -top-2">
+<span class="material-symbols-outlined text-error text-[16px]" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute left-2/3 -top-2">
+<span class="material-symbols-outlined text-primary text-[16px]">tag</span>
+</div>
+<!-- Scrubber Handle -->
+<div class="absolute left-2/3 -top-4 w-1 h-20 bg-primary/30 z-10">
+<div class="w-4 h-4 bg-primary rounded-full -ml-1.5 border-2 border-white shadow-md"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center px-lg py-xs h-10">
+<div class="flex gap-lg">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary">skip_previous</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary">play_arrow</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary">skip_next</button>
+</div>
+<div class="flex gap-md items-center">
+<span class="font-data-mono text-[11px] text-outline">CURRENT TIMESTAMP: 00:14:45.029</span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Playback Speed: 0.5x</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Intelligence Panel -->
+<aside class="w-80 bg-surface border-l border-outline-variant flex flex-col shrink-0 overflow-hidden">
+<!-- Expected vs Detected Table -->
+<div class="flex flex-col h-1/2 border-b border-outline-variant overflow-hidden">
+<div class="p-md bg-surface-container-low border-b border-outline-variant">
+<h3 class="font-label-md text-label-md text-on-surface font-bold">Structural Validation</h3>
+</div>
+<div class="grow overflow-y-auto">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-surface-container-lowest z-10">
+<tr class="border-b border-outline-variant">
+<th class="px-md py-sm font-label-md text-[10px] text-outline uppercase">Component</th>
+<th class="px-md py-sm font-label-md text-[10px] text-outline uppercase">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm">
+<span class="font-body-md text-[13px] text-on-surface">Brake Pad A1</span>
+</td>
+<td class="px-md py-sm">
+<span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Detected</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group bg-error/5">
+<td class="px-md py-sm">
+<span class="font-body-md text-[13px] text-error font-semibold">Suspension Pin</span>
+</td>
+<td class="px-md py-sm flex items-center gap-xs">
+<span class="bg-error-container text-on-error-container text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Missing</span>
+<span class="material-symbols-outlined text-error text-[16px]">warning</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm">
+<span class="font-body-md text-[13px] text-on-surface">Axle Nut (Primary)</span>
+</td>
+<td class="px-md py-sm">
+<span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Detected</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm">
+<span class="font-body-md text-[13px] text-on-surface">Mounting Bracket</span>
+</td>
+<td class="px-md py-sm">
+<span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Detected</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-md py-sm">
+<span class="font-body-md text-[13px] text-on-surface">Hydraulic Line</span>
+</td>
+<td class="px-md py-sm">
+<span class="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">Check Required</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Component Detail View -->
+<div class="flex flex-col grow overflow-y-auto">
+<div class="p-md bg-surface-container-low border-b border-outline-variant">
+<h3 class="font-label-md text-label-md text-on-surface font-bold">Intelligence Details</h3>
+</div>
+<div class="p-md space-y-md">
+<div>
+<span class="block font-label-md text-[10px] text-outline uppercase mb-sm">AI Reasoning: Suspension Pin</span>
+<div class="bg-surface-container-low p-md rounded-lg border-l-4 border-error">
+<p class="font-body-md text-[13px] text-on-surface leading-relaxed italic">
+                                "Structural bolt absent across 7 consecutive frames. Geometry analysis indicates 100% mismatch with digital twin template for Bogie Type B2. Critical security risk identified."
+                            </p>
+</div>
+</div>
+<div>
+<span class="block font-label-md text-[10px] text-outline uppercase mb-sm">Evidence Gallery</span>
+<div class="grid grid-cols-2 gap-xs">
+<div class="aspect-square bg-black overflow-hidden border border-outline-variant relative">
+<img class="w-full h-full object-cover" data-alt="Technical macro photography of a missing railway suspension pin site. The bolt hole is visible, empty, and surrounded by industrial steel textures. High information density." src="https://lh3.googleusercontent.com/aida-public/AB6AXuApnLYP9v0tybTbLJ-KfDh5lWIdZm82-T0RZcDW1DeCARabmN_QCRk1GsKmn3yMVgWZ29woPkmgmXrUlbPY74rj8RKTxz7DEkcNG9oVT22eAzXPbxrx6GU4nbPsnWgpg2_fBqWMl9HVx6_kDpbsD2flaTA4-EMHPaHYdLYvvcvSDWMrqcqzJp2iOqpz0u6txdr278wS-o8Ehu5xLIAgOrdfYL5KeAa9GX4bx1kRjsDKDi5dOggrOefO6-gGYnzTE7d1n18QH8oeKFNr"/>
+<span class="absolute bottom-1 right-1 font-data-mono text-[9px] text-white bg-black/50 px-1">F_4282</span>
+</div>
+<div class="aspect-square bg-black overflow-hidden border border-outline-variant relative">
+<img class="w-full h-full object-cover" data-alt="Close up evidence photo of a railway mechanical joint showing surface wear and grease. Engineering focused image with sharp focus on the metallic interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW0XJ4P8KZ-9toTlJHLRi8udAOmzaFLo3imq8mfGZYRJZam6SU25zktjmYD6z4ORk7X_-yVopILqw_Yt66hNaJ6zCpNA4i82bY8ZQaBYcjtU-GZx7KdB21-39dR8nzMjNQO4UdE1zKV9aHAqkhk0wnobE8wpuAkbzfRlcA3KPbJ2DlJvZI33HUDW0XqTNggBTsMKiLSvVkhIYAOwm5q7gt5z10uZZgda5s-lB9h9Ufvid-IIt7kSBlP-qfGbGA4DpTeFR69t8fMyFk"/>
+<span class="absolute bottom-1 right-1 font-data-mono text-[9px] text-white bg-black/50 px-1">F_4285</span>
+</div>
+</div>
+</div>
+<div class="space-y-sm pt-md">
+<div class="flex justify-between items-center py-sm border-b border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface">Frame Reference</span>
+<span class="font-data-mono text-data-mono text-primary">#4289_B2_L</span>
+</div>
+<div class="flex justify-between items-center py-sm border-b border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface">Thermal Variance</span>
+<span class="font-data-mono text-data-mono text-on-surface">+1.2°C</span>
+</div>
+<div class="flex justify-between items-center py-sm border-b border-outline-variant">
+<span class="font-label-md text-label-md text-on-surface">Detection Confidence</span>
+<span class="font-data-mono text-data-mono text-on-surface">99.8%</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulate frame updates
+            const frameCounter = document.querySelector('.font-data-mono.text-on-surface.px-md');
+            if (frameCounter) {
+                let frame = 4289;
+                setInterval(() => {
+                    frame = frame + 1 > 12050 ? 4289 : frame + 1;
+                    frameCounter.innerText = `Frame ${frame.toLocaleString()} / 12,050`;
+                }, 1000 / 0.5); // Simulating 0.5x speed
+            }
+
+            // Simple hover effects on table rows
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('mouseenter', () => {
+                    row.classList.add('bg-surface-container-low');
+                });
+                row.addEventListener('mouseleave', () => {
+                    if (!row.classList.contains('bg-error/5')) {
+                        row.classList.remove('bg-surface-container-low');
+                    }
+                });
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,174 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { KPICard } from '../components/dashboard/KPICard';
+import { LiveTrainCard } from '../components/dashboard/LiveTrainCard';
+import { mockQueuedSessions } from '../data/mockData';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Train, 
+  FileCheck, 
+  Loader2, 
+  AlertTriangle, 
+  ShieldAlert, 
+  Activity, 
+  Server, 
+  Cpu, 
+  HardDrive,
+  Clock
+} from 'lucide-react';
+
+export const Dashboard = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="p-8 max-w-7xl mx-auto space-y-8 font-sans">
+      {/* Header */}
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">OPERATIONS DASHBOARD</h1>
+          <p className="text-sm text-muted-foreground mt-1">Industrial AI pipeline monitoring and queue controller</p>
+        </div>
+        <div className="text-xs font-bold text-muted-foreground flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded-full shadow-sm">
+          <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+          LIVE ENGINE SYNCED
+        </div>
+      </div>
+
+      {/* KPI Overview Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <KPICard label="Trains Today" value="48" icon={<Train className="w-4 h-4 text-primary" />} highlightColor="slate" />
+        <KPICard label="Reports Ready" value="31" icon={<FileCheck className="w-4 h-4 text-success" />} highlightColor="emerald" />
+        <KPICard label="Processing" value="12" icon={<Loader2 className="w-4 h-4 text-processing animate-spin" />} highlightColor="cyan" />
+        <KPICard label="Queued" value="5" icon={<Activity className="w-4 h-4 text-muted-foreground" />} highlightColor="slate" />
+        <KPICard label="Critical Alerts" value="3" icon={<ShieldAlert className="w-4 h-4 text-destructive" />} highlightColor="red" />
+        <KPICard label="Failed Sessions" value="1" icon={<AlertTriangle className="w-4 h-4 text-warning" />} highlightColor="amber" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Live Queue */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-black text-foreground">LIVE TRAIN QUEUE</h2>
+              <p className="text-xs text-muted-foreground font-semibold mt-0.5">Active event-based capture jobs</p>
+            </div>
+            <button 
+              onClick={() => navigate('/live-queue')}
+              className="text-xs font-bold bg-secondary hover:bg-slate-200 px-3 py-1.5 rounded uppercase tracking-wider text-primary border border-border transition-all cursor-pointer"
+            >
+              Manage Queue
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            {mockQueuedSessions.map(session => (
+              <LiveTrainCard key={session.id} session={session} />
+            ))}
+          </div>
+        </div>
+
+        {/* Right Column: Health & Alerts */}
+        <div className="space-y-6">
+          <section className="space-y-3">
+            <h2 className="text-lg font-black text-foreground uppercase tracking-tight">Pipeline Infrastructure</h2>
+            <Card className="border border-border bg-card shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xs font-black tracking-wider uppercase text-muted-foreground flex items-center gap-1.5">
+                  <Server className="w-4 h-4" /> Node Telemetry
+                </CardTitle>
+                <CardDescription className="text-[10px] font-bold">Real-time load balancing of GPU instances</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 font-mono text-xs">
+                {/* GPU Inference Workers */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground font-bold flex items-center gap-1">
+                      <Cpu className="w-3.5 h-3.5 text-success" />
+                      GPU_INFERENCE_NODES
+                    </span>
+                    <span className="text-success font-extrabold">8/8 OK</span>
+                  </div>
+                  <Progress value={100} className="h-1.5 bg-slate-100" />
+                </div>
+                
+                {/* Synchronization Engine */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground font-bold flex items-center gap-1">
+                      <Activity className="w-3.5 h-3.5 text-processing animate-pulse" />
+                      SYNC_COACH_ENGINES
+                    </span>
+                    <span className="text-processing font-extrabold">65% CAP</span>
+                  </div>
+                  <Progress value={65} className="h-1.5 bg-slate-100" />
+                </div>
+                
+                {/* Storage Capacity */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground font-bold flex items-center gap-1">
+                      <HardDrive className="w-3.5 h-3.5 text-warning" />
+                      STORAGE_POOL_WR
+                    </span>
+                    <span className="text-warning font-extrabold">82% FULL</span>
+                  </div>
+                  <Progress value={82} className="h-1.5 bg-slate-100" />
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-black text-foreground uppercase tracking-tight">Active Operations Feed</h2>
+            <Card className="border border-border bg-card shadow-sm overflow-hidden">
+              <CardHeader className="pb-3 border-b border-border bg-slate-50/50">
+                <CardTitle className="text-xs font-black tracking-wider uppercase text-muted-foreground flex items-center gap-1.5">
+                  <Clock className="w-4 h-4" /> Live Events Log
+                </CardTitle>
+                <CardDescription className="text-[10px] font-bold">Unacknowledged pipeline detections</CardDescription>
+              </CardHeader>
+              
+              <div className="divide-y divide-border">
+                {/* Alert 1 */}
+                <div className="p-4 bg-destructive/5 flex gap-3">
+                  <ShieldAlert className="w-5 h-5 text-destructive shrink-0" />
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-black text-destructive-foreground bg-destructive px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wide">
+                        Critical Defect
+                      </p>
+                      <span className="text-[10px] font-mono font-bold text-muted-foreground">14m ago</span>
+                    </div>
+                    <p className="text-xs font-bold text-foreground">Missing Suspension Component</p>
+                    <p className="text-[10px] font-mono text-muted-foreground font-bold">Train VB-22804 • Coach C3 • Cam 3</p>
+                  </div>
+                </div>
+
+                {/* Alert 2 */}
+                <div className="p-4 flex gap-3">
+                  <AlertTriangle className="w-5 h-5 text-warning shrink-0" />
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-black text-warning-foreground bg-warning px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wide">
+                        Warning
+                      </p>
+                      <span className="text-[10px] font-mono font-bold text-muted-foreground">22m ago</span>
+                    </div>
+                    <p className="text-xs font-bold text-foreground">Low OCR Confidence (62%)</p>
+                    <p className="text-[10px] font-mono text-muted-foreground font-bold">Train VB-22901 • Coach B1 • Camera 4</p>
+                  </div>
+                </div>
+              </div>
+
+              <button className="w-full py-3 text-[10px] font-extrabold text-muted-foreground hover:bg-slate-50 uppercase tracking-widest border-t border-border transition-colors text-center">
+                Acknowledge All Alerts
+              </button>
+            </Card>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+};
