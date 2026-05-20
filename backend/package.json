@@ -1,0 +1,27 @@
+{
+  "name": "vandeinspect-api",
+  "version": "1.0.0",
+  "description": "VandeInspect AI — Backend API (Node.js + Fastify)",
+  "main": "run.js",
+  "scripts": {
+    "start": "node run.js",
+    "dev": "node run.js",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@fastify/multipart": "^8.3.0",
+    "@fastify/websocket": "^8.3.1",
+    "@prisma/client": "^5.22.0",
+    "axios": "^1.7.7",
+    "cloudinary": "^2.5.1",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  }
+}

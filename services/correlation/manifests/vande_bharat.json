@@ -1,0 +1,12 @@
+{
+  "coach_type": "VANDE_BHARAT",
+  "components": [
+    { "code": "BRAKE_PAD",    "name": "Brake Pad",       "quantity": 2, "is_critical": true },
+    { "code": "SUSP_PIN",     "name": "Suspension Pin",  "quantity": 4, "is_critical": true },
+    { "code": "WATER_TANK",   "name": "Water Tank",      "quantity": 1, "is_critical": false },
+    { "code": "AXLE_BOX",     "name": "Axle Box Cover",  "quantity": 4, "is_critical": true },
+    { "code": "WHEEL_ASSY",   "name": "Wheel Assembly",  "quantity": 4, "is_critical": true },
+    { "code": "COUPLER",      "name": "Coupler",         "quantity": 2, "is_critical": true },
+    { "code": "BOGIE_FRAME",  "name": "Bogie Frame",     "quantity": 2, "is_critical": true }
+  ]
+}
