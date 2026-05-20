@@ -4,85 +4,310 @@
   "graph": {},
   "nodes": [
     {
-      "label": "app.js",
+      "label": "ocr_engine.py",
       "file_type": "code",
-      "source_file": "backend/src/app.js",
+      "source_file": "GPU/ocr/ocr_engine.py",
       "source_location": "L1",
-      "id": "backend_src_app_js",
-      "community": 0,
-      "norm_label": "app.js"
+      "id": "gpu_ocr_ocr_engine_py",
+      "community": 7,
+      "norm_label": "ocr_engine.py"
     },
     {
-      "label": "fastify",
+      "label": "get_ocr()",
       "file_type": "code",
-      "source_file": "backend/src/app.js",
-      "source_location": "L3",
-      "id": "src_app_fastify",
-      "community": 0,
-      "norm_label": "fastify"
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L22",
+      "id": "ocr_ocr_engine_get_ocr",
+      "community": 7,
+      "norm_label": "get_ocr()"
     },
     {
-      "label": "cors",
+      "label": "run_ocr()",
       "file_type": "code",
-      "source_file": "backend/src/app.js",
-      "source_location": "L4",
-      "id": "src_app_cors",
-      "community": 0,
-      "norm_label": "cors"
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L50",
+      "id": "ocr_ocr_engine_run_ocr",
+      "community": 7,
+      "norm_label": "run_ocr()"
     },
     {
-      "label": "multipart",
-      "file_type": "code",
-      "source_file": "backend/src/app.js",
-      "source_location": "L5",
-      "id": "src_app_multipart",
-      "community": 0,
-      "norm_label": "multipart"
+      "label": "PaddleOCR singleton \u2014 GPU with CPU fallback. Windows CUDA DLL injection included",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L1",
+      "id": "ocr_ocr_engine_rationale_1",
+      "community": 7,
+      "norm_label": "paddleocr singleton \u2014 gpu with cpu fallback. windows cuda dll injection included"
     },
     {
-      "label": "config",
+      "label": "preprocess.py",
       "file_type": "code",
-      "source_file": "backend/src/app.js",
+      "source_file": "GPU/ocr/preprocess.py",
+      "source_location": "L1",
+      "id": "gpu_ocr_preprocess_py",
+      "community": 7,
+      "norm_label": "preprocess.py"
+    },
+    {
+      "label": "preprocess_frame()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/preprocess.py",
       "source_location": "L6",
-      "id": "src_app_config",
-      "community": 0,
-      "norm_label": "config"
+      "id": "ocr_preprocess_preprocess_frame",
+      "community": 7,
+      "norm_label": "preprocess_frame()"
     },
     {
-      "label": "prisma",
-      "file_type": "code",
-      "source_file": "backend/src/app.js",
-      "source_location": "L7",
-      "id": "src_app_prisma",
-      "community": 0,
-      "norm_label": "prisma"
-    },
-    {
-      "label": "dashboard.js",
-      "file_type": "code",
-      "source_file": "backend/src/routes/dashboard.js",
+      "label": "Frame preprocessing for Pass 2 OCR: grayscale \u2192 2\u00d7 upscale \u2192 sharpen \u2192 CLAHE \u2192 b",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/preprocess.py",
       "source_location": "L1",
-      "id": "backend_src_routes_dashboard_js",
-      "community": 17,
-      "norm_label": "dashboard.js"
+      "id": "ocr_preprocess_rationale_1",
+      "community": 7,
+      "norm_label": "frame preprocessing for pass 2 ocr: grayscale \u2192 2\u00d7 upscale \u2192 sharpen \u2192 clahe \u2192 b"
     },
     {
-      "label": "prisma",
+      "label": "server.py",
       "file_type": "code",
-      "source_file": "backend/src/routes/dashboard.js",
+      "source_file": "GPU/ocr/server.py",
       "source_location": "L1",
-      "id": "routes_dashboard_prisma",
-      "community": 17,
-      "norm_label": "prisma"
+      "id": "gpu_ocr_server_py",
+      "community": 7,
+      "norm_label": "server.py"
     },
     {
-      "label": "dashboard()",
+      "label": "OcrRequest",
       "file_type": "code",
-      "source_file": "backend/src/routes/dashboard.js",
-      "source_location": "L3",
-      "id": "routes_dashboard_dashboard",
-      "community": 17,
-      "norm_label": "dashboard()"
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L44",
+      "id": "ocr_server_ocrrequest",
+      "community": 12,
+      "norm_label": "ocrrequest"
+    },
+    {
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "basemodel",
+      "community": 12,
+      "norm_label": "basemodel"
+    },
+    {
+      "label": "get_conn()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L51",
+      "id": "ocr_server_get_conn",
+      "community": 7,
+      "norm_label": "get_conn()"
+    },
+    {
+      "label": "download_frame()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L55",
+      "id": "ocr_server_download_frame",
+      "community": 7,
+      "norm_label": "download_frame()"
+    },
+    {
+      "label": "_best_candidate_from()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L65",
+      "id": "ocr_server_best_candidate_from",
+      "community": 7,
+      "norm_label": "_best_candidate_from()"
+    },
+    {
+      "label": "_digit_substring()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L77",
+      "id": "ocr_server_digit_substring",
+      "community": 7,
+      "norm_label": "_digit_substring()"
+    },
+    {
+      "label": "run_pipeline()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L86",
+      "id": "ocr_server_run_pipeline",
+      "community": 7,
+      "norm_label": "run_pipeline()"
+    },
+    {
+      "label": "warmup()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L152",
+      "id": "ocr_server_warmup",
+      "community": 7,
+      "norm_label": "warmup()"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L159",
+      "id": "ocr_server_health",
+      "community": 7,
+      "norm_label": "health()"
+    },
+    {
+      "label": "ocr()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L164",
+      "id": "ocr_server_ocr",
+      "community": 7,
+      "norm_label": "ocr()"
+    },
+    {
+      "label": "OCR Service \u2014 port 5000 YOLO-first ROI pipeline, ported from POC/backend/OCR/ser",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L1",
+      "id": "ocr_server_rationale_1",
+      "community": 7,
+      "norm_label": "ocr service \u2014 port 5000 yolo-first roi pipeline, ported from poc/backend/ocr/ser"
+    },
+    {
+      "label": "Return (coach_number, confidence) from the highest-confidence valid result, else",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L66",
+      "id": "ocr_server_rationale_66",
+      "community": 7,
+      "norm_label": "return (coach_number, confidence) from the highest-confidence valid result, else"
+    },
+    {
+      "label": "Last-resort: extract any 5-6 digit substring from detected text.",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L78",
+      "id": "ocr_server_rationale_78",
+      "community": 7,
+      "norm_label": "last-resort: extract any 5-6 digit substring from detected text."
+    },
+    {
+      "label": "Returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr)     Mirro",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L87",
+      "id": "ocr_server_rationale_87",
+      "community": 7,
+      "norm_label": "returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr)     mirro"
+    },
+    {
+      "label": "train_number_filter.py",
+      "file_type": "code",
+      "source_file": "GPU/ocr/train_number_filter.py",
+      "source_location": "L1",
+      "id": "gpu_ocr_train_number_filter_py",
+      "community": 7,
+      "norm_label": "train_number_filter.py"
+    },
+    {
+      "label": "filter_train_numbers()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/train_number_filter.py",
+      "source_location": "L8",
+      "id": "ocr_train_number_filter_filter_train_numbers",
+      "community": 7,
+      "norm_label": "filter_train_numbers()"
+    },
+    {
+      "label": "Filter OCR results to valid 5-6 digit train numbers.",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/train_number_filter.py",
+      "source_location": "L1",
+      "id": "ocr_train_number_filter_rationale_1",
+      "community": 7,
+      "norm_label": "filter ocr results to valid 5-6 digit train numbers."
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L1",
+      "id": "gpu_yolo_server_py",
+      "community": 9,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "load_models()",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L52",
+      "id": "yolo_server_load_models",
+      "community": 9,
+      "norm_label": "load_models()"
+    },
+    {
+      "label": "decode_bytes()",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L83",
+      "id": "yolo_server_decode_bytes",
+      "community": 9,
+      "norm_label": "decode_bytes()"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L92",
+      "id": "yolo_server_health",
+      "community": 9,
+      "norm_label": "health()"
+    },
+    {
+      "label": "predict()",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L105",
+      "id": "yolo_server_predict",
+      "community": 9,
+      "norm_label": "predict()"
+    },
+    {
+      "label": "predict_train_number()",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L133",
+      "id": "yolo_server_predict_train_number",
+      "community": 9,
+      "norm_label": "predict_train_number()"
+    },
+    {
+      "label": "YOLO Service \u2014 port 5002 Two models loaded at startup on GPU:   best.pt",
+      "file_type": "rationale",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L1",
+      "id": "yolo_server_rationale_1",
+      "community": 9,
+      "norm_label": "yolo service \u2014 port 5002 two models loaded at startup on gpu:   best.pt"
+    },
+    {
+      "label": "Defect detection \u2014 uses best.pt. Called by Phase 3 correlation pipeline.",
+      "file_type": "rationale",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L106",
+      "id": "yolo_server_rationale_106",
+      "community": 9,
+      "norm_label": "defect detection \u2014 uses best.pt. called by phase 3 correlation pipeline."
+    },
+    {
+      "label": "Bogie ROI detection \u2014 uses train_num_detector.pt. Called by OCR service (Phase 2",
+      "file_type": "rationale",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L134",
+      "id": "yolo_server_rationale_134",
+      "community": 9,
+      "norm_label": "bogie roi detection \u2014 uses train_num_detector.pt. called by ocr service (phase 2"
     },
     {
       "label": "sessions.js",
@@ -157,10 +382,19 @@
       "norm_label": "config"
     },
     {
+      "label": "{ runOcrPipeline }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L8",
+      "id": "routes_sessions_runocrpipeline",
+      "community": 16,
+      "norm_label": "{ runocrpipeline }"
+    },
+    {
       "label": "UPLOAD_DIR",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L9",
+      "source_location": "L10",
       "id": "routes_sessions_upload_dir",
       "community": 16,
       "norm_label": "upload_dir"
@@ -169,7 +403,7 @@
       "label": "PIPELINE_STAGES",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L11",
+      "source_location": "L12",
       "id": "routes_sessions_pipeline_stages",
       "community": 16,
       "norm_label": "pipeline_stages"
@@ -178,7 +412,7 @@
       "label": "CAM_TYPES",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L21",
+      "source_location": "L22",
       "id": "routes_sessions_cam_types",
       "community": 16,
       "norm_label": "cam_types"
@@ -187,7 +421,7 @@
       "label": "generateSessionCode()",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L23",
+      "source_location": "L24",
       "id": "routes_sessions_generatesessioncode",
       "community": 16,
       "norm_label": "generatesessioncode()"
@@ -196,10 +430,64 @@
       "label": "sessions()",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L29",
+      "source_location": "L30",
       "id": "routes_sessions_sessions",
       "community": 16,
       "norm_label": "sessions()"
+    },
+    {
+      "label": "pipelineOrchestrator.js",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L1",
+      "id": "backend_src_services_pipelineorchestrator_js",
+      "community": 16,
+      "norm_label": "pipelineorchestrator.js"
+    },
+    {
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L5",
+      "id": "services_pipelineorchestrator_axios",
+      "community": 16,
+      "norm_label": "axios"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L6",
+      "id": "services_pipelineorchestrator_prisma",
+      "community": 16,
+      "norm_label": "prisma"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L7",
+      "id": "services_pipelineorchestrator_config",
+      "community": 16,
+      "norm_label": "config"
+    },
+    {
+      "label": "runOcrPipeline()",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L12",
+      "id": "services_pipelineorchestrator_runocrpipeline",
+      "community": 16,
+      "norm_label": "runocrpipeline()"
+    },
+    {
+      "label": "runPipeline()",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L149",
+      "id": "services_pipelineorchestrator_runpipeline",
+      "community": 16,
+      "norm_label": "runpipeline()"
     },
     {
       "label": "progress.md",
@@ -310,37 +598,37 @@
       "norm_label": "code:bash (cd main/services/frame_extractor)"
     },
     {
-      "label": "Phase 2 \u2014 OCR Pipeline + Coach Mapping \u2b1c",
+      "label": "Phase 2 \u2014 OCR Pipeline + Coach Mapping \u2705",
       "file_type": "document",
       "source_file": "progress.md",
       "source_location": "L216",
       "id": "main_progress_phase_2_ocr_pipeline_coach_mapping",
       "community": 2,
-      "norm_label": "phase 2 \u2014 ocr pipeline + coach mapping \u2b1c"
+      "norm_label": "phase 2 \u2014 ocr pipeline + coach mapping \u2705"
     },
     {
-      "label": "Sync key: trigger_id",
+      "label": "What was built",
       "file_type": "document",
       "source_file": "progress.md",
       "source_location": "L220",
-      "id": "main_progress_sync_key_trigger_id",
+      "id": "main_progress_what_was_built",
       "community": 2,
-      "norm_label": "sync key: trigger_id"
+      "norm_label": "what was built"
     },
     {
-      "label": "code:block4 (For each frame (side-camera only, is_ocr_candidate=true):)",
+      "label": "code:bash (# Terminal 1 \u2014 YOLO service)",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L224",
+      "source_location": "L246",
       "id": "main_progress_codeblock_4",
       "community": 2,
-      "norm_label": "code:block4 (for each frame (side-camera only, is_ocr_candidate=true):)"
+      "norm_label": "code:bash (# terminal 1 \u2014 yolo service)"
     },
     {
       "label": "Phase 3 \u2014 YOLO Detection + Defect Intelligence \u2b1c",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L286",
+      "source_location": "L268",
       "id": "main_progress_phase_3_yolo_detection_defect_intelligence",
       "community": 2,
       "norm_label": "phase 3 \u2014 yolo detection + defect intelligence \u2b1c"
@@ -349,7 +637,7 @@
       "label": "Phase 4 \u2014 Report Generation \u2b1c",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L312",
+      "source_location": "L294",
       "id": "main_progress_phase_4_report_generation",
       "community": 2,
       "norm_label": "phase 4 \u2014 report generation \u2b1c"
@@ -358,7 +646,7 @@
       "label": "Phase 5 \u2014 Frontend Wire-Up \u2b1c",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L331",
+      "source_location": "L313",
       "id": "main_progress_phase_5_frontend_wire_up",
       "community": 2,
       "norm_label": "phase 5 \u2014 frontend wire-up \u2b1c"
@@ -367,7 +655,7 @@
       "label": "Phase 6 \u2014 WebSocket Live Status \u2b1c",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L348",
+      "source_location": "L330",
       "id": "main_progress_phase_6_websocket_live_status",
       "community": 2,
       "norm_label": "phase 6 \u2014 websocket live status \u2b1c"
@@ -376,7 +664,7 @@
       "label": "Status Tracker",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L359",
+      "source_location": "L341",
       "id": "main_progress_status_tracker",
       "community": 2,
       "norm_label": "status tracker"
@@ -385,7 +673,7 @@
       "label": "Running Everything (Development)",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L375",
+      "source_location": "L357",
       "id": "main_progress_running_everything_development",
       "community": 2,
       "norm_label": "running everything (development)"
@@ -394,7 +682,7 @@
       "label": "code:bash (# 1. GPU Services (need CUDA + GPU))",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L377",
+      "source_location": "L359",
       "id": "main_progress_codeblock_5",
       "community": 2,
       "norm_label": "code:bash (# 1. gpu services (need cuda + gpu))"
@@ -403,127 +691,379 @@
       "label": "Key Decisions",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L397",
+      "source_location": "L379",
       "id": "main_progress_key_decisions",
       "community": 2,
       "norm_label": "key decisions"
+    },
+    {
+      "label": "engine.py",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L1",
+      "id": "services_sync_engine_engine_py",
+      "community": 3,
+      "norm_label": "engine.py"
+    },
+    {
+      "label": "load_ocr_by_trigger()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L29",
+      "id": "sync_engine_engine_load_ocr_by_trigger",
+      "community": 3,
+      "norm_label": "load_ocr_by_trigger()"
+    },
+    {
+      "label": "detect_segments()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L64",
+      "id": "sync_engine_engine_detect_segments",
+      "community": 3,
+      "norm_label": "detect_segments()"
+    },
+    {
+      "label": "_new_seg()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L107",
+      "id": "sync_engine_engine_new_seg",
+      "community": 3,
+      "norm_label": "_new_seg()"
+    },
+    {
+      "label": "_close()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L117",
+      "id": "sync_engine_engine_close",
+      "community": 3,
+      "norm_label": "_close()"
+    },
+    {
+      "label": "create_coaches()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L125",
+      "id": "sync_engine_engine_create_coaches",
+      "community": 3,
+      "norm_label": "create_coaches()"
+    },
+    {
+      "label": "assign_frames()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L154",
+      "id": "sync_engine_engine_assign_frames",
+      "community": 3,
+      "norm_label": "assign_frames()"
+    },
+    {
+      "label": "_find_coach()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L226",
+      "id": "sync_engine_engine_find_coach",
+      "community": 3,
+      "norm_label": "_find_coach()"
+    },
+    {
+      "label": "create_timeline_events()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L252",
+      "id": "sync_engine_engine_create_timeline_events",
+      "community": 3,
+      "norm_label": "create_timeline_events()"
+    },
+    {
+      "label": "run_sync()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L288",
+      "id": "sync_engine_engine_run_sync",
+      "community": 3,
+      "norm_label": "run_sync()"
+    },
+    {
+      "label": "Sync Engine \u2014 gap detection on trigger_id axis.  Algorithm:   1. Read ocr_result",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L1",
+      "id": "sync_engine_engine_rationale_1",
+      "community": 3,
+      "norm_label": "sync engine \u2014 gap detection on trigger_id axis.  algorithm:   1. read ocr_result"
+    },
+    {
+      "label": "Returns list of { trigger_id, coach_number, confidence } sorted by trigger_id AS",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L30",
+      "id": "sync_engine_engine_rationale_30",
+      "community": 3,
+      "norm_label": "returns list of { trigger_id, coach_number, confidence } sorted by trigger_id as"
+    },
+    {
+      "label": "Returns list of accepted coach segments:       { coach_number, start_trigger_id,",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L65",
+      "id": "sync_engine_engine_rationale_65",
+      "community": 3,
+      "norm_label": "returns list of accepted coach segments:       { coach_number, start_trigger_id,"
+    },
+    {
+      "label": "Inserts one coaches row per segment.     Returns segments enriched with coach_id",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L126",
+      "id": "sync_engine_engine_rationale_126",
+      "community": 3,
+      "norm_label": "inserts one coaches row per segment.     returns segments enriched with coach_id"
+    },
+    {
+      "label": "For every frame in the session, assigns coach_id based on trigger_id position.",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L155",
+      "id": "sync_engine_engine_rationale_155",
+      "community": 3,
+      "norm_label": "for every frame in the session, assigns coach_id based on trigger_id position."
+    },
+    {
+      "label": "Find which coach segment a trigger_id belongs to.",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L227",
+      "id": "sync_engine_engine_rationale_227",
+      "community": 3,
+      "norm_label": "find which coach segment a trigger_id belongs to."
+    },
+    {
+      "label": "OCR_ANCHOR events at segment start, COACH_GAP events at boundaries.",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L253",
+      "id": "sync_engine_engine_rationale_253",
+      "community": 3,
+      "norm_label": "ocr_anchor events at segment start, coach_gap events at boundaries."
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L1",
+      "id": "services_sync_engine_server_py",
+      "community": 12,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "SyncRequest",
+      "file_type": "code",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L24",
+      "id": "sync_engine_server_syncrequest",
+      "community": 12,
+      "norm_label": "syncrequest"
+    },
+    {
+      "label": "get_conn()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L28",
+      "id": "sync_engine_server_get_conn",
+      "community": 12,
+      "norm_label": "get_conn()"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L33",
+      "id": "sync_engine_server_health",
+      "community": 12,
+      "norm_label": "health()"
+    },
+    {
+      "label": "sync()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L38",
+      "id": "sync_engine_server_sync",
+      "community": 12,
+      "norm_label": "sync()"
+    },
+    {
+      "label": "Sync Engine Service \u2014 port 5004 Receives { session_id } \u2192 runs trigger_id gap de",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L1",
+      "id": "sync_engine_server_rationale_1",
+      "community": 12,
+      "norm_label": "sync engine service \u2014 port 5004 receives { session_id } \u2192 runs trigger_id gap de"
+    },
+    {
+      "label": "app.js",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L1",
+      "community": 0,
+      "norm_label": "app.js",
+      "id": "backend_src_app_js"
+    },
+    {
+      "label": "fastify",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L3",
+      "community": 0,
+      "norm_label": "fastify",
+      "id": "src_app_fastify"
+    },
+    {
+      "label": "cors",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L4",
+      "community": 0,
+      "norm_label": "cors",
+      "id": "src_app_cors"
+    },
+    {
+      "label": "multipart",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L5",
+      "community": 0,
+      "norm_label": "multipart",
+      "id": "src_app_multipart"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L6",
+      "community": 0,
+      "norm_label": "config",
+      "id": "src_app_config"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L7",
+      "community": 0,
+      "norm_label": "prisma",
+      "id": "src_app_prisma"
+    },
+    {
+      "label": "dashboard.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/dashboard.js",
+      "source_location": "L1",
+      "community": 17,
+      "norm_label": "dashboard.js",
+      "id": "backend_src_routes_dashboard_js"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/routes/dashboard.js",
+      "source_location": "L1",
+      "community": 17,
+      "norm_label": "prisma",
+      "id": "routes_dashboard_prisma"
+    },
+    {
+      "label": "dashboard()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/dashboard.js",
+      "source_location": "L3",
+      "community": 17,
+      "norm_label": "dashboard()",
+      "id": "routes_dashboard_dashboard"
     },
     {
       "label": "server.py",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L1",
-      "id": "services_frame_extractor_server_py",
       "community": 12,
-      "norm_label": "server.py"
+      "norm_label": "server.py",
+      "id": "services_frame_extractor_server_py"
     },
     {
       "label": "ExtractRequest",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L37",
-      "id": "frame_extractor_server_extractrequest",
       "community": 12,
-      "norm_label": "extractrequest"
-    },
-    {
-      "label": "BaseModel",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "id": "basemodel",
-      "community": 12,
-      "norm_label": "basemodel"
+      "norm_label": "extractrequest",
+      "id": "frame_extractor_server_extractrequest"
     },
     {
       "label": "get_conn()",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L44",
-      "id": "frame_extractor_server_get_conn",
       "community": 12,
-      "norm_label": "get_conn()"
+      "norm_label": "get_conn()",
+      "id": "frame_extractor_server_get_conn"
     },
     {
       "label": "_all_cameras_done()",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L48",
-      "id": "frame_extractor_server_all_cameras_done",
       "community": 12,
-      "norm_label": "_all_cameras_done()"
+      "norm_label": "_all_cameras_done()",
+      "id": "frame_extractor_server_all_cameras_done"
     },
     {
       "label": "run_extraction()",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L58",
-      "id": "frame_extractor_server_run_extraction",
       "community": 12,
-      "norm_label": "run_extraction()"
+      "norm_label": "run_extraction()",
+      "id": "frame_extractor_server_run_extraction"
     },
     {
       "label": "health()",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L216",
-      "id": "frame_extractor_server_health",
       "community": 12,
-      "norm_label": "health()"
+      "norm_label": "health()",
+      "id": "frame_extractor_server_health"
     },
     {
       "label": "extract()",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L221",
-      "id": "frame_extractor_server_extract",
       "community": 12,
-      "norm_label": "extract()"
+      "norm_label": "extract()",
+      "id": "frame_extractor_server_extract"
     },
     {
       "label": "Frame Extractor Service \u2014 port 5003 Receives video path \u2192 OpenCV extracts every",
       "file_type": "rationale",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L1",
-      "id": "frame_extractor_server_rationale_1",
       "community": 12,
-      "norm_label": "frame extractor service \u2014 port 5003 receives video path \u2192 opencv extracts every"
+      "norm_label": "frame extractor service \u2014 port 5003 receives video path \u2192 opencv extracts every",
+      "id": "frame_extractor_server_rationale_1"
     },
     {
       "label": "True when every session_camera for this session has frame_count > 0.",
       "file_type": "rationale",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L49",
-      "id": "frame_extractor_server_rationale_49",
       "community": 12,
-      "norm_label": "true when every session_camera for this session has frame_count > 0."
-    },
-    {
-      "label": "server.py",
-      "file_type": "code",
-      "source_file": "GPU/ocr/server.py",
-      "source_location": "L1",
-      "community": 7,
-      "norm_label": "server.py",
-      "id": "gpu_ocr_server_py"
-    },
-    {
-      "label": "health()",
-      "file_type": "code",
-      "source_file": "GPU/ocr/server.py",
-      "source_location": "L17",
-      "community": 7,
-      "norm_label": "health()",
-      "id": "ocr_server_health"
-    },
-    {
-      "label": "OCR Service \u2014 port 5000 YOLO-first ROI pipeline:   1. Call YOLO /api/yolo/predic",
-      "file_type": "rationale",
-      "source_file": "GPU/ocr/server.py",
-      "source_location": "L1",
-      "community": 7,
-      "norm_label": "ocr service \u2014 port 5000 yolo-first roi pipeline:   1. call yolo /api/yolo/predic",
-      "id": "ocr_server_rationale_1"
+      "norm_label": "true when every session_camera for this session has frame_count > 0.",
+      "id": "frame_extractor_server_rationale_49"
     },
     {
       "label": "cloudinary_client.py",
@@ -578,33 +1118,6 @@
       "community": 8,
       "norm_label": "shared psycopg2 connection helper for python services writing to postgresql.",
       "id": "shared_db_client_rationale_1"
-    },
-    {
-      "label": "server.py",
-      "file_type": "code",
-      "source_file": "GPU/yolo/server.py",
-      "source_location": "L1",
-      "community": 9,
-      "norm_label": "server.py",
-      "id": "gpu_yolo_server_py"
-    },
-    {
-      "label": "health()",
-      "file_type": "code",
-      "source_file": "GPU/yolo/server.py",
-      "source_location": "L14",
-      "community": 9,
-      "norm_label": "health()",
-      "id": "yolo_server_health"
-    },
-    {
-      "label": "YOLO Service \u2014 port 5002 Two models loaded at startup:   best.pt              \u2192",
-      "file_type": "rationale",
-      "source_file": "GPU/yolo/server.py",
-      "source_location": "L1",
-      "community": 9,
-      "norm_label": "yolo service \u2014 port 5002 two models loaded at startup:   best.pt              \u2192",
-      "id": "yolo_server_rationale_1"
     },
     {
       "label": "package.json",
@@ -931,51 +1444,6 @@
       "id": "services_cloudinaryservice_config"
     },
     {
-      "label": "pipelineOrchestrator.js",
-      "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L1",
-      "community": 0,
-      "norm_label": "pipelineorchestrator.js",
-      "id": "backend_src_services_pipelineorchestrator_js"
-    },
-    {
-      "label": "axios",
-      "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L2",
-      "community": 0,
-      "norm_label": "axios",
-      "id": "services_pipelineorchestrator_axios"
-    },
-    {
-      "label": "config",
-      "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L3",
-      "community": 0,
-      "norm_label": "config",
-      "id": "services_pipelineorchestrator_config"
-    },
-    {
-      "label": "prisma",
-      "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L4",
-      "community": 0,
-      "norm_label": "prisma",
-      "id": "services_pipelineorchestrator_prisma"
-    },
-    {
-      "label": "runPipeline()",
-      "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L6",
-      "community": 0,
-      "norm_label": "runpipeline()",
-      "id": "services_pipelineorchestrator_runpipeline"
-    },
-    {
       "label": "wsGateway.js",
       "file_type": "code",
       "source_file": "backend/src/services/wsGateway.js",
@@ -1082,36 +1550,1215 @@
       "community": 13,
       "norm_label": "report generator service \u2014 port 5006 reads full session data \u2192 builds pdf (fpdf2",
       "id": "report_generator_server_rationale_1"
-    },
-    {
-      "label": "server.py",
-      "file_type": "code",
-      "source_file": "services/sync_engine/server.py",
-      "source_location": "L1",
-      "community": 14,
-      "norm_label": "server.py",
-      "id": "services_sync_engine_server_py"
-    },
-    {
-      "label": "health()",
-      "file_type": "code",
-      "source_file": "services/sync_engine/server.py",
-      "source_location": "L11",
-      "community": 14,
-      "norm_label": "health()",
-      "id": "sync_engine_server_health"
-    },
-    {
-      "label": "Sync Engine Service \u2014 port 5004 Reads OCR results for a session \u2192 gap detection",
-      "file_type": "rationale",
-      "source_file": "services/sync_engine/server.py",
-      "source_location": "L1",
-      "community": 14,
-      "norm_label": "sync engine service \u2014 port 5004 reads ocr results for a session \u2192 gap detection",
-      "id": "sync_engine_server_rationale_1"
     }
   ],
   "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "gpu_ocr_ocr_engine_py",
+      "target": "ocr_ocr_engine_get_ocr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "gpu_ocr_ocr_engine_py",
+      "target": "ocr_ocr_engine_run_ocr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ocr_ocr_engine_rationale_1",
+      "target": "gpu_ocr_ocr_engine_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "ocr_ocr_engine_run_ocr",
+      "target": "ocr_ocr_engine_get_ocr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "ocr_server_run_pipeline",
+      "target": "ocr_ocr_engine_run_ocr"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "ocr_server_warmup",
+      "target": "ocr_ocr_engine_run_ocr"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/preprocess.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "gpu_ocr_preprocess_py",
+      "target": "ocr_preprocess_preprocess_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/preprocess.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ocr_preprocess_rationale_1",
+      "target": "gpu_ocr_preprocess_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "ocr_server_run_pipeline",
+      "target": "ocr_preprocess_preprocess_frame"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_ocrrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_get_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_download_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_best_candidate_from",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_digit_substring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_run_pipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L152",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_warmup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_health"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L164",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_ocr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ocr_server_rationale_1",
+      "target": "gpu_ocr_server_py"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "ocr_server_ocrrequest",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "sync_engine_server_syncrequest",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_extractrequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L177",
+      "weight": 1.0,
+      "source": "ocr_server_ocr",
+      "target": "ocr_server_get_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L167",
+      "weight": 1.0,
+      "source": "ocr_server_ocr",
+      "target": "ocr_server_download_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "source": "ocr_server_run_pipeline",
+      "target": "ocr_server_best_candidate_from",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "ocr_server_rationale_66",
+      "target": "ocr_server_best_candidate_from",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "ocr_server_best_candidate_from",
+      "target": "ocr_train_number_filter_filter_train_numbers"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L134",
+      "weight": 1.0,
+      "source": "ocr_server_run_pipeline",
+      "target": "ocr_server_digit_substring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "ocr_server_rationale_78",
+      "target": "ocr_server_digit_substring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L172",
+      "weight": 1.0,
+      "source": "ocr_server_ocr",
+      "target": "ocr_server_run_pipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "ocr_server_rationale_87",
+      "target": "ocr_server_run_pipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/train_number_filter.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "gpu_ocr_train_number_filter_py",
+      "target": "ocr_train_number_filter_filter_train_numbers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/train_number_filter.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ocr_train_number_filter_rationale_1",
+      "target": "gpu_ocr_train_number_filter_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "gpu_yolo_server_py",
+      "target": "yolo_server_load_models",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "gpu_yolo_server_py",
+      "target": "yolo_server_decode_bytes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "gpu_yolo_server_py",
+      "target": "yolo_server_health"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "gpu_yolo_server_py",
+      "target": "yolo_server_predict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "gpu_yolo_server_py",
+      "target": "yolo_server_predict_train_number",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "yolo_server_rationale_1",
+      "target": "gpu_yolo_server_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L110",
+      "weight": 1.0,
+      "source": "yolo_server_predict",
+      "target": "yolo_server_decode_bytes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "yolo_server_predict_train_number",
+      "target": "yolo_server_decode_bytes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "yolo_server_rationale_106",
+      "target": "yolo_server_predict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L134",
+      "weight": 1.0,
+      "source": "yolo_server_rationale_134",
+      "target": "yolo_server_predict_train_number",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_path"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_fs"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_pipeline"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_randomuuid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_axios"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_prisma"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_config"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "backend_src_services_pipelineorchestrator_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "services_pipelineorchestrator_runocrpipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_runocrpipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_upload_dir"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_pipeline_stages"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_cam_types"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_generatesessioncode"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_sessions"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_axios"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_prisma"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_config"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_runocrpipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_runpipeline"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "backend_src_config_js"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "backend_src_db_client_js"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "progress_md",
+      "target": "main_progress_vandeinspect_ai_backend_build_progress"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_correct_service_architecture"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L55",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_synchronization_trigger_id_not_timestamps"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_storage_cloudinary"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_full_folder_structure"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L163",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_port_reference"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L178",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_phase_0_postgresql_schema_project_scaffolding"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L185",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_phase_1_video_upload_frame_extraction_cloudinary"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L216",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_phase_2_ocr_pipeline_coach_mapping"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L286",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_phase_3_yolo_detection_defect_intelligence"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L312",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_phase_4_report_generation"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L331",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_phase_5_frontend_wire_up"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L348",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_phase_6_websocket_live_status"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L359",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_status_tracker"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L375",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_running_everything_development"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L397",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_vandeinspect_ai_backend_build_progress",
+      "target": "main_progress_key_decisions"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_correct_service_architecture",
+      "target": "main_progress_codeblock_1"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L90",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_full_folder_structure",
+      "target": "main_progress_codeblock_2"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L207",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_phase_1_video_upload_frame_extraction_cloudinary",
+      "target": "main_progress_codeblock_3"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L220",
+      "weight": 1.0,
+      "source": "main_progress_phase_2_ocr_pipeline_coach_mapping",
+      "target": "main_progress_what_was_built",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L246",
+      "weight": 1.0,
+      "source": "main_progress_what_was_built",
+      "target": "main_progress_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L377",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_progress_running_everything_development",
+      "target": "main_progress_codeblock_5"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_load_ocr_by_trigger",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_detect_segments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L107",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_new_seg",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_create_coaches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_assign_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L226",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_find_coach",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L252",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_create_timeline_events",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L288",
+      "weight": 1.0,
+      "source": "services_sync_engine_engine_py",
+      "target": "sync_engine_engine_run_sync",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "sync_engine_engine_rationale_1",
+      "target": "services_sync_engine_engine_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L291",
+      "weight": 1.0,
+      "source": "sync_engine_engine_run_sync",
+      "target": "sync_engine_engine_load_ocr_by_trigger",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "sync_engine_engine_rationale_30",
+      "target": "sync_engine_engine_load_ocr_by_trigger",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "sync_engine_engine_detect_segments",
+      "target": "sync_engine_engine_new_seg",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "sync_engine_engine_detect_segments",
+      "target": "sync_engine_engine_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L294",
+      "weight": 1.0,
+      "source": "sync_engine_engine_run_sync",
+      "target": "sync_engine_engine_detect_segments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "sync_engine_engine_rationale_65",
+      "target": "sync_engine_engine_detect_segments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L299",
+      "weight": 1.0,
+      "source": "sync_engine_engine_run_sync",
+      "target": "sync_engine_engine_create_coaches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "sync_engine_engine_rationale_126",
+      "target": "sync_engine_engine_create_coaches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "sync_engine_engine_assign_frames",
+      "target": "sync_engine_engine_find_coach",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L300",
+      "weight": 1.0,
+      "source": "sync_engine_engine_run_sync",
+      "target": "sync_engine_engine_assign_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L155",
+      "weight": 1.0,
+      "source": "sync_engine_engine_rationale_155",
+      "target": "sync_engine_engine_assign_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L227",
+      "weight": 1.0,
+      "source": "sync_engine_engine_rationale_227",
+      "target": "sync_engine_engine_find_coach",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L301",
+      "weight": 1.0,
+      "source": "sync_engine_engine_run_sync",
+      "target": "sync_engine_engine_create_timeline_events",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/engine.py",
+      "source_location": "L253",
+      "weight": 1.0,
+      "source": "sync_engine_engine_rationale_253",
+      "target": "sync_engine_engine_create_timeline_events",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "sync_engine_server_sync",
+      "target": "sync_engine_engine_run_sync"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "services_sync_engine_server_py",
+      "target": "sync_engine_server_syncrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "services_sync_engine_server_py",
+      "target": "sync_engine_server_get_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_sync_engine_server_py",
+      "target": "sync_engine_server_health"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "services_sync_engine_server_py",
+      "target": "sync_engine_server_sync",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "sync_engine_server_rationale_1",
+      "target": "services_sync_engine_server_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "sync_engine_server_sync",
+      "target": "sync_engine_server_get_conn",
+      "confidence_score": 1.0
+    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -1138,9 +2785,9 @@
       "source_file": "backend/src/app.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_src_app_js",
-      "target": "src_app_multipart",
-      "confidence_score": 1.0
+      "target": "src_app_multipart"
     },
     {
       "relation": "contains",
@@ -1201,9 +2848,9 @@
       "source_file": "backend/src/routes/dashboard.js",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_src_routes_dashboard_js",
-      "target": "routes_dashboard_prisma",
-      "confidence_score": 1.0
+      "target": "routes_dashboard_prisma"
     },
     {
       "relation": "contains",
@@ -1218,352 +2865,12 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_path",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_fs",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_pipeline",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_randomuuid",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_axios",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_prisma",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_config",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_upload_dir",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_pipeline_stages",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_cam_types",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L23",
-      "weight": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_generatesessioncode",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_sessions"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "progress_md",
-      "target": "main_progress_vandeinspect_ai_backend_build_progress",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_correct_service_architecture",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L55",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_synchronization_trigger_id_not_timestamps",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L74",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_storage_cloudinary",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L88",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_full_folder_structure",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L163",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_port_reference",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L178",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_phase_0_postgresql_schema_project_scaffolding",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L185",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_phase_1_video_upload_frame_extraction_cloudinary",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L216",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_phase_2_ocr_pipeline_coach_mapping",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L286",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_phase_3_yolo_detection_defect_intelligence",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L312",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_phase_4_report_generation",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L331",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_phase_5_frontend_wire_up",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L348",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_phase_6_websocket_live_status",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L359",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_status_tracker",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L375",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_running_everything_development",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L397",
-      "weight": 1.0,
-      "source": "main_progress_vandeinspect_ai_backend_build_progress",
-      "target": "main_progress_key_decisions",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L10",
-      "weight": 1.0,
-      "source": "main_progress_correct_service_architecture",
-      "target": "main_progress_codeblock_1",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L90",
-      "weight": 1.0,
-      "source": "main_progress_full_folder_structure",
-      "target": "main_progress_codeblock_2",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L207",
-      "weight": 1.0,
-      "source": "main_progress_phase_1_video_upload_frame_extraction_cloudinary",
-      "target": "main_progress_codeblock_3",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L220",
-      "weight": 1.0,
-      "source": "main_progress_phase_2_ocr_pipeline_coach_mapping",
-      "target": "main_progress_sync_key_trigger_id",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L224",
-      "weight": 1.0,
-      "source": "main_progress_sync_key_trigger_id",
-      "target": "main_progress_codeblock_4",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "progress.md",
-      "source_location": "L377",
-      "weight": 1.0,
-      "source": "main_progress_running_everything_development",
-      "target": "main_progress_codeblock_5",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_extractrequest",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_extractrequest"
     },
     {
       "relation": "contains",
@@ -1571,9 +2878,9 @@
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_get_conn",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_get_conn"
     },
     {
       "relation": "contains",
@@ -1581,9 +2888,9 @@
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_all_cameras_done",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_all_cameras_done"
     },
     {
       "relation": "contains",
@@ -1591,9 +2898,9 @@
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L58",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_run_extraction",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_run_extraction"
     },
     {
       "relation": "contains",
@@ -1611,9 +2918,9 @@
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L221",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_extract",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_extract"
     },
     {
       "relation": "rationale_for",
@@ -1626,25 +2933,15 @@
       "target": "services_frame_extractor_server_py"
     },
     {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L37",
-      "weight": 1.0,
-      "source": "frame_extractor_server_extractrequest",
-      "target": "basemodel",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L59",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_run_extraction",
-      "target": "frame_extractor_server_get_conn",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_get_conn"
     },
     {
       "relation": "calls",
@@ -1653,9 +2950,9 @@
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L169",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_run_extraction",
-      "target": "frame_extractor_server_all_cameras_done",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_all_cameras_done"
     },
     {
       "relation": "rationale_for",
@@ -1663,29 +2960,9 @@
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_rationale_49",
-      "target": "frame_extractor_server_all_cameras_done",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/server.py",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "gpu_ocr_server_py",
-      "target": "ocr_server_health"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/server.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ocr_server_rationale_1",
-      "target": "gpu_ocr_server_py"
+      "target": "frame_extractor_server_all_cameras_done"
     },
     {
       "relation": "contains",
@@ -1726,26 +3003,6 @@
       "confidence_score": 1.0,
       "source": "shared_db_client_rationale_1",
       "target": "gpu_shared_db_client_py"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/yolo/server.py",
-      "source_location": "L14",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "gpu_yolo_server_py",
-      "target": "yolo_server_health"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/yolo/server.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "yolo_server_rationale_1",
-      "target": "gpu_yolo_server_py"
     },
     {
       "relation": "contains",
@@ -2040,17 +3297,6 @@
       "target": "backend_src_config_js"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "backend_src_config_js"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/db/client.js",
@@ -2071,17 +3317,6 @@
       "target": "db_client_prisma"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "backend_src_db_client_js"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/services/cloudinaryService.js",
@@ -2090,46 +3325,6 @@
       "confidence_score": 1.0,
       "source": "backend_src_services_cloudinaryservice_js",
       "target": "services_cloudinaryservice_config"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_axios"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_config"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_prisma"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_runpipeline"
     },
     {
       "relation": "contains",
@@ -2210,28 +3405,8 @@
       "confidence_score": 1.0,
       "source": "report_generator_server_rationale_1",
       "target": "services_report_generator_server_py"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/sync_engine/server.py",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_sync_engine_server_py",
-      "target": "sync_engine_server_health"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/sync_engine/server.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "sync_engine_server_rationale_1",
-      "target": "services_sync_engine_server_py"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "075cc1cce9a30e93ddfba10af713f39dc3c6287c"
+  "built_at_commit": "4b55a801f4ba99112cc7dddbd0f16d6512d4b387"
 }

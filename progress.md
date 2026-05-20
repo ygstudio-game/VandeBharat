@@ -265,29 +265,53 @@ curl http://localhost:8001/api/sessions/{session_id}/hierarchy
 
 ---
 
-## Phase 3 — YOLO Detection + Defect Intelligence ⬜
+## Phase 3 — YOLO Detection + Defect Intelligence ✅
 
-**Goal:** Defects detected per coach → intelligence panel shows real data with bounding boxes
+**Done:** Full defect detection + component correlation + intelligence API implemented.
 
-**Python YOLO service (port 5002) — defect endpoint:**
-- [ ] Load `best.pt` at startup (alongside `train_num_detector.pt`)
-- [ ] `POST /api/yolo/predict` — receives `{ frame_url }`, runs `best.pt`
-- [ ] Returns `{ boxes: [{label, confidence, bbox_xyxy, severity}] }`
-  - Severity: `crack/leakage → CRITICAL`, `broken/rust/deformation → HIGH`, `missing_part → MEDIUM`, `loose → LOW`
-- [ ] Writes `component_detections` rows
+### What was built
+
+**Python YOLO service (port 5002) — already done in Phase 2, defect endpoint was already wired:**
+- `POST /api/yolo/predict` — runs `best.pt`, returns `{detections: [{label, confidence, bbox_xyxy, severity, defect}]}`
+- Severity map: `crack/leakage/smoke_emission → CRITICAL`, `broken/rust/deformation/hole → HIGH`, `missing_part/puncture/hanging → MEDIUM`, `loose → LOW`
 
 **Python correlation service (port 5005):**
-- [ ] `POST /correlate` — receives `{ session_id, coach_id }`
-- [ ] Loads manifest from `manifests/vande_bharat.json`
-- [ ] Compares expected vs detected components
-- [ ] Creates `defects` rows + `missing_components` rows
-- [ ] Updates `coaches.critical_defects`, `coaches.missing_components`, `coaches.health_score`
+- `POST /correlate { session_id, coach_id }` — samples every 3rd frame (configurable `CORRELATION_SAMPLE_N`), POSTs to YOLO
+- Writes `defects` rows (with bbox, severity, confidence)
+- Writes `component_detections` rows (when YOLO label maps to a component code)
+- Compares against manifest → writes `missing_components` for any undetected expected component
+- Health score: `100 - (CRITICAL×15 + HIGH×8 + MEDIUM×4 + LOW×1 + missing_critical×20 + missing_other×5)`, clamped to [0,100]
+- Updates `coaches.critical_defects`, `coaches.missing_components`, `coaches.health_score`
 
-**Node.js backend:**
-- [ ] After sync complete: for each coach → batch its frames → call YOLO per frame → call correlation
-- [ ] `GET /api/sessions/:id/coaches/:coachId/intelligence` → real components + defects
+**Node.js orchestrator additions:**
+- After sync engine: iterates coaches sequentially, calls `POST /correlate` per coach (5 min timeout each)
+- Aggregates `total_defects`, `critical_defects`, `missing_components_count`, `health_score` (average) onto session
+- Marks `component_detection` + `defect_analysis` pipeline stages completed
+- Sets session `status = 'completed'`, `progress_pct = 100`
 
-**Done when:** Intelligence panel shows real defects with bounding box data.
+**Node.js routes (`/api/sessions`):**
+- `GET /:id/coaches/:coachId/intelligence` — returns defects (with frame URL + bbox), component detections, missing components, per-severity summary
+- `GET /:id/coaches/:coachId/frames?page=1&limit=50` — paginated frame list with OCR result + assignment method
+- `GET /:id/timeline-events` — OCR_ANCHOR + COACH_GAP events in trigger order
+
+**Run order:**
+```bash
+# Terminal 4 — Correlation service
+cd Main/services/correlation
+pip install -r requirements.txt
+uvicorn server:app --host 0.0.0.0 --port 5005
+
+# After OCR + sync complete, the orchestrator calls correlation automatically.
+# Or test a single coach manually:
+curl -X POST http://localhost:5005/correlate \
+  -H "Content-Type: application/json" \
+  -d '{"session_id": "<id>", "coach_id": "<id>"}'
+
+# Intelligence panel data:
+curl http://localhost:8001/api/sessions/<id>/coaches/<coach_id>/intelligence
+```
+
+**Note:** Requires `best.pt` in `GPU/yolo/models/` for real defect detection. Without it, YOLO returns 503 and correlation skips that coach (session still completes).
 
 ---
 
@@ -344,8 +368,8 @@ curl http://localhost:8001/api/sessions/{session_id}/hierarchy
 |---|---|---|---|
 | 0 | Schema + Scaffolding | ✅ Done | Neon PG live, 19 tables, health check OK |
 | 1 | Video upload + Frame extraction | ✅ Done | Needs Cloudinary creds in `frame_extractor/.env` to run |
-| 2 | OCR + Coach mapping | ⬜ Next | trigger_id design confirmed, ready to implement |
-| 3 | YOLO Detection + Defect intelligence | ⬜ Not started | |
+| 2 | OCR + Coach mapping | ✅ Done | Sync engine, orchestrator, hierarchy endpoint |
+| 3 | YOLO Detection + Defect intelligence | ✅ Done | Needs best.pt model file to run |
 | 4 | Report generation (PDF) | ⬜ Not started | |
 | 5 | Frontend wire-up | ⬜ Not started | |
 | 6 | WebSocket live status | ⬜ Not started | |

@@ -121,13 +121,96 @@ async function runOcrPipeline(sessionId, fastify) {
       coaches_created: syncResult.coaches_created,
     });
 
-    // ── 6. Update session status → ready for Phase 3 defect analysis ──────────
+    // ── 6. Update session status + kick off Phase 3 ──────────────────────────
+    await prisma.inspectionSession.update({
+      where: { id: sessionId },
+      data: { status: 'analysing', total_coaches: syncResult.coaches_created },
+    });
+
+    // ── 7. Phase 3: defect correlation per coach ──────────────────────────────
+    await prisma.pipelineStage.updateMany({
+      where: { session_id: sessionId, stage: 'component_detection' },
+      data: { status: 'running', started_at: new Date(), detail_message: 'Detecting components and defects...' },
+    });
+    await prisma.pipelineStage.updateMany({
+      where: { session_id: sessionId, stage: 'defect_analysis' },
+      data: { status: 'running', started_at: new Date(), detail_message: 'Analysing defect severity...' },
+    });
+
+    const coaches = await prisma.coach.findMany({
+      where: { session_id: sessionId },
+      select: { id: true },
+      orderBy: { coach_index: 'asc' },
+    });
+
+    let totalDefects = 0;
+    let totalCritical = 0;
+    let totalMissing = 0;
+    let healthSum = 0;
+
+    for (const coach of coaches) {
+      try {
+        const corrResp = await axios.post(
+          `${config.services.correlation}/correlate`,
+          { session_id: sessionId, coach_id: coach.id },
+          { timeout: 300_000 },  // 5 min per coach
+        );
+        const cr = corrResp.data;
+        totalDefects += cr.defects_found || 0;
+        totalCritical += cr.sev_counts?.CRITICAL || 0;
+        totalMissing += cr.missing_components || 0;
+        healthSum += cr.health_score || 0;
+      } catch (corrErr) {
+        log.warn({
+          msg: 'Correlation failed for coach, continuing',
+          coach_id: coach.id,
+          error: corrErr.message,
+        });
+      }
+    }
+
+    const avgHealth = coaches.length > 0 ? Math.round(healthSum / coaches.length) : 0;
+
+    // ── 8. Mark component_detection + defect_analysis stages complete ─────────
+    await prisma.pipelineStage.updateMany({
+      where: { session_id: sessionId, stage: 'component_detection' },
+      data: {
+        status: 'completed',
+        completed_at: new Date(),
+        detail_message: `Component detection complete across ${coaches.length} coaches`,
+        stats: { coaches_processed: coaches.length, total_defects: totalDefects },
+      },
+    });
+    await prisma.pipelineStage.updateMany({
+      where: { session_id: sessionId, stage: 'defect_analysis' },
+      data: {
+        status: 'completed',
+        completed_at: new Date(),
+        detail_message: `${totalDefects} defects found, ${totalCritical} critical`,
+        stats: { total_defects: totalDefects, critical: totalCritical, missing: totalMissing },
+      },
+    });
+
+    // ── 9. Update session aggregates ──────────────────────────────────────────
     await prisma.inspectionSession.update({
       where: { id: sessionId },
       data: {
-        status: 'analysing',
-        total_coaches: syncResult.coaches_created,
+        status: 'completed',
+        completed_at: new Date(),
+        critical_defects: totalCritical,
+        missing_components_count: totalMissing,
+        health_score: avgHealth,
+        progress_pct: 100,
       },
+    });
+
+    log.info({
+      msg: 'Pipeline complete',
+      session_id: sessionId,
+      coaches: coaches.length,
+      defects: totalDefects,
+      critical: totalCritical,
+      health_score: avgHealth,
     });
 
   } catch (err) {
