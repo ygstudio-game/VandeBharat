@@ -1,0 +1,1408 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L1",
+      "id": "gpu_ocr_server_py",
+      "community": 7,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L17",
+      "id": "ocr_server_health",
+      "community": 7,
+      "norm_label": "health()"
+    },
+    {
+      "label": "OCR Service \u2014 port 5000 YOLO-first ROI pipeline:   1. Call YOLO /api/yolo/predic",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L1",
+      "id": "ocr_server_rationale_1",
+      "community": 7,
+      "norm_label": "ocr service \u2014 port 5000 yolo-first roi pipeline:   1. call yolo /api/yolo/predic"
+    },
+    {
+      "label": "cloudinary_client.py",
+      "file_type": "code",
+      "source_file": "GPU/shared/cloudinary_client.py",
+      "source_location": "L1",
+      "id": "gpu_shared_cloudinary_client_py",
+      "community": 15,
+      "norm_label": "cloudinary_client.py"
+    },
+    {
+      "label": "upload_frame()",
+      "file_type": "code",
+      "source_file": "GPU/shared/cloudinary_client.py",
+      "source_location": "L12",
+      "id": "shared_cloudinary_client_upload_frame",
+      "community": 15,
+      "norm_label": "upload_frame()"
+    },
+    {
+      "label": "Shared Cloudinary upload helpers used by all Python services.",
+      "file_type": "rationale",
+      "source_file": "GPU/shared/cloudinary_client.py",
+      "source_location": "L1",
+      "id": "shared_cloudinary_client_rationale_1",
+      "community": 15,
+      "norm_label": "shared cloudinary upload helpers used by all python services."
+    },
+    {
+      "label": "db_client.py",
+      "file_type": "code",
+      "source_file": "GPU/shared/db_client.py",
+      "source_location": "L1",
+      "id": "gpu_shared_db_client_py",
+      "community": 8,
+      "norm_label": "db_client.py"
+    },
+    {
+      "label": "get_conn()",
+      "file_type": "code",
+      "source_file": "GPU/shared/db_client.py",
+      "source_location": "L8",
+      "id": "shared_db_client_get_conn",
+      "community": 8,
+      "norm_label": "get_conn()"
+    },
+    {
+      "label": "Shared psycopg2 connection helper for Python services writing to PostgreSQL.",
+      "file_type": "rationale",
+      "source_file": "GPU/shared/db_client.py",
+      "source_location": "L1",
+      "id": "shared_db_client_rationale_1",
+      "community": 8,
+      "norm_label": "shared psycopg2 connection helper for python services writing to postgresql."
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L1",
+      "id": "gpu_yolo_server_py",
+      "community": 9,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L14",
+      "id": "yolo_server_health",
+      "community": 9,
+      "norm_label": "health()"
+    },
+    {
+      "label": "YOLO Service \u2014 port 5002 Two models loaded at startup:   best.pt              \u2192",
+      "file_type": "rationale",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L1",
+      "id": "yolo_server_rationale_1",
+      "community": 9,
+      "norm_label": "yolo service \u2014 port 5002 two models loaded at startup:   best.pt              \u2192"
+    },
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L1",
+      "id": "backend_package_json",
+      "community": 3,
+      "norm_label": "package.json"
+    },
+    {
+      "label": "name",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L2",
+      "id": "backend_package_name",
+      "community": 3,
+      "norm_label": "name"
+    },
+    {
+      "label": "version",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L3",
+      "id": "backend_package_version",
+      "community": 3,
+      "norm_label": "version"
+    },
+    {
+      "label": "description",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L4",
+      "id": "backend_package_description",
+      "community": 3,
+      "norm_label": "description"
+    },
+    {
+      "label": "main",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L5",
+      "id": "backend_package_main",
+      "community": 3,
+      "norm_label": "main"
+    },
+    {
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L6",
+      "id": "backend_package_scripts",
+      "community": 4,
+      "norm_label": "scripts"
+    },
+    {
+      "label": "start",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L7",
+      "id": "backend_package_scripts_start",
+      "community": 4,
+      "norm_label": "start"
+    },
+    {
+      "label": "dev",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L8",
+      "id": "backend_package_scripts_dev",
+      "community": 4,
+      "norm_label": "dev"
+    },
+    {
+      "label": "db:push",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L9",
+      "id": "backend_package_scripts_db_push",
+      "community": 4,
+      "norm_label": "db:push"
+    },
+    {
+      "label": "db:seed",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L10",
+      "id": "backend_package_scripts_db_seed",
+      "community": 4,
+      "norm_label": "db:seed"
+    },
+    {
+      "label": "db:studio",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L11",
+      "id": "backend_package_scripts_db_studio",
+      "community": 4,
+      "norm_label": "db:studio"
+    },
+    {
+      "label": "db:generate",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L12",
+      "id": "backend_package_scripts_db_generate",
+      "community": 4,
+      "norm_label": "db:generate"
+    },
+    {
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L14",
+      "id": "backend_package_dependencies",
+      "community": 1,
+      "norm_label": "dependencies"
+    },
+    {
+      "label": "@fastify/cors",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L15",
+      "id": "backend_package_dependencies_fastify_cors",
+      "community": 1,
+      "norm_label": "@fastify/cors"
+    },
+    {
+      "label": "@fastify/multipart",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L16",
+      "id": "backend_package_dependencies_fastify_multipart",
+      "community": 1,
+      "norm_label": "@fastify/multipart"
+    },
+    {
+      "label": "@fastify/websocket",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L17",
+      "id": "backend_package_dependencies_fastify_websocket",
+      "community": 1,
+      "norm_label": "@fastify/websocket"
+    },
+    {
+      "label": "@prisma/client",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L18",
+      "id": "backend_package_dependencies_prisma_client",
+      "community": 1,
+      "norm_label": "@prisma/client"
+    },
+    {
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L19",
+      "id": "backend_package_dependencies_axios",
+      "community": 1,
+      "norm_label": "axios"
+    },
+    {
+      "label": "cloudinary",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L20",
+      "id": "backend_package_dependencies_cloudinary",
+      "community": 1,
+      "norm_label": "cloudinary"
+    },
+    {
+      "label": "dotenv",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L21",
+      "id": "backend_package_dependencies_dotenv",
+      "community": 1,
+      "norm_label": "dotenv"
+    },
+    {
+      "label": "fastify",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L22",
+      "id": "backend_package_dependencies_fastify",
+      "community": 1,
+      "norm_label": "fastify"
+    },
+    {
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L24",
+      "id": "backend_package_devdependencies",
+      "community": 3,
+      "norm_label": "devdependencies"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/package.json",
+      "source_location": "L25",
+      "id": "backend_package_devdependencies_prisma",
+      "community": 3,
+      "norm_label": "prisma"
+    },
+    {
+      "label": "seed.js",
+      "file_type": "code",
+      "source_file": "backend/prisma/seed.js",
+      "source_location": "L1",
+      "id": "backend_prisma_seed_js",
+      "community": 5,
+      "norm_label": "seed.js"
+    },
+    {
+      "label": "{ PrismaClient }",
+      "file_type": "code",
+      "source_file": "backend/prisma/seed.js",
+      "source_location": "L1",
+      "id": "prisma_seed_prismaclient",
+      "community": 5,
+      "norm_label": "{ prismaclient }"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/prisma/seed.js",
+      "source_location": "L3",
+      "id": "prisma_seed_prisma",
+      "community": 5,
+      "norm_label": "prisma"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "backend/prisma/seed.js",
+      "source_location": "L5",
+      "id": "prisma_seed_main",
+      "community": 5,
+      "norm_label": "main()"
+    },
+    {
+      "label": "run.js",
+      "file_type": "code",
+      "source_file": "backend/run.js",
+      "source_location": "L1",
+      "id": "backend_run_js",
+      "community": 0,
+      "norm_label": "run.js"
+    },
+    {
+      "label": "app",
+      "file_type": "code",
+      "source_file": "backend/run.js",
+      "source_location": "L3",
+      "id": "backend_run_app",
+      "community": 0,
+      "norm_label": "app"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/run.js",
+      "source_location": "L4",
+      "id": "backend_run_config",
+      "community": 0,
+      "norm_label": "config"
+    },
+    {
+      "label": "app.js",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L1",
+      "id": "backend_src_app_js",
+      "community": 0,
+      "norm_label": "app.js"
+    },
+    {
+      "label": "fastify",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L3",
+      "id": "src_app_fastify",
+      "community": 0,
+      "norm_label": "fastify"
+    },
+    {
+      "label": "cors",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L4",
+      "id": "src_app_cors",
+      "community": 0,
+      "norm_label": "cors"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L5",
+      "id": "src_app_config",
+      "community": 0,
+      "norm_label": "config"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/app.js",
+      "source_location": "L6",
+      "id": "src_app_prisma",
+      "community": 0,
+      "norm_label": "prisma"
+    },
+    {
+      "label": "config.js",
+      "file_type": "code",
+      "source_file": "backend/src/config.js",
+      "source_location": "L1",
+      "id": "backend_src_config_js",
+      "community": 0,
+      "norm_label": "config.js"
+    },
+    {
+      "label": "client.js",
+      "file_type": "code",
+      "source_file": "backend/src/db/client.js",
+      "source_location": "L1",
+      "id": "backend_src_db_client_js",
+      "community": 2,
+      "norm_label": "client.js"
+    },
+    {
+      "label": "{ PrismaClient }",
+      "file_type": "code",
+      "source_file": "backend/src/db/client.js",
+      "source_location": "L1",
+      "id": "db_client_prismaclient",
+      "community": 2,
+      "norm_label": "{ prismaclient }"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/db/client.js",
+      "source_location": "L3",
+      "id": "db_client_prisma",
+      "community": 2,
+      "norm_label": "prisma"
+    },
+    {
+      "label": "dashboard.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/dashboard.js",
+      "source_location": "L1",
+      "id": "backend_src_routes_dashboard_js",
+      "community": 17,
+      "norm_label": "dashboard.js"
+    },
+    {
+      "label": "dashboard()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/dashboard.js",
+      "source_location": "L2",
+      "id": "routes_dashboard_dashboard",
+      "community": 17,
+      "norm_label": "dashboard()"
+    },
+    {
+      "label": "sessions.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L1",
+      "id": "backend_src_routes_sessions_js",
+      "community": 16,
+      "norm_label": "sessions.js"
+    },
+    {
+      "label": "sessions()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L2",
+      "id": "routes_sessions_sessions",
+      "community": 16,
+      "norm_label": "sessions()"
+    },
+    {
+      "label": "cloudinaryService.js",
+      "file_type": "code",
+      "source_file": "backend/src/services/cloudinaryService.js",
+      "source_location": "L1",
+      "id": "backend_src_services_cloudinaryservice_js",
+      "community": 0,
+      "norm_label": "cloudinaryservice.js"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/src/services/cloudinaryService.js",
+      "source_location": "L3",
+      "id": "services_cloudinaryservice_config",
+      "community": 0,
+      "norm_label": "config"
+    },
+    {
+      "label": "pipelineOrchestrator.js",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L1",
+      "id": "backend_src_services_pipelineorchestrator_js",
+      "community": 2,
+      "norm_label": "pipelineorchestrator.js"
+    },
+    {
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L2",
+      "id": "services_pipelineorchestrator_axios",
+      "community": 2,
+      "norm_label": "axios"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L3",
+      "id": "services_pipelineorchestrator_config",
+      "community": 2,
+      "norm_label": "config"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L4",
+      "id": "services_pipelineorchestrator_prisma",
+      "community": 2,
+      "norm_label": "prisma"
+    },
+    {
+      "label": "runPipeline()",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L6",
+      "id": "services_pipelineorchestrator_runpipeline",
+      "community": 2,
+      "norm_label": "runpipeline()"
+    },
+    {
+      "label": "wsGateway.js",
+      "file_type": "code",
+      "source_file": "backend/src/services/wsGateway.js",
+      "source_location": "L1",
+      "id": "backend_src_services_wsgateway_js",
+      "community": 6,
+      "norm_label": "wsgateway.js"
+    },
+    {
+      "label": "clients",
+      "file_type": "code",
+      "source_file": "backend/src/services/wsGateway.js",
+      "source_location": "L2",
+      "id": "services_wsgateway_clients",
+      "community": 6,
+      "norm_label": "clients"
+    },
+    {
+      "label": "broadcast()",
+      "file_type": "code",
+      "source_file": "backend/src/services/wsGateway.js",
+      "source_location": "L4",
+      "id": "services_wsgateway_broadcast",
+      "community": 6,
+      "norm_label": "broadcast()"
+    },
+    {
+      "label": "vande_bharat.json",
+      "file_type": "code",
+      "source_file": "services/correlation/manifests/vande_bharat.json",
+      "source_location": "L1",
+      "id": "services_correlation_manifests_vande_bharat_json",
+      "community": 10,
+      "norm_label": "vande_bharat.json"
+    },
+    {
+      "label": "coach_type",
+      "file_type": "code",
+      "source_file": "services/correlation/manifests/vande_bharat.json",
+      "source_location": "L2",
+      "id": "manifests_vande_bharat_coach_type",
+      "community": 10,
+      "norm_label": "coach_type"
+    },
+    {
+      "label": "components",
+      "file_type": "code",
+      "source_file": "services/correlation/manifests/vande_bharat.json",
+      "source_location": "L3",
+      "id": "manifests_vande_bharat_components",
+      "community": 10,
+      "norm_label": "components"
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L1",
+      "id": "services_correlation_server_py",
+      "community": 11,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L11",
+      "id": "correlation_server_health",
+      "community": 11,
+      "norm_label": "health()"
+    },
+    {
+      "label": "Correlation Service \u2014 port 5005 Loads component manifest from manifests/vande_bh",
+      "file_type": "rationale",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L1",
+      "id": "correlation_server_rationale_1",
+      "community": 11,
+      "norm_label": "correlation service \u2014 port 5005 loads component manifest from manifests/vande_bh"
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L1",
+      "id": "services_frame_extractor_server_py",
+      "community": 12,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L11",
+      "id": "frame_extractor_server_health",
+      "community": 12,
+      "norm_label": "health()"
+    },
+    {
+      "label": "Frame Extractor Service \u2014 port 5003 Receives video path + session/camera IDs \u2192 O",
+      "file_type": "rationale",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L1",
+      "id": "frame_extractor_server_rationale_1",
+      "community": 12,
+      "norm_label": "frame extractor service \u2014 port 5003 receives video path + session/camera ids \u2192 o"
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L1",
+      "id": "services_report_generator_server_py",
+      "community": 13,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L11",
+      "id": "report_generator_server_health",
+      "community": 13,
+      "norm_label": "health()"
+    },
+    {
+      "label": "Report Generator Service \u2014 port 5006 Reads full session data \u2192 builds PDF (fpdf2",
+      "file_type": "rationale",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L1",
+      "id": "report_generator_server_rationale_1",
+      "community": 13,
+      "norm_label": "report generator service \u2014 port 5006 reads full session data \u2192 builds pdf (fpdf2"
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L1",
+      "id": "services_sync_engine_server_py",
+      "community": 14,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L11",
+      "id": "sync_engine_server_health",
+      "community": 14,
+      "norm_label": "health()"
+    },
+    {
+      "label": "Sync Engine Service \u2014 port 5004 Reads OCR results for a session \u2192 gap detection",
+      "file_type": "rationale",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L1",
+      "id": "sync_engine_server_rationale_1",
+      "community": 14,
+      "norm_label": "sync engine service \u2014 port 5004 reads ocr results for a session \u2192 gap detection"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "gpu_ocr_server_py",
+      "target": "ocr_server_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ocr_server_rationale_1",
+      "target": "gpu_ocr_server_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/shared/cloudinary_client.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "gpu_shared_cloudinary_client_py",
+      "target": "shared_cloudinary_client_upload_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/shared/cloudinary_client.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "shared_cloudinary_client_rationale_1",
+      "target": "gpu_shared_cloudinary_client_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/shared/db_client.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "gpu_shared_db_client_py",
+      "target": "shared_db_client_get_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/shared/db_client.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "shared_db_client_rationale_1",
+      "target": "gpu_shared_db_client_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "gpu_yolo_server_py",
+      "target": "yolo_server_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/yolo/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "yolo_server_rationale_1",
+      "target": "gpu_yolo_server_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_version",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_description",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_scripts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_dependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_devdependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_start",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_dev",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_push",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_seed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_studio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_generate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify_cors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify_multipart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify_websocket",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_prisma_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_axios",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_cloudinary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_dotenv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "backend_package_devdependencies",
+      "target": "backend_package_devdependencies_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/prisma/seed.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "backend_prisma_seed_js",
+      "target": "prisma_seed_prismaclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/prisma/seed.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_prisma_seed_js",
+      "target": "prisma_seed_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/prisma/seed.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "backend_prisma_seed_js",
+      "target": "prisma_seed_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/run.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_run_js",
+      "target": "backend_src_app_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/run.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_run_js",
+      "target": "backend_run_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/run.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_run_js",
+      "target": "backend_src_config_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/run.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_run_js",
+      "target": "backend_run_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/app.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_src_app_js",
+      "target": "src_app_fastify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/app.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_src_app_js",
+      "target": "src_app_cors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/app.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "backend_src_app_js",
+      "target": "backend_src_config_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/app.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "backend_src_app_js",
+      "target": "src_app_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/app.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "backend_src_app_js",
+      "target": "backend_src_db_client_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/app.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "backend_src_app_js",
+      "target": "src_app_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/cloudinaryService.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_src_services_cloudinaryservice_js",
+      "target": "backend_src_config_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "backend_src_config_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/db/client.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "backend_src_db_client_js",
+      "target": "db_client_prismaclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/db/client.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_src_db_client_js",
+      "target": "db_client_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "backend_src_db_client_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/dashboard.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "backend_src_routes_dashboard_js",
+      "target": "routes_dashboard_dashboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "routes_sessions_sessions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/cloudinaryService.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_src_services_cloudinaryservice_js",
+      "target": "services_cloudinaryservice_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_axios",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_runpipeline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/wsGateway.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "backend_src_services_wsgateway_js",
+      "target": "services_wsgateway_clients",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/wsGateway.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "backend_src_services_wsgateway_js",
+      "target": "services_wsgateway_broadcast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/manifests/vande_bharat.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "services_correlation_manifests_vande_bharat_json",
+      "target": "manifests_vande_bharat_coach_type",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/manifests/vande_bharat.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "services_correlation_manifests_vande_bharat_json",
+      "target": "manifests_vande_bharat_components",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "services_correlation_server_py",
+      "target": "correlation_server_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "correlation_server_rationale_1",
+      "target": "services_correlation_server_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "frame_extractor_server_rationale_1",
+      "target": "services_frame_extractor_server_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "services_report_generator_server_py",
+      "target": "report_generator_server_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "report_generator_server_rationale_1",
+      "target": "services_report_generator_server_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "services_sync_engine_server_py",
+      "target": "sync_engine_server_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "sync_engine_server_rationale_1",
+      "target": "services_sync_engine_server_py",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "cf0483e259fb4b5ebc5f6d9798c49c23c8fbb840"
+}
