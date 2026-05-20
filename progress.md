@@ -315,22 +315,43 @@ curl http://localhost:8001/api/sessions/<id>/coaches/<coach_id>/intelligence
 
 ---
 
-## Phase 4 — Report Generation ⬜
+## Phase 4 — Report Generation ✅
 
-**Goal:** Click "Generate Report" → real PDF downloads
+**Done:** PDF + JSON report generation with Cloudinary upload.
+
+### What was built
 
 **Python report_generator (port 5006):**
-- [ ] `POST /generate` — receives `{ session_id }`
-- [ ] Reads full session data from PostgreSQL
-- [ ] Builds PDF with `fpdf2`: train summary + coach breakdown + annotated defect images
-- [ ] Uploads PDF + JSON to Cloudinary
-- [ ] Writes `reports` row, sets session status → `completed`
+- `POST /generate { session_id }` — reads all session data, builds PDF + JSON, uploads to Cloudinary, writes `reports` row
+- `GET /report/{session_id}` — returns report metadata
 
-**Node.js backend:**
-- [ ] `POST /api/sessions/:id/report` → calls report generator
-- [ ] `GET /api/sessions/:id/report/download` → returns Cloudinary PDF URL
+**PDF layout (fpdf2):**
+- Cover: train number, session code, date, health score banner (colour-coded green/amber/red)
+- Summary KPI table: coaches, frames, defects, critical, missing components
+- Per-coach section: defect table (type / severity / confidence / notes), missing components list
+- Header + footer on every page
 
-**Done when:** Real PDF downloads with train number, coach list, annotated defect evidence.
+**JSON report:** Full structured dump — session metadata, per-coach defects + missing components — suitable for downstream systems.
+
+**Node.js routes:**
+- `POST /api/sessions/:id/report` — triggers generation as fire-and-forget (202), marks `report_generation` stage running
+- `GET /api/sessions/:id/report` — returns `{ report_ready, pdf_url, json_url, overall_health, ... }` or 202 with stage status if not ready yet
+
+**Run:**
+```bash
+cd Main/services/report_generator
+pip install -r requirements.txt
+uvicorn server:app --host 0.0.0.0 --port 5006
+
+# Trigger report (session must be in 'analysing' or 'completed'):
+curl -X POST http://localhost:8001/api/sessions/<id>/report
+
+# Poll for PDF URL:
+curl http://localhost:8001/api/sessions/<id>/report
+# → { report_ready: true, pdf_url: "https://res.cloudinary.com/...", ... }
+```
+
+**Note:** Cloudinary must be configured in `.env` for upload. Without credentials the PDF is built but URLs will be null — add `CLOUDINARY_*` to `services/report_generator/.env`.
 
 ---
 
@@ -370,7 +391,7 @@ curl http://localhost:8001/api/sessions/<id>/coaches/<coach_id>/intelligence
 | 1 | Video upload + Frame extraction | ✅ Done | Needs Cloudinary creds in `frame_extractor/.env` to run |
 | 2 | OCR + Coach mapping | ✅ Done | Sync engine, orchestrator, hierarchy endpoint |
 | 3 | YOLO Detection + Defect intelligence | ✅ Done | Needs best.pt model file to run |
-| 4 | Report generation (PDF) | ⬜ Not started | |
+| 4 | Report generation (PDF) | ✅ Done | Needs Cloudinary creds for upload |
 | 5 | Frontend wire-up | ⬜ Not started | |
 | 6 | WebSocket live status | ⬜ Not started | |
 

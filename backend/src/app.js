@@ -28,6 +28,7 @@ fastify.get('/health', async (request, reply) => {
 
 fastify.register(require('./routes/sessions'),     { prefix: '/api/sessions' });
 fastify.register(require('./routes/intelligence'), { prefix: '/api/sessions' });
+fastify.register(require('./routes/reports'),      { prefix: '/api/sessions' });
 fastify.register(require('./routes/dashboard'),    { prefix: '/api/dashboard' });
 
 fastify.addHook('onClose', async () => {
