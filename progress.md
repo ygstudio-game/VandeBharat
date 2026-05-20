@@ -7,9 +7,6 @@
 
 ## Correct Service Architecture
 
-The system is NOT all-Node. It is a multi-language, multi-service platform.
-Each service has one job and is written in the language the architecture docs specify.
-
 ```
 Frontend (React + Vite) ── port 5173
         │
@@ -25,14 +22,15 @@ Backend API  (Node.js + Fastify) ── port 8001
         ▼                                      ▼
 GPU/ocr/  (Python FastAPI) ── port 5000    GPU/yolo/ (Python FastAPI) ── port 5002
   PaddleOCR GPU inference                   YOLOv8 GPU inference
-  2-pass self-healing OCR                   Component + defect detection
-  5-6 digit train number validation         Returns bounding boxes + labels
+  YOLO-first ROI 2-pass OCR                 Two models loaded at startup:
+  5-6 digit train number validation           best.pt              → /api/yolo/predict
+  Writes ocr_results rows                     train_num_detector.pt → /api/yolo/predict_train_number
         │                                      │
         └──────────────┬───────────────────────┘
                        ▼
              services/sync_engine/  (Python FastAPI) ── port 5004
-               OCR results + gap detection → coach mapping
-               Writes coach_frame_map → PostgreSQL
+               trigger_id-based gap detection → coach mapping
+               Writes coaches + coach_frame_map → PostgreSQL
                        │
                        ▼
              services/correlation/  (Python FastAPI) ── port 5005
@@ -43,14 +41,33 @@ GPU/ocr/  (Python FastAPI) ── port 5000    GPU/yolo/ (Python FastAPI) ──
              services/report_generator/  (Python FastAPI) ── port 5006
                PDF + JSON report assembly
                Uploads report → Cloudinary
-               Updates reports table in PostgreSQL
 
        Frame extraction happens BEFORE all the above:
              services/frame_extractor/  (Python FastAPI) ── port 5003
-               OpenCV: video → JPEG frames
+               OpenCV: video → JPEG frames (every Nth frame)
+               Sets trigger_id = raw video frame_number
                Uploads each frame → Cloudinary
                Writes frames table → PostgreSQL
 ```
+
+---
+
+## Synchronization: trigger_id (NOT timestamps)
+
+Timestamps are unreliable for cross-camera sync (clock drift, capture latency).
+The system uses `trigger_id` as the sync key across all cameras.
+
+| Mode | trigger_id source |
+|---|---|
+| Production (hardware) | Camera trigger pulse ID from edge firmware — all cameras fire at same pulse |
+| Test (video upload) | Raw video `frame_number` — frame #500 in cam 1 = frame #500 in cam 2 (recorded simultaneously) |
+
+**Critical:** `trigger_id` is the raw video frame position (`frame_number`), NOT the extracted sequence number.
+- If interval=5: frames extracted are frame_numbers 0, 5, 10, 15...
+- All cameras share the same frame_numbers → same trigger_ids
+- `sequence_number` (0, 1, 2, 3...) is just the DB row ordering — never used for sync
+
+The sync engine always joins on `trigger_id`. Never on timestamps. Never on sequence_number.
 
 ---
 
@@ -61,7 +78,7 @@ PostgreSQL stores only the URLs + public_ids.
 
 | Asset | Cloudinary Folder | Stored in Postgres as |
 |---|---|---|
-| Extracted frame JPEG | `vande/{session_id}/{camera_id}/` | `cloudinary_url`, `cloudinary_public_id` |
+| Extracted frame JPEG | `vande/{session_id}/{session_camera_id}/` | `cloudinary_url`, `cloudinary_public_id` |
 | Annotated defect frame | `vande/{session_id}/annotated/` | `annotated_frame_url` |
 | Report PDF | `vande/{session_id}/reports/` | `pdf_url` |
 | Report JSON | `vande/{session_id}/reports/` | `json_url` |
@@ -74,23 +91,26 @@ PostgreSQL stores only the URLs + public_ids.
 Main/
 ├── backend/                          # Node.js + Fastify — API orchestrator
 │   ├── src/
-│   │   ├── app.js                    # Fastify setup, CORS, plugin registration
+│   │   ├── app.js                    # Fastify setup, CORS, multipart, plugin registration
 │   │   ├── config.js                 # ENV vars: DB conn string, Cloudinary keys, service ports
 │   │   ├── routes/
-│   │   │   ├── sessions.js           # Upload, create, list, get session
-│   │   │   ├── coaches.js            # Hierarchy: session → coach → camera → frames
-│   │   │   ├── frames.js             # Frame detail + serve Cloudinary URL
-│   │   │   ├── intelligence.js       # Components + defects per coach
-│   │   │   ├── reports.js            # Generate + download report
+│   │   │   ├── sessions.js           # Upload, create, list, get session, hierarchy
+│   │   │   ├── coaches.js            # Coach detail + frames (Phase 2)
+│   │   │   ├── intelligence.js       # Components + defects per coach (Phase 3)
+│   │   │   ├── reports.js            # Generate + download report (Phase 4)
 │   │   │   └── dashboard.js          # KPIs + live queue
 │   │   ├── services/
 │   │   │   ├── pipelineOrchestrator.js  # Calls Python services in sequence, updates stages
 │   │   │   ├── cloudinaryService.js     # Upload helper, signed URL generation
 │   │   │   └── wsGateway.js             # WebSocket: broadcast pipeline stage updates
 │   │   └── db/
-│   │       ├── client.js             # postgres (pg) connection pool
-│   │       └── queries/              # One file per domain: sessions.js, coaches.js, etc.
-│   ├── schema.sql                    # Full production PostgreSQL schema (run once)
+│   │       └── client.js             # Prisma client singleton
+│   ├── prisma/
+│   │   ├── schema.prisma             # Full production schema (19 models, pushed to Neon)
+│   │   └── seed.js                   # TEST01 camera setup + 14 component manifests
+│   ├── uploads/                      # Temp video storage (git-ignored)
+│   ├── .env                          # Real credentials (git-ignored)
+│   ├── .env.example
 │   ├── package.json
 │   └── run.js                        # Start Fastify on port 8001
 │
@@ -104,8 +124,8 @@ Main/
 │   │   └── requirements.txt
 │   ├── yolo/
 │   │   ├── server.py                 # FastAPI app — port 5002; loads BOTH models at startup
-│   │   │                             #   best.pt              → POST /api/yolo/predict          (defect detection)
-│   │   │                             #   train_num_detector.pt → POST /api/yolo/predict_train_number (bogie ROI)
+│   │   │                             #   best.pt              → POST /api/yolo/predict
+│   │   │                             #   train_num_detector.pt → POST /api/yolo/predict_train_number
 │   │   ├── inference.py              # YOLOv8 load + run on frame for both endpoints
 │   │   ├── model_manager.py          # Load both models, warm-up pass, hot-swap on update
 │   │   └── requirements.txt
@@ -113,14 +133,14 @@ Main/
 │       ├── cloudinary_client.py      # Cloudinary upload/transform helpers
 │       └── db_client.py              # psycopg2 connection for writing results
 │
-├── services/                         # Python — CPU pipeline workers (same VPS as backend)
+├── services/                         # Python — CPU pipeline workers
 │   ├── frame_extractor/
-│   │   ├── server.py                 # FastAPI app — port 5003
-│   │   ├── extractor.py              # OpenCV video → JPEG + Cloudinary upload
+│   │   ├── server.py                 # FastAPI app — port 5003 ✅ IMPLEMENTED
+│   │   ├── .env                      # DB URL + Cloudinary creds (fill before running)
 │   │   └── requirements.txt
 │   ├── sync_engine/
 │   │   ├── server.py                 # FastAPI app — port 5004
-│   │   ├── engine.py                 # Gap detection + frame-to-coach assignment
+│   │   ├── engine.py                 # trigger_id gap detection + frame-to-coach assignment
 │   │   └── requirements.txt
 │   ├── correlation/
 │   │   ├── server.py                 # FastAPI app — port 5005
@@ -133,9 +153,7 @@ Main/
 │       ├── builder.py                # PDF (fpdf2) + JSON assembly + Cloudinary upload
 │       └── requirements.txt
 │
-├── frontend/                         # React + Vite (already built — Phases 1-6 done)
-│
-├── schema.sql                        # Symlink / copy of backend/schema.sql
+├── frontend/                         # React + Vite (Phases 1-6 scaffolded)
 ├── progress.md
 └── understanding.md
 ```
@@ -149,115 +167,119 @@ Main/
 | 5173 | Frontend | React | UI |
 | 8001 | Backend API | Node.js | REST + WebSocket orchestrator |
 | 5000 | OCR Service | Python | PaddleOCR GPU inference |
-| 5002 | YOLO Service | Python | YOLOv8 GPU inference |
+| 5002 | YOLO Service | Python | YOLOv8 GPU inference (2 models) |
 | 5003 | Frame Extractor | Python | OpenCV → Cloudinary |
-| 5004 | Sync Engine | Python | Coach mapping |
+| 5004 | Sync Engine | Python | trigger_id gap detection → coach mapping |
 | 5005 | Correlation | Python | Component manifest validation |
 | 5006 | Report Generator | Python | PDF + JSON |
 
 ---
 
-## Phase 0 — PostgreSQL Schema + Project Scaffolding ⬜
+## Phase 0 — PostgreSQL Schema + Project Scaffolding ✅
 
-**Goal:** Database schema exists. All service folders exist. Configs ready.
-
-- [ ] Run `schema.sql` against PostgreSQL when connection string is received
-- [ ] Create `backend/` folder structure, `package.json` with fastify, pg, cloudinary, dotenv
-- [ ] Create `GPU/ocr/`, `GPU/yolo/`, `GPU/shared/` folders + requirements.txt
-- [ ] Create `services/frame_extractor/`, `sync_engine/`, `correlation/`, `report_generator/` folders
-- [ ] Create `.env` template: `DATABASE_URL`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
-- [ ] Write `backend/src/db/client.js` — postgres connection pool
-- [ ] Write `backend/src/config.js` — reads all env vars
-- [ ] Start backend: `GET /health` returns `{ status: "ok", db: "connected" }`
-
-**Done when:** `node run.js` → health check confirms DB connected.
+**Done:** Neon PostgreSQL live. All 19 tables pushed via Prisma. Seed data applied (TEST01 + 14 manifests).
+`GET http://localhost:8001/health` → `{ status: "ok", db: "connected" }`
 
 ---
 
-## Phase 1 — Video Upload + Frame Extraction + Cloudinary ⬜
+## Phase 1 — Video Upload + Frame Extraction + Cloudinary ✅
 
-**Goal:** POST 2 videos → frames appear in Cloudinary → frame rows in PostgreSQL
+**Done:** Code complete. Awaiting Cloudinary credentials to run end-to-end.
 
-**Node.js backend:**
-- [ ] `POST /api/sessions/upload` — accepts `multipart/form-data` with `video_files[]` + `train_number`
-  - Creates `inspection_sessions` row (status=`queued`)
-  - Creates `cameras` rows (one per video)
-  - Creates `pipeline_stages` rows (all stages, status=`pending`)
-  - Calls frame extractor service via HTTP: `POST http://localhost:5003/extract`
-  - Returns `{ session_id, status }`
-- [ ] `GET /api/sessions` — reads from `inspection_sessions`, returns list matching frontend mock shape
-- [ ] `GET /api/sessions/:id` — returns session + all pipeline stage statuses
+**What was built:**
 
-**Python frame_extractor service (port 5003):**
-- [ ] Receives `{ session_id, video_path, camera_id }` from backend
-- [ ] Opens video with OpenCV, extracts every Nth frame (configurable, e.g. every 5th frame)
-- [ ] For each frame: upload to Cloudinary → get `secure_url` + `public_id`
-- [ ] Writes `frames` row per frame (cloudinary_url, camera_id, session_id, sequence_number, timestamp_ms)
-- [ ] Updates `pipeline_stages.status` = `completed` for `frame_extraction`
-- [ ] Updates `inspection_sessions.total_frames`, `status` = `ocr_running`
-- [ ] Notifies backend via callback URL
+**Node.js backend (`POST /api/sessions/upload`):**
+- Accepts `multipart/form-data`: `train_number` + `video_files[]` + optional `frame_interval` (default 5)
+- Saves videos to `backend/uploads/{session_id}/cam_N.mp4`
+- Creates: `inspection_sessions` → `cameras` → `session_cameras` → all 6 `pipeline_stages`
+- Fire-and-forgets to frame extractor per camera (parallel)
+- Returns `202 { session_id, session_code, status: "extracting" }`
 
-**Done when:** Upload 2 videos → Cloudinary has frames organized in `vande/{session_id}/` → `frames` table populated.
+**Python frame_extractor (port 5003):**
+- Returns immediately, runs extraction as FastAPI background task
+- OpenCV → every Nth frame → encode JPEG → upload to `vande/{session_id}/{cam_id}/frame_N.jpg`
+- **Sets `trigger_id = frame_number`** (raw video position — sync key across all cameras)
+- Bulk-inserts all frame rows via `execute_values` after video ends
+- Tracks per-camera `frame_count`, increments session `total_frames`
+- When ALL cameras done → marks `frame_extraction` completed → session status → `ocr_running`
+
+**To run frame extractor:**
+```bash
+cd Main/services/frame_extractor
+# Fill CLOUDINARY_* in .env first
+pip install -r requirements.txt
+uvicorn server:app --host 0.0.0.0 --port 5003
+```
 
 ---
 
 ## Phase 2 — OCR Pipeline + Coach Mapping ⬜
 
-**Goal:** OCR runs on extracted frames → coaches identified → hierarchy endpoint returns real data
+**Goal:** OCR runs on side-camera frames → coach numbers identified → coaches table populated → hierarchy endpoint returns real data
 
-**Python OCR service (port 5000) — port from POC (YOLO-first ROI pipeline):**
+### Sync key: trigger_id
 
-The OCR service does NOT run PaddleOCR on the full frame. It follows this pipeline:
+The orchestrator and sync engine work entirely on `trigger_id`, not timestamps or sequence_number.
 
 ```
-Download frame from Cloudinary URL
+For each frame (side-camera only, is_ocr_candidate=true):
+    call POST /ocr { frame_url, frame_id, trigger_id, session_id }
         ↓
-POST http://localhost:5002/api/yolo/predict_train_number
-    → Detects "Boogie" class boxes (bogie region where coach number is painted)
-    → Returns [{ bbox_xyxy, confidence, class_id, label }]
+OCR service pipeline (YOLO-first ROI):
+    1. Download frame from Cloudinary URL
+    2. POST /api/yolo/predict_train_number → get Boogie bbox
+    3. Crop with 15% dynamic padding on all 4 sides
+    4. Pass 1: PaddleOCR on raw BGR crop
+    5. Pass 2 (if Pass 1 empty): grayscale→2×upscale→sharpen→CLAHE→blur → PaddleOCR
+    6. Full-frame fallback (if YOLO found no boxes OR both passes empty)
+    7. Filter: ^\d{5,6}$ + confidence ≥ 0.4
+    8. Return { coach_number, confidence, trigger_id, pass_used, roi_used }
+    9. Write ocr_results row
         ↓
-ROI Extraction (if YOLO returns Boogie boxes):
-    Select highest-confidence Boogie box
-    Apply 15% dynamic padding on all 4 sides:
-        pad_w = int(box_w * 0.15), pad_h = int(box_h * 0.15)
-    Crop = frame[y1_pad:y2_pad, x1_pad:x2_pad]
+VoteManager (in orchestrator, per session):
+    Accumulate { coach_number → vote_count } across trigger_ids
+    Accept coach_number only after ≥ 5 votes
         ↓
-Pass 1 — PaddleOCR on raw BGR crop
-    (preserves sub-pixel chromatic boundaries and natural contrast)
-        ↓
-Pass 2 — Only if Pass 1 returns no result:
-    grayscale → 2× upscale (INTER_LINEAR) → sharpen kernel → CLAHE (clipLimit=2.0) → Gaussian blur (3×3)
-    PaddleOCR on preprocessed crop
-        ↓
-Full-frame fallback — Only if YOLO returns no boxes OR both passes fail:
-    Apply same preprocessing to full frame → PaddleOCR
-        ↓
-Filter: regex ^\d{5,6}$ + confidence ≥ 0.4
-    Secondary: extract digit-only substrings as fallback
+POST /sync { session_id }
+Sync engine reads ocr_results ordered by trigger_id:
+    Gap detection on trigger_id axis:
+        Consistent coach_number for N consecutive trigger_ids → one coach segment
+        trigger_id gap (OCR silent) → inter-coach boundary
+    Creates coaches rows (coach_number, coach_index, ocr_confidence)
+    Sets frames.coach_id for all trigger_ids in each coach's range
+    Creates coach_frame_map rows (assignment_method: OCR_DIRECT or GAP_INTERPOLATION)
+    Creates timeline_events: OCR_ANCHOR (where OCR fired) + COACH_GAP (boundaries)
 ```
 
-- [ ] `POST /ocr` — receives `{ frame_url, session_id, frame_id }`, executes full pipeline above
-- [ ] Returns `{ detected_text, coach_number, confidence, bbox, pass_used, roi_used }`
-- [ ] Writes `ocr_results` row (detected_text, confidence, bbox coords, frame_id)
-- [ ] VoteManager is maintained **per session in the orchestrator** (not inside the OCR service) — each OCR result is a vote; a coach number is accepted only after ≥ 5 hits across frames
+**Python OCR service (port 5000):**
+- [ ] `POST /ocr` — full YOLO-ROI pipeline above
+- [ ] Returns `{ coach_number, confidence, trigger_id, pass_used, roi_used, bbox }`
+- [ ] Writes `ocr_results` row per call
+- [ ] Port core logic from `POC/backend/OCR/server.py` + `ocr_engine.py` + `preprocess.py` + `train_number_filter.py`
 
-**Python sync_engine service (port 5004):**
+**Python YOLO service (port 5002) — partial (OCR ROI endpoint only):**
+- [ ] Load `train_num_detector.pt` at startup
+- [ ] `POST /api/yolo/predict_train_number` — returns Boogie class bboxes
+- [ ] Port from `POC/backend/YOLO/server.py`
+
+**Python sync_engine (port 5004):**
 - [ ] `POST /sync` — receives `{ session_id }`
-- [ ] Reads all accepted coach number votes for session from PostgreSQL
-- [ ] Gap detection: find frame sequences where OCR consistently fires the same number → marks inter-coach boundaries where number changes or OCR goes silent
-- [ ] Creates `coaches` rows (coach_number from OCR, coach_index, ocr_confidence)
-- [ ] Updates `frames.coach_id` for all frames in each coach's time window
-- [ ] Updates `pipeline_stages` for `synchronization`
+- [ ] Reads `ocr_results` ordered by `trigger_id` for the session
+- [ ] Gap detection algorithm on trigger_id axis
+- [ ] Creates `coaches` rows
+- [ ] Updates `frames.coach_id` for all frames in each trigger_id window
+- [ ] Creates `coach_frame_map` rows (OCR_DIRECT + GAP_INTERPOLATION)
+- [ ] Creates `timeline_events`
+- [ ] Updates `pipeline_stages.status` = `completed` for `synchronization`
+- [ ] Updates `inspection_sessions.status` = `analysing`
 
-**Node.js backend — orchestrator:**
-- [ ] `pipelineOrchestrator.js`: after frame extraction completes →
-  - For each side-camera frame: call `POST /ocr` on OCR service
-  - Accumulate vote counts per coach number per session (VoteManager logic)
-  - After all frames processed: call `POST /sync` on sync engine
-- [ ] `GET /api/sessions/:id/hierarchy` — returns Train → Coach → Camera → Frames tree
+**Node.js backend — orchestrator additions:**
+- [ ] After frame_extraction stage completes → mark `is_ocr_candidate=true` on side-camera frames
+- [ ] `pipelineOrchestrator.js`: iterate OCR candidate frames → call OCR service → accumulate votes → after all frames: call sync engine
+- [ ] `GET /api/sessions/:id/hierarchy` — Train → Coach → Camera → Frames (real data)
 - [ ] `GET /api/sessions/:id/timeline-events` — OCR_ANCHOR + COACH_GAP events
 
-**Done when:** Call `/hierarchy` → real coaches from the video, real frame URLs from Cloudinary.
+**Done when:** `GET /api/sessions/:id/hierarchy` returns real coaches mapped from the video.
 
 ---
 
@@ -265,56 +287,44 @@ Filter: regex ^\d{5,6}$ + confidence ≥ 0.4
 
 **Goal:** Defects detected per coach → intelligence panel shows real data with bounding boxes
 
-**Python YOLO service (port 5002) — port from POC:**
-
-Two models are loaded at startup. Phase 3 uses only the **defect detection** endpoint:
-
-- [ ] `POST /api/yolo/predict` — receives `{ frame_url }`, downloads from Cloudinary, runs `best.pt`
+**Python YOLO service (port 5002) — defect endpoint:**
+- [ ] Load `best.pt` at startup (alongside `train_num_detector.pt`)
+- [ ] `POST /api/yolo/predict` — receives `{ frame_url }`, runs `best.pt`
 - [ ] Returns `{ boxes: [{label, confidence, bbox_xyxy, severity}] }`
-  - Severity map: `crack/leakage → CRITICAL`, `broken/rust/deformation → HIGH`, `missing_part → MEDIUM`, `loose → LOW`
+  - Severity: `crack/leakage → CRITICAL`, `broken/rust/deformation → HIGH`, `missing_part → MEDIUM`, `loose → LOW`
 - [ ] Writes `component_detections` rows
-- [ ] (The second endpoint `POST /api/yolo/predict_train_number` is used only in Phase 2 OCR pipeline — not here)
 
 **Python correlation service (port 5005):**
 - [ ] `POST /correlate` — receives `{ session_id, coach_id }`
-- [ ] Loads component manifest for coach type from `services/correlation/manifests/vande_bharat.json`
+- [ ] Loads manifest from `manifests/vande_bharat.json`
 - [ ] Compares expected vs detected components
-- [ ] Creates `defects` rows (severity, ai_notes, annotated_frame_url)
+- [ ] Creates `defects` rows + `missing_components` rows
 - [ ] Updates `coaches.critical_defects`, `coaches.missing_components`, `coaches.health_score`
 
-**Node.js backend — orchestrator:**
-- [ ] After sync complete: batch frames per coach → call YOLO for each frame
-- [ ] After YOLO: call correlation service per coach
-- [ ] `GET /api/sessions/:id/coaches/:coachId/intelligence` → components + defects (real data)
-- [ ] Frame images served directly via Cloudinary URLs (no proxy needed)
+**Node.js backend:**
+- [ ] After sync complete: for each coach → batch its frames → call YOLO per frame → call correlation
+- [ ] `GET /api/sessions/:id/coaches/:coachId/intelligence` → real components + defects
 
-**Done when:** Intelligence panel in the UI shows real defects with bounding box data from your video.
+**Done when:** Intelligence panel shows real defects with bounding box data.
 
 ---
 
 ## Phase 4 — Report Generation ⬜
 
-**Goal:** Click "Generate Report" → real PDF with train summary + defect evidence downloads
+**Goal:** Click "Generate Report" → real PDF downloads
 
-**Python report_generator service (port 5006):**
+**Python report_generator (port 5006):**
 - [ ] `POST /generate` — receives `{ session_id }`
-- [ ] Reads full session: coaches + component_detections + defects from PostgreSQL
-- [ ] Builds train-level summary: health score, total defects, coach breakdown
-- [ ] For each defect: embed annotated frame image (Cloudinary URL → download → embed in PDF)
-- [ ] Generate PDF with `fpdf2`
-- [ ] Upload PDF to Cloudinary → get `pdf_url`
-- [ ] Generate JSON report
-- [ ] Upload JSON to Cloudinary → get `json_url`
-- [ ] Writes `reports` row (pdf_url, json_url, generated_at)
-- [ ] Updates `inspection_sessions.status` = `completed`
+- [ ] Reads full session data from PostgreSQL
+- [ ] Builds PDF with `fpdf2`: train summary + coach breakdown + annotated defect images
+- [ ] Uploads PDF + JSON to Cloudinary
+- [ ] Writes `reports` row, sets session status → `completed`
 
 **Node.js backend:**
-- [ ] `POST /api/sessions/:id/report` → calls report generator service
-- [ ] `GET /api/sessions/:id/report/download` → returns Cloudinary PDF URL (redirect or signed URL)
-- [ ] `GET /api/dashboard/kpis` → aggregated stats from inspection_sessions
-- [ ] `GET /api/dashboard/live-queue` → sessions with status != completed
+- [ ] `POST /api/sessions/:id/report` → calls report generator
+- [ ] `GET /api/sessions/:id/report/download` → returns Cloudinary PDF URL
 
-**Done when:** A real PDF downloads with train number, coach list, annotated defect images.
+**Done when:** Real PDF downloads with train number, coach list, annotated defect evidence.
 
 ---
 
@@ -322,36 +332,27 @@ Two models are loaded at startup. Phase 3 uses only the **defect detection** end
 
 **Goal:** UI runs on real data, not mock data
 
-- [ ] Add `VITE_API_BASE_URL=http://localhost:8001` to `frontend/.env`
-- [ ] Replace mock sessions data → `GET /api/sessions`
-- [ ] Replace mock session detail → `GET /api/sessions/:id`
+- [ ] `frontend/.env` → `VITE_API_BASE_URL=http://localhost:8001`
+- [ ] Replace mock sessions → `GET /api/sessions`
 - [ ] Replace mock hierarchy → `GET /api/sessions/:id/hierarchy`
 - [ ] Replace mock intelligence → `GET /api/sessions/:id/coaches/:coachId/intelligence`
-- [ ] Frame image `src` → use Cloudinary URLs from API response directly
-- [ ] Add upload flow: video upload form → `POST /api/sessions/upload` → redirect to workspace
-- [ ] Add "Process" trigger button → `POST /api/sessions/:id/process`
-- [ ] Pipeline status: polling `GET /api/sessions/:id` every 3s while processing
-- [ ] Wire "Generate Report" → `POST /api/sessions/:id/report`
-- [ ] Wire "Download Report" → open Cloudinary PDF URL
-- [ ] Dashboard KPIs → `GET /api/dashboard/kpis`
-- [ ] Live queue → `GET /api/dashboard/live-queue`
+- [ ] Add video upload form → `POST /api/sessions/upload`
+- [ ] Pipeline polling every 3s → `GET /api/sessions/:id`
+- [ ] Wire report flow → `POST /api/sessions/:id/report` + Cloudinary URL download
+- [ ] Dashboard KPIs + live queue → real endpoints
 
-**Done when:** Full flow works end-to-end through the UI with real video input.
+**Done when:** Full flow works end-to-end in the browser with real video.
 
 ---
 
 ## Phase 6 — WebSocket Live Status ⬜
 
-**Goal:** Pipeline stage updates appear in real-time in the Pipeline Timeline component
+**Goal:** Pipeline stage updates appear in real-time (no polling)
 
-- [ ] Node.js WebSocket gateway: emit stage change events as Python services complete
-- [ ] `GET /api/ws/sessions/:id` — WebSocket endpoint
-- [ ] Frontend: replace polling with WebSocket subscription in TrainWorkspace
-- [ ] Pipeline Timeline component: stage transitions animate live
-- [ ] Toast notifications: "Synchronization completed. 14 coaches mapped."
-- [ ] Error state handling: OCR confidence too low → yellow warning badge on stage
-
-**Done when:** Open workspace → watch stage chips flip from grey → cyan → green in real-time.
+- [ ] Node.js WebSocket gateway: emit stage events as Python services complete
+- [ ] Frontend replaces polling with WebSocket subscription
+- [ ] Pipeline Timeline chips animate live: grey → cyan → green
+- [ ] Toast: "Synchronization complete. 14 coaches mapped."
 
 ---
 
@@ -359,9 +360,9 @@ Two models are loaded at startup. Phase 3 uses only the **defect detection** end
 
 | Phase | Name | Status | Notes |
 |---|---|---|---|
-| 0 | Schema + Scaffolding | ⬜ Waiting for PG conn string | |
-| 1 | Video upload + Frame extraction + Cloudinary | ⬜ Not started | |
-| 2 | OCR + Coach mapping | ⬜ Not started | |
+| 0 | Schema + Scaffolding | ✅ Done | Neon PG live, 19 tables, health check OK |
+| 1 | Video upload + Frame extraction | ✅ Done | Needs Cloudinary creds in `frame_extractor/.env` to run |
+| 2 | OCR + Coach mapping | ⬜ Next | trigger_id design confirmed, ready to implement |
 | 3 | YOLO Detection + Defect intelligence | ⬜ Not started | |
 | 4 | Report generation (PDF) | ⬜ Not started | |
 | 5 | Frontend wire-up | ⬜ Not started | |
@@ -375,20 +376,20 @@ Two models are loaded at startup. Phase 3 uses only the **defect detection** end
 
 ```bash
 # 1. GPU Services (need CUDA + GPU)
-cd Main/GPU/yolo   && python server.py   # port 5002
-cd Main/GPU/ocr    && python server.py   # port 5000
+cd Main/GPU/yolo  && uvicorn server:app --port 5002   # load best.pt + train_num_detector.pt
+cd Main/GPU/ocr   && uvicorn server:app --port 5000   # PaddleOCR
 
 # 2. CPU Pipeline Services
-cd Main/services/frame_extractor   && python server.py   # port 5003
-cd Main/services/sync_engine       && python server.py   # port 5004
-cd Main/services/correlation       && python server.py   # port 5005
-cd Main/services/report_generator  && python server.py   # port 5006
+cd Main/services/frame_extractor  && uvicorn server:app --port 5003
+cd Main/services/sync_engine      && uvicorn server:app --port 5004
+cd Main/services/correlation      && uvicorn server:app --port 5005
+cd Main/services/report_generator && uvicorn server:app --port 5006
 
 # 3. Backend API
-cd Main/backend   && node run.js   # port 8001
+cd Main/backend && node run.js    # port 8001
 
 # 4. Frontend
-cd Main/frontend  && npm run dev   # port 5173
+cd Main/frontend && npm run dev   # port 5173
 ```
 
 ---
@@ -397,16 +398,16 @@ cd Main/frontend  && npm run dev   # port 5173
 
 | Decision | Choice | Why |
 |---|---|---|
-| API server | Node.js + Fastify | Architecture doc specifies this explicitly |
+| API server | Node.js + Fastify | Architecture doc specifies this |
 | GPU workers | Python FastAPI | PaddleOCR + PyTorch are Python-only |
-| CPU workers | Python FastAPI | Sync engine + correlation + report are Python in arch doc |
+| CPU workers | Python FastAPI | Sync engine + correlation + report are Python per arch doc |
 | Frame storage | Cloudinary | User requirement — no MinIO for MVP |
-| Database | PostgreSQL | Full schema defined in arch doc; user providing conn string |
-| Queue | HTTP calls between services | No RabbitMQ for MVP; orchestrator calls services directly |
+| Database | PostgreSQL (Neon) + Prisma | Full schema via Prisma; Neon is the hosted instance |
+| Queue | HTTP calls (no RabbitMQ) | Direct orchestrator → service calls for MVP |
 | PDF | fpdf2 | Lightweight, no system deps, works on Windows |
-| Frame sampling | Every Nth frame | 72,000 frames/train is too many to process all; sample smart |
+| Frame sampling | Every Nth frame (configurable, default 5) | 72,000 frames/train is too many to process all |
 | Binary YOLO model | defect=0 / normal=1 | Decided in POC — maximizes recall |
-| OCR approach | YOLO-first ROI, not full-frame | YOLO detects bogie region in <20ms; PaddleOCR runs on ~200×100px crop instead of full 5MP frame — order-of-magnitude latency reduction + higher accuracy |
-| OCR–YOLO isolation | Separate processes (5000/5002) | PyTorch + PaddlePaddle in same process → `0xC0000005` CUDA DLL crash on Windows |
-| VoteManager threshold | 5 hits across frames | Eliminates false positives from station boards, ads, serial codes painted near the bogie |
-| OCR Pass 2 preprocessing | grayscale → 2× upscale → sharpen → CLAHE → Gaussian blur | Self-healing fallback when raw crop contrast is too low for Pass 1 |
+| OCR approach | YOLO-first ROI, not full-frame | YOLO detects bogie in <20ms; PaddleOCR on ~200×100px crop only |
+| OCR–YOLO isolation | Separate processes (5000/5002) | PyTorch + PaddlePaddle in same process → CUDA DLL crash on Windows |
+| Sync key | trigger_id (NOT timestamps) | Timestamps unreliable; trigger_id = hardware pulse (prod) or raw frame_number (test) |
+| VoteManager threshold | 5 hits across trigger_ids | Eliminates false positives from background text |

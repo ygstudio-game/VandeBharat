@@ -175,6 +175,7 @@ model Frame {
   session_camera_id    String   @db.Uuid
   coach_id             String?  @db.Uuid
   sequence_number      Int
+  trigger_id           BigInt             // raw video frame_number (test) or hardware pulse ID (prod)
   captured_at_ms       BigInt
 
   cloudinary_url       String
