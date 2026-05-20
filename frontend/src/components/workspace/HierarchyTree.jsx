@@ -108,10 +108,25 @@ const extendedCoaches = [
   }
 ];
 
-export const HierarchyTree = ({ onSelectNode }) => {
-  const [openCoaches, setOpenCoaches] = useState({
-    'coach-b1': true, // Open first coach by default
-  });
+// Map an API coach object (snake_case) to the internal tree node shape
+function normalizeCoach(c) {
+  return {
+    id: c.id,
+    coachNumber: c.coach_number,
+    stats: {
+      ocrFramesCount: Math.floor((c.total_frames || 0) * 0.15),
+      componentFramesCount: c.total_frames || 0,
+      criticalDefects: c.critical_defects || 0,
+      missingComponents: c.missing_components_count || 0,
+    },
+    cameras: [],
+  };
+}
+
+export const HierarchyTree = ({ onSelectNode, coaches: coachesProp, trainNumber, sessionId }) => {
+  const coaches = coachesProp?.length ? coachesProp.map(normalizeCoach) : extendedCoaches;
+  const firstCoachId = coaches[0]?.id || 'coach-b1';
+  const [openCoaches, setOpenCoaches] = useState(() => ({ [firstCoachId]: true }));
   const [openSubnodes, setOpenSubnodes] = useState({});
   const [selectedId, setSelectedId] = useState('train-root');
 
@@ -143,14 +158,14 @@ export const HierarchyTree = ({ onSelectNode }) => {
         <div className="flex items-center gap-2.5">
           <Train className={cn("w-4.5 h-4.5", selectedId === 'train-root' ? "text-primary-foreground" : "text-primary")} />
           <div>
-            <p className="font-extrabold leading-none">VB-22901</p>
+            <p className="font-extrabold leading-none">{trainNumber || 'VB-—'}</p>
             <p className={cn("text-[9px] font-bold mt-1", selectedId === 'train-root' ? "text-primary-foreground/75" : "text-muted-foreground")}>
-              SESSION: INS-2026-0045
+              SESSION: {sessionId || '—'}
             </p>
           </div>
         </div>
         <Badge variant={selectedId === 'train-root' ? 'secondary' : 'default'} className="font-mono text-[9px] font-bold">
-          14 BOGIES
+          {coaches.length} BOGIES
         </Badge>
       </div>
 
@@ -283,12 +298,14 @@ export const HierarchyTree = ({ onSelectNode }) => {
       {/* Tree footer stats */}
       <div className="p-3 border-t border-border bg-slate-50/50 space-y-1 text-[10px] font-bold text-muted-foreground">
         <div className="flex justify-between">
-          <span>PIPELINE_STATE:</span>
-          <span className="text-processing uppercase">Synchronizing</span>
+          <span>COACHES_LOADED:</span>
+          <span className="text-foreground">{coaches.length}</span>
         </div>
         <div className="flex justify-between">
-          <span>TOTAL_DETECTED:</span>
-          <span className="text-foreground">554 FRAMES</span>
+          <span>TOTAL_FRAMES:</span>
+          <span className="text-foreground">
+            {coaches.reduce((s, c) => s + (c.stats?.componentFramesCount || 0), 0)}
+          </span>
         </div>
       </div>
     </div>

@@ -5,6 +5,11 @@
 const axios = require('axios');
 const prisma = require('../db/client');
 const config = require('../config');
+const { broadcast, broadcastAll } = require('./wsGateway');
+
+function emitStage(sessionId, stage, status, message = '') {
+  broadcast(sessionId, { type: 'stage_update', sessionId, stage, status, message });
+}
 
 const OCR_CONCURRENCY = 4;  // parallel OCR requests (GPU can handle several at once)
 const PROGRESS_EVERY = 10;  // update DB progress every N frames
@@ -23,6 +28,7 @@ async function runOcrPipeline(sessionId, fastify) {
         detail_message: 'Queuing frames for OCR...',
       },
     });
+    emitStage(sessionId, 'ocr_detection', 'running', 'Queuing frames for OCR...');
 
     // ── 2. Load all frames, ordered by trigger_id ─────────────────────────────
     const frames = await prisma.frame.findMany({
@@ -86,6 +92,7 @@ async function runOcrPipeline(sessionId, fastify) {
             stats: { processed, total, valid: ocrValid, progress_pct: pct },
           },
         });
+        broadcast(sessionId, { type: 'progress_update', sessionId, stage: 'ocr_detection', processed, total, pct });
       }
     }
 
@@ -99,6 +106,7 @@ async function runOcrPipeline(sessionId, fastify) {
         stats: { total_frames: total, valid_detections: ocrValid },
       },
     });
+    emitStage(sessionId, 'ocr_detection', 'completed', `OCR complete: ${ocrValid} valid detections from ${total} frames`);
 
     log.info({ msg: `OCR done: ${ocrValid}/${total} valid`, session_id: sessionId });
 
@@ -107,6 +115,7 @@ async function runOcrPipeline(sessionId, fastify) {
       where: { session_id: sessionId, stage: 'synchronization' },
       data: { status: 'running', started_at: new Date(), detail_message: 'Running gap detection...' },
     });
+    emitStage(sessionId, 'synchronization', 'running', 'Running gap detection...');
 
     const syncResp = await axios.post(
       `${config.services.syncEngine}/sync`,
@@ -126,6 +135,8 @@ async function runOcrPipeline(sessionId, fastify) {
       where: { id: sessionId },
       data: { status: 'analysing', total_coaches: syncResult.coaches_created },
     });
+    emitStage(sessionId, 'synchronization', 'completed', `${syncResult.coaches_created} coaches mapped`);
+    broadcast(sessionId, { type: 'coaches_mapped', sessionId, count: syncResult.coaches_created });
 
     // ── 7. Phase 3: defect correlation per coach ──────────────────────────────
     await prisma.pipelineStage.updateMany({
@@ -136,6 +147,8 @@ async function runOcrPipeline(sessionId, fastify) {
       where: { session_id: sessionId, stage: 'defect_analysis' },
       data: { status: 'running', started_at: new Date(), detail_message: 'Analysing defect severity...' },
     });
+    emitStage(sessionId, 'component_detection', 'running', 'Detecting components and defects...');
+    emitStage(sessionId, 'defect_analysis', 'running', 'Analysing defect severity...');
 
     const coaches = await prisma.coach.findMany({
       where: { session_id: sessionId },
@@ -190,6 +203,8 @@ async function runOcrPipeline(sessionId, fastify) {
         stats: { total_defects: totalDefects, critical: totalCritical, missing: totalMissing },
       },
     });
+    emitStage(sessionId, 'component_detection', 'completed', `Component scan complete across ${coaches.length} coaches`);
+    emitStage(sessionId, 'defect_analysis', 'completed', `${totalDefects} defects found, ${totalCritical} critical`);
 
     // ── 9. Update session aggregates ──────────────────────────────────────────
     await prisma.inspectionSession.update({
@@ -202,6 +217,13 @@ async function runOcrPipeline(sessionId, fastify) {
         health_score: avgHealth,
         progress_pct: 100,
       },
+    });
+    broadcastAll({
+      type: 'session_completed',
+      sessionId,
+      criticalDefects: totalCritical,
+      healthScore: avgHealth,
+      coaches: coaches.length,
     });
 
     log.info({
@@ -225,6 +247,8 @@ async function runOcrPipeline(sessionId, fastify) {
       where: { id: sessionId },
       data: { status: 'failed' },
     });
+
+    broadcastAll({ type: 'session_failed', sessionId, error: err.message });
   }
 }
 

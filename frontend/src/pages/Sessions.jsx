@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockSessions as initialSessions } from '../data/mockData';
+import { getSessions, uploadSession, normalizeSession } from '../lib/api';
+import { useSessionSocket } from '../hooks/useSessionSocket';
+import { toast } from '../hooks/useToast';
 import { 
   Search, 
   Calendar, 
@@ -35,16 +37,38 @@ export const Sessions = () => {
   const navigate = useNavigate();
   
   // CRUD state management
-  const [sessions, setSessions] = useState(() => {
-    // If we have sessions in local storage, load them; else use initialSessions
-    const saved = localStorage.getItem('vande_sessions');
-    return saved ? JSON.parse(saved) : initialSessions;
-  });
+  const [sessions, setSessions] = useState([]);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-  const saveSessionsToStorage = (updatedList) => {
-    setSessions(updatedList);
-    localStorage.setItem('vande_sessions', JSON.stringify(updatedList));
-  };
+  const loadSessions = useCallback(async () => {
+    try {
+      const data = await getSessions();
+      setSessions((data.sessions || []).map(normalizeSession));
+    } catch (_) { /* silent — keep stale data */ }
+  }, []);
+
+  useEffect(() => {
+    loadSessions();
+    const t = setInterval(loadSessions, 5000);
+    return () => clearInterval(t);
+  }, [loadSessions]);
+
+  // Live WS events — immediate refresh + toast on key transitions
+  const { lastEvent } = useSessionSocket(null);
+  useEffect(() => {
+    if (!lastEvent) return;
+    if (lastEvent.type === 'session_completed') {
+      loadSessions();
+      toast.success('Inspection pipeline complete.', `Session Done`);
+    } else if (lastEvent.type === 'session_failed') {
+      loadSessions();
+      toast.error('Pipeline error — check the workspace for details.', 'Session Failed');
+    } else if (lastEvent.type === 'stage_update' || lastEvent.type === 'coaches_mapped') {
+      // Refresh list so status chips stay current without waiting for the 5s poll
+      loadSessions();
+    }
+  }, [lastEvent, loadSessions]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -93,210 +117,43 @@ export const Sessions = () => {
     return matchesSearch && matchesStatus && matchesSeverity;
   });
 
-  // Pipeline simulation ticks
-  const pipelineLogPool = [
-    "Initializing high-speed video frames decoder...",
-    "Frame extraction starting on node 01...",
-    "✓ Frames: 3,240 frames extracted successfully.",
-    "Running OCR neural net on coach placards...",
-    "✓ OCR: Mapped Coach B1 (91% confidence)",
-    "✓ OCR: Mapped Coach B2 (95% confidence)",
-    "✓ OCR: Mapped Coach B3 (88% confidence)",
-    "✓ OCR: Mapped Coach B4 (94% confidence)",
-    "Synchronizing multi-camera frames using gap trigger alignment...",
-    "✓ Sync Stability verified: Offset jitter variance < 1.2ms",
-    "YOLOv8 scanning brake pads & spring assemblies...",
-    "⚠ Component Alert: Bogie 3 Brake Pad Crack identified on B2",
-    "Coupling bolt verification complete: 1 loose bolt on Coach B3",
-    "Compiling inspection logs into audit-ready report summary..."
-  ];
 
-  useEffect(() => {
-    const hasActive = sessions.some(s => s.status === 'PROCESSING' || s.status === 'SYNCHRONIZING');
-    if (!hasActive) return;
-
-    const interval = setInterval(() => {
-      setSessions(prevSessions => {
-        let changed = false;
-        const updated = prevSessions.map(session => {
-          if (session.status === 'PROCESSING' || session.status === 'SYNCHRONIZING') {
-            changed = true;
-            const nextProgress = (session.progressPercent || 0) + 10;
-            
-            let nextStatus = session.status;
-            let nextStep = session.currentStep;
-            let nextStages = { ...(session.stages || {}) };
-            let nextLogs = [...(session.logs || [])];
-            let nextSeverity = session.severity;
-            let nextDefectsText = session.defectsText;
-            let nextOcrConfidence = session.ocrConfidence;
-            let nextSyncHealth = session.syncHealth;
-            let nextMlAccuracy = session.mlAccuracy;
-            let nextTrainNumber = session.trainNumber;
-            let nextCoachesCount = session.coachesCount;
-
-            if (session.autoDetect && nextProgress >= 30 && (session.trainNumber === 'VB-[DETECTING...]' || session.coachesCount === 0)) {
-              nextTrainNumber = 'VB-22904';
-              nextCoachesCount = 16;
-              nextLogs.push(`[${new Date().toLocaleTimeString()}] [AI OCR] Extracted Train Identifier: VB-22904`);
-              nextLogs.push(`[${new Date().toLocaleTimeString()}] [WHEEL SENSOR] Segmented coaches: 16 coaches detected`);
-            }
-
-            if (nextProgress >= 100) {
-              nextStatus = 'COMPLETED';
-              nextStep = 'Inspection Complete';
-              nextStages = {
-                extraction: 'COMPLETED',
-                ocr: 'COMPLETED',
-                sync: 'COMPLETED',
-                component: 'COMPLETED',
-                defect: 'COMPLETED',
-                report: 'COMPLETED'
-              };
-              nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[13]);
-              nextSeverity = 'REVIEW';
-              nextDefectsText = '2 Defects Found';
-              nextOcrConfidence = 0.942;
-              nextSyncHealth = 0.985;
-              nextMlAccuracy = 0.94;
-            } else {
-              // Map progress to steps & logs
-              if (nextProgress === 10) {
-                nextStep = 'Frame Extraction starting...';
-                nextStages.extraction = 'RUNNING';
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[0]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[1]);
-              } else if (nextProgress === 30) {
-                nextStep = 'Running OCR on coach placards...';
-                nextStages.extraction = 'COMPLETED';
-                nextStages.ocr = 'RUNNING';
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[2]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[3]);
-              } else if (nextProgress === 55) {
-                nextStep = 'Synchronizing camera feeds...';
-                nextStages.ocr = 'COMPLETED';
-                nextStages.sync = 'RUNNING';
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[4]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[5]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[6]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[7]);
-              } else if (nextProgress === 75) {
-                nextStep = 'Scanning brake pads & suspension assemblies...';
-                nextStages.sync = 'COMPLETED';
-                nextStages.component = 'RUNNING';
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[8]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[9]);
-              } else if (nextProgress === 90) {
-                nextStep = 'Analyzing anomalies...';
-                nextStages.component = 'COMPLETED';
-                nextStages.defect = 'RUNNING';
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[10]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[11]);
-                nextLogs.push(`[${new Date().toLocaleTimeString()}] ` + pipelineLogPool[12]);
-              }
-            }
-
-            return {
-              ...session,
-              trainNumber: nextTrainNumber,
-              coachesCount: nextCoachesCount,
-              progressPercent: nextProgress,
-              status: nextStatus,
-              currentStep: nextStep,
-              stages: nextStages,
-              logs: nextLogs,
-              severity: nextSeverity,
-              defectsText: nextDefectsText,
-              ocrConfidence: nextOcrConfidence,
-              syncHealth: nextSyncHealth,
-              mlAccuracy: nextMlAccuracy,
-              mappedCoaches: Math.floor((nextProgress / 100) * nextCoachesCount)
-            };
-          }
-          return session;
-        });
-
-        if (changed) {
-          localStorage.setItem('vande_sessions', JSON.stringify(updated));
-        }
-        return updated;
-      });
-    }, 1500);
-
-    return () => clearInterval(interval);
-  }, [sessions]);
-
-  // Handle Start Pipeline (Runs in Background)
-  const handleStartPipeline = () => {
-    const newSessionId = `SES-${Math.floor(10000 + Math.random() * 90000)}-A`;
-    const newSession = {
-      id: newSessionId,
-      trainNumber: autoDetect ? 'VB-[DETECTING...]' : newTrainNumber,
-      status: 'PROCESSING',
-      progressPercent: 0,
-      severity: 'NONE',
-      defectsText: 'Processing...',
-      coachesCount: autoDetect ? 0 : Number(newCoachesCount),
-      autoDetect: autoDetect,
-      ocrConfidence: 0.0,
-      startedAt: new Date().toISOString(),
-      mappedCoaches: 0,
-      syncHealth: 0.0,
-      mlAccuracy: 0.0,
-      logs: [
-        `[${new Date().toLocaleTimeString()}] Ingesting file: ${selectedFile ? selectedFile.name : 'VB_CAM_MERGED_2026.mp4'}`,
-        autoDetect 
-          ? `[${new Date().toLocaleTimeString()}] AI Auto-detect enabled. Queueing OCR identification and sensor wheels counting.`
-          : `[${new Date().toLocaleTimeString()}] Setup train targets for ${newTrainNumber} (${newCoachesCount} coaches).`
-      ],
-      currentStep: 'Initializing Ingestion Buffer...',
-      stages: {
-        extraction: 'RUNNING',
-        ocr: 'PENDING',
-        sync: 'PENDING',
-        component: 'PENDING',
-        defect: 'PENDING',
-        report: 'PENDING'
-      }
-    };
-
-    const updated = [newSession, ...sessions];
-    saveSessionsToStorage(updated);
-
-    // Auto expand this row so the user can see the live running progress
-    setExpandedRows(prev => ({
-      ...prev,
-      [newSessionId]: true
-    }));
-
-    // Reset wizard & close
-    setShowAddWizard(false);
-    setWizardStep(1);
-    setSelectedFile(null);
+  // Handle Start Pipeline — upload video, then let API polling keep sessions fresh
+  const handleStartPipeline = async () => {
+    if (!selectedFile && !autoDetect) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('train_number', autoDetect ? `TRAIN-${Date.now()}` : newTrainNumber);
+      fd.append('frame_interval', '5');
+      if (selectedFile) fd.append('video_files', selectedFile, selectedFile.name);
+      await uploadSession(fd);
+      await loadSessions();
+      setShowAddWizard(false);
+      setWizardStep(1);
+      setSelectedFile(null);
+    } catch (err) {
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
+    }
   };
 
-  // Handle Delete
+  // Handle Delete — removes from local state; polling will re-sync from server
   const handleDeleteSession = (id) => {
-    const updated = sessions.filter(s => s.id !== id);
-    saveSessionsToStorage(updated);
+    setSessions(prev => prev.filter(s => s.id !== id));
     setDeletingSessionId(null);
   };
 
-  // Handle Edit Save
+  // Handle Edit Save — optimistic local update only (no server-side edit endpoint yet)
   const handleSaveEdit = (e) => {
     e.preventDefault();
-    const updated = sessions.map(s => {
-      if (s.id === editingSession.id) {
-        return {
-          ...s,
-          trainNumber: editingSession.trainNumber,
-          coachesCount: Number(editingSession.coachesCount),
-          status: editingSession.status
-        };
-      }
-      return s;
-    });
-    saveSessionsToStorage(updated);
+    setSessions(prev => prev.map(s =>
+      s.id === editingSession.id
+        ? { ...s, trainNumber: editingSession.trainNumber, coachesCount: Number(editingSession.coachesCount), status: editingSession.status }
+        : s
+    ));
     setEditingSession(null);
   };
 
@@ -519,6 +376,12 @@ export const Sessions = () => {
                 )}
               </div>
 
+              {uploadError && (
+                <p className="text-xs font-bold text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+                  Upload failed: {uploadError}
+                </p>
+              )}
+
               <div className="flex justify-end pt-4 border-t border-border gap-2">
                 <button
                   type="button"
@@ -530,9 +393,11 @@ export const Sessions = () => {
                 <button
                   type="button"
                   onClick={handleStartPipeline}
-                  className="bg-primary hover:bg-slate-800 text-white text-xs font-bold uppercase px-4 py-2 rounded shadow transition-all flex items-center gap-1.5 cursor-pointer"
+                  disabled={uploading}
+                  className="bg-primary hover:bg-slate-800 text-white text-xs font-bold uppercase px-4 py-2 rounded shadow transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <Play className="w-3.5 h-3.5" /> Start Pipeline Inference
+                  {uploading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
+                  {uploading ? 'Uploading...' : 'Start Pipeline Inference'}
                 </button>
               </div>
             </div>

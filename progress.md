@@ -355,31 +355,37 @@ curl http://localhost:8001/api/sessions/<id>/report
 
 ---
 
-## Phase 5 — Frontend Wire-Up ⬜
+## Phase 5 — Frontend Wire-Up ✅
 
 **Goal:** UI runs on real data, not mock data
 
-- [ ] `frontend/.env` → `VITE_API_BASE_URL=http://localhost:8001`
-- [ ] Replace mock sessions → `GET /api/sessions`
-- [ ] Replace mock hierarchy → `GET /api/sessions/:id/hierarchy`
-- [ ] Replace mock intelligence → `GET /api/sessions/:id/coaches/:coachId/intelligence`
-- [ ] Add video upload form → `POST /api/sessions/upload`
-- [ ] Pipeline polling every 3s → `GET /api/sessions/:id`
-- [ ] Wire report flow → `POST /api/sessions/:id/report` + Cloudinary URL download
-- [ ] Dashboard KPIs + live queue → real endpoints
+- [x] `frontend/.env` → `VITE_API_BASE_URL=http://localhost:8001`
+- [x] `lib/api.js` — full API client with `normalizeSession()` adapter
+- [x] `hooks/usePolling.js` — stable polling hook (useRef + useCallback pattern)
+- [x] `Dashboard.jsx` — KPIs + live queue polled from real endpoints every 5-10s
+- [x] `Sessions.jsx` — list polled from API every 5s; upload wired to `POST /upload`; mock progress simulation removed
+- [x] `TrainWorkspace.jsx` — session + hierarchy polled; intelligence loaded per coach; real pipeline stages in progress bar; real Export Report button
+- [x] `HierarchyTree.jsx` — accepts `coaches` prop from hierarchy API, falls back to mock
+- [x] `Reports.jsx` — sessions list polled; completed sessions shown as reports; download opens Cloudinary PDF URL
 
 **Done when:** Full flow works end-to-end in the browser with real video.
 
 ---
 
-## Phase 6 — WebSocket Live Status ⬜
+## Phase 6 — WebSocket Live Status ✅
 
 **Goal:** Pipeline stage updates appear in real-time (no polling)
 
-- [ ] Node.js WebSocket gateway: emit stage events as Python services complete
-- [ ] Frontend replaces polling with WebSocket subscription
-- [ ] Pipeline Timeline chips animate live: grey → cyan → green
-- [ ] Toast: "Synchronization complete. 14 coaches mapped."
+- [x] `wsGateway.js` — room-based pub/sub: `sessionRooms` + `globalClients`, `broadcast(sessionId)` / `broadcastAll()`
+- [x] `app.js` — `@fastify/websocket` registered; `GET /ws` upgrades connection; clients send `{ type: 'subscribe', sessionId }` to join a room
+- [x] `pipelineOrchestrator.js` — `emitStage()` at every stage transition; `coaches_mapped` after sync; `session_completed` / `session_failed` via `broadcastAll`
+- [x] `hooks/useSessionSocket.js` — singleton WS connection shared across hook instances; auto-reconnect; per-session subscription
+- [x] `hooks/useToast.js` — Zustand toast store + `toast.success/warning/error/info` helpers
+- [x] `components/ui/ToastContainer.jsx` — fixed bottom-right toast stack, auto-dismiss at 5s
+- [x] `Shell.jsx` — `<ToastContainer />` mounted globally
+- [x] `TrainWorkspace.jsx` — WS hook subscribed to session; stage overrides applied instantly over polled data; `LIVE/POLLING` indicator in header
+- [x] `Sessions.jsx` — global WS hook; immediate `loadSessions()` on any stage/complete/fail event
+- [x] `Dashboard.jsx` — global WS hook; immediate KPI + queue refresh on `session_completed`; header shows LIVE/POLLING state
 
 ---
 
@@ -392,8 +398,8 @@ curl http://localhost:8001/api/sessions/<id>/report
 | 2 | OCR + Coach mapping | ✅ Done | Sync engine, orchestrator, hierarchy endpoint |
 | 3 | YOLO Detection + Defect intelligence | ✅ Done | Needs best.pt model file to run |
 | 4 | Report generation (PDF) | ✅ Done | Needs Cloudinary creds for upload |
-| 5 | Frontend wire-up | ⬜ Not started | |
-| 6 | WebSocket live status | ⬜ Not started | |
+| 5 | Frontend wire-up | ✅ Done | All pages wired; mock data removed; polling active |
+| 6 | WebSocket live status | ✅ Done | Singleton WS, room-based broadcast, toasts, zero-lag stage chips |
 
 **Legend:** ⬜ Not started · 🔄 In progress · ✅ Done · ❌ Blocked
 

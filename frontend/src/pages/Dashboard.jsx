@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KPICard } from '../components/dashboard/KPICard';
 import { LiveTrainCard } from '../components/dashboard/LiveTrainCard';
-import { mockQueuedSessions } from '../data/mockData';
+import { usePolling } from '../hooks/usePolling';
+import { useSessionSocket } from '../hooks/useSessionSocket';
+import { toast } from '../hooks/useToast';
+import { getDashboardKpis, getLiveQueue, normalizeSession } from '../lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +24,28 @@ import {
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const { data: kpis,      refresh: refreshKpis }  = usePolling(getDashboardKpis, 10000);
+  const { data: queueData, refresh: refreshQueue }  = usePolling(getLiveQueue, 5000);
+
+  const liveSessions = (queueData?.sessions || []).map(normalizeSession);
+  const kv = (key, fallback) => kpis?.[key] ?? fallback;
+
+  // Live WS events — immediate refresh on pipeline events
+  const { lastEvent, connected } = useSessionSocket(null);
+  useEffect(() => {
+    if (!lastEvent) return;
+    if (lastEvent.type === 'session_completed') {
+      refreshKpis();
+      refreshQueue();
+      toast.success('Train inspection pipeline finished.', 'New Report Ready');
+    } else if (lastEvent.type === 'coaches_mapped') {
+      refreshQueue();
+    } else if (lastEvent.type === 'session_failed') {
+      refreshKpis();
+      refreshQueue();
+      toast.error('A pipeline session failed.', 'Pipeline Error');
+    }
+  }, [lastEvent, refreshKpis, refreshQueue]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 font-sans">
@@ -30,20 +55,20 @@ export const Dashboard = () => {
           <h1 className="text-2xl font-black tracking-tight text-foreground">OPERATIONS DASHBOARD</h1>
           <p className="text-sm text-muted-foreground mt-1">Industrial AI pipeline monitoring and queue controller</p>
         </div>
-        <div className="text-xs font-bold text-muted-foreground flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded-full shadow-sm">
-          <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-          LIVE ENGINE SYNCED
+        <div className={`text-xs font-bold text-muted-foreground flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded-full shadow-sm`}>
+          <div className={`w-2 h-2 rounded-full ${connected ? 'bg-success animate-pulse' : 'bg-amber-400'}`}></div>
+          {connected ? 'LIVE ENGINE SYNCED' : 'POLLING MODE'}
         </div>
       </div>
 
       {/* KPI Overview Strip */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <KPICard label="Trains Today" value="48" icon={<Train className="w-4 h-4 text-primary" />} highlightColor="slate" />
-        <KPICard label="Reports Ready" value="31" icon={<FileCheck className="w-4 h-4 text-success" />} highlightColor="emerald" />
-        <KPICard label="Processing" value="12" icon={<Loader2 className="w-4 h-4 text-processing animate-spin" />} highlightColor="cyan" />
-        <KPICard label="Queued" value="5" icon={<Activity className="w-4 h-4 text-muted-foreground" />} highlightColor="slate" />
-        <KPICard label="Critical Alerts" value="3" icon={<ShieldAlert className="w-4 h-4 text-destructive" />} highlightColor="red" />
-        <KPICard label="Failed Sessions" value="1" icon={<AlertTriangle className="w-4 h-4 text-warning" />} highlightColor="amber" />
+        <KPICard label="Trains Today"    value={String(kv('total_sessions', '—'))}     icon={<Train className="w-4 h-4 text-primary" />} highlightColor="slate" />
+        <KPICard label="Reports Ready"   value={String(kv('completed_sessions', '—'))}  icon={<FileCheck className="w-4 h-4 text-success" />} highlightColor="emerald" />
+        <KPICard label="Processing"      value={String(kv('active_sessions', '—'))}     icon={<Loader2 className="w-4 h-4 text-processing animate-spin" />} highlightColor="cyan" />
+        <KPICard label="Queued"          value={String(kv('queued_sessions', '—'))}     icon={<Activity className="w-4 h-4 text-muted-foreground" />} highlightColor="slate" />
+        <KPICard label="Critical Alerts" value={String(kv('critical_defects', '—'))}   icon={<ShieldAlert className="w-4 h-4 text-destructive" />} highlightColor="red" />
+        <KPICard label="Failed Sessions" value={String(kv('failed_sessions', '—'))}    icon={<AlertTriangle className="w-4 h-4 text-warning" />} highlightColor="amber" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -63,9 +88,15 @@ export const Dashboard = () => {
           </div>
           
           <div className="space-y-4">
-            {mockQueuedSessions.map(session => (
-              <LiveTrainCard key={session.id} session={session} />
-            ))}
+            {liveSessions.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground text-sm font-medium">
+                No active sessions. Upload a video to start an inspection.
+              </div>
+            ) : (
+              liveSessions.map(session => (
+                <LiveTrainCard key={session.id} session={session} />
+              ))
+            )}
           </div>
         </div>
 

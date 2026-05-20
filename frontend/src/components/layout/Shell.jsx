@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import { ToastContainer } from '../ui/ToastContainer';
 import { 
   LayoutDashboard, 
   Train, 
@@ -116,6 +117,9 @@ export const Shell = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Global toast notifications */}
+      <ToastContainer />
     </div>
   );
 };

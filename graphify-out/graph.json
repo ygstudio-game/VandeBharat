@@ -58,85 +58,49 @@
       "norm_label": "prisma"
     },
     {
-      "label": "intelligence.js",
+      "label": "reports.js",
       "file_type": "code",
-      "source_file": "backend/src/routes/intelligence.js",
+      "source_file": "backend/src/routes/reports.js",
       "source_location": "L1",
-      "id": "backend_src_routes_intelligence_js",
-      "community": 14,
-      "norm_label": "intelligence.js"
-    },
-    {
-      "label": "prisma",
-      "file_type": "code",
-      "source_file": "backend/src/routes/intelligence.js",
-      "source_location": "L8",
-      "id": "routes_intelligence_prisma",
-      "community": 14,
-      "norm_label": "prisma"
-    },
-    {
-      "label": "intelligence()",
-      "file_type": "code",
-      "source_file": "backend/src/routes/intelligence.js",
-      "source_location": "L10",
-      "id": "routes_intelligence_intelligence",
-      "community": 14,
-      "norm_label": "intelligence()"
-    },
-    {
-      "label": "pipelineOrchestrator.js",
-      "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L1",
-      "id": "backend_src_services_pipelineorchestrator_js",
-      "community": 16,
-      "norm_label": "pipelineorchestrator.js"
+      "id": "backend_src_routes_reports_js",
+      "community": 18,
+      "norm_label": "reports.js"
     },
     {
       "label": "axios",
       "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L5",
-      "id": "services_pipelineorchestrator_axios",
-      "community": 16,
+      "source_file": "backend/src/routes/reports.js",
+      "source_location": "L6",
+      "id": "routes_reports_axios",
+      "community": 18,
       "norm_label": "axios"
     },
     {
       "label": "prisma",
       "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L6",
-      "id": "services_pipelineorchestrator_prisma",
-      "community": 16,
+      "source_file": "backend/src/routes/reports.js",
+      "source_location": "L7",
+      "id": "routes_reports_prisma",
+      "community": 18,
       "norm_label": "prisma"
     },
     {
       "label": "config",
       "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L7",
-      "id": "services_pipelineorchestrator_config",
-      "community": 16,
+      "source_file": "backend/src/routes/reports.js",
+      "source_location": "L8",
+      "id": "routes_reports_config",
+      "community": 18,
       "norm_label": "config"
     },
     {
-      "label": "runOcrPipeline()",
+      "label": "reports()",
       "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L12",
-      "id": "services_pipelineorchestrator_runocrpipeline",
-      "community": 16,
-      "norm_label": "runocrpipeline()"
-    },
-    {
-      "label": "runPipeline()",
-      "file_type": "code",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L232",
-      "id": "services_pipelineorchestrator_runpipeline",
-      "community": 16,
-      "norm_label": "runpipeline()"
+      "source_file": "backend/src/routes/reports.js",
+      "source_location": "L10",
+      "id": "routes_reports_reports",
+      "community": 18,
+      "norm_label": "reports()"
     },
     {
       "label": "progress.md",
@@ -301,19 +265,37 @@
       "norm_label": "code:bash (# terminal 4 \u2014 correlation service)"
     },
     {
-      "label": "Phase 4 \u2014 Report Generation \u2b1c",
+      "label": "Phase 4 \u2014 Report Generation \u2705",
       "file_type": "document",
       "source_file": "progress.md",
       "source_location": "L318",
       "id": "main_progress_phase_4_report_generation",
       "community": 2,
-      "norm_label": "phase 4 \u2014 report generation \u2b1c"
+      "norm_label": "phase 4 \u2014 report generation \u2705"
+    },
+    {
+      "label": "What was built",
+      "file_type": "document",
+      "source_file": "progress.md",
+      "source_location": "L322",
+      "id": "main_progress_what_was_built_322",
+      "community": 2,
+      "norm_label": "what was built"
+    },
+    {
+      "label": "code:bash (cd Main/services/report_generator)",
+      "file_type": "document",
+      "source_file": "progress.md",
+      "source_location": "L341",
+      "id": "main_progress_codeblock_6",
+      "community": 2,
+      "norm_label": "code:bash (cd main/services/report_generator)"
     },
     {
       "label": "Phase 5 \u2014 Frontend Wire-Up \u2b1c",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L337",
+      "source_location": "L358",
       "id": "main_progress_phase_5_frontend_wire_up",
       "community": 2,
       "norm_label": "phase 5 \u2014 frontend wire-up \u2b1c"
@@ -322,7 +304,7 @@
       "label": "Phase 6 \u2014 WebSocket Live Status \u2b1c",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L354",
+      "source_location": "L375",
       "id": "main_progress_phase_6_websocket_live_status",
       "community": 2,
       "norm_label": "phase 6 \u2014 websocket live status \u2b1c"
@@ -331,7 +313,7 @@
       "label": "Status Tracker",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L365",
+      "source_location": "L386",
       "id": "main_progress_status_tracker",
       "community": 2,
       "norm_label": "status tracker"
@@ -340,7 +322,7 @@
       "label": "Running Everything (Development)",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L381",
+      "source_location": "L402",
       "id": "main_progress_running_everything_development",
       "community": 2,
       "norm_label": "running everything (development)"
@@ -349,8 +331,8 @@
       "label": "code:bash (# 1. GPU Services (need CUDA + GPU))",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L383",
-      "id": "main_progress_codeblock_6",
+      "source_location": "L404",
+      "id": "main_progress_codeblock_7",
       "community": 2,
       "norm_label": "code:bash (# 1. gpu services (need cuda + gpu))"
     },
@@ -358,91 +340,145 @@
       "label": "Key Decisions",
       "file_type": "document",
       "source_file": "progress.md",
-      "source_location": "L403",
+      "source_location": "L424",
       "id": "main_progress_key_decisions",
       "community": 2,
       "norm_label": "key decisions"
     },
     {
-      "label": "engine.py",
+      "label": "builder.py",
       "file_type": "code",
-      "source_file": "services/correlation/engine.py",
+      "source_file": "services/report_generator/builder.py",
       "source_location": "L1",
-      "id": "services_correlation_engine_py",
-      "community": 11,
-      "norm_label": "engine.py"
+      "id": "services_report_generator_builder_py",
+      "community": 13,
+      "norm_label": "builder.py"
     },
     {
-      "label": "load_manifest()",
+      "label": "load_session_data()",
       "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L61",
-      "id": "correlation_engine_load_manifest",
-      "community": 11,
-      "norm_label": "load_manifest()"
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L40",
+      "id": "report_generator_builder_load_session_data",
+      "community": 13,
+      "norm_label": "load_session_data()"
     },
     {
-      "label": "_fetch_frame_bytes()",
+      "label": "build_json_report()",
       "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L70",
-      "id": "correlation_engine_fetch_frame_bytes",
-      "community": 11,
-      "norm_label": "_fetch_frame_bytes()"
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L123",
+      "id": "report_generator_builder_build_json_report",
+      "community": 13,
+      "norm_label": "build_json_report()"
     },
     {
-      "label": "_run_yolo()",
+      "label": "_health_color()",
       "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L80",
-      "id": "correlation_engine_run_yolo",
-      "community": 11,
-      "norm_label": "_run_yolo()"
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L187",
+      "id": "report_generator_builder_health_color",
+      "community": 13,
+      "norm_label": "_health_color()"
     },
     {
-      "label": "correlate_coach()",
+      "label": "_PDF",
       "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L94",
-      "id": "correlation_engine_correlate_coach",
-      "community": 11,
-      "norm_label": "correlate_coach()"
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L198",
+      "id": "report_generator_builder_pdf",
+      "community": 13,
+      "norm_label": "_pdf"
     },
     {
-      "label": "Correlation Engine \u2014 Phase 3 For each coach:   1. Sample frames assigned to that",
+      "label": "FPDF",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "fpdf",
+      "community": 13,
+      "norm_label": "fpdf"
+    },
+    {
+      "label": ".header()",
+      "file_type": "code",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L199",
+      "id": "report_generator_builder_pdf_header",
+      "community": 13,
+      "norm_label": ".header()"
+    },
+    {
+      "label": ".footer()",
+      "file_type": "code",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L208",
+      "id": "report_generator_builder_pdf_footer",
+      "community": 13,
+      "norm_label": ".footer()"
+    },
+    {
+      "label": "build_pdf_report()",
+      "file_type": "code",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L215",
+      "id": "report_generator_builder_build_pdf_report",
+      "community": 13,
+      "norm_label": "build_pdf_report()"
+    },
+    {
+      "label": "_upload()",
+      "file_type": "code",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L332",
+      "id": "report_generator_builder_upload",
+      "community": 13,
+      "norm_label": "_upload()"
+    },
+    {
+      "label": "upload_report()",
+      "file_type": "code",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L342",
+      "id": "report_generator_builder_upload_report",
+      "community": 13,
+      "norm_label": "upload_report()"
+    },
+    {
+      "label": "generate_report()",
+      "file_type": "code",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L356",
+      "id": "report_generator_builder_generate_report",
+      "community": 13,
+      "norm_label": "generate_report()"
+    },
+    {
+      "label": "Report builder \u2014 Phase 4 Reads full session from DB \u2192 builds PDF (fpdf2) + JSON",
       "file_type": "rationale",
-      "source_file": "services/correlation/engine.py",
+      "source_file": "services/report_generator/builder.py",
       "source_location": "L1",
-      "id": "correlation_engine_rationale_1",
-      "community": 11,
-      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to that"
-    },
-    {
-      "label": "Run defect + component correlation for one coach.     Returns summary dict.",
-      "file_type": "rationale",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L95",
-      "id": "correlation_engine_rationale_95",
-      "community": 11,
-      "norm_label": "run defect + component correlation for one coach.     returns summary dict."
+      "id": "report_generator_builder_rationale_1",
+      "community": 13,
+      "norm_label": "report builder \u2014 phase 4 reads full session from db \u2192 builds pdf (fpdf2) + json"
     },
     {
       "label": "server.py",
       "file_type": "code",
-      "source_file": "services/correlation/server.py",
+      "source_file": "services/report_generator/server.py",
       "source_location": "L1",
-      "id": "services_correlation_server_py",
-      "community": 11,
+      "id": "services_report_generator_server_py",
+      "community": 12,
       "norm_label": "server.py"
     },
     {
-      "label": "CorrelateRequest",
+      "label": "GenerateRequest",
       "file_type": "code",
-      "source_file": "services/correlation/server.py",
-      "source_location": "L26",
-      "id": "correlation_server_correlaterequest",
-      "community": 11,
-      "norm_label": "correlaterequest"
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L27",
+      "id": "report_generator_server_generaterequest",
+      "community": 12,
+      "norm_label": "generaterequest"
     },
     {
       "label": "BaseModel",
@@ -456,38 +492,245 @@
     {
       "label": "get_conn()",
       "file_type": "code",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L31",
+      "id": "report_generator_server_get_conn",
+      "community": 12,
+      "norm_label": "get_conn()"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L36",
+      "id": "report_generator_server_health",
+      "community": 12,
+      "norm_label": "health()"
+    },
+    {
+      "label": "generate()",
+      "file_type": "code",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L41",
+      "id": "report_generator_server_generate",
+      "community": 12,
+      "norm_label": "generate()"
+    },
+    {
+      "label": "get_report()",
+      "file_type": "code",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L157",
+      "id": "report_generator_server_get_report",
+      "community": 12,
+      "norm_label": "get_report()"
+    },
+    {
+      "label": "Report Generator Service \u2014 port 5006 POST /generate { session_id } \u2192 builds PDF",
+      "file_type": "rationale",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L1",
+      "id": "report_generator_server_rationale_1",
+      "community": 12,
+      "norm_label": "report generator service \u2014 port 5006 post /generate { session_id } \u2192 builds pdf"
+    },
+    {
+      "label": "intelligence.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/intelligence.js",
+      "source_location": "L1",
+      "community": 14,
+      "norm_label": "intelligence.js",
+      "id": "backend_src_routes_intelligence_js"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/routes/intelligence.js",
+      "source_location": "L8",
+      "community": 14,
+      "norm_label": "prisma",
+      "id": "routes_intelligence_prisma"
+    },
+    {
+      "label": "intelligence()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/intelligence.js",
+      "source_location": "L10",
+      "community": 14,
+      "norm_label": "intelligence()",
+      "id": "routes_intelligence_intelligence"
+    },
+    {
+      "label": "pipelineOrchestrator.js",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L1",
+      "community": 16,
+      "norm_label": "pipelineorchestrator.js",
+      "id": "backend_src_services_pipelineorchestrator_js"
+    },
+    {
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L5",
+      "community": 16,
+      "norm_label": "axios",
+      "id": "services_pipelineorchestrator_axios"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L6",
+      "community": 16,
+      "norm_label": "prisma",
+      "id": "services_pipelineorchestrator_prisma"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L7",
+      "community": 16,
+      "norm_label": "config",
+      "id": "services_pipelineorchestrator_config"
+    },
+    {
+      "label": "runOcrPipeline()",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L12",
+      "community": 16,
+      "norm_label": "runocrpipeline()",
+      "id": "services_pipelineorchestrator_runocrpipeline"
+    },
+    {
+      "label": "runPipeline()",
+      "file_type": "code",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L232",
+      "community": 16,
+      "norm_label": "runpipeline()",
+      "id": "services_pipelineorchestrator_runpipeline"
+    },
+    {
+      "label": "engine.py",
+      "file_type": "code",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "engine.py",
+      "id": "services_correlation_engine_py"
+    },
+    {
+      "label": "load_manifest()",
+      "file_type": "code",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L61",
+      "community": 11,
+      "norm_label": "load_manifest()",
+      "id": "correlation_engine_load_manifest"
+    },
+    {
+      "label": "_fetch_frame_bytes()",
+      "file_type": "code",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L70",
+      "community": 11,
+      "norm_label": "_fetch_frame_bytes()",
+      "id": "correlation_engine_fetch_frame_bytes"
+    },
+    {
+      "label": "_run_yolo()",
+      "file_type": "code",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L80",
+      "community": 11,
+      "norm_label": "_run_yolo()",
+      "id": "correlation_engine_run_yolo"
+    },
+    {
+      "label": "correlate_coach()",
+      "file_type": "code",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L94",
+      "community": 11,
+      "norm_label": "correlate_coach()",
+      "id": "correlation_engine_correlate_coach"
+    },
+    {
+      "label": "Correlation Engine \u2014 Phase 3 For each coach:   1. Sample frames assigned to that",
+      "file_type": "rationale",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to that",
+      "id": "correlation_engine_rationale_1"
+    },
+    {
+      "label": "Run defect + component correlation for one coach.     Returns summary dict.",
+      "file_type": "rationale",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L95",
+      "community": 11,
+      "norm_label": "run defect + component correlation for one coach.     returns summary dict.",
+      "id": "correlation_engine_rationale_95"
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "server.py",
+      "id": "services_correlation_server_py"
+    },
+    {
+      "label": "CorrelateRequest",
+      "file_type": "code",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L26",
+      "community": 12,
+      "norm_label": "correlaterequest",
+      "id": "correlation_server_correlaterequest"
+    },
+    {
+      "label": "get_conn()",
+      "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L31",
-      "id": "correlation_server_get_conn",
       "community": 11,
-      "norm_label": "get_conn()"
+      "norm_label": "get_conn()",
+      "id": "correlation_server_get_conn"
     },
     {
       "label": "health()",
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L36",
-      "id": "correlation_server_health",
       "community": 11,
-      "norm_label": "health()"
+      "norm_label": "health()",
+      "id": "correlation_server_health"
     },
     {
       "label": "correlate()",
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L41",
-      "id": "correlation_server_correlate",
       "community": 11,
-      "norm_label": "correlate()"
+      "norm_label": "correlate()",
+      "id": "correlation_server_correlate"
     },
     {
       "label": "Correlation Service \u2014 port 5005 POST /correlate { session_id, coach_id }   \u2192 run",
       "file_type": "rationale",
       "source_file": "services/correlation/server.py",
       "source_location": "L1",
-      "id": "correlation_server_rationale_1",
       "community": 11,
-      "norm_label": "correlation service \u2014 port 5005 post /correlate { session_id, coach_id }   \u2192 run"
+      "norm_label": "correlation service \u2014 port 5005 post /correlate { session_id, coach_id }   \u2192 run",
+      "id": "correlation_server_rationale_1"
     },
     {
       "label": "ocr_engine.py",
@@ -1160,7 +1403,7 @@
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L37",
-      "community": 12,
+      "community": 4,
       "norm_label": "extractrequest",
       "id": "frame_extractor_server_extractrequest"
     },
@@ -1658,33 +1901,6 @@
       "community": 10,
       "norm_label": "components",
       "id": "manifests_vande_bharat_components"
-    },
-    {
-      "label": "server.py",
-      "file_type": "code",
-      "source_file": "services/report_generator/server.py",
-      "source_location": "L1",
-      "community": 13,
-      "norm_label": "server.py",
-      "id": "services_report_generator_server_py"
-    },
-    {
-      "label": "health()",
-      "file_type": "code",
-      "source_file": "services/report_generator/server.py",
-      "source_location": "L11",
-      "community": 13,
-      "norm_label": "health()",
-      "id": "report_generator_server_health"
-    },
-    {
-      "label": "Report Generator Service \u2014 port 5006 Reads full session data \u2192 builds PDF (fpdf2",
-      "file_type": "rationale",
-      "source_file": "services/report_generator/server.py",
-      "source_location": "L1",
-      "community": 13,
-      "norm_label": "report generator service \u2014 port 5006 reads full session data \u2192 builds pdf (fpdf2",
-      "id": "report_generator_server_rationale_1"
     }
   ],
   "links": [
@@ -1774,116 +1990,42 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/intelligence.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "backend_src_routes_intelligence_js",
-      "target": "routes_intelligence_prisma",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/intelligence.js",
-      "source_location": "L10",
-      "weight": 1.0,
-      "source": "backend_src_routes_intelligence_js",
-      "target": "routes_intelligence_intelligence",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_axios"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_prisma"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_config"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L12",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_runocrpipeline"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_file": "backend/src/routes/reports.js",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "services_pipelineorchestrator_runpipeline"
+      "source": "backend_src_routes_reports_js",
+      "target": "routes_reports_axios",
+      "confidence_score": 1.0
     },
     {
-      "relation": "imports_from",
-      "context": "import",
+      "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
+      "source_file": "backend/src/routes/reports.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "backend_src_routes_reports_js",
+      "target": "routes_reports_prisma",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/reports.js",
       "source_location": "L8",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "backend_src_services_pipelineorchestrator_js"
+      "source": "backend_src_routes_reports_js",
+      "target": "routes_reports_config",
+      "confidence_score": 1.0
     },
     {
-      "relation": "imports_from",
-      "context": "import",
+      "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L3",
+      "source_file": "backend/src/routes/reports.js",
+      "source_location": "L10",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "backend_src_config_js"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/services/pipelineOrchestrator.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_services_pipelineorchestrator_js",
-      "target": "backend_src_db_client_js"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_src_routes_sessions_js",
-      "target": "services_pipelineorchestrator_runocrpipeline"
+      "source": "backend_src_routes_reports_js",
+      "target": "routes_reports_reports",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2101,9 +2243,9 @@
       "source_file": "progress.md",
       "source_location": "L272",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "main_progress_phase_3_yolo_detection_defect_intelligence",
-      "target": "main_progress_what_was_built_272",
-      "confidence_score": 1.0
+      "target": "main_progress_what_was_built_272"
     },
     {
       "relation": "contains",
@@ -2111,9 +2253,9 @@
       "source_file": "progress.md",
       "source_location": "L298",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "main_progress_what_was_built_272",
-      "target": "main_progress_codeblock_5",
-      "confidence_score": 1.0
+      "target": "main_progress_codeblock_5"
     },
     {
       "relation": "contains",
@@ -2129,103 +2271,248 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "progress.md",
-      "source_location": "L383",
+      "source_location": "L322",
       "weight": 1.0,
-      "source": "main_progress_running_everything_development",
+      "source": "main_progress_phase_4_report_generation",
+      "target": "main_progress_what_was_built_322",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L341",
+      "weight": 1.0,
+      "source": "main_progress_what_was_built_322",
       "target": "main_progress_codeblock_6",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L61",
+      "source_file": "progress.md",
+      "source_location": "L383",
       "weight": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_load_manifest",
+      "confidence_score": 1.0,
+      "source": "main_progress_running_everything_development",
+      "target": "main_progress_codeblock_6"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "progress.md",
+      "source_location": "L404",
+      "weight": 1.0,
+      "source": "main_progress_running_everything_development",
+      "target": "main_progress_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "fpdf",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L70",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L40",
       "weight": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_fetch_frame_bytes",
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_load_session_data",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L80",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L123",
       "weight": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_run_yolo",
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_build_json_report",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L94",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L187",
       "weight": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_correlate_coach",
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_health_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_pdf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_build_pdf_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L332",
+      "weight": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_upload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L342",
+      "weight": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_upload_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L356",
+      "weight": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_generate_report",
       "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
+      "source_file": "services/report_generator/builder.py",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "correlation_engine_rationale_1",
-      "target": "services_correlation_engine_py",
+      "source": "report_generator_builder_rationale_1",
+      "target": "services_report_generator_builder_py",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L127",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L358",
       "weight": 1.0,
-      "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_load_manifest",
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_load_session_data",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L136",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L364",
       "weight": 1.0,
-      "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_fetch_frame_bytes",
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_build_json_report",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L140",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L236",
       "weight": 1.0,
-      "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_run_yolo",
+      "source": "report_generator_builder_build_pdf_report",
+      "target": "report_generator_builder_health_color",
       "confidence_score": 1.0
     },
     {
-      "relation": "rationale_for",
+      "relation": "inherits",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L95",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L198",
       "weight": 1.0,
-      "source": "correlation_engine_rationale_95",
-      "target": "correlation_engine_correlate_coach",
+      "source": "report_generator_builder_pdf",
+      "target": "fpdf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "report_generator_builder_pdf",
+      "target": "report_generator_builder_pdf_header",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L208",
+      "weight": 1.0,
+      "source": "report_generator_builder_pdf",
+      "target": "report_generator_builder_pdf_footer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L217",
+      "weight": 1.0,
+      "source": "report_generator_builder_build_pdf_report",
+      "target": "report_generator_builder_pdf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L367",
+      "weight": 1.0,
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_build_pdf_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L344",
+      "weight": 1.0,
+      "source": "report_generator_builder_upload_report",
+      "target": "report_generator_builder_upload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L377",
+      "weight": 1.0,
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_upload_report",
       "confidence_score": 1.0
     },
     {
@@ -2233,61 +2520,81 @@
       "context": "call",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
-      "source_file": "services/correlation/server.py",
+      "source_file": "services/report_generator/server.py",
       "source_location": "L56",
       "weight": 1.0,
-      "source": "correlation_server_correlate",
-      "target": "correlation_engine_correlate_coach"
+      "source": "report_generator_server_generate",
+      "target": "report_generator_builder_generate_report"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/server.py",
-      "source_location": "L26",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L27",
       "weight": 1.0,
-      "source": "services_correlation_server_py",
-      "target": "correlation_server_correlaterequest",
+      "source": "services_report_generator_server_py",
+      "target": "report_generator_server_generaterequest",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/server.py",
+      "source_file": "services/report_generator/server.py",
       "source_location": "L31",
       "weight": 1.0,
-      "source": "services_correlation_server_py",
-      "target": "correlation_server_get_conn",
+      "source": "services_report_generator_server_py",
+      "target": "report_generator_server_get_conn",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/server.py",
+      "source_file": "services/report_generator/server.py",
       "source_location": "L11",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "services_correlation_server_py",
-      "target": "correlation_server_health"
+      "source": "services_report_generator_server_py",
+      "target": "report_generator_server_health"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/server.py",
+      "source_file": "services/report_generator/server.py",
       "source_location": "L41",
       "weight": 1.0,
-      "source": "services_correlation_server_py",
-      "target": "correlation_server_correlate",
+      "source": "services_report_generator_server_py",
+      "target": "report_generator_server_generate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L157",
+      "weight": 1.0,
+      "source": "services_report_generator_server_py",
+      "target": "report_generator_server_get_report",
       "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/server.py",
+      "source_file": "services/report_generator/server.py",
       "source_location": "L1",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "correlation_server_rationale_1",
-      "target": "services_correlation_server_py"
+      "source": "report_generator_server_rationale_1",
+      "target": "services_report_generator_server_py"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "report_generator_server_generaterequest",
+      "target": "basemodel",
+      "confidence_score": 1.0
     },
     {
       "relation": "inherits",
@@ -2295,9 +2602,9 @@
       "source_file": "services/correlation/server.py",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_server_correlaterequest",
-      "target": "basemodel",
-      "confidence_score": 1.0
+      "target": "basemodel"
     },
     {
       "relation": "inherits",
@@ -2333,12 +2640,302 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "report_generator_server_generate",
+      "target": "report_generator_server_get_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L158",
+      "weight": 1.0,
+      "source": "report_generator_server_get_report",
+      "target": "report_generator_server_get_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/intelligence.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_intelligence_js",
+      "target": "routes_intelligence_prisma"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/intelligence.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_intelligence_js",
+      "target": "routes_intelligence_intelligence"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_axios"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_prisma"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_config"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_runocrpipeline"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "services_pipelineorchestrator_runpipeline"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "backend_src_services_pipelineorchestrator_js"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "backend_src_config_js"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/services/pipelineOrchestrator.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_services_pipelineorchestrator_js",
+      "target": "backend_src_db_client_js"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_src_routes_sessions_js",
+      "target": "services_pipelineorchestrator_runocrpipeline"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_load_manifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_fetch_frame_bytes"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L80",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_run_yolo"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L94",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_correlate_coach"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_rationale_1",
+      "target": "services_correlation_engine_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_load_manifest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L136",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_fetch_frame_bytes"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_run_yolo"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_rationale_95",
+      "target": "correlation_engine_correlate_coach"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "services/correlation/server.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "correlation_server_correlate",
+      "target": "correlation_engine_correlate_coach"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_server_py",
+      "target": "correlation_server_correlaterequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_server_py",
+      "target": "correlation_server_get_conn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_server_py",
+      "target": "correlation_server_health"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_server_py",
+      "target": "correlation_server_correlate"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_server_rationale_1",
+      "target": "services_correlation_server_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "source_file": "services/correlation/server.py",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_server_correlate",
-      "target": "correlation_server_get_conn",
-      "confidence_score": 1.0
+      "target": "correlation_server_get_conn"
     },
     {
       "relation": "contains",
@@ -3725,28 +4322,8 @@
       "confidence_score": 1.0,
       "source": "services_correlation_manifests_vande_bharat_json",
       "target": "manifests_vande_bharat_components"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/server.py",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_server_py",
-      "target": "report_generator_server_health"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/server.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_server_rationale_1",
-      "target": "services_report_generator_server_py"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c488bcdc547a98424fdc0c37e2af8b8e4a5709ea"
+  "built_at_commit": "978097bb9ddf4b4513f5054fe65a05d295478036"
 }

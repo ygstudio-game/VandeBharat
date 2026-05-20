@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { HierarchyTree } from '../components/workspace/HierarchyTree';
-import { mockTrainSession } from '../data/mockData';
+import { usePolling } from '../hooks/usePolling';
+import { useSessionSocket } from '../hooks/useSessionSocket';
+import { toast } from '../hooks/useToast';
+import { getSession, getHierarchy, getIntelligence, generateReport, normalizeSession } from '../lib/api';
 import { 
   ArrowLeft, 
   Cpu, 
@@ -54,7 +57,74 @@ const timelineAnchors = [
 export const TrainWorkspace = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
-  
+
+  // Real API data
+  const { data: rawSession } = usePolling(useCallback(() => getSession(sessionId), [sessionId]), 5000);
+  const { data: hierarchyData } = usePolling(useCallback(() => getHierarchy(sessionId), [sessionId]), 10000);
+  const session = rawSession ? normalizeSession(rawSession) : null;
+  const realCoaches = hierarchyData?.coaches || [];
+
+  const [intelligence, setIntelligence] = useState(null);
+  const [intelligenceLoading, setIntelligenceLoading] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+
+  // Live stage overrides from WebSocket — applied on top of polled session data
+  const [stageOverrides, setStageOverrides] = useState({});
+  const { lastEvent, connected } = useSessionSocket(sessionId);
+
+  useEffect(() => {
+    if (!lastEvent) return;
+    const { type, stage, status, message, count } = lastEvent;
+
+    if (type === 'stage_update' && stage) {
+      const STATUS_MAP = { running: 'IN_PROGRESS', completed: 'COMPLETED', failed: 'FAILED' };
+      setStageOverrides((prev) => ({ ...prev, [stage]: STATUS_MAP[status] || status.toUpperCase() }));
+
+      if (status === 'completed') {
+        const labels = {
+          frame_extraction: 'Frame Extraction',
+          ocr_detection: 'OCR Detection',
+          synchronization: 'Synchronization',
+          component_detection: 'Component Detection',
+          defect_analysis: 'Defect Analysis',
+          report_generation: 'Report Generation',
+        };
+        toast.success(message || `${labels[stage] || stage} complete`, labels[stage] || 'Pipeline Update');
+      }
+    }
+
+    if (type === 'coaches_mapped') {
+      toast.info(`${count} coaches mapped from video`, 'Coach Mapping Complete');
+    }
+
+    if (type === 'session_completed') {
+      toast.success('Inspection pipeline finished. Generating report...', 'Session Complete');
+      // Trigger an immediate data refresh
+      setStageOverrides({});
+    }
+
+    if (type === 'session_failed') {
+      toast.error('Pipeline encountered a fatal error.', 'Session Failed');
+    }
+  }, [lastEvent]);
+
+  const loadIntelligence = useCallback(async (coachId) => {
+    setIntelligenceLoading(true);
+    try {
+      const data = await getIntelligence(sessionId, coachId);
+      setIntelligence(data);
+    } catch (_) {
+      setIntelligence(null);
+    } finally {
+      setIntelligenceLoading(false);
+    }
+  }, [sessionId]);
+
+  const handleGenerateReport = async () => {
+    setReportLoading(true);
+    try { await generateReport(sessionId); } catch (_) {} finally { setReportLoading(false); }
+  };
+
   // Selection state
   const [selectedNode, setSelectedNode] = useState({
     type: 'coach',
@@ -175,17 +245,60 @@ export const TrainWorkspace = () => {
 
   const coachData = getCoachData(currentCoachNum);
 
+  // Prefer real intelligence data over mock
+  const displayDefects = intelligence?.defects?.length
+    ? intelligence.defects.map(d => ({
+        id: d.id,
+        name: d.defect_type,
+        type: d.defect_type,
+        severity: d.severity,
+        cam: d.camera_name || 'CAM_UNKNOWN',
+        conf: `${Math.round((d.confidence_score || 0) * 100)}%`,
+        notes: d.notes || ''
+      }))
+    : coachData.defects;
+
+  const displayComponents = intelligence?.component_detections?.length
+    ? intelligence.component_detections.map(c => ({
+        id: c.id,
+        name: c.component_code,
+        expected: true,
+        detected: c.detected,
+        status: c.detected ? 'OK' : 'MISSING',
+        conf: c.confidence_score || 0
+      }))
+    : coachData.components;
+
+  // Pipeline stages: polled data merged with live WS overrides (WS wins for zero-lag updates)
+  const _polledPs = session?.pipelineStates || {};
+  const _wsPs = {
+    frameExtraction:   stageOverrides.frame_extraction,
+    ocrDetection:      stageOverrides.ocr_detection,
+    synchronization:   stageOverrides.synchronization,
+    componentDetection:stageOverrides.component_detection,
+    defectAnalysis:    stageOverrides.defect_analysis,
+    reportGeneration:  stageOverrides.report_generation,
+  };
+  const ps = Object.fromEntries(
+    Object.entries(_polledPs).map(([k, v]) => [k, _wsPs[k] || v])
+  );
+  const stageChip = (status, label, doneLabel) => {
+    if (status === 'COMPLETED') return { text: `✓ ${doneLabel}`, cls: 'border-emerald-200 bg-emerald-50 text-emerald-700' };
+    if (status === 'IN_PROGRESS') return { text: `~ ${label}`, cls: 'border-blue-200 bg-blue-50 text-blue-700 animate-pulse' };
+    if (status === 'FAILED') return { text: `✗ ${label}`, cls: 'border-red-200 bg-red-50 text-red-700' };
+    return { text: `• ${label}`, cls: 'border-slate-200 bg-slate-100 text-slate-400' };
+  };
+
   const handleSelectNode = (type, id, metadata) => {
-    const num = metadata?.coachNumber || id.split('-')[1]?.toUpperCase() || 'B1';
-    setSelectedNode({
-      type,
-      id,
-      coachNumber: num
-    });
+    const num = metadata?.coachNumber || metadata?.coach_number || id.split('-')[1]?.toUpperCase() || 'B1';
+    setSelectedNode({ type, id, coachNumber: num });
     if (type === 'ocr') {
       setViewMode('ocr');
     } else {
       setViewMode('component');
+    }
+    if (type === 'coach' && metadata?.id) {
+      loadIntelligence(metadata.id);
     }
   };
 
@@ -206,17 +319,21 @@ export const TrainWorkspace = () => {
             <div className="flex items-center gap-3">
               <h2 className="text-md font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5">
                 <Train className="w-5 h-5 text-primary" />
-                Train Workspace: {mockTrainSession.trainNumber}
+                Train Workspace: {session?.trainNumber || '—'}
               </h2>
               <Badge className="font-extrabold text-[9px] uppercase px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
-                Synchronizing Coaches...
+                {session?.status || 'Loading...'}
               </Badge>
               <span className="text-[10px] font-mono text-slate-400 font-bold bg-slate-50 border border-slate-200 px-2 py-0.5 rounded">
-                SESSION: {sessionId || "SES-22901-A"}
+                SESSION: {sessionId}
+              </span>
+              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${connected ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+                {connected ? 'LIVE' : 'POLLING'}
               </span>
             </div>
             <p className="text-[10px] text-slate-500 font-bold font-mono">
-              SYS_TELEMETRY: 14,221 FRAMES | 6 ACTIVE CAMERAS | 18 COACHES SEGMENTED
+              SYS_TELEMETRY: {session?.totalFrames ?? '—'} FRAMES | {session?.totalCoaches ?? '—'} COACHES SEGMENTED
             </p>
           </div>
         </div>
@@ -225,22 +342,30 @@ export const TrainWorkspace = () => {
         <div className="flex items-center gap-6 text-xs font-mono font-bold">
           <div className="text-right">
             <span className="text-[9px] text-slate-400 block leading-none mb-1">OCR CONFIDENCE</span>
-            <span className="text-slate-900 font-extrabold">{coachData.ocrConfidence}</span>
+            <span className="text-slate-900 font-extrabold">
+              {session ? `${((session.ocrConfidence || 0) * 100).toFixed(1)}%` : coachData.ocrConfidence}
+            </span>
           </div>
           <div className="text-right">
             <span className="text-[9px] text-slate-400 block leading-none mb-1">SYNC STABILITY</span>
-            <span className="text-slate-900 font-extrabold">{coachData.syncStability}</span>
+            <span className="text-slate-900 font-extrabold">
+              {session ? `${((session.syncHealth || 0) * 100).toFixed(1)}%` : coachData.syncStability}
+            </span>
           </div>
           <div className="text-right">
             <span className="text-[9px] text-slate-400 block leading-none mb-1">CRITICAL ALERTS</span>
             <span className="text-red-600 font-black animate-pulse bg-red-50 border border-red-200 px-2 py-0.5 rounded">
-              {coachData.defects.filter(d => d.severity === 'CRITICAL').length} CRIT
+              {session ? session.criticalDefects : displayDefects.filter(d => d.severity === 'CRITICAL').length} CRIT
             </span>
           </div>
-          
-          <button className="bg-primary hover:bg-slate-800 text-white px-4 py-2 rounded text-[10px] uppercase font-bold tracking-wider shadow-sm transition-all flex items-center gap-1.5">
-            <FileCheck className="w-4 h-4" />
-            Export Audit Report
+
+          <button
+            onClick={handleGenerateReport}
+            disabled={reportLoading}
+            className="bg-primary hover:bg-slate-800 text-white px-4 py-2 rounded text-[10px] uppercase font-bold tracking-wider shadow-sm transition-all flex items-center gap-1.5 disabled:opacity-60"
+          >
+            {reportLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <FileCheck className="w-4 h-4" />}
+            {reportLoading ? 'Generating...' : 'Export Audit Report'}
           </button>
         </div>
       </div>
@@ -249,34 +374,24 @@ export const TrainWorkspace = () => {
       <div className="bg-slate-50 border-b border-slate-200 px-6 py-2 shrink-0 flex flex-wrap items-center justify-between text-[10px] font-bold text-slate-500 shadow-inner gap-2">
         <div className="flex items-center gap-2 w-full md:w-1/3">
           <span className="font-mono text-slate-400">PIPELINE:</span>
-          <Progress value={72} className="h-2 bg-slate-200 flex-1 rounded-full" />
-          <span className="font-mono text-slate-900">72%</span>
+          <Progress value={session?.progressPercent ?? 72} className="h-2 bg-slate-200 flex-1 rounded-full" />
+          <span className="font-mono text-slate-900">{session?.progressPercent ?? 72}%</span>
         </div>
 
         <div className="flex gap-2 items-center flex-wrap">
-          <span className="px-2 py-0.5 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 font-black">
-            ✓ FRAMES
-          </span>
-          <ChevronRight className="w-3 h-3 text-slate-400" />
-          <span className="px-2 py-0.5 rounded border border-emerald-200 bg-emerald-50 text-emerald-700 font-black">
-            ✓ OCR
-          </span>
-          <ChevronRight className="w-3 h-3 text-slate-400" />
-          <span className="px-2 py-0.5 rounded border border-blue-200 bg-blue-50 text-blue-700 font-black animate-pulse">
-            ~ SYNCHRONIZATION
-          </span>
-          <ChevronRight className="w-3 h-3 text-slate-400" />
-          <span className="px-2 py-0.5 rounded border border-slate-200 bg-slate-100 text-slate-400">
-            • COMPONENTS
-          </span>
-          <ChevronRight className="w-3 h-3 text-slate-400" />
-          <span className="px-2 py-0.5 rounded border border-slate-200 bg-slate-100 text-slate-400">
-            • DEFECTS
-          </span>
-          <ChevronRight className="w-3 h-3 text-slate-400" />
-          <span className="px-2 py-0.5 rounded border border-slate-200 bg-slate-100 text-slate-400">
-            • REPORT
-          </span>
+          {[
+            stageChip(ps.frameExtraction,    'FRAMES',       'FRAMES'),
+            stageChip(ps.ocrDetection,       'OCR',          'OCR'),
+            stageChip(ps.synchronization,    'SYNCHRONIZATION','SYNC'),
+            stageChip(ps.componentDetection, 'COMPONENTS',   'COMPONENTS'),
+            stageChip(ps.defectAnalysis,     'DEFECTS',      'DEFECTS'),
+            stageChip(ps.reportGeneration,   'REPORT',       'REPORT'),
+          ].map((chip, i, arr) => (
+            <React.Fragment key={i}>
+              <span className={`px-2 py-0.5 rounded border font-black ${chip.cls}`}>{chip.text}</span>
+              {i < arr.length - 1 && <ChevronRight className="w-3 h-3 text-slate-400" />}
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
@@ -290,7 +405,12 @@ export const TrainWorkspace = () => {
             <p className="text-[10px] text-slate-400 font-bold uppercase">Frame Anchors & Camera Feeds</p>
           </div>
           <div className="flex-1 min-h-0">
-            <HierarchyTree onSelectNode={handleSelectNode} />
+            <HierarchyTree
+              onSelectNode={handleSelectNode}
+              coaches={realCoaches.length ? realCoaches : undefined}
+              trainNumber={session?.trainNumber}
+              sessionId={sessionId}
+            />
           </div>
         </div>
 
@@ -498,16 +618,17 @@ export const TrainWorkspace = () => {
             {/* Defect Cards Section */}
             <div>
               <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
-                <ShieldAlert className="w-3.5 h-3.5 text-red-600" /> Detected Defects ({coachData.defects.length})
+                <ShieldAlert className="w-3.5 h-3.5 text-red-600" /> Detected Defects ({displayDefects.length})
+                {intelligenceLoading && <RefreshCw className="w-3 h-3 animate-spin ml-1" />}
               </h4>
-              
-              {coachData.defects.length === 0 ? (
+
+              {displayDefects.length === 0 ? (
                 <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded text-center text-xs text-emerald-800 font-medium">
                   ✓ Bogie is fully compliant. No defects found.
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {coachData.defects.map((defect) => (
+                  {displayDefects.map((defect) => (
                     <div 
                       key={defect.id} 
                       className={`p-3 rounded border text-xs transition-all ${defect.severity === 'CRITICAL' ? 'bg-red-50/50 border-red-200' : 'bg-amber-50/50 border-amber-200'}`}
@@ -551,7 +672,7 @@ export const TrainWorkspace = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {coachData.components.map((comp) => (
+                    {displayComponents.map((comp) => (
                       <tr key={comp.id} className="hover:bg-slate-50">
                         <td className="py-2 font-bold text-slate-800">{comp.name}</td>
                         <td className="py-2 text-center text-slate-400">{comp.expected ? 'YES' : 'NO'}</td>

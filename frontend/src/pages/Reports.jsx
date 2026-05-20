@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockReports } from '../data/mockData';
+import { usePolling } from '../hooks/usePolling';
+import { getSessions, getReport, normalizeSession } from '../lib/api';
 import { 
   FileText, 
   Search, 
@@ -45,11 +46,44 @@ const SPECS_IMAGES = {
   nominalR: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLlLt72byTN6gSVOmZLkmLDojUK7FphGNPGqo3B-5lktIz8GGgGT7K3UBILEo5phEZRyoko6DCTuSIEvsMcpx2fS4cod88RU7U8CnppP5iT8KJgsBRQBCzoyiGMBQsdjs03KMu0L3VBFputuvEr-3D9qJy4wMvvKDCqcW56Nc_RGC6_CMbHYvV6SqlS1RdGKIDh4uQAU_g-XHn1a0KGKnhYHPsUxU55MrUk7KXhiUVfPvmMRrhlCoKjdC3Pow7X4Akz83PYqqKZyw6"
 };
 
+// Map a normalized session to the shape Reports UI expects
+function sessionToReport(s) {
+  return {
+    id: s.id,
+    trainNumber: s.trainNumber,
+    date: s.completedAt ? new Date(s.completedAt).toISOString().slice(0, 10) : new Date(s.startedAt).toISOString().slice(0, 10),
+    supervisor: 'Awaiting Signature',
+    status: s.criticalDefects > 0 ? 'PENDING_SIGNATURE' : 'APPROVED',
+    criticalDefects: s.criticalDefects || 0,
+    minorDefects: 0,
+    totalCoaches: s.totalCoaches || 0,
+    ocrConf: s.ocrConfidence || 0,
+    syncStability: s.syncHealth || 0,
+    verifiedComponentsCount: s.totalFrames || 0,
+    pdfUrl: null, // loaded on demand
+  };
+}
+
 export const Reports = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
-  const [reports, setReports] = useState(mockReports);
+
+  // Load sessions from API, derive reports from completed ones
+  const { data: sessionsData } = usePolling(getSessions, 15000);
+  const [reportOverrides, setReportOverrides] = useState({}); // sessionId -> { pdfUrl }
+
+  const reports = ((sessionsData?.sessions || [])
+    .filter(s => s.status === 'completed' || s.status === 'analysing')
+    .map(normalizeSession)
+    .map(sessionToReport)
+  ).map(r => ({ ...r, ...(reportOverrides[r.id] || {}) }));
+
+  const [localStatusOverrides, setLocalStatusOverrides] = useState({}); // id -> status
+  const displayReports = reports.map(r => ({
+    ...r,
+    status: localStatusOverrides[r.id] || r.status
+  }));
   
   // Navigation & detailed report workspace state
   const [selectedReport, setSelectedReport] = useState(null);
@@ -69,12 +103,24 @@ export const Reports = () => {
   const [isSigningLoading, setIsSigningLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(null); // report ID
 
-  const handleDownload = (id) => {
-    setIsDownloading(id);
-    setTimeout(() => {
+  const handleDownload = async (report) => {
+    // Try to get the real PDF URL first
+    if (report.pdfUrl) {
+      window.open(report.pdfUrl, '_blank');
+      return;
+    }
+    setIsDownloading(report.id);
+    try {
+      const data = await getReport(report.id);
+      if (data?.pdf_url) {
+        setReportOverrides(prev => ({ ...prev, [report.id]: { pdfUrl: data.pdf_url } }));
+        window.open(data.pdf_url, '_blank');
+      }
+    } catch (_) {
+      alert('Report PDF not yet available. Generate it first from the session workspace.');
+    } finally {
       setIsDownloading(null);
-      alert(`Report PDF ${id} downloaded successfully.`);
-    }, 1800);
+    }
   };
 
   const handleSign = (e) => {
@@ -83,16 +129,9 @@ export const Reports = () => {
       alert('Invalid Security Pin. Please enter the supervisor authorization PIN (1234).');
       return;
     }
-    
     setIsSigningLoading(true);
     setTimeout(() => {
-      setReports(prev => prev.map(rep => {
-        if (rep.id === signingReport.id) {
-          return { ...rep, status: 'APPROVED' };
-        }
-        return rep;
-      }));
-      // If we are currently viewing the workspace of this report, update selectedReport status
+      setLocalStatusOverrides(prev => ({ ...prev, [signingReport.id]: 'APPROVED' }));
       if (selectedReport && selectedReport.id === signingReport.id) {
         setSelectedReport(prev => ({ ...prev, status: 'APPROVED' }));
       }
@@ -155,7 +194,7 @@ export const Reports = () => {
     }
   };
 
-  const filteredReports = reports.filter(rep => {
+  const filteredReports = displayReports.filter(rep => {
     const matchesSearch = rep.trainNumber.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           rep.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'ALL' || rep.status === statusFilter;
@@ -762,7 +801,7 @@ export const Reports = () => {
           <div>
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Certified Reports</div>
             <div className="text-2xl font-black text-foreground">
-              {reports.filter(r => r.status === 'APPROVED').length}
+              {displayReports.filter(r => r.status === 'APPROVED').length}
             </div>
           </div>
         </div>
@@ -774,7 +813,7 @@ export const Reports = () => {
           <div>
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Awaiting Signature</div>
             <div className="text-2xl font-black text-foreground">
-              {reports.filter(r => r.status === 'PENDING_SIGNATURE').length}
+              {displayReports.filter(r => r.status === 'PENDING_SIGNATURE').length}
             </div>
           </div>
         </div>
@@ -785,7 +824,7 @@ export const Reports = () => {
           </div>
           <div>
             <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Evaluated</div>
-            <div className="text-2xl font-black text-foreground">{reports.length}</div>
+            <div className="text-2xl font-black text-foreground">{displayReports.length}</div>
           </div>
         </div>
       </div>
@@ -835,6 +874,13 @@ export const Reports = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-border text-sm">
+              {filteredReports.length === 0 && (
+                <tr>
+                  <td colSpan="7" className="p-8 text-center text-muted-foreground font-medium text-sm">
+                    No completed sessions with reports found. Run a pipeline inspection first.
+                  </td>
+                </tr>
+              )}
               {filteredReports.map(rep => (
                 <tr key={rep.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="p-4 font-mono font-bold text-slate-800">{rep.id}</td>
@@ -882,7 +928,7 @@ export const Reports = () => {
                         </button>
                       ) : (
                         <button
-                          onClick={() => handleDownload(rep.id)}
+                          onClick={() => handleDownload(rep)}
                           disabled={isDownloading === rep.id}
                           className="flex items-center gap-1.5 bg-primary hover:bg-slate-800 text-white px-3 py-1.5 rounded text-xs font-bold transition-all shadow-sm disabled:opacity-75"
                         >
