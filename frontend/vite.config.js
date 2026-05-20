@@ -6,9 +6,15 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    allowedHosts: [
+      'famished-cowedly-larry.ngrok-free.dev'
+    ]
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
