@@ -217,6 +217,9 @@ model Coach {
   ocr_frame_id          String?  @db.Uuid
   sync_confidence       Decimal? @db.Decimal(4, 3)
 
+  start_trigger_id      BigInt?
+  end_trigger_id        BigInt?
+
   total_frames          Int @default(0)
   ocr_frame_count       Int @default(0)
   component_frame_count Int @default(0)

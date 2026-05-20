@@ -5,6 +5,7 @@ const { randomUUID } = require('crypto');
 const axios = require('axios');
 const prisma = require('../db/client');
 const config = require('../config');
+const { runOcrPipeline } = require('../services/pipelineOrchestrator');
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
 
@@ -202,6 +203,15 @@ async function sessions(fastify) {
 
   // GET /api/sessions/:id/hierarchy  (Phase 2)
   fastify.get('/:id/hierarchy', async (req, reply) => {
+    const session = await prisma.inspectionSession.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, status: true, total_coaches: true },
+    });
+    if (!session) {
+      reply.status(404);
+      return { error: 'Session not found' };
+    }
+
     const coaches = await prisma.coach.findMany({
       where: { session_id: req.params.id },
       orderBy: { coach_index: 'asc' },
@@ -209,7 +219,62 @@ async function sessions(fastify) {
         _count: { select: { frames: true, defects: true } },
       },
     });
-    return { coaches };
+
+    return {
+      session_id: req.params.id,
+      status: session.status,
+      total_coaches: session.total_coaches,
+      coaches: coaches.map((c) => ({
+        id: c.id,
+        coach_number: c.coach_number,
+        coach_index: c.coach_index,
+        ocr_confidence: c.ocr_confidence ? Number(c.ocr_confidence) : null,
+        health_score: c.health_score ? Number(c.health_score) : null,
+        total_frames: c.total_frames,
+        frames_count: c._count.frames,
+        defects_count: c._count.defects,
+        start_trigger_id: c.start_trigger_id ? Number(c.start_trigger_id) : null,
+        end_trigger_id: c.end_trigger_id ? Number(c.end_trigger_id) : null,
+      })),
+    };
+  });
+
+  // POST /api/sessions/:id/process  (Phase 2)
+  // Triggers OCR → sync pipeline in background. Call this after frame extraction completes.
+  fastify.post('/:id/process', async (req, reply) => {
+    const session = await prisma.inspectionSession.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, status: true },
+    });
+
+    if (!session) {
+      reply.status(404);
+      return { error: 'Session not found' };
+    }
+
+    const BLOCKED = ['ocr_running', 'analysing', 'completed'];
+    if (BLOCKED.includes(session.status)) {
+      reply.status(409);
+      return { error: `Session is already in status '${session.status}' — cannot re-run pipeline` };
+    }
+
+    // Transition session into ocr_running
+    await prisma.inspectionSession.update({
+      where: { id: req.params.id },
+      data: { status: 'ocr_running' },
+    });
+
+    // Fire-and-forget
+    runOcrPipeline(req.params.id, fastify).catch((err) =>
+      fastify.log.error({ msg: 'Unhandled pipeline error', session_id: req.params.id, error: err.message })
+    );
+
+    reply.status(202);
+    return {
+      session_id: req.params.id,
+      status: 'ocr_running',
+      message: 'OCR pipeline started. Poll GET /api/sessions/:id for progress.',
+    };
   });
 }
 

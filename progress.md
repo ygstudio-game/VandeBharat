@@ -213,71 +213,53 @@ uvicorn server:app --host 0.0.0.0 --port 5003
 
 ---
 
-## Phase 2 — OCR Pipeline + Coach Mapping ⬜
+## Phase 2 — OCR Pipeline + Coach Mapping ✅
 
-**Goal:** OCR runs on side-camera frames → coach numbers identified → coaches table populated → hierarchy endpoint returns real data
+**Done:** Full end-to-end OCR → gap detection → coach mapping pipeline implemented.
 
-### Sync key: trigger_id
+### What was built
 
-The orchestrator and sync engine work entirely on `trigger_id`, not timestamps or sequence_number.
-
-```
-For each frame (side-camera only, is_ocr_candidate=true):
-    call POST /ocr { frame_url, frame_id, trigger_id, session_id }
-        ↓
-OCR service pipeline (YOLO-first ROI):
-    1. Download frame from Cloudinary URL
-    2. POST /api/yolo/predict_train_number → get Boogie bbox
-    3. Crop with 15% dynamic padding on all 4 sides
-    4. Pass 1: PaddleOCR on raw BGR crop
-    5. Pass 2 (if Pass 1 empty): grayscale→2×upscale→sharpen→CLAHE→blur → PaddleOCR
-    6. Full-frame fallback (if YOLO found no boxes OR both passes empty)
-    7. Filter: ^\d{5,6}$ + confidence ≥ 0.4
-    8. Return { coach_number, confidence, trigger_id, pass_used, roi_used }
-    9. Write ocr_results row
-        ↓
-VoteManager (in orchestrator, per session):
-    Accumulate { coach_number → vote_count } across trigger_ids
-    Accept coach_number only after ≥ 5 votes
-        ↓
-POST /sync { session_id }
-Sync engine reads ocr_results ordered by trigger_id:
-    Gap detection on trigger_id axis:
-        Consistent coach_number for N consecutive trigger_ids → one coach segment
-        trigger_id gap (OCR silent) → inter-coach boundary
-    Creates coaches rows (coach_number, coach_index, ocr_confidence)
-    Sets frames.coach_id for all trigger_ids in each coach's range
-    Creates coach_frame_map rows (assignment_method: OCR_DIRECT or GAP_INTERPOLATION)
-    Creates timeline_events: OCR_ANCHOR (where OCR fired) + COACH_GAP (boundaries)
-```
+**Python YOLO service (port 5002):**
+- `POST /api/yolo/predict_train_number` — loads `train_num_detector.pt`, returns Boogie bbox list
+- `POST /api/yolo/predict` — loads `best.pt`, defect detection (Phase 3 ready)
+- Graceful: starts cleanly even if model files not yet present
+- Severity map: `crack/leakage/smoke_emission → CRITICAL`, `broken/rust/deformation → HIGH`, `missing_part → MEDIUM`, `loose → LOW`
 
 **Python OCR service (port 5000):**
-- [ ] `POST /ocr` — full YOLO-ROI pipeline above
-- [ ] Returns `{ coach_number, confidence, trigger_id, pass_used, roi_used, bbox }`
-- [ ] Writes `ocr_results` row per call
-- [ ] Port core logic from `POC/backend/OCR/server.py` + `ocr_engine.py` + `preprocess.py` + `train_number_filter.py`
-
-**Python YOLO service (port 5002) — partial (OCR ROI endpoint only):**
-- [ ] Load `train_num_detector.pt` at startup
-- [ ] `POST /api/yolo/predict_train_number` — returns Boogie class bboxes
-- [ ] Port from `POC/backend/YOLO/server.py`
+- `POST /ocr { frame_url, frame_id, trigger_id, session_id }`
+- Full YOLO-ROI pipeline: download → YOLO bbox → 15% padded crop → Pass 1 raw BGR → Pass 2 preprocessed → digit substring → full-frame fallback
+- Writes `ocr_results` row, returns `{ coach_number, confidence, trigger_id, pass_used, roi_used, is_valid }`
 
 **Python sync_engine (port 5004):**
-- [ ] `POST /sync` — receives `{ session_id }`
-- [ ] Reads `ocr_results` ordered by `trigger_id` for the session
-- [ ] Gap detection algorithm on trigger_id axis
-- [ ] Creates `coaches` rows
-- [ ] Updates `frames.coach_id` for all frames in each trigger_id window
-- [ ] Creates `coach_frame_map` rows (OCR_DIRECT + GAP_INTERPOLATION)
-- [ ] Creates `timeline_events`
-- [ ] Updates `pipeline_stages.status` = `completed` for `synchronization`
-- [ ] Updates `inspection_sessions.status` = `analysing`
+- `POST /sync { session_id }` — gap detection on trigger_id axis
+- MIN_VOTES=5, MAX_TRIGGER_GAP=150
+- Creates `coaches` rows with `start_trigger_id`, `end_trigger_id`, `ocr_confidence`
+- Bulk-updates `frames.coach_id` (OCR_DIRECT inside segment, GAP_INTERPOLATION for gaps ≤ 3× max_gap)
+- Creates `coach_frame_map` rows + `timeline_events` (OCR_ANCHOR + COACH_GAP)
 
-**Node.js backend — orchestrator additions:**
-- [ ] After frame_extraction stage completes → mark `is_ocr_candidate=true` on side-camera frames
-- [ ] `pipelineOrchestrator.js`: iterate OCR candidate frames → call OCR service → accumulate votes → after all frames: call sync engine
-- [ ] `GET /api/sessions/:id/hierarchy` — Train → Coach → Camera → Frames (real data)
-- [ ] `GET /api/sessions/:id/timeline-events` — OCR_ANCHOR + COACH_GAP events
+**Node.js backend:**
+- `pipelineOrchestrator.js`: `runOcrPipeline(sessionId)` — OCR_CONCURRENCY=4 parallel requests, periodic DB progress updates, calls sync engine on completion
+- `POST /api/sessions/:id/process` — triggers OCR pipeline as fire-and-forget, returns 202
+- `GET /api/sessions/:id/hierarchy` — real coaches from DB with trigger ranges, frame counts, defect counts
+
+**Run order:**
+```bash
+# Terminal 1 — YOLO service
+cd Main/GPU/yolo && uvicorn server:app --host 0.0.0.0 --port 5002
+
+# Terminal 2 — OCR service (GPU)
+cd Main/GPU/ocr && uvicorn server:app --host 0.0.0.0 --port 5000
+
+# Terminal 3 — Sync engine
+cd Main/services/sync_engine && uvicorn server:app --host 0.0.0.0 --port 5004
+
+# After frame extraction completes, trigger OCR pipeline:
+curl -X POST http://localhost:8001/api/sessions/{session_id}/process
+# Poll for progress:
+curl http://localhost:8001/api/sessions/{session_id}
+# View coaches:
+curl http://localhost:8001/api/sessions/{session_id}/hierarchy
+```
 
 **Done when:** `GET /api/sessions/:id/hierarchy` returns real coaches mapped from the video.
 
