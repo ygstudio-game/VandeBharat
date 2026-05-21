@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSessions, uploadSession, normalizeSession } from '../lib/api';
+import { getSessions, uploadSession, normalizeSession, getConfig } from '../lib/api';
 import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
 import { 
@@ -84,7 +84,15 @@ export const Sessions = () => {
   const [newDepot, setNewDepot] = useState('Mumbai Central CDO');
   const [newCoachesCount, setNewCoachesCount] = useState(16);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [autoDetect, setAutoDetect] = useState(true); // Default true for premium AI experience
+  const [autoDetect, setAutoDetect] = useState(true);
+  const [framesPerSecond, setFramesPerSecond] = useState(1); // default until config loads
+
+  // Load pipeline config defaults
+  useEffect(() => {
+    getConfig().then(cfg => {
+      if (cfg?.pipeline?.frames_per_second) setFramesPerSecond(cfg.pipeline.frames_per_second);
+    }).catch(() => {});
+  }, []);
 
   // Wizard Step 2 pipeline simulation
   const [pipelineProgress, setPipelineProgress] = useState(0);
@@ -118,7 +126,7 @@ export const Sessions = () => {
   });
 
 
-  // Handle Start Pipeline — upload video, then let API polling keep sessions fresh
+  // Handle Start Pipeline — upload video; frame extractor calls /process when done
   const handleStartPipeline = async () => {
     if (!selectedFile && !autoDetect) return;
     setUploadError(null);
@@ -126,7 +134,7 @@ export const Sessions = () => {
     try {
       const fd = new FormData();
       fd.append('train_number', autoDetect ? `TRAIN-${Date.now()}` : newTrainNumber);
-      fd.append('frame_interval', '5');
+      fd.append('frames_per_second', String(framesPerSecond));
       if (selectedFile) fd.append('video_files', selectedFile, selectedFile.name);
       await uploadSession(fd);
       await loadSessions();
@@ -311,6 +319,36 @@ export const Sessions = () => {
                   <option value="New Delhi CDO">New Delhi CDO</option>
                   <option value="Kolkata CDO">Kolkata CDO</option>
                 </select>
+              </div>
+
+              {/* Frame Rate Selector */}
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1.5">
+                  Frames per Second to Extract
+                </label>
+                <div className="flex gap-2">
+                  {[0.5, 1, 2, 5].map(fps => (
+                    <button
+                      key={fps}
+                      type="button"
+                      onClick={() => setFramesPerSecond(fps)}
+                      className={`flex-1 py-1.5 text-xs font-bold rounded border transition-all cursor-pointer ${
+                        framesPerSecond === fps
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-white text-slate-600 border-border hover:border-primary hover:text-primary'
+                      }`}
+                    >
+                      {fps} fps
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1.5 font-semibold">
+                  {framesPerSecond <= 1
+                    ? `Testing mode — ~${framesPerSecond} frame/s keeps processing fast`
+                    : `Production mode — ${framesPerSecond} frames/s for better detection`
+                  }
+                  {' · '}Default set in <code className="font-mono bg-slate-100 px-1 rounded">config.json</code>
+                </p>
               </div>
 
               {/* Upload Zone */}

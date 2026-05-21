@@ -1,17 +1,43 @@
 """PaddleOCR singleton — GPU with CPU fallback. Windows CUDA DLL injection included."""
 import os
 import sys
+import logging
 
-# Windows: inject CUDA/cuDNN DLL paths from nvidia python packages
+logger = logging.getLogger(__name__)
+
+# Windows: inject CUDA/cuDNN DLL paths so PaddlePaddle's C++ extensions find them.
+# os.add_dll_directory() covers Python-level DLL loading.
+# PATH prepend covers paddle's internal LoadLibrary() calls (which ignore add_dll_directory).
 if sys.platform == "win32":
+    _extra_dll_paths = []
     for pkg in ("nvidia.cudnn", "nvidia.cublas", "nvidia.cuda_runtime", "nvidia.cusparse"):
         try:
             mod = __import__(pkg, fromlist=["__file__"])
             pkg_bin = os.path.abspath(os.path.join(os.path.dirname(mod.__file__), "bin"))
             if os.path.exists(pkg_bin):
                 os.add_dll_directory(pkg_bin)
+                _extra_dll_paths.append(pkg_bin)
         except Exception:
             pass
+    if _extra_dll_paths:
+        os.environ["PATH"] = ";".join(_extra_dll_paths) + ";" + os.environ.get("PATH", "")
+
+
+def _cudnn8_available():
+    """
+    PaddlePaddle 2.x requires cuDNN 8 (cudnn_ops_infer64_8.dll on Windows).
+    PyTorch ships cuDNN 9 (cudnn_ops64_9.dll) — different major version, incompatible.
+    Check before attempting GPU init so the process doesn't crash at the C level.
+    """
+    if sys.platform != "win32":
+        return True  # On Linux paddle handles its own fallback
+    import ctypes
+    try:
+        ctypes.WinDLL("cudnn_ops_infer64_8.dll")
+        return True
+    except OSError:
+        return False
+
 
 import cv2
 from paddleocr import PaddleOCR
@@ -24,7 +50,18 @@ def get_ocr():
     if _ocr is not None:
         return _ocr
 
-    device = os.environ.get("OCR_DEVICE", "gpu").strip().lower()
+    requested = os.environ.get("OCR_DEVICE", "gpu").strip().lower()
+
+    # Validate GPU feasibility on Windows before paddle tries to load cuDNN
+    if requested == "gpu" and not _cudnn8_available():
+        logger.warning(
+            "cuDNN 8.x (cudnn_ops_infer64_8.dll) not found — "
+            "falling back to CPU for PaddleOCR. "
+            "To enable GPU: pip install nvidia-cudnn-cu12==8.9.7.29 in GPU/ocr/venv"
+        )
+        requested = "cpu"
+
+    device = requested
     try:
         _ocr = PaddleOCR(
             use_angle_cls=True,
@@ -36,6 +73,7 @@ def get_ocr():
         return _ocr
     except Exception as exc:
         if device == "gpu":
+            logger.warning("PaddleOCR GPU init failed (%s) — retrying on CPU", exc)
             _ocr = PaddleOCR(
                 use_angle_cls=True,
                 use_doc_orientation_classify=False,

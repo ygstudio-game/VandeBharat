@@ -20,9 +20,14 @@ export const getTimeline    = (id)      => _fetch(`/api/sessions/${id}/timeline-
 export const generateReport = (id)      => _fetch(`/api/sessions/${id}/report`, { method: 'POST' });
 export const getReport      = (id)      => _fetch(`/api/sessions/${id}/report`);
 
+// ── Config ──────────────────────────────────────────────────────────────────
+export const getConfig = () => _fetch('/api/config');
+
 // ── Dashboard ───────────────────────────────────────────────────────────────
-export const getDashboardKpis = () => _fetch('/api/dashboard/kpis');
-export const getLiveQueue     = () => _fetch('/api/dashboard/live-queue');
+export const getDashboardKpis   = () => _fetch('/api/dashboard/kpis');
+export const getLiveQueue       = () => _fetch('/api/dashboard/live-queue');
+export const getServicesHealth  = () => _fetch('/api/health/services');
+export const getFrames          = (id, limit = 100, offset = 0) => _fetch(`/api/sessions/${id}/frames?limit=${limit}&offset=${offset}`);
 
 // ── Normalisation ────────────────────────────────────────────────────────────
 const STATUS_MAP = {

@@ -58,7 +58,15 @@ def load_models():
         logger.error("ultralytics not installed. Run: pip install ultralytics")
         return
 
-    device = os.environ.get("YOLO_DEVICE", "cuda:0" if __import__("torch").cuda.is_available() else "cpu")
+    requested_device = os.environ.get("YOLO_DEVICE", "cuda:0" if torch.cuda.is_available() else "cpu")
+    if requested_device.startswith("cuda") and not torch.cuda.is_available():
+        logger.warning(
+            "YOLO_DEVICE=%s requested but CUDA is not available (torch build: %s) — falling back to CPU",
+            requested_device, torch.__version__,
+        )
+        device = "cpu"
+    else:
+        device = requested_device
     blank = np.zeros((640, 640, 3), dtype="uint8")
 
     if os.path.exists(DEFECT_MODEL_PATH):

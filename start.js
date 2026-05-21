@@ -14,9 +14,17 @@
 const { spawn } = require('child_process');
 const http  = require('http');
 const path  = require('path');
+const fs    = require('fs');
 
-const ROOT = __dirname;
-const WIN  = process.platform === 'win32';
+const ROOT    = __dirname;
+const WIN     = process.platform === 'win32';
+const LOG_DIR = path.join(ROOT, 'logs');
+const LOG_FILE = path.join(LOG_DIR, 'combined.log');
+
+// Clear log file on every startup
+fs.mkdirSync(LOG_DIR, { recursive: true });
+fs.writeFileSync(LOG_FILE, `=== VandeInspect AI — started ${new Date().toISOString()} ===\n`);
+const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
 
 // ── Colours ────────────────────────────────────────────────────────────────
 const C = {
@@ -104,6 +112,7 @@ const SERVICES = [
     color:   C.blue,
     dir:     'backend',
     cmd:     WIN ? 'node.exe' : 'node',
+    inPath:  true,   // resolved from PATH, not relative to service dir
     args:    ['run.js'],
     port:    8001,
     health:  '/health',
@@ -115,7 +124,9 @@ const SERVICES = [
     name:    'FRONTEND',
     color:   C.green,
     dir:     'frontend',
-    cmd:     WIN ? 'npm.cmd' : 'npm',
+    cmd:     'npm',
+    inPath:  true,   // resolved from PATH, not relative to service dir
+    shell:   true,   // npm is a .cmd batch file on Windows — needs shell
     args:    ['run', 'dev'],
     port:    5173,
     health:  null,     // Vite dev server has no /health route
@@ -128,9 +139,16 @@ const running  = [];   // { name, proc }
 let   shutting = false;
 
 // ── Logging ──────────────────────────────────────────────────────────────
+// Strip ANSI escape codes for the file (keep console coloured)
+const ANSI_RE = /\x1b\[[0-9;]*m/g;
+
 function log(name, color, msg) {
   const label = `${color}${C.bold}[${name.padEnd(12)}]${C.reset}`;
   process.stdout.write(`${label} ${msg}\n`);
+  // Write plain text to file — timestamp + label + message
+  const ts    = new Date().toISOString();
+  const plain = `${ts} [${name.padEnd(12)}] ${msg.replace(ANSI_RE, '')}\n`;
+  logStream.write(plain);
 }
 
 // ── Shutdown — kill all in reverse start order ────────────────────────────
@@ -182,15 +200,16 @@ function pollHealth(port, urlPath, timeoutMs) {
 function launch(svc) {
   const cwd = path.join(ROOT, svc.dir);
 
-  // venv python path is relative to the service dir; node/npm come from PATH
-  const exe = path.isAbsolute(svc.cmd)
+  // venv python is relative to the service dir; node/npm come from PATH (inPath: true)
+  const exe = (path.isAbsolute(svc.cmd) || svc.inPath)
     ? svc.cmd
     : path.join(cwd, svc.cmd);
 
   const proc = spawn(exe, svc.args, {
     cwd,
     stdio:       'pipe',
-    detached:    !WIN,   // Unix: lets us kill the whole process group
+    shell:       svc.shell ?? false,
+    detached:    !WIN,
     windowsHide: true,
   });
 
@@ -285,8 +304,8 @@ async function main() {
   );
 }
 
-process.on('SIGINT',  () => { killAll('Ctrl+C');   process.exit(0); });
-process.on('SIGTERM', () => { killAll('SIGTERM');   process.exit(0); });
+process.on('SIGINT',  () => { killAll('Ctrl+C');   logStream.end(); process.exit(0); });
+process.on('SIGTERM', () => { killAll('SIGTERM');   logStream.end(); process.exit(0); });
 
 main().catch((err) => {
   log('ORCHESTRATOR', C.red, err.message);

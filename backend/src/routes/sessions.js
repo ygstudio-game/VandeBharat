@@ -5,6 +5,7 @@ const { randomUUID } = require('crypto');
 const axios = require('axios');
 const prisma = require('../db/client');
 const config = require('../config');
+const rootConfig = require(path.join(__dirname, '..', '..', '..', 'config.json'));
 const { runOcrPipeline } = require('../services/pipelineOrchestrator');
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
@@ -117,6 +118,9 @@ async function sessions(fastify) {
       })),
     });
 
+    // frames_per_second: prefer form field, fall back to config.json default
+    const framesFps = parseFloat(fields.frames_per_second) || rootConfig.pipeline.frames_per_second || 1;
+
     // Fire-and-forget: call frame extractor for each camera (parallel)
     for (const sc of sessionCameras) {
       axios
@@ -124,7 +128,7 @@ async function sessions(fastify) {
           session_id: sessionId,
           session_camera_id: sc.id,
           video_path: sc.savePath,
-          frame_interval: parseInt(fields.frame_interval, 10) || 5,
+          frames_per_second: framesFps,
         })
         .catch((err) =>
           fastify.log.error({ msg: 'Frame extractor dispatch failed', session_id: sessionId, error: err.message })
@@ -239,6 +243,42 @@ async function sessions(fastify) {
     };
   });
 
+  // GET /api/sessions/:id/frames?limit=100&offset=0
+  fastify.get('/:id/frames', async (req, reply) => {
+    const limit  = Math.min(parseInt(req.query.limit)  || 100, 500);
+    const offset = Math.max(parseInt(req.query.offset) || 0,   0);
+
+    const [frames, total] = await Promise.all([
+      prisma.frame.findMany({
+        where:   { session_id: req.params.id },
+        orderBy: { sequence_number: 'asc' },
+        take:    limit,
+        skip:    offset,
+        select: {
+          id: true, sequence_number: true,
+          trigger_id: true, captured_at_ms: true,
+          thumbnail_url: true, cloudinary_url: true,
+          is_ocr_candidate: true, is_defect_flagged: true,
+          ocr_results: {
+            where:  { is_valid: true },
+            select: { coach_number: true, confidence: true },
+            take:   1,
+          },
+        },
+      }),
+      prisma.frame.count({ where: { session_id: req.params.id } }),
+    ]);
+
+    return {
+      frames: frames.map((f) => ({
+        ...f,
+        trigger_id:     Number(f.trigger_id),
+        captured_at_ms: Number(f.captured_at_ms),
+      })),
+      total,
+    };
+  });
+
   // POST /api/sessions/:id/process  (Phase 2)
   // Triggers OCR → sync pipeline in background. Call this after frame extraction completes.
   fastify.post('/:id/process', async (req, reply) => {
@@ -252,7 +292,7 @@ async function sessions(fastify) {
       return { error: 'Session not found' };
     }
 
-    const BLOCKED = ['ocr_running', 'analysing', 'completed'];
+    const BLOCKED = ['analysing', 'completed'];
     if (BLOCKED.includes(session.status)) {
       reply.status(409);
       return { error: `Session is already in status '${session.status}' — cannot re-run pipeline` };

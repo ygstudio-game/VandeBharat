@@ -15,7 +15,10 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from builder import generate_report, build_json_report, build_pdf_report, load_session_data
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
+# Load backend .env first (shared credentials), then service .env as override
+_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend"))
+load_dotenv(dotenv_path=os.path.join(_root, ".env"))
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"), override=False)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)

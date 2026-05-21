@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from '@/lib/utils';
 
-// We can extend our mock data to show multiple coaches to make the UI look rich and premium
-const extendedCoaches = [
+// Kept only as a shape reference — never rendered; real data comes from the API hierarchy endpoint
+const _coachShape = [
   {
     id: "coach-b1",
     coachNumber: "B1",
@@ -124,7 +124,7 @@ function normalizeCoach(c) {
 }
 
 export const HierarchyTree = ({ onSelectNode, coaches: coachesProp, trainNumber, sessionId }) => {
-  const coaches = coachesProp?.length ? coachesProp.map(normalizeCoach) : extendedCoaches;
+  const coaches = (coachesProp || []).map(normalizeCoach);
   const firstCoachId = coaches[0]?.id || 'coach-b1';
   const [openCoaches, setOpenCoaches] = useState(() => ({ [firstCoachId]: true }));
   const [openSubnodes, setOpenSubnodes] = useState({});
@@ -172,7 +172,7 @@ export const HierarchyTree = ({ onSelectNode, coaches: coachesProp, trainNumber,
       {/* Hierarchical Scroll Area */}
       <ScrollArea className="flex-1 p-2">
         <div className="space-y-1">
-          {extendedCoaches.map((coach) => {
+          {coaches.map((coach) => {
             const isCoachOpen = openCoaches[coach.id];
             const hasCritical = coach.stats.criticalDefects > 0;
             const hasMissing = coach.stats.missingComponents > 0;
