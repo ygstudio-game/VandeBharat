@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\app.js": {
-    "mtime": 1779303729.1915576,
-    "ast_hash": "9ade1db89330b9f1c8bf707895aff05d",
+    "mtime": 1779305499.305482,
+    "ast_hash": "18c2a4a50f8dbdb37d41272a553cdad7",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\config.js": {
@@ -50,13 +50,13 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\services\\pipelineOrchestrator.js": {
-    "mtime": 1779303260.554625,
-    "ast_hash": "57e584ca3f1814f1ea6948577f96e11c",
+    "mtime": 1779305572.9959736,
+    "ast_hash": "2b356a09c395f3b616f4f596ecb0cc22",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\services\\wsGateway.js": {
-    "mtime": 1779300003.1101944,
-    "ast_hash": "643050b7b6939aedfac4fee335e11840",
+    "mtime": 1779305481.1885514,
+    "ast_hash": "86c99d6c0f0f08e74169aca11acbfff9",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\components.json": {
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\layout\\Shell.jsx": {
-    "mtime": 1779245830.4440558,
-    "ast_hash": "39b4dd4b41723aa4f0fe0d6440453589",
+    "mtime": 1779305634.8104386,
+    "ast_hash": "6c94a49ff8e9e72491999ca888d22959",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\ui\\accordion.jsx": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\workspace\\HierarchyTree.jsx": {
-    "mtime": 1779245830.4480588,
-    "ast_hash": "9d5a995a5ab197b7224632c549c4a442",
+    "mtime": 1779304721.6226094,
+    "ast_hash": "31054294c6416e2c16c92b4065aca656",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\data\\mockData.js": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Dashboard.jsx": {
-    "mtime": 1779245830.4516215,
-    "ast_hash": "223862203d24c80e2026a3eee33a51ae",
+    "mtime": 1779305726.313104,
+    "ast_hash": "87e299217617eb7953603cf7b119455b",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Infrastructure.jsx": {
@@ -185,13 +185,13 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Reports.jsx": {
-    "mtime": 1779245830.4536202,
-    "ast_hash": "15eeb6da3d8330c182a9f9200a30f2d6",
+    "mtime": 1779304839.8012052,
+    "ast_hash": "9c277df5b83c6a9ce65f95700b75aa33",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Sessions.jsx": {
-    "mtime": 1779245830.4536202,
-    "ast_hash": "a763f037795903d48c9872bc03e00a31",
+    "mtime": 1779305698.1227863,
+    "ast_hash": "ca8275573e5fdd802e0eae6756a53df7",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Settings.jsx": {
@@ -200,8 +200,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\TrainWorkspace.jsx": {
-    "mtime": 1779245830.4546213,
-    "ast_hash": "3724984c86de84b3b7508578a2df3233",
+    "mtime": 1779305685.4811635,
+    "ast_hash": "ff45cd162bc8ce14c0d0e27ce022809f",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\ocr\\server.py": {
@@ -250,8 +250,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\progress.md": {
-    "mtime": 1779303752.7551374,
-    "ast_hash": "a45fd2c083d6fc11801ead2854dd0d26",
+    "mtime": 1779305754.8619337,
+    "ast_hash": "1eca9841ed37cd41974af2fcab3490de",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\README.md": {
@@ -507,6 +507,31 @@
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\report_generator\\builder.py": {
     "mtime": 1779303676.7460222,
     "ast_hash": "3db5a70711412c9728748bd2b5ccd867",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\ui\\ToastContainer.jsx": {
+    "mtime": 1779305606.8754344,
+    "ast_hash": "2002d40a6b2d4f1f2d5ff1b6032deed1",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\hooks\\usePolling.js": {
+    "mtime": 1779304149.6576533,
+    "ast_hash": "d122342c822d1fef380b0d90e74d1927",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\hooks\\useSessionSocket.js": {
+    "mtime": 1779305589.3416107,
+    "ast_hash": "1b5ef8a1ad1cbc78330f09cfb727f546",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\hooks\\useToast.js": {
+    "mtime": 1779305595.8498776,
+    "ast_hash": "b743faa9355d71c5ee53eb7ab70732bd",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\lib\\api.js": {
+    "mtime": 1779304144.3880446,
+    "ast_hash": "5c7294c966a35e299f20d319e436e3a8",
     "semantic_hash": ""
   }
 }

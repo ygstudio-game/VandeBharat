@@ -2,6 +2,16 @@
 node_modules/
 **/node_modules/
 
+# Python virtual environments (each service has its own venv)
+**/venv/
+
+# YOLO model weights (large binary files — share via Drive/S3)
+GPU/yolo/models/*.pt
+GPU/yolo/models/*.pth
+
+# Uploaded videos (temp storage)
+backend/uploads/
+
 # Production/distribution builds
 dist/
 **/dist/

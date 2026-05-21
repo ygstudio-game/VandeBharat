@@ -1,0 +1,8 @@
+{
+  "name": "vandeinspect-ai",
+  "private": true,
+  "scripts": {
+    "start": "node start.js",
+    "setup": "setup.bat"
+  }
+}
