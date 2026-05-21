@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { HierarchyTree } from '../components/workspace/HierarchyTree';
 import { usePolling } from '../hooks/usePolling';
 import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
-import { getSession, getHierarchy, getIntelligence, generateReport, getFrames, normalizeSession } from '../lib/api';
+import { getSession, getHierarchy, getIntelligence, generateReport, getFrames, getCoachFrames, normalizeSession } from '../lib/api';
 import {
   ArrowLeft, Cpu, Train, ShieldAlert, Activity, FileCheck,
   ChevronRight, ShieldQuestion, LayoutGrid, Maximize, Sparkles,
   CheckCircle, AlertTriangle, RefreshCw, Camera, ZoomIn, ZoomOut,
-  Clock, Inbox, XCircle, Image as ImageIcon
+  Clock, Inbox, XCircle, Image as ImageIcon, ScanSearch
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -266,6 +266,19 @@ export const TrainWorkspace = () => {
   const [layoutMode, setLayoutMode]       = useState('single');
   const [zoomLevel, setZoomLevel]         = useState(100);
 
+  // Component frames mode — active when user clicks "Component Frames" in tree
+  const [componentMode,        setComponentMode]        = useState(false);
+  const [componentFrames,      setComponentFrames]      = useState([]); // frames for selected coach
+  const [componentDetectionMap, setComponentDetectionMap] = useState({}); // frameId → detections[]
+  const [componentFramesLoading, setComponentFramesLoading] = useState(false);
+
+  // Bounding box overlays
+  const [showOcrBoxes,        setShowOcrBoxes]        = useState(false);
+  const [showDefectBoxes,     setShowDefectBoxes]     = useState(false);
+  const [showComponentBoxes,  setShowComponentBoxes]  = useState(true);
+  const imgRef    = useRef(null);
+  const canvasRef = useRef(null);
+
   // Intelligence for selected coach
   const [intelligence, setIntelligence]               = useState(null);
   const [intelligenceLoading, setIntelligenceLoading] = useState(false);
@@ -302,7 +315,7 @@ export const TrainWorkspace = () => {
 
   // Load frames when session completes
   useEffect(() => {
-    if (session?.status === 'completed' && frames.length === 0) {
+    if (session?.status === 'COMPLETED' && frames.length === 0) {
       getFrames(sessionId, 200).then(data => {
         const f = data.frames || [];
         setFrames(f);
@@ -310,6 +323,76 @@ export const TrainWorkspace = () => {
       }).catch(() => {});
     }
   }, [session?.status, sessionId, frames.length]);
+
+  // Draw OCR / defect bounding boxes on the canvas overlay
+  const drawOverlay = useCallback(() => {
+    const img    = imgRef.current;
+    const canvas = canvasRef.current;
+    if (!img || !canvas) return;
+
+    canvas.width  = img.offsetWidth;
+    canvas.height = img.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!showOcrBoxes && !showDefectBoxes && !showComponentBoxes) return;
+    if (!img.naturalWidth) return;
+
+    // Compute letterbox offsets for object-contain scaling
+    const scaleX  = img.offsetWidth  / img.naturalWidth;
+    const scaleY  = img.offsetHeight / img.naturalHeight;
+    const scale   = Math.min(scaleX, scaleY);
+    const offX    = (img.offsetWidth  - img.naturalWidth  * scale) / 2;
+    const offY    = (img.offsetHeight - img.naturalHeight * scale) / 2;
+
+    const drawBox = (bx, by, bw, bh, color, label) => {
+      if (bx == null) return;
+      const x = bx * scale + offX;
+      const y = by * scale + offY;
+      const w = bw * scale;
+      const h = bh * scale;
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2;
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle   = color.replace(')', ', 0.08)').replace('rgb', 'rgba');
+      ctx.fillRect(x, y, w, h);
+      if (label) {
+        ctx.font      = 'bold 11px monospace';
+        ctx.fillStyle = color;
+        const tw = ctx.measureText(label).width;
+        ctx.fillStyle = 'rgba(0,0,0,0.65)';
+        ctx.fillRect(x, y > 14 ? y - 14 : y, tw + 4, 13);
+        ctx.fillStyle = color;
+        ctx.fillText(label, x + 2, y > 14 ? y - 3 : y + 10);
+      }
+    };
+
+    if (showOcrBoxes) {
+      for (const r of selectedFrame?.ocr_results || []) {
+        const label = r.is_valid
+          ? `Coach ${r.coach_number} (${Math.round(r.confidence * 100)}%)`
+          : `? (${Math.round(r.confidence * 100)}%)`;
+        drawBox(r.bbox_x, r.bbox_y, r.bbox_w, r.bbox_h, 'rgb(59,130,246)', label);
+      }
+    }
+
+    if (showDefectBoxes) {
+      for (const d of selectedFrame?.defects || []) {
+        const color = d.severity === 'CRITICAL' ? 'rgb(239,68,68)' : 'rgb(245,158,11)';
+        drawBox(d.bbox_x, d.bbox_y, d.bbox_w, d.bbox_h, color, d.defect_type);
+      }
+    }
+
+    if (showComponentBoxes && selectedFrame) {
+      const dets = componentDetectionMap[selectedFrame.id] || [];
+      for (const d of dets) {
+        const label = `${d.component_name ?? d.component_code} ${Math.round(d.confidence * 100)}%`;
+        drawBox(d.bbox.x, d.bbox.y, d.bbox.w, d.bbox.h, 'rgb(163,230,53)', label); // lime-400
+      }
+    }
+  }, [showOcrBoxes, showDefectBoxes, showComponentBoxes, selectedFrame, componentDetectionMap]);
+
+  useEffect(() => { drawOverlay(); }, [drawOverlay]);
 
   const loadIntelligence = useCallback(async (coachId) => {
     setIntelligenceLoading(true);
@@ -320,8 +403,53 @@ export const TrainWorkspace = () => {
     finally { setIntelligenceLoading(false); }
   }, [sessionId]);
 
-  const handleSelectNode = (type, id, metadata) => {
-    if (type === 'coach' && metadata?.id) loadIntelligence(metadata.id);
+  const handleSelectNode = async (type, id, metadata) => {
+    if (type === 'coach' && metadata?.id) {
+      setComponentMode(false);
+      loadIntelligence(metadata.id);
+    }
+
+    if (type === 'components' && metadata?.coachId) {
+      setComponentMode(true);
+      setComponentFrames([]);
+      setComponentDetectionMap({});
+      setSelectedFrame(null);
+      setComponentFramesLoading(true);
+
+      try {
+        // Load frames for this coach and intelligence in parallel
+        const [framesData, intel] = await Promise.all([
+          getCoachFrames(sessionId, metadata.coachId),
+          getIntelligence(sessionId, metadata.coachId),
+        ]);
+
+        // Build frameId → component detections map from intelligence
+        const detMap = {};
+        for (const det of intel.components_detected || []) {
+          // Match detection to frame by frame_url
+          const frame = (framesData.frames || framesData || []).find(
+            (f) => f.cloudinary_url === det.frame_url
+          );
+          if (frame) {
+            if (!detMap[frame.id]) detMap[frame.id] = [];
+            detMap[frame.id].push(det);
+          }
+        }
+
+        setComponentDetectionMap(detMap);
+        const allFrames = framesData.frames || framesData || [];
+        setComponentFrames(allFrames);
+        // Auto-select first frame that has detections, else first frame
+        const firstWithDets = allFrames.find((f) => detMap[f.id]?.length > 0) || allFrames[0];
+        if (firstWithDets) setSelectedFrame(firstWithDets);
+
+        setIntelligence(intel);
+      } catch (_) {
+        setComponentMode(false);
+      } finally {
+        setComponentFramesLoading(false);
+      }
+    }
   };
 
   // Merged pipeline states (WS overrides polled data)
@@ -494,6 +622,32 @@ export const TrainWorkspace = () => {
               {frames.length > 0 ? `${frames.length} frames loaded` : 'No frames loaded'}
             </p>
             <div className="flex items-center gap-2">
+              {/* Overlay toggles — only useful in single-frame mode */}
+              {layoutMode === 'single' && (
+                <div className="flex items-center gap-1 bg-white border border-slate-200 rounded p-0.5 shadow-sm">
+                  <button
+                    onClick={() => setShowOcrBoxes(p => !p)}
+                    title="Toggle OCR bounding boxes"
+                    className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold transition-all ${showOcrBoxes ? 'bg-blue-100 text-blue-700 border border-blue-300' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    <ScanSearch className="w-3 h-3" /> OCR
+                  </button>
+                  <button
+                    onClick={() => setShowDefectBoxes(p => !p)}
+                    title="Toggle defect bounding boxes"
+                    className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold transition-all ${showDefectBoxes ? 'bg-red-100 text-red-700 border border-red-300' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    <ShieldAlert className="w-3 h-3" /> Defects
+                  </button>
+                  <button
+                    onClick={() => setShowComponentBoxes(p => !p)}
+                    title="Toggle component detection boxes"
+                    className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold transition-all ${showComponentBoxes ? 'bg-lime-100 text-lime-700 border border-lime-300' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    <Cpu className="w-3 h-3" /> Components
+                  </button>
+                </div>
+              )}
               <div className="flex items-center bg-white border border-slate-200 rounded p-0.5 shadow-sm">
                 <button onClick={() => setLayoutMode('single')} className={`p-1.5 rounded transition-all ${layoutMode === 'single' ? 'bg-slate-100 text-slate-800' : 'text-slate-400'}`} title="Single frame">
                   <Maximize className="w-3.5 h-3.5" />
@@ -509,6 +663,24 @@ export const TrainWorkspace = () => {
               </div>
             </div>
           </div>
+
+          {/* Component mode banner */}
+          {componentMode && (
+            <div className="mb-2 shrink-0 flex items-center justify-between px-3 py-1.5 bg-lime-950 border border-lime-800 rounded text-[10px] font-bold text-lime-300">
+              <span className="flex items-center gap-1.5">
+                <Cpu className="w-3 h-3" />
+                {componentFramesLoading
+                  ? 'Loading component frames…'
+                  : `${componentFrames.length} component frames · ${Object.values(componentDetectionMap).flat().length} detections`}
+              </span>
+              <button
+                onClick={() => { setComponentMode(false); setSelectedFrame(frames[0] || null); }}
+                className="text-lime-500 hover:text-lime-200 transition-colors"
+              >
+                ✕ Exit component view
+              </button>
+            </div>
+          )}
 
           {/* Viewport */}
           <div className="flex-1 bg-slate-900 rounded-lg flex items-center justify-center relative overflow-hidden shadow-inner border border-slate-950">
@@ -527,11 +699,19 @@ export const TrainWorkspace = () => {
             ) : layoutMode === 'single' ? (
               <div className="w-full h-full flex items-center justify-center p-6" style={{ transform: `scale(${zoomLevel / 100})` }}>
                 {selectedFrame ? (
-                  <img
-                    src={selectedFrame.cloudinary_url}
-                    alt={`Frame ${selectedFrame.sequence_number}`}
-                    className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl"
-                  />
+                  <div className="relative max-w-full max-h-full">
+                    <img
+                      ref={imgRef}
+                      src={selectedFrame.cloudinary_url}
+                      alt={`Frame ${selectedFrame.sequence_number}`}
+                      className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl block"
+                      onLoad={drawOverlay}
+                    />
+                    <canvas
+                      ref={canvasRef}
+                      className="absolute inset-0 pointer-events-none rounded"
+                    />
+                  </div>
                 ) : (
                   <p className="text-slate-500 text-xs">Select a frame from the timeline below</p>
                 )}
@@ -556,8 +736,14 @@ export const TrainWorkspace = () => {
               <div className="absolute top-3 left-3 bg-slate-950/80 text-[9px] font-mono text-slate-300 px-2.5 py-1.5 rounded border border-slate-800 backdrop-blur z-20 space-y-0.5">
                 <p><span className="text-slate-500">FRAME:</span> #{selectedFrame.sequence_number}</p>
                 <p><span className="text-slate-500">TRIGGER_ID:</span> {selectedFrame.trigger_id}</p>
-                {selectedFrame.ocr_results?.[0] && (
-                  <p><span className="text-slate-500">OCR:</span> Coach {selectedFrame.ocr_results[0].coach_number} ({(selectedFrame.ocr_results[0].confidence * 100).toFixed(0)}%)</p>
+                {selectedFrame.ocr_results?.filter(r => r.is_valid).map((r, i) => (
+                  <p key={i}><span className="text-blue-400">OCR:</span> Coach {r.coach_number} ({(r.confidence * 100).toFixed(0)}%)</p>
+                ))}
+                {selectedFrame.ocr_results?.some(r => !r.is_valid && r.bbox_x != null) && (
+                  <p className="text-slate-500">+ {selectedFrame.ocr_results.filter(r => !r.is_valid && r.bbox_x != null).length} low-conf detection(s)</p>
+                )}
+                {selectedFrame.defects?.length > 0 && (
+                  <p><span className="text-red-400">DEFECTS:</span> {selectedFrame.defects.length} found</p>
                 )}
               </div>
             )}
@@ -658,45 +844,87 @@ export const TrainWorkspace = () => {
         </div>
       </div>
 
-      {/* Bottom — Real Frame Timeline */}
+      {/* Bottom — Frame Timeline */}
       <div className="h-28 bg-slate-900 border-t border-white/10 flex flex-col shrink-0 z-10">
         <div className="px-4 py-1.5 flex items-center justify-between bg-slate-950 border-b border-white/10 shrink-0">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-            <Activity className="w-4 h-4 text-primary" /> Frame Timeline
+          <span className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 ${componentMode ? 'text-lime-400' : 'text-slate-400'}`}>
+            {componentMode
+              ? <><Cpu className="w-4 h-4" /> Component Frames</>
+              : <><Activity className="w-4 h-4 text-primary" /> Frame Timeline</>}
           </span>
           <span className="text-[9px] text-slate-500 font-mono">
-            {selectedFrame ? `Selected: frame #${selectedFrame.sequence_number}` : 'Click a frame to view'}
+            {selectedFrame ? `Selected: frame #${selectedFrame.sequence_number ?? '—'}` : 'Click a frame to view'}
           </span>
         </div>
 
         <div className="flex-1 overflow-x-auto flex items-center px-4 gap-2 py-2 bg-slate-900/90">
-          {frames.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center gap-2 text-slate-600">
-              <Inbox className="w-4 h-4" />
-              <span className="text-[10px] font-semibold">No frames yet</span>
-            </div>
-          ) : (
-            frames.map((f) => {
-              const isActive = selectedFrame?.id === f.id;
-              return (
-                <div
-                  key={f.id}
-                  onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
-                  className={`flex-none w-20 h-14 rounded border relative cursor-pointer overflow-hidden transition-all ${isActive ? 'border-primary ring-2 ring-primary/40 scale-105' : 'border-white/10 hover:border-white/30'}`}
-                >
-                  <img
-                    src={f.thumbnail_url || f.cloudinary_url}
-                    alt=""
-                    className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-90' : 'opacity-40 hover:opacity-65'}`}
-                  />
-                  <div className="absolute bottom-0.5 left-0.5 bg-black/70 px-1 rounded text-[7px] font-mono text-white">
-                    #{f.sequence_number}
+          {componentMode ? (
+            componentFramesLoading ? (
+              <div className="flex-1 flex items-center justify-center gap-2 text-lime-700">
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                <span className="text-[10px] font-semibold">Loading…</span>
+              </div>
+            ) : componentFrames.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center gap-2 text-slate-600">
+                <Inbox className="w-4 h-4" />
+                <span className="text-[10px] font-semibold">No component frames</span>
+              </div>
+            ) : (
+              componentFrames.map((f) => {
+                const isActive = selectedFrame?.id === f.id;
+                const detCount = componentDetectionMap[f.id]?.length ?? 0;
+                return (
+                  <div
+                    key={f.id}
+                    onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
+                    className={`flex-none w-20 h-14 rounded border relative cursor-pointer overflow-hidden transition-all ${isActive ? 'border-lime-400 ring-2 ring-lime-400/40 scale-105' : 'border-white/10 hover:border-lime-600'}`}
+                  >
+                    <img
+                      src={f.thumbnail_url || f.cloudinary_url}
+                      alt=""
+                      className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-90' : 'opacity-40 hover:opacity-65'}`}
+                    />
+                    <div className="absolute bottom-0.5 left-0.5 bg-black/70 px-1 rounded text-[7px] font-mono text-white">
+                      #{f.sequence_number ?? '—'}
+                    </div>
+                    {detCount > 0 && (
+                      <span className="absolute top-0.5 right-0.5 bg-lime-500 text-black text-[7px] font-black px-1 rounded-full">
+                        {detCount}
+                      </span>
+                    )}
                   </div>
-                  {f.is_defect_flagged && <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 block animate-pulse" />}
-                  {f.is_ocr_candidate && <span className="absolute top-0.5 left-0.5 w-2 h-2 rounded-full bg-blue-500 block" />}
-                </div>
-              );
-            })
+                );
+              })
+            )
+          ) : (
+            frames.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center gap-2 text-slate-600">
+                <Inbox className="w-4 h-4" />
+                <span className="text-[10px] font-semibold">No frames yet</span>
+              </div>
+            ) : (
+              frames.map((f) => {
+                const isActive = selectedFrame?.id === f.id;
+                return (
+                  <div
+                    key={f.id}
+                    onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
+                    className={`flex-none w-20 h-14 rounded border relative cursor-pointer overflow-hidden transition-all ${isActive ? 'border-primary ring-2 ring-primary/40 scale-105' : 'border-white/10 hover:border-white/30'}`}
+                  >
+                    <img
+                      src={f.thumbnail_url || f.cloudinary_url}
+                      alt=""
+                      className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-90' : 'opacity-40 hover:opacity-65'}`}
+                    />
+                    <div className="absolute bottom-0.5 left-0.5 bg-black/70 px-1 rounded text-[7px] font-mono text-white">
+                      #{f.sequence_number}
+                    </div>
+                    {f.is_defect_flagged && <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 block animate-pulse" />}
+                    {f.is_ocr_candidate && <span className="absolute top-0.5 left-0.5 w-2 h-2 rounded-full bg-blue-500 block" />}
+                  </div>
+                );
+              })
+            )
           )}
         </div>
       </div>

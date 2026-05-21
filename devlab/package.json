@@ -1,0 +1,9 @@
+{
+  "name": "devlab",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node start.js",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend"
+  }
+}

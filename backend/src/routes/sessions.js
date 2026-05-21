@@ -260,9 +260,17 @@ async function sessions(fastify) {
           thumbnail_url: true, cloudinary_url: true,
           is_ocr_candidate: true, is_defect_flagged: true,
           ocr_results: {
-            where:  { is_valid: true },
-            select: { coach_number: true, confidence: true },
-            take:   1,
+            select: {
+              coach_number: true, confidence: true, is_valid: true,
+              bbox_x: true, bbox_y: true, bbox_w: true, bbox_h: true,
+            },
+            orderBy: { confidence: 'desc' },
+          },
+          defects: {
+            select: {
+              id: true, defect_type: true, severity: true,
+              bbox_x: true, bbox_y: true, bbox_w: true, bbox_h: true,
+            },
           },
         },
       }),

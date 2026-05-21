@@ -1,0 +1,472 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique @db.VarChar(200)
+  name          String    @db.VarChar(200)
+  role          String    @default("operator") @db.VarChar(30)
+  password_hash String
+  is_active     Boolean   @default(true)
+  last_login_at DateTime? @db.Timestamptz(6)
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+
+  sessions        InspectionSession[]
+  defect_reviews  Defect[]            @relation("DefectReviewer")
+  report_signoffs Report[]            @relation("ReportSignoff")
+  audit_logs      AuditLog[]
+
+  @@map("users")
+}
+
+model EdgeMachine {
+  id               String    @id @default(uuid()) @db.Uuid
+  hostname         String    @db.VarChar(100)
+  ip_address       String?   @db.VarChar(45)
+  firmware_version String?   @db.VarChar(20)
+  status           String    @default("online") @db.VarChar(20)
+  last_heartbeat   DateTime? @db.Timestamptz(6)
+  created_at       DateTime  @default(now()) @db.Timestamptz(6)
+
+  camera_setups CameraSetup[]
+
+  @@map("edge_machines")
+}
+
+model CameraSetup {
+  id              String    @id @default(uuid()) @db.Uuid
+  station_name    String    @db.VarChar(100)
+  station_code    String    @unique @db.VarChar(20)
+  edge_machine_id String?   @db.Uuid
+  installed_at    DateTime? @db.Timestamptz(6)
+  is_active       Boolean   @default(true)
+  created_at      DateTime  @default(now()) @db.Timestamptz(6)
+
+  edge_machine     EdgeMachine?        @relation(fields: [edge_machine_id], references: [id])
+  cameras          Camera[]
+  sessions_by_code InspectionSession[] @relation("SessionStationCode")
+  sessions_by_id   InspectionSession[] @relation("SessionCameraSetup")
+
+  @@map("camera_setups")
+}
+
+model Camera {
+  id              String   @id @default(uuid()) @db.Uuid
+  camera_setup_id String   @db.Uuid
+  camera_code     String   @db.VarChar(30)
+  camera_type     String   @db.VarChar(40)
+  position_label  String?  @db.VarChar(80)
+  resolution      String?  @db.VarChar(20)
+  fps             Int?
+  is_active       Boolean  @default(true)
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+
+  camera_setup    CameraSetup     @relation(fields: [camera_setup_id], references: [id])
+  session_cameras SessionCamera[]
+
+  @@map("cameras")
+}
+
+model ComponentManifest {
+  id             String   @id @default(uuid()) @db.Uuid
+  coach_type     String   @db.VarChar(60)
+  component_name String   @db.VarChar(120)
+  component_code String   @db.VarChar(60)
+  quantity       Int      @default(1)
+  is_critical    Boolean  @default(false)
+  notes          String?
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([coach_type, component_code])
+  @@map("component_manifests")
+}
+
+model InspectionSession {
+  id              String  @id @default(uuid()) @db.Uuid
+  session_code    String? @unique @db.VarChar(30)
+  train_number    String  @db.VarChar(50)
+  station_code    String? @db.VarChar(20)
+  camera_setup_id String? @db.Uuid
+
+  status                   String   @default("queued") @db.VarChar(30)
+  progress_pct             Int      @default(0)
+  total_coaches            Int?
+  total_frames             Int?
+  cameras_active           Int?
+  critical_defects         Int      @default(0)
+  missing_components_count Int      @default(0)
+  health_score             Decimal? @db.Decimal(5, 2)
+  ocr_confidence           Decimal? @db.Decimal(4, 3)
+  sync_confidence          Decimal? @db.Decimal(4, 3)
+
+  started_at    DateTime  @default(now()) @db.Timestamptz(6)
+  completed_at  DateTime? @db.Timestamptz(6)
+  error_message String?
+  created_by    String?   @db.Uuid
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+
+  station      CameraSetup? @relation("SessionStationCode", fields: [station_code], references: [station_code])
+  camera_setup CameraSetup? @relation("SessionCameraSetup", fields: [camera_setup_id], references: [id])
+  creator      User?        @relation(fields: [created_by], references: [id])
+
+  pipeline_stages      PipelineStage[]
+  session_cameras      SessionCamera[]
+  frames               Frame[]
+  coaches              Coach[]
+  ocr_results          OcrResult[]
+  coach_frame_maps     CoachFrameMap[]
+  component_detections ComponentDetection[]
+  defects              Defect[]
+  missing_components   MissingComponent[]
+  timeline_events      TimelineEvent[]
+  report               Report?
+  audit_logs           AuditLog[]
+
+  @@map("inspection_sessions")
+}
+
+model PipelineStage {
+  id             String    @id @default(uuid()) @db.Uuid
+  session_id     String    @db.Uuid
+  stage          String    @db.VarChar(40)
+  status         String    @default("pending") @db.VarChar(20)
+  started_at     DateTime? @db.Timestamptz(6)
+  completed_at   DateTime? @db.Timestamptz(6)
+  progress_pct   Int       @default(0)
+  detail_message String?
+  error_message  String?
+  stats          Json?
+
+  session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+
+  @@unique([session_id, stage])
+  @@map("pipeline_stages")
+}
+
+model SessionCamera {
+  id              String   @id @default(uuid()) @db.Uuid
+  session_id      String   @db.Uuid
+  camera_id       String   @db.Uuid
+  camera_type     String   @db.VarChar(40)
+  name            String?  @db.VarChar(100)
+  video_url       String?
+  video_public_id String?
+  frame_count     Int      @default(0)
+  dropped_frames  Int      @default(0)
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+
+  session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  camera  Camera            @relation(fields: [camera_id], references: [id])
+  frames  Frame[]
+
+  @@unique([session_id, camera_id])
+  @@map("session_cameras")
+}
+
+model Frame {
+  id                   String  @id @default(uuid()) @db.Uuid
+  session_id           String  @db.Uuid
+  session_camera_id    String  @db.Uuid
+  coach_id             String? @db.Uuid
+  sequence_number      Int
+  trigger_id           BigInt
+  captured_at_ms       BigInt
+  cloudinary_url       String
+  cloudinary_public_id String
+  thumbnail_url        String?
+  width_px             Int?
+  height_px            Int?
+  file_size_bytes      Int?
+  is_ocr_candidate     Boolean @default(false)
+  is_defect_flagged    Boolean @default(false)
+  is_sharp             Boolean @default(true)
+  created_at           DateTime @default(now()) @db.Timestamptz(6)
+
+  session        InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  session_camera SessionCamera     @relation(fields: [session_camera_id], references: [id], onDelete: Cascade)
+  coach          Coach?            @relation("FrameToCoach", fields: [coach_id], references: [id])
+
+  ocr_results          OcrResult[]
+  coach_frame_map      CoachFrameMap?
+  component_detections ComponentDetection[]
+  defects              Defect[]
+  timeline_events      TimelineEvent[]
+  coach_ocr_source     Coach[] @relation("CoachOcrFrame")
+
+  @@map("frames")
+}
+
+model Coach {
+  id            String  @id @default(uuid()) @db.Uuid
+  session_id    String  @db.Uuid
+  coach_number  String  @db.VarChar(30)
+  coach_type    String? @db.VarChar(60)
+  coach_index   Int?
+  ocr_confidence        Decimal? @db.Decimal(4, 3)
+  ocr_frame_id          String?  @db.Uuid
+  sync_confidence       Decimal? @db.Decimal(4, 3)
+  start_trigger_id      BigInt?
+  end_trigger_id        BigInt?
+  total_frames          Int @default(0)
+  ocr_frame_count       Int @default(0)
+  component_frame_count Int @default(0)
+  critical_defects   Int      @default(0)
+  missing_components Int      @default(0)
+  health_score       Decimal? @db.Decimal(5, 2)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+
+  session   InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  ocr_frame Frame?            @relation("CoachOcrFrame", fields: [ocr_frame_id], references: [id])
+  frames    Frame[]           @relation("FrameToCoach")
+
+  ocr_results             OcrResult[]
+  coach_frame_maps        CoachFrameMap[]
+  component_detections    ComponentDetection[]
+  defects                 Defect[]
+  missing_components_list MissingComponent[]
+  timeline_events         TimelineEvent[]
+
+  @@map("coaches")
+}
+
+model OcrResult {
+  id            String   @id @default(uuid()) @db.Uuid
+  frame_id      String   @db.Uuid
+  session_id    String   @db.Uuid
+  detected_text String?  @db.VarChar(200)
+  coach_number  String?  @db.VarChar(30)
+  confidence    Decimal? @db.Decimal(4, 3)
+  pass_number   Int      @default(1)
+  is_valid      Boolean  @default(false)
+  bbox_x        Int?
+  bbox_y        Int?
+  bbox_w        Int?
+  bbox_h        Int?
+  raw_response  Json?
+  mapped_coach_id String? @db.Uuid
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+
+  frame        Frame             @relation(fields: [frame_id], references: [id], onDelete: Cascade)
+  session      InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  mapped_coach Coach?            @relation(fields: [mapped_coach_id], references: [id])
+
+  @@map("ocr_results")
+}
+
+model CoachFrameMap {
+  id                String   @id @default(uuid()) @db.Uuid
+  session_id        String   @db.Uuid
+  frame_id          String   @unique @db.Uuid
+  coach_id          String   @db.Uuid
+  assignment_method String   @db.VarChar(30)
+  confidence        Decimal? @db.Decimal(4, 3)
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+
+  session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  frame   Frame             @relation(fields: [frame_id], references: [id], onDelete: Cascade)
+  coach   Coach             @relation(fields: [coach_id], references: [id], onDelete: Cascade)
+
+  @@map("coach_frame_map")
+}
+
+model ComponentDetection {
+  id             String  @id @default(uuid()) @db.Uuid
+  session_id     String  @db.Uuid
+  coach_id       String  @db.Uuid
+  frame_id       String  @db.Uuid
+  component_code String  @db.VarChar(60)
+  component_name String? @db.VarChar(120)
+  detection_type String  @default("COMPONENT") @db.VarChar(20)
+  confidence     Decimal @db.Decimal(4, 3)
+  bbox_x         Int
+  bbox_y         Int
+  bbox_w         Int
+  bbox_h         Int
+  is_expected    Boolean @default(true)
+  status         String  @default("detected") @db.VarChar(20)
+  model_version  String? @db.VarChar(50)
+  raw_response   Json?
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  coach   Coach             @relation(fields: [coach_id], references: [id], onDelete: Cascade)
+  frame   Frame             @relation(fields: [frame_id], references: [id], onDelete: Cascade)
+  defects Defect[]
+
+  @@map("component_detections")
+}
+
+model Defect {
+  id                     String  @id @default(uuid()) @db.Uuid
+  session_id             String  @db.Uuid
+  coach_id               String  @db.Uuid
+  frame_id               String  @db.Uuid
+  component_detection_id String? @db.Uuid
+  defect_type            String  @db.VarChar(80)
+  severity               String  @db.VarChar(20)
+  confidence             Decimal @db.Decimal(4, 3)
+  bbox_x                 Int?
+  bbox_y                 Int?
+  bbox_w                 Int?
+  bbox_h                 Int?
+  ai_notes               String?
+  annotated_frame_url       String?
+  annotated_frame_public_id String?
+  review_status String    @default("pending") @db.VarChar(20)
+  reviewed_by   String?   @db.Uuid
+  reviewed_at   DateTime? @db.Timestamptz(6)
+  review_notes  String?
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+
+  session             InspectionSession   @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  coach               Coach               @relation(fields: [coach_id], references: [id], onDelete: Cascade)
+  frame               Frame               @relation(fields: [frame_id], references: [id], onDelete: Cascade)
+  component_detection ComponentDetection? @relation(fields: [component_detection_id], references: [id])
+  reviewer            User?               @relation("DefectReviewer", fields: [reviewed_by], references: [id])
+
+  @@map("defects")
+}
+
+model MissingComponent {
+  id             String   @id @default(uuid()) @db.Uuid
+  session_id     String   @db.Uuid
+  coach_id       String   @db.Uuid
+  component_code String   @db.VarChar(60)
+  component_name String   @db.VarChar(120)
+  expected_count Int      @default(1)
+  detected_count Int      @default(0)
+  severity       String   @default("high") @db.VarChar(20)
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  coach   Coach             @relation(fields: [coach_id], references: [id], onDelete: Cascade)
+
+  @@map("missing_components")
+}
+
+model TimelineEvent {
+  id           String   @id @default(uuid()) @db.Uuid
+  session_id   String   @db.Uuid
+  frame_id     String?  @db.Uuid
+  coach_id     String?  @db.Uuid
+  event_type   String   @db.VarChar(40)
+  description  String?
+  timestamp_ms BigInt?
+  metadata     Json?
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  frame   Frame?            @relation(fields: [frame_id], references: [id])
+  coach   Coach?            @relation(fields: [coach_id], references: [id])
+
+  @@map("timeline_events")
+}
+
+model Report {
+  id           String @id @default(uuid()) @db.Uuid
+  session_id   String @unique @db.Uuid
+  train_number String @db.VarChar(50)
+
+  total_coaches            Int?
+  total_frames             Int?
+  total_defects            Int?
+  critical_defects         Int?
+  missing_components_count Int?
+  overall_health           Decimal? @db.Decimal(5, 2)
+
+  pdf_url        String?
+  pdf_public_id  String?
+  json_url       String?
+  json_public_id String?
+
+  status       String    @default("pending") @db.VarChar(20)
+  generated_at DateTime? @db.Timestamptz(6)
+
+  is_signed      Boolean   @default(false)
+  signed_off_by  String?   @db.Uuid
+  signed_off_at  DateTime? @db.Timestamptz(6)
+  sign_off_notes String?
+  created_at     DateTime  @default(now()) @db.Timestamptz(6)
+
+  session      InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  signoff_user User?             @relation("ReportSignoff", fields: [signed_off_by], references: [id])
+
+  @@map("reports")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid()) @db.Uuid
+  session_id    String?  @db.Uuid
+  user_id       String?  @db.Uuid
+  action        String   @db.VarChar(100)
+  resource_type String?  @db.VarChar(50)
+  resource_id   String?  @db.Uuid
+  ip_address    String?  @db.VarChar(45)
+  metadata      Json?
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  session InspectionSession? @relation(fields: [session_id], references: [id])
+  user    User?              @relation(fields: [user_id], references: [id])
+
+  @@map("audit_logs")
+}
+
+model SystemHealth {
+  id                          String   @id @default(uuid()) @db.Uuid
+  gpu_utilization_pct         Decimal? @db.Decimal(5, 2)
+  gpu_memory_used_mb          Int?
+  gpu_memory_total_mb         Int?
+  ocr_queue_depth             Int?
+  detection_queue_depth       Int?
+  active_sessions             Int?
+  frames_processed_per_minute Int?
+  ocr_accuracy_avg            Decimal? @db.Decimal(4, 3)
+  recorded_at                 DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("system_health")
+}
+
+// ─── DevLab-only tables ───────────────────────────────────────────────────────
+
+model DevOcrRun {
+  id           String   @id @default(uuid()) @db.Uuid
+  session_id   String   @db.Uuid
+  frame_id     String   @db.Uuid
+  yolo_bbox    Json?
+  pass1_result Json?
+  pass2_result Json?
+  final_number String?  @db.VarChar(30)
+  confidence   Decimal? @db.Decimal(4, 3)
+  pass_used    Int?
+  roi_used     Boolean?
+  is_valid     Boolean  @default(false)
+  raw_response Json?
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("dev_ocr_runs")
+}
+
+model DevSyncRun {
+  id          String   @id @default(uuid()) @db.Uuid
+  session_id  String   @db.Uuid
+  output_json Json?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("dev_sync_runs")
+}
+
+model DevYoloRun {
+  id              String   @id @default(uuid()) @db.Uuid
+  session_id      String   @db.Uuid
+  frame_id        String   @db.Uuid
+  detections_json Json?
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("dev_yolo_runs")
+}

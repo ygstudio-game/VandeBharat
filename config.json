@@ -1,8 +1,10 @@
 {
   "pipeline": {
     "frames_per_second": 1,
-    "ocr_concurrency": 4,
-    "db_flush_every_n_frames": 10
+    "ocr_concurrency": 1,
+    "db_flush_every_n_frames": 10,
+    "sync_min_votes": 1,
+    "sync_max_trigger_gap": 150
   },
   "services": {
     "yolo_port": 5002,

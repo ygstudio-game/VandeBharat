@@ -86,10 +86,11 @@ def _digit_substring(ocr_results):
 def run_pipeline(frame: np.ndarray):
     """
     Returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr)
-    Mirrors process_ocr_pipeline() from POC exactly.
+    bbox is always set when YOLO found a box, even if OCR fell back to full-frame.
     """
     h, w = frame.shape[:2]
     yolo_boxes = []
+    yolo_bbox = None  # best Boogie box from YOLO, kept for full-frame fallback too
 
     # ── Step 1: YOLO ROI detection ────────────────────────────────────────────
     try:
@@ -114,7 +115,7 @@ def run_pipeline(frame: np.ndarray):
         pw, ph = int(bw * 0.15), int(bh * 0.15)
         x1p = max(0, x1 - pw); y1p = max(0, y1 - ph)
         x2p = min(w, x2 + pw); y2p = min(h, y2 + ph)
-        bbox = [x1p, y1p, x2p - x1p, y2p - y1p]
+        yolo_bbox = [x1p, y1p, x2p - x1p, y2p - y1p]  # store for fallback too
         crop = frame[y1p:y2p, x1p:x2p]
 
         if crop.size > 0:
@@ -122,30 +123,31 @@ def run_pipeline(frame: np.ndarray):
             raw1 = run_ocr(crop)
             num, conf = _best_candidate_from(raw1)
             if num:
-                return num, conf, 1, True, bbox, raw1
+                return num, conf, 1, True, yolo_bbox, raw1
 
             # Pass 2 — preprocessed crop
             raw2 = run_ocr(preprocess_frame(crop))
             num, conf = _best_candidate_from(raw2)
             if num:
-                return num, conf, 2, True, bbox, raw2
+                return num, conf, 2, True, yolo_bbox, raw2
 
             # Digit substring fallback (still from crop)
             num, conf = _digit_substring(raw1)
             if num:
-                return num, conf, 1, True, bbox, raw1
+                return num, conf, 1, True, yolo_bbox, raw1
 
     # ── Step 3: Full-frame fallback ───────────────────────────────────────────
+    # yolo_bbox is kept even here so the overlay shows where YOLO was looking
     raw_ff = run_ocr(preprocess_frame(frame))
     num, conf = _best_candidate_from(raw_ff)
     if num:
-        return num, conf, 1, False, None, raw_ff
+        return num, conf, 1, False, yolo_bbox, raw_ff
 
     num, conf = _digit_substring(raw_ff)
     if num:
-        return num, conf, 1, False, None, raw_ff
+        return num, conf, 1, False, yolo_bbox, raw_ff
 
-    return None, 0.0, 0, False, None, []
+    return None, 0.0, 0, False, yolo_bbox, []
 
 
 @app.on_event("startup")
@@ -207,6 +209,9 @@ def ocr(req: OcrRequest):
         "trigger=%d coach=%s conf=%.3f pass=%d roi=%s",
         req.trigger_id, coach_number, confidence, pass_used, roi_used,
     )
+    # print() bypasses uvicorn/PaddleOCR logger interference — captured by start.js stdout
+    has_bbox = bbox is not None and bbox[0] is not None
+    print(f"[OCR_RESULT] trigger={req.trigger_id} coach={coach_number!r} conf={confidence:.3f} valid={is_valid} pass={pass_used} roi={roi_used} bbox={has_bbox}", flush=True)
 
     return {
         "coach_number": coach_number,

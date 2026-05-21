@@ -13,6 +13,8 @@ Algorithm:
        - trigger_id in a gap between segments → GAP_INTERPOLATION (assign to nearest)
   6. Create coach_frame_map rows + timeline_events
 """
+import os
+import json
 import uuid
 import logging
 import psycopg2
@@ -20,8 +22,17 @@ import psycopg2.extras
 
 logger = logging.getLogger(__name__)
 
-MIN_VOTES = 5        # A coach_number must appear at least this many times to be accepted
-MAX_TRIGGER_GAP = 150  # If no OCR for this many trigger_ids, it's a coach boundary
+def _load_config():
+    cfg_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "config.json"))
+    try:
+        with open(cfg_path) as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+_cfg = _load_config()
+MIN_VOTES       = _cfg.get("pipeline", {}).get("sync_min_votes",       2)
+MAX_TRIGGER_GAP = _cfg.get("pipeline", {}).get("sync_max_trigger_gap", 150)
 
 
 # ─── Step 1+2: Load and reduce OCR results ────────────────────────────────────
@@ -93,7 +104,9 @@ def detect_segments(ocr_by_trigger: list[dict], min_votes=MIN_VOTES, max_gap=MAX
 
     _close(segments, cur, min_votes)
 
-    logger.info("Gap detection: %d raw triggers → %d accepted coach segments", len(ocr_by_trigger), len(segments))
+    for r in ocr_by_trigger:
+        logger.info("  trigger=%d  coach=%s  conf=%.3f", r["trigger_id"], r["coach_number"], r["confidence"])
+    logger.info("Gap detection: %d raw triggers → %d accepted coach segments (min_votes=%d)", len(ocr_by_trigger), len(segments), min_votes)
     for i, s in enumerate(segments):
         logger.info(
             "  Segment %d: coach=%s  triggers=[%d, %d]  votes=%d  avg_conf=%.3f",
@@ -190,7 +203,7 @@ def assign_frames(conn, session_id: str, segments: list[dict]) -> tuple[int, int
         # Update frames.coach_id
         psycopg2.extras.execute_values(
             cur,
-            "UPDATE frames SET coach_id = data.coach_id FROM (VALUES %s) AS data(coach_id, id) WHERE frames.id = data.id::uuid",
+            "UPDATE frames SET coach_id = data.coach_id::uuid FROM (VALUES %s) AS data(coach_id, id) WHERE frames.id = data.id::uuid",
             [(str(coach_id), str(fid)) for coach_id, fid in frame_coach_updates],
         )
         # Insert coach_frame_map

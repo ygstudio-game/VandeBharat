@@ -241,8 +241,8 @@ export const HierarchyTree = ({ onSelectNode, coaches: coachesProp, trainNumber,
                     </div>
 
                     {/* Component Frames subnode */}
-                    <div 
-                      onClick={() => handleSelect('components', `${coach.id}-components`)}
+                    <div
+                      onClick={() => handleSelect('components', `${coach.id}-components`, { coachId: coach.id, coachNumber: coach.coachNumber })}
                       className={cn(
                         "flex items-center justify-between p-1.5 rounded cursor-pointer transition-colors text-[11px]",
                         selectedId === `${coach.id}-components` ? "bg-primary/5 text-primary font-bold border-l-2 border-primary" : "text-muted-foreground hover:text-foreground hover:bg-slate-100/50"

@@ -28,6 +28,7 @@ export const getDashboardKpis   = () => _fetch('/api/dashboard/kpis');
 export const getLiveQueue       = () => _fetch('/api/dashboard/live-queue');
 export const getServicesHealth  = () => _fetch('/api/health/services');
 export const getFrames          = (id, limit = 100, offset = 0) => _fetch(`/api/sessions/${id}/frames?limit=${limit}&offset=${offset}`);
+export const getCoachFrames     = (id, coachId, limit = 200)   => _fetch(`/api/sessions/${id}/coaches/${coachId}/frames?limit=${limit}`);
 
 // ── Normalisation ────────────────────────────────────────────────────────────
 const STATUS_MAP = {
