@@ -85,8 +85,9 @@ def _digit_substring(ocr_results):
 
 def run_pipeline(frame: np.ndarray):
     """
-    Returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr)
+    Returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr, all_yolo_boxes)
     bbox is always set when YOLO found a box, even if OCR fell back to full-frame.
+    all_yolo_boxes: every box YOLO returned (all classes: Boogie, Car Type, Engine, gap).
     """
     h, w = frame.shape[:2]
     yolo_boxes = []
@@ -123,31 +124,31 @@ def run_pipeline(frame: np.ndarray):
             raw1 = run_ocr(crop)
             num, conf = _best_candidate_from(raw1)
             if num:
-                return num, conf, 1, True, yolo_bbox, raw1
+                return num, conf, 1, True, yolo_bbox, raw1, yolo_boxes
 
             # Pass 2 — preprocessed crop
             raw2 = run_ocr(preprocess_frame(crop))
             num, conf = _best_candidate_from(raw2)
             if num:
-                return num, conf, 2, True, yolo_bbox, raw2
+                return num, conf, 2, True, yolo_bbox, raw2, yolo_boxes
 
             # Digit substring fallback (still from crop)
             num, conf = _digit_substring(raw1)
             if num:
-                return num, conf, 1, True, yolo_bbox, raw1
+                return num, conf, 1, True, yolo_bbox, raw1, yolo_boxes
 
     # ── Step 3: Full-frame fallback ───────────────────────────────────────────
     # yolo_bbox is kept even here so the overlay shows where YOLO was looking
     raw_ff = run_ocr(preprocess_frame(frame))
     num, conf = _best_candidate_from(raw_ff)
     if num:
-        return num, conf, 1, False, yolo_bbox, raw_ff
+        return num, conf, 1, False, yolo_bbox, raw_ff, yolo_boxes
 
     num, conf = _digit_substring(raw_ff)
     if num:
-        return num, conf, 1, False, yolo_bbox, raw_ff
+        return num, conf, 1, False, yolo_bbox, raw_ff, yolo_boxes
 
-    return None, 0.0, 0, False, yolo_bbox, []
+    return None, 0.0, 0, False, yolo_bbox, [], yolo_boxes
 
 
 @app.on_event("startup")
@@ -171,8 +172,15 @@ def ocr(req: OcrRequest):
         logger.error("Frame download failed frame_id=%s: %s", req.frame_id, exc)
         return {"coach_number": None, "confidence": 0.0, "is_valid": False, "error": str(exc)}
 
-    coach_number, confidence, pass_used, roi_used, bbox, raw_ocr = run_pipeline(frame)
+    coach_number, confidence, pass_used, roi_used, bbox, raw_ocr, all_yolo_boxes = run_pipeline(frame)
     is_valid = coach_number is not None
+
+    # Normalise YOLO boxes for the response: xyxy → xywh, keep label + confidence
+    def _norm_box(b):
+        x1, y1, x2, y2 = b.get("bbox_xyxy", [0, 0, 0, 0])
+        return {"label": b.get("label"), "confidence": round(b.get("confidence", 0), 4),
+                "bbox_x": x1, "bbox_y": y1, "bbox_w": x2 - x1, "bbox_h": y2 - y1}
+    yolo_boxes_out = [_norm_box(b) for b in all_yolo_boxes]
 
     # Write ocr_results row
     try:
@@ -220,4 +228,5 @@ def ocr(req: OcrRequest):
         "pass_used": pass_used,
         "roi_used": roi_used,
         "is_valid": is_valid,
+        "yolo_boxes": yolo_boxes_out,
     }

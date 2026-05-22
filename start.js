@@ -11,7 +11,7 @@
  */
 'use strict';
 
-const { spawn } = require('child_process');
+const { spawn, exec } = require('child_process');
 const http  = require('http');
 const path  = require('path');
 const fs    = require('fs');
@@ -235,6 +235,32 @@ function launch(svc) {
   return proc;
 }
 
+// ── Kill any process occupying a port ────────────────────────────────────
+function killPort(port) {
+  return new Promise((resolve) => {
+    if (WIN) {
+      exec(`netstat -ano | findstr :${port}`, (err, stdout) => {
+        if (err || !stdout) return resolve();
+        const pids = new Set();
+        stdout.trim().split('\n').forEach((line) => {
+          if (line.includes('LISTENING')) {
+            const parts = line.trim().split(/\s+/);
+            const pid = parts[parts.length - 1];
+            if (pid && pid !== '0') pids.add(pid);
+          }
+        });
+        if (!pids.size) return resolve();
+        let done = 0;
+        pids.forEach((pid) => {
+          exec(`taskkill /PID ${pid} /F`, () => { if (++done === pids.size) resolve(); });
+        });
+      });
+    } else {
+      exec(`lsof -ti :${port} | xargs kill -9 2>/dev/null`, () => resolve());
+    }
+  });
+}
+
 // ── Start one service and wait for it to be ready ────────────────────────
 async function startService(svc) {
   log(svc.name, svc.color, `starting on port ${svc.port}…`);
@@ -282,6 +308,11 @@ async function main() {
 
   for (const svc of SERVICES) {
     try {
+      // Free the frontend port before Vite tries to bind it
+      if (svc.port === 5173) {
+        log('ORCHESTRATOR', C.gray, 'freeing port 5173 before starting frontend…');
+        await killPort(5173);
+      }
       await startService(svc);
     } catch (err) {
       log('ORCHESTRATOR', C.red, `${C.bold}ABORT — ${err.message}${C.reset}`);

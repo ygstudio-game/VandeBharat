@@ -1,4 +1,6 @@
 require('dotenv').config();
+// BigInt fields (trigger_id, start/end_trigger_id) can't serialize with JSON.stringify by default
+BigInt.prototype.toJSON = function () { return Number(this); };
 const express = require('express');
 const cors = require('cors');
 

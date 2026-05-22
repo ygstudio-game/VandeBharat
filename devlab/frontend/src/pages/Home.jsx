@@ -10,7 +10,7 @@ export default function HomePage() {
   useEffect(() => {
     fetch('/api/dev/sessions')
       .then((r) => r.json())
-      .then(setSessions)
+      .then((d) => setSessions(Array.isArray(d) ? d : []))
       .finally(() => setLoading(false));
   }, []);
 

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import SessionPicker from '../components/SessionPicker';
 import ResultPanel from '../components/ResultPanel';
-import { RefreshCw, Loader2, AlertTriangle } from 'lucide-react';
+import { RefreshCw, Loader2, AlertTriangle, ArrowRight } from 'lucide-react';
 
 export default function SyncTester() {
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
   const [session, setSession] = useState(null);
   const [coaches, setCoaches] = useState([]);
   const [runs, setRuns] = useState([]);
@@ -127,13 +128,29 @@ export default function SyncTester() {
             </div>
           )}
 
-          {/* Active run result */}
+          {/* Active run result + advance to next stage */}
           {activeRun && (
-            <ResultPanel
-              title={`Sync result — ${new Date().toLocaleTimeString()}`}
-              data={activeRun.result}
-              error={activeRun.error}
-            />
+            <>
+              <ResultPanel
+                title={`Sync result — ${new Date().toLocaleTimeString()}`}
+                data={activeRun.result}
+                error={activeRun.error}
+              />
+              {!activeRun.error && (
+                <div className="flex items-center gap-3 p-3 border border-gray-800 rounded bg-gray-950">
+                  <span className="text-xs text-gray-400">
+                    {activeRun.result?.coaches_created ?? 0} coaches mapped —
+                    ready for component detection
+                  </span>
+                  <button
+                    onClick={() => navigate(`/components?session=${session.id}`)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-green-700 hover:bg-green-600 rounded transition-colors ml-auto"
+                  >
+                    <ArrowRight size={11} /> → Components
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
           {/* Past runs */}

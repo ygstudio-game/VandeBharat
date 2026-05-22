@@ -9,7 +9,8 @@ const OCR_URL = process.env.OCR_SERVICE_URL || 'http://localhost:5000';
 
 // POST /api/dev/ocr/run
 // Body: { session_id, frame_ids: string[] }
-// Calls OCR service for each frame, saves result to dev_ocr_runs, returns per-frame detail.
+// Calls OCR service for each frame (OCR already runs YOLO internally),
+// saves result to dev_ocr_runs, returns per-frame detail including yolo_boxes.
 router.post('/run', async (req, res, next) => {
   try {
     const { session_id, frame_ids } = req.body;
@@ -31,40 +32,40 @@ router.post('/run', async (req, res, next) => {
           const { data } = await axios.post(
             `${OCR_URL}/ocr`,
             {
-              frame_url: frame.cloudinary_url,
-              frame_id: frame.id,
+              frame_url:  frame.cloudinary_url,
+              frame_id:   frame.id,
               trigger_id: Number(frame.trigger_id),
               session_id,
             },
-            { timeout: 30000 }
+            { timeout: 30000 },
           );
           serviceResult = data;
         } catch (err) {
           error = err.response?.data || err.message;
         }
 
-        // Save to dev_ocr_runs regardless of outcome
         await prisma.devOcrRun.create({
           data: {
             session_id,
-            frame_id: frame.id,
+            frame_id:     frame.id,
             final_number: serviceResult?.coach_number ?? null,
-            confidence: serviceResult?.confidence ?? null,
-            pass_used: serviceResult?.pass_used ?? null,
-            roi_used: serviceResult?.roi_used ?? null,
-            is_valid: serviceResult?.is_valid ?? false,
+            confidence:   serviceResult?.confidence   ?? null,
+            pass_used:    serviceResult?.pass_used    ?? null,
+            roi_used:     serviceResult?.roi_used     ?? null,
+            is_valid:     serviceResult?.is_valid     ?? false,
             raw_response: serviceResult ?? (error ? { error } : null),
           },
         });
 
         return {
-          frame_id: frame.id,
-          trigger_id: Number(frame.trigger_id),
+          frame_id:       frame.id,
+          trigger_id:     Number(frame.trigger_id),
           cloudinary_url: frame.cloudinary_url,
-          result: serviceResult,
+          yolo_boxes:     serviceResult?.yolo_boxes ?? [],
+          result:         serviceResult,
           error,
         };
-      })
+      }),
     );
 
     res.json({ session_id, runs: results });

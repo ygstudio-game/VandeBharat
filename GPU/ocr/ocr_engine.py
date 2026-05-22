@@ -64,7 +64,7 @@ def get_ocr():
     device = requested
     try:
         _ocr = PaddleOCR(
-            use_angle_cls=True,
+            use_angle_cls=False,
             use_doc_orientation_classify=False,
             use_doc_unwarping=False,
             lang="en",
@@ -75,7 +75,7 @@ def get_ocr():
         if device == "gpu":
             logger.warning("PaddleOCR GPU init failed (%s) — retrying on CPU", exc)
             _ocr = PaddleOCR(
-                use_angle_cls=True,
+                use_angle_cls=False,
                 use_doc_orientation_classify=False,
                 use_doc_unwarping=False,
                 lang="en",
