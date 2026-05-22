@@ -121,7 +121,7 @@ async function intelligence(fastify) {
         width_px: true,
         height_px: true,
         is_ocr_candidate: true,
-        coach_frame_maps: { select: { assignment_method: true, confidence: true } },
+        coach_frame_map: { select: { assignment_method: true, confidence: true } },
         ocr_results: {
           select: { coach_number: true, confidence: true, is_valid: true },
           where: { is_valid: true },
@@ -145,7 +145,7 @@ async function intelligence(fastify) {
         width: f.width_px,
         height: f.height_px,
         is_ocr_candidate: f.is_ocr_candidate,
-        assignment_method: f.coach_frame_maps[0]?.assignment_method ?? null,
+        assignment_method: f.coach_frame_map?.assignment_method ?? null,
         ocr_result: f.ocr_results[0] ?? null,
       })),
     };

@@ -4,6 +4,60 @@
   "graph": {},
   "nodes": [
     {
+      "label": "ocr_engine.py",
+      "file_type": "code",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L1",
+      "id": "gpu_ocr_ocr_engine_py",
+      "community": 7,
+      "norm_label": "ocr_engine.py"
+    },
+    {
+      "label": "_cudnn8_available()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L26",
+      "id": "ocr_ocr_engine_cudnn8_available",
+      "community": 7,
+      "norm_label": "_cudnn8_available()"
+    },
+    {
+      "label": "get_ocr()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L48",
+      "id": "ocr_ocr_engine_get_ocr",
+      "community": 7,
+      "norm_label": "get_ocr()"
+    },
+    {
+      "label": "run_ocr()",
+      "file_type": "code",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L88",
+      "id": "ocr_ocr_engine_run_ocr",
+      "community": 7,
+      "norm_label": "run_ocr()"
+    },
+    {
+      "label": "PaddleOCR singleton \u2014 GPU with CPU fallback. Windows CUDA DLL injection included",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L1",
+      "id": "ocr_ocr_engine_rationale_1",
+      "community": 7,
+      "norm_label": "paddleocr singleton \u2014 gpu with cpu fallback. windows cuda dll injection included"
+    },
+    {
+      "label": "PaddlePaddle 2.x requires cuDNN 8 (cudnn_ops_infer64_8.dll on Windows).     PyTo",
+      "file_type": "rationale",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L27",
+      "id": "ocr_ocr_engine_rationale_27",
+      "community": 7,
+      "norm_label": "paddlepaddle 2.x requires cudnn 8 (cudnn_ops_infer64_8.dll on windows).     pyto"
+    },
+    {
       "label": "server.py",
       "file_type": "code",
       "source_file": "GPU/ocr/server.py",
@@ -79,7 +133,7 @@
       "label": "warmup()",
       "file_type": "code",
       "source_file": "GPU/ocr/server.py",
-      "source_location": "L154",
+      "source_location": "L155",
       "id": "ocr_server_warmup",
       "community": 7,
       "norm_label": "warmup()"
@@ -88,7 +142,7 @@
       "label": "health()",
       "file_type": "code",
       "source_file": "GPU/ocr/server.py",
-      "source_location": "L161",
+      "source_location": "L162",
       "id": "ocr_server_health",
       "community": 7,
       "norm_label": "health()"
@@ -97,7 +151,7 @@
       "label": "ocr()",
       "file_type": "code",
       "source_file": "GPU/ocr/server.py",
-      "source_location": "L166",
+      "source_location": "L167",
       "id": "ocr_server_ocr",
       "community": 7,
       "norm_label": "ocr()"
@@ -130,319 +184,13 @@
       "norm_label": "last-resort: extract any 5-6 digit substring from detected text."
     },
     {
-      "label": "Returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr)     bbox",
+      "label": "Returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr, all_yolo_",
       "file_type": "rationale",
       "source_file": "GPU/ocr/server.py",
       "source_location": "L87",
       "id": "ocr_server_rationale_87",
       "community": 7,
-      "norm_label": "returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr)     bbox"
-    },
-    {
-      "label": "sessions.js",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L1",
-      "id": "backend_src_routes_sessions_js",
-      "community": 0,
-      "norm_label": "sessions.js"
-    },
-    {
-      "label": "path",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L1",
-      "id": "routes_sessions_path",
-      "community": 0,
-      "norm_label": "path"
-    },
-    {
-      "label": "fs",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L2",
-      "id": "routes_sessions_fs",
-      "community": 0,
-      "norm_label": "fs"
-    },
-    {
-      "label": "{ pipeline }",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L3",
-      "id": "routes_sessions_pipeline",
-      "community": 0,
-      "norm_label": "{ pipeline }"
-    },
-    {
-      "label": "{ randomUUID }",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L4",
-      "id": "routes_sessions_randomuuid",
-      "community": 0,
-      "norm_label": "{ randomuuid }"
-    },
-    {
-      "label": "axios",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L5",
-      "id": "routes_sessions_axios",
-      "community": 0,
-      "norm_label": "axios"
-    },
-    {
-      "label": "prisma",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sessions.js",
-      "source_location": "L5",
-      "id": "routes_sessions_prisma",
-      "community": 26,
-      "norm_label": "prisma"
-    },
-    {
-      "label": "config",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L7",
-      "id": "routes_sessions_config",
-      "community": 0,
-      "norm_label": "config"
-    },
-    {
-      "label": "rootConfig",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L8",
-      "id": "routes_sessions_rootconfig",
-      "community": 0,
-      "norm_label": "rootconfig"
-    },
-    {
-      "label": "{ runOcrPipeline }",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L9",
-      "id": "routes_sessions_runocrpipeline",
-      "community": 0,
-      "norm_label": "{ runocrpipeline }"
-    },
-    {
-      "label": "UPLOAD_DIR",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L11",
-      "id": "routes_sessions_upload_dir",
-      "community": 0,
-      "norm_label": "upload_dir"
-    },
-    {
-      "label": "PIPELINE_STAGES",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L13",
-      "id": "routes_sessions_pipeline_stages",
-      "community": 0,
-      "norm_label": "pipeline_stages"
-    },
-    {
-      "label": "CAM_TYPES",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L23",
-      "id": "routes_sessions_cam_types",
-      "community": 0,
-      "norm_label": "cam_types"
-    },
-    {
-      "label": "generateSessionCode()",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L25",
-      "id": "routes_sessions_generatesessioncode",
-      "community": 0,
-      "norm_label": "generatesessioncode()"
-    },
-    {
-      "label": "sessions()",
-      "file_type": "code",
-      "source_file": "backend/src/routes/sessions.js",
-      "source_location": "L31",
-      "id": "routes_sessions_sessions",
-      "community": 0,
-      "norm_label": "sessions()"
-    },
-    {
-      "label": "config.json",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L1",
-      "id": "config_json",
-      "community": 23,
-      "norm_label": "config.json"
-    },
-    {
-      "label": "pipeline",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L2",
-      "id": "main_config_pipeline",
-      "community": 23,
-      "norm_label": "pipeline"
-    },
-    {
-      "label": "frames_per_second",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L3",
-      "id": "main_config_pipeline_frames_per_second",
-      "community": 23,
-      "norm_label": "frames_per_second"
-    },
-    {
-      "label": "ocr_concurrency",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L4",
-      "id": "main_config_pipeline_ocr_concurrency",
-      "community": 23,
-      "norm_label": "ocr_concurrency"
-    },
-    {
-      "label": "db_flush_every_n_frames",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L5",
-      "id": "main_config_pipeline_db_flush_every_n_frames",
-      "community": 23,
-      "norm_label": "db_flush_every_n_frames"
-    },
-    {
-      "label": "sync_min_votes",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L6",
-      "id": "main_config_pipeline_sync_min_votes",
-      "community": 23,
-      "norm_label": "sync_min_votes"
-    },
-    {
-      "label": "sync_max_trigger_gap",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L7",
-      "id": "main_config_pipeline_sync_max_trigger_gap",
-      "community": 23,
-      "norm_label": "sync_max_trigger_gap"
-    },
-    {
-      "label": "services",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L9",
-      "id": "main_config_services",
-      "community": 23,
-      "norm_label": "services"
-    },
-    {
-      "label": "yolo_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L10",
-      "id": "main_config_services_yolo_port",
-      "community": 23,
-      "norm_label": "yolo_port"
-    },
-    {
-      "label": "ocr_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L11",
-      "id": "main_config_services_ocr_port",
-      "community": 23,
-      "norm_label": "ocr_port"
-    },
-    {
-      "label": "frame_extractor_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L12",
-      "id": "main_config_services_frame_extractor_port",
-      "community": 23,
-      "norm_label": "frame_extractor_port"
-    },
-    {
-      "label": "sync_engine_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L13",
-      "id": "main_config_services_sync_engine_port",
-      "community": 23,
-      "norm_label": "sync_engine_port"
-    },
-    {
-      "label": "correlation_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L14",
-      "id": "main_config_services_correlation_port",
-      "community": 23,
-      "norm_label": "correlation_port"
-    },
-    {
-      "label": "report_generator_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L15",
-      "id": "main_config_services_report_generator_port",
-      "community": 23,
-      "norm_label": "report_generator_port"
-    },
-    {
-      "label": "backend_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L16",
-      "id": "main_config_services_backend_port",
-      "community": 23,
-      "norm_label": "backend_port"
-    },
-    {
-      "label": "frontend_port",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L17",
-      "id": "main_config_services_frontend_port",
-      "community": 23,
-      "norm_label": "frontend_port"
-    },
-    {
-      "label": "upload",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L19",
-      "id": "main_config_upload",
-      "community": 23,
-      "norm_label": "upload"
-    },
-    {
-      "label": "max_file_size_gb",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L20",
-      "id": "main_config_upload_max_file_size_gb",
-      "community": 23,
-      "norm_label": "max_file_size_gb"
-    },
-    {
-      "label": "max_cameras",
-      "file_type": "code",
-      "source_file": "config.json",
-      "source_location": "L21",
-      "id": "main_config_upload_max_cameras",
-      "community": 23,
-      "norm_label": "max_cameras"
+      "norm_label": "returns (coach_number, confidence, pass_used, roi_used, bbox, raw_ocr, all_yolo_"
     },
     {
       "label": "package.json",
@@ -607,10 +355,19 @@
       "norm_label": "devdependencies"
     },
     {
-      "label": "prisma",
+      "label": "nodemon",
       "file_type": "code",
       "source_file": "devlab/backend/package.json",
       "source_location": "L21",
+      "id": "backend_package_devdependencies_nodemon",
+      "community": 1,
+      "norm_label": "nodemon"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L22",
       "id": "backend_package_devdependencies_prisma",
       "community": 1,
       "norm_label": "prisma"
@@ -628,7 +385,7 @@
       "label": "express",
       "file_type": "code",
       "source_file": "devlab/backend/src/index.js",
-      "source_location": "L2",
+      "source_location": "L4",
       "id": "src_index_express",
       "community": 26,
       "norm_label": "express"
@@ -637,7 +394,7 @@
       "label": "cors",
       "file_type": "code",
       "source_file": "devlab/backend/src/index.js",
-      "source_location": "L3",
+      "source_location": "L5",
       "id": "src_index_cors",
       "community": 26,
       "norm_label": "cors"
@@ -646,7 +403,7 @@
       "label": "sessionsRouter",
       "file_type": "code",
       "source_file": "devlab/backend/src/index.js",
-      "source_location": "L5",
+      "source_location": "L7",
       "id": "src_index_sessionsrouter",
       "community": 26,
       "norm_label": "sessionsrouter"
@@ -655,7 +412,7 @@
       "label": "ocrRouter",
       "file_type": "code",
       "source_file": "devlab/backend/src/index.js",
-      "source_location": "L6",
+      "source_location": "L8",
       "id": "src_index_ocrrouter",
       "community": 26,
       "norm_label": "ocrrouter"
@@ -664,7 +421,7 @@
       "label": "syncRouter",
       "file_type": "code",
       "source_file": "devlab/backend/src/index.js",
-      "source_location": "L7",
+      "source_location": "L9",
       "id": "src_index_syncrouter",
       "community": 26,
       "norm_label": "syncrouter"
@@ -673,7 +430,7 @@
       "label": "yoloRouter",
       "file_type": "code",
       "source_file": "devlab/backend/src/index.js",
-      "source_location": "L8",
+      "source_location": "L10",
       "id": "src_index_yolorouter",
       "community": 26,
       "norm_label": "yolorouter"
@@ -682,7 +439,7 @@
       "label": "app",
       "file_type": "code",
       "source_file": "devlab/backend/src/index.js",
-      "source_location": "L10",
+      "source_location": "L12",
       "id": "src_index_app",
       "community": 26,
       "norm_label": "app"
@@ -733,492 +490,6 @@
       "norm_label": "prisma"
     },
     {
-      "label": "sessions.js",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sessions.js",
-      "source_location": "L1",
-      "id": "devlab_backend_src_routes_sessions_js",
-      "community": 26,
-      "norm_label": "sessions.js"
-    },
-    {
-      "label": "{ Router }",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sessions.js",
-      "source_location": "L1",
-      "id": "routes_sessions_router",
-      "community": 26,
-      "norm_label": "{ router }"
-    },
-    {
-      "label": "{ PrismaClient }",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sessions.js",
-      "source_location": "L2",
-      "id": "routes_sessions_prismaclient",
-      "community": 26,
-      "norm_label": "{ prismaclient }"
-    },
-    {
-      "label": "where",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sessions.js",
-      "source_location": "L37",
-      "id": "routes_sessions_where",
-      "community": 26,
-      "norm_label": "where"
-    },
-    {
-      "label": "types",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sessions.js",
-      "source_location": "L146",
-      "id": "routes_sessions_types",
-      "community": 26,
-      "norm_label": "types"
-    },
-    {
-      "label": "sync.js",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sync.js",
-      "source_location": "L1",
-      "id": "devlab_backend_src_routes_sync_js",
-      "community": 26,
-      "norm_label": "sync.js"
-    },
-    {
-      "label": "{ Router }",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sync.js",
-      "source_location": "L1",
-      "id": "routes_sync_router",
-      "community": 26,
-      "norm_label": "{ router }"
-    },
-    {
-      "label": "{ PrismaClient }",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sync.js",
-      "source_location": "L2",
-      "id": "routes_sync_prismaclient",
-      "community": 26,
-      "norm_label": "{ prismaclient }"
-    },
-    {
-      "label": "axios",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sync.js",
-      "source_location": "L3",
-      "id": "routes_sync_axios",
-      "community": 26,
-      "norm_label": "axios"
-    },
-    {
-      "label": "prisma",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/sync.js",
-      "source_location": "L6",
-      "id": "routes_sync_prisma",
-      "community": 26,
-      "norm_label": "prisma"
-    },
-    {
-      "label": "yolo.js",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L1",
-      "id": "devlab_backend_src_routes_yolo_js",
-      "community": 26,
-      "norm_label": "yolo.js"
-    },
-    {
-      "label": "{ Router }",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L1",
-      "id": "routes_yolo_router",
-      "community": 26,
-      "norm_label": "{ router }"
-    },
-    {
-      "label": "{ PrismaClient }",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L2",
-      "id": "routes_yolo_prismaclient",
-      "community": 26,
-      "norm_label": "{ prismaclient }"
-    },
-    {
-      "label": "axios",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L3",
-      "id": "routes_yolo_axios",
-      "community": 26,
-      "norm_label": "axios"
-    },
-    {
-      "label": "FormData",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L4",
-      "id": "routes_yolo_formdata",
-      "community": 26,
-      "norm_label": "formdata"
-    },
-    {
-      "label": "prisma",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L7",
-      "id": "routes_yolo_prisma",
-      "community": 26,
-      "norm_label": "prisma"
-    },
-    {
-      "label": "downloadFrameBuffer()",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L11",
-      "id": "routes_yolo_downloadframebuffer",
-      "community": 26,
-      "norm_label": "downloadframebuffer()"
-    },
-    {
-      "label": "form",
-      "file_type": "code",
-      "source_file": "devlab/backend/src/routes/yolo.js",
-      "source_location": "L43",
-      "id": "routes_yolo_form",
-      "community": 26,
-      "norm_label": "form"
-    },
-    {
-      "label": "package.json",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L1",
-      "id": "devlab_frontend_package_json",
-      "community": 29,
-      "norm_label": "package.json"
-    },
-    {
-      "label": "name",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L2",
-      "id": "frontend_package_name",
-      "community": 29,
-      "norm_label": "name"
-    },
-    {
-      "label": "private",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L3",
-      "id": "frontend_package_private",
-      "community": 29,
-      "norm_label": "private"
-    },
-    {
-      "label": "version",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L4",
-      "id": "frontend_package_version",
-      "community": 29,
-      "norm_label": "version"
-    },
-    {
-      "label": "type",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L5",
-      "id": "frontend_package_type",
-      "community": 29,
-      "norm_label": "type"
-    },
-    {
-      "label": "scripts",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L6",
-      "id": "frontend_package_scripts",
-      "community": 29,
-      "norm_label": "scripts"
-    },
-    {
-      "label": "dev",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L7",
-      "id": "frontend_package_scripts_dev",
-      "community": 29,
-      "norm_label": "dev"
-    },
-    {
-      "label": "build",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L8",
-      "id": "frontend_package_scripts_build",
-      "community": 29,
-      "norm_label": "build"
-    },
-    {
-      "label": "preview",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L9",
-      "id": "frontend_package_scripts_preview",
-      "community": 29,
-      "norm_label": "preview"
-    },
-    {
-      "label": "dependencies",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L11",
-      "id": "frontend_package_dependencies",
-      "community": 29,
-      "norm_label": "dependencies"
-    },
-    {
-      "label": "lucide-react",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L12",
-      "id": "frontend_package_dependencies_lucide_react",
-      "community": 29,
-      "norm_label": "lucide-react"
-    },
-    {
-      "label": "react",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L13",
-      "id": "frontend_package_dependencies_react",
-      "community": 29,
-      "norm_label": "react"
-    },
-    {
-      "label": "react-dom",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L14",
-      "id": "frontend_package_dependencies_react_dom",
-      "community": 29,
-      "norm_label": "react-dom"
-    },
-    {
-      "label": "react-router-dom",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L15",
-      "id": "frontend_package_dependencies_react_router_dom",
-      "community": 29,
-      "norm_label": "react-router-dom"
-    },
-    {
-      "label": "devDependencies",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L17",
-      "id": "frontend_package_devdependencies",
-      "community": 29,
-      "norm_label": "devdependencies"
-    },
-    {
-      "label": "@vitejs/plugin-react",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L18",
-      "id": "frontend_package_devdependencies_vitejs_plugin_react",
-      "community": 29,
-      "norm_label": "@vitejs/plugin-react"
-    },
-    {
-      "label": "autoprefixer",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L19",
-      "id": "frontend_package_devdependencies_autoprefixer",
-      "community": 29,
-      "norm_label": "autoprefixer"
-    },
-    {
-      "label": "postcss",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L20",
-      "id": "frontend_package_devdependencies_postcss",
-      "community": 29,
-      "norm_label": "postcss"
-    },
-    {
-      "label": "tailwindcss",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L21",
-      "id": "frontend_package_devdependencies_tailwindcss",
-      "community": 29,
-      "norm_label": "tailwindcss"
-    },
-    {
-      "label": "vite",
-      "file_type": "code",
-      "source_file": "devlab/frontend/package.json",
-      "source_location": "L22",
-      "id": "frontend_package_devdependencies_vite",
-      "community": 29,
-      "norm_label": "vite"
-    },
-    {
-      "label": "postcss.config.js",
-      "file_type": "code",
-      "source_file": "devlab/frontend/postcss.config.js",
-      "source_location": "L1",
-      "id": "devlab_frontend_postcss_config_js",
-      "community": 35,
-      "norm_label": "postcss.config.js"
-    },
-    {
-      "label": "App.jsx",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/App.jsx",
-      "source_location": "L1",
-      "id": "devlab_frontend_src_app_jsx",
-      "community": 28,
-      "norm_label": "app.jsx"
-    },
-    {
-      "label": "nav",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/App.jsx",
-      "source_location": "L8",
-      "id": "src_app_nav",
-      "community": 28,
-      "norm_label": "nav"
-    },
-    {
-      "label": "App()",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/App.jsx",
-      "source_location": "L15",
-      "id": "src_app_app",
-      "community": 28,
-      "norm_label": "app()"
-    },
-    {
-      "label": "BboxOverlay.jsx",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/BboxOverlay.jsx",
-      "source_location": "L1",
-      "id": "devlab_frontend_src_components_bboxoverlay_jsx",
-      "community": 28,
-      "norm_label": "bboxoverlay.jsx"
-    },
-    {
-      "label": "BboxOverlay()",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/BboxOverlay.jsx",
-      "source_location": "L4",
-      "id": "components_bboxoverlay_bboxoverlay",
-      "community": 28,
-      "norm_label": "bboxoverlay()"
-    },
-    {
-      "label": "FrameGrid.jsx",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/FrameGrid.jsx",
-      "source_location": "L1",
-      "id": "devlab_frontend_src_components_framegrid_jsx",
-      "community": 28,
-      "norm_label": "framegrid.jsx"
-    },
-    {
-      "label": "FrameGrid()",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/FrameGrid.jsx",
-      "source_location": "L4",
-      "id": "components_framegrid_framegrid",
-      "community": 28,
-      "norm_label": "framegrid()"
-    },
-    {
-      "label": "ResultPanel.jsx",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/ResultPanel.jsx",
-      "source_location": "L1",
-      "id": "devlab_frontend_src_components_resultpanel_jsx",
-      "community": 28,
-      "norm_label": "resultpanel.jsx"
-    },
-    {
-      "label": "ResultPanel()",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/ResultPanel.jsx",
-      "source_location": "L1",
-      "id": "components_resultpanel_resultpanel",
-      "community": 28,
-      "norm_label": "resultpanel()"
-    },
-    {
-      "label": "SessionPicker.jsx",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/SessionPicker.jsx",
-      "source_location": "L1",
-      "id": "devlab_frontend_src_components_sessionpicker_jsx",
-      "community": 28,
-      "norm_label": "sessionpicker.jsx"
-    },
-    {
-      "label": "SessionPicker()",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/components/SessionPicker.jsx",
-      "source_location": "L3",
-      "id": "components_sessionpicker_sessionpicker",
-      "community": 28,
-      "norm_label": "sessionpicker()"
-    },
-    {
-      "label": "main.jsx",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/main.jsx",
-      "source_location": "L1",
-      "id": "devlab_frontend_src_main_jsx",
-      "community": 28,
-      "norm_label": "main.jsx"
-    },
-    {
-      "label": "ComponentTester.jsx",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
-      "source_location": "L1",
-      "id": "devlab_frontend_src_pages_componenttester_jsx",
-      "community": 28,
-      "norm_label": "componenttester.jsx"
-    },
-    {
-      "label": "SEVERITY_COLOR",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
-      "source_location": "L9",
-      "id": "pages_componenttester_severity_color",
-      "community": 28,
-      "norm_label": "severity_color"
-    },
-    {
-      "label": "ComponentTester()",
-      "file_type": "code",
-      "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
-      "source_location": "L20",
-      "id": "pages_componenttester_componenttester",
-      "community": 28,
-      "norm_label": "componenttester()"
-    },
-    {
       "label": "Home.jsx",
       "file_type": "code",
       "source_file": "devlab/frontend/src/pages/Home.jsx",
@@ -1246,10 +517,28 @@
       "norm_label": "ocrtester.jsx"
     },
     {
-      "label": "OcrTester()",
+      "label": "CLASS_COLOR",
       "file_type": "code",
       "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
       "source_location": "L9",
+      "id": "pages_ocrtester_class_color",
+      "community": 28,
+      "norm_label": "class_color"
+    },
+    {
+      "label": "classColor()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L16",
+      "id": "pages_ocrtester_classcolor",
+      "community": 28,
+      "norm_label": "classcolor()"
+    },
+    {
+      "label": "OcrTester()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L20",
       "id": "pages_ocrtester_ocrtester",
       "community": 28,
       "norm_label": "ocrtester()"
@@ -1273,87 +562,6 @@
       "norm_label": "synctester()"
     },
     {
-      "label": "tailwind.config.js",
-      "file_type": "code",
-      "source_file": "devlab/frontend/tailwind.config.js",
-      "source_location": "L1",
-      "id": "devlab_frontend_tailwind_config_js",
-      "community": 36,
-      "norm_label": "tailwind.config.js"
-    },
-    {
-      "label": "vite.config.js",
-      "file_type": "code",
-      "source_file": "devlab/frontend/vite.config.js",
-      "source_location": "L1",
-      "id": "devlab_frontend_vite_config_js",
-      "community": 37,
-      "norm_label": "vite.config.js"
-    },
-    {
-      "label": "package.json",
-      "file_type": "code",
-      "source_file": "devlab/package.json",
-      "source_location": "L1",
-      "id": "devlab_package_json",
-      "community": 32,
-      "norm_label": "package.json"
-    },
-    {
-      "label": "name",
-      "file_type": "code",
-      "source_file": "devlab/package.json",
-      "source_location": "L2",
-      "id": "devlab_package_name",
-      "community": 32,
-      "norm_label": "name"
-    },
-    {
-      "label": "version",
-      "file_type": "code",
-      "source_file": "devlab/package.json",
-      "source_location": "L3",
-      "id": "devlab_package_version",
-      "community": 32,
-      "norm_label": "version"
-    },
-    {
-      "label": "private",
-      "file_type": "code",
-      "source_file": "devlab/package.json",
-      "source_location": "L4",
-      "id": "devlab_package_private",
-      "community": 32,
-      "norm_label": "private"
-    },
-    {
-      "label": "scripts",
-      "file_type": "code",
-      "source_file": "devlab/package.json",
-      "source_location": "L5",
-      "id": "devlab_package_scripts",
-      "community": 32,
-      "norm_label": "scripts"
-    },
-    {
-      "label": "start",
-      "file_type": "code",
-      "source_file": "devlab/package.json",
-      "source_location": "L6",
-      "id": "devlab_package_scripts_start",
-      "community": 32,
-      "norm_label": "start"
-    },
-    {
-      "label": "install:all",
-      "file_type": "code",
-      "source_file": "devlab/package.json",
-      "source_location": "L7",
-      "id": "devlab_package_scripts_install_all",
-      "community": 32,
-      "norm_label": "install:all"
-    },
-    {
       "label": "start.js",
       "file_type": "code",
       "source_file": "devlab/start.js",
@@ -1363,535 +571,1543 @@
       "norm_label": "start.js"
     },
     {
-      "label": "{ spawn }",
+      "label": "{ spawn, exec }",
       "file_type": "code",
       "source_file": "devlab/start.js",
-      "source_location": "L1",
-      "id": "devlab_start_spawn",
+      "source_location": "L8",
+      "id": "devlab_start_spawn_exec",
       "community": 34,
-      "norm_label": "{ spawn }"
+      "norm_label": "{ spawn, exec }"
     },
     {
       "label": "path",
       "file_type": "code",
       "source_file": "devlab/start.js",
-      "source_location": "L2",
+      "source_location": "L9",
       "id": "devlab_start_path",
       "community": 34,
       "norm_label": "path"
     },
     {
+      "label": "killPort()",
+      "file_type": "code",
+      "source_file": "devlab/start.js",
+      "source_location": "L14",
+      "id": "devlab_start_killport",
+      "community": 34,
+      "norm_label": "killport()"
+    },
+    {
       "label": "run()",
       "file_type": "code",
       "source_file": "devlab/start.js",
-      "source_location": "L4",
+      "source_location": "L41",
       "id": "devlab_start_run",
       "community": 34,
       "norm_label": "run()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "devlab/start.js",
+      "source_location": "L49",
+      "id": "devlab_start_main",
+      "community": 34,
+      "norm_label": "main()"
+    },
+    {
+      "label": "start.js",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L1",
+      "id": "start_js",
+      "community": 16,
+      "norm_label": "start.js"
+    },
+    {
+      "label": "{ spawn, exec }",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L14",
+      "id": "main_start_spawn_exec",
+      "community": 16,
+      "norm_label": "{ spawn, exec }"
+    },
+    {
+      "label": "http",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L15",
+      "id": "main_start_http",
+      "community": 16,
+      "norm_label": "http"
+    },
+    {
+      "label": "path",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L16",
+      "id": "main_start_path",
+      "community": 16,
+      "norm_label": "path"
+    },
+    {
+      "label": "fs",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L17",
+      "id": "main_start_fs",
+      "community": 16,
+      "norm_label": "fs"
+    },
+    {
+      "label": "LOG_DIR",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L21",
+      "id": "main_start_log_dir",
+      "community": 16,
+      "norm_label": "log_dir"
+    },
+    {
+      "label": "LOG_FILE",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L22",
+      "id": "main_start_log_file",
+      "community": 16,
+      "norm_label": "log_file"
+    },
+    {
+      "label": "logStream",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L27",
+      "id": "main_start_logstream",
+      "community": 16,
+      "norm_label": "logstream"
+    },
+    {
+      "label": "C",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L30",
+      "id": "main_start_c",
+      "community": 16,
+      "norm_label": "c"
+    },
+    {
+      "label": "SERVICES",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L43",
+      "id": "main_start_services",
+      "community": 16,
+      "norm_label": "services"
+    },
+    {
+      "label": "running",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L138",
+      "id": "main_start_running",
+      "community": 16,
+      "norm_label": "running"
+    },
+    {
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L145",
+      "id": "main_start_log",
+      "community": 16,
+      "norm_label": "log()"
+    },
+    {
+      "label": "killAll()",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L155",
+      "id": "main_start_killall",
+      "community": 16,
+      "norm_label": "killall()"
+    },
+    {
+      "label": "pollHealth()",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L173",
+      "id": "main_start_pollhealth",
+      "community": 16,
+      "norm_label": "pollhealth()"
+    },
+    {
+      "label": "launch()",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L200",
+      "id": "main_start_launch",
+      "community": 16,
+      "norm_label": "launch()"
+    },
+    {
+      "label": "killPort()",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L239",
+      "id": "main_start_killport",
+      "community": 16,
+      "norm_label": "killport()"
+    },
+    {
+      "label": "startService()",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L265",
+      "id": "main_start_startservice",
+      "community": 16,
+      "norm_label": "startservice()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "start.js",
+      "source_location": "L299",
+      "id": "main_start_main",
+      "community": 16,
+      "norm_label": "main()"
+    },
+    {
+      "label": "sessions.js",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L1",
+      "community": 0,
+      "norm_label": "sessions.js",
+      "id": "backend_src_routes_sessions_js"
+    },
+    {
+      "label": "path",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L1",
+      "community": 0,
+      "norm_label": "path",
+      "id": "routes_sessions_path"
+    },
+    {
+      "label": "fs",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L2",
+      "community": 0,
+      "norm_label": "fs",
+      "id": "routes_sessions_fs"
+    },
+    {
+      "label": "{ pipeline }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L3",
+      "community": 0,
+      "norm_label": "{ pipeline }",
+      "id": "routes_sessions_pipeline"
+    },
+    {
+      "label": "{ randomUUID }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L4",
+      "community": 0,
+      "norm_label": "{ randomuuid }",
+      "id": "routes_sessions_randomuuid"
+    },
+    {
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L5",
+      "community": 0,
+      "norm_label": "axios",
+      "id": "routes_sessions_axios"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sessions.js",
+      "source_location": "L5",
+      "community": 26,
+      "norm_label": "prisma",
+      "id": "routes_sessions_prisma"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L7",
+      "community": 0,
+      "norm_label": "config",
+      "id": "routes_sessions_config"
+    },
+    {
+      "label": "rootConfig",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L8",
+      "community": 0,
+      "norm_label": "rootconfig",
+      "id": "routes_sessions_rootconfig"
+    },
+    {
+      "label": "{ runOcrPipeline }",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L9",
+      "community": 0,
+      "norm_label": "{ runocrpipeline }",
+      "id": "routes_sessions_runocrpipeline"
+    },
+    {
+      "label": "UPLOAD_DIR",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L11",
+      "community": 0,
+      "norm_label": "upload_dir",
+      "id": "routes_sessions_upload_dir"
+    },
+    {
+      "label": "PIPELINE_STAGES",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L13",
+      "community": 0,
+      "norm_label": "pipeline_stages",
+      "id": "routes_sessions_pipeline_stages"
+    },
+    {
+      "label": "CAM_TYPES",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L23",
+      "community": 0,
+      "norm_label": "cam_types",
+      "id": "routes_sessions_cam_types"
+    },
+    {
+      "label": "generateSessionCode()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L25",
+      "community": 0,
+      "norm_label": "generatesessioncode()",
+      "id": "routes_sessions_generatesessioncode"
+    },
+    {
+      "label": "sessions()",
+      "file_type": "code",
+      "source_file": "backend/src/routes/sessions.js",
+      "source_location": "L31",
+      "community": 0,
+      "norm_label": "sessions()",
+      "id": "routes_sessions_sessions"
+    },
+    {
+      "label": "config.json",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L1",
+      "community": 23,
+      "norm_label": "config.json",
+      "id": "config_json"
+    },
+    {
+      "label": "pipeline",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L2",
+      "community": 23,
+      "norm_label": "pipeline",
+      "id": "main_config_pipeline"
+    },
+    {
+      "label": "frames_per_second",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L3",
+      "community": 23,
+      "norm_label": "frames_per_second",
+      "id": "main_config_pipeline_frames_per_second"
+    },
+    {
+      "label": "ocr_concurrency",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L4",
+      "community": 23,
+      "norm_label": "ocr_concurrency",
+      "id": "main_config_pipeline_ocr_concurrency"
+    },
+    {
+      "label": "db_flush_every_n_frames",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L5",
+      "community": 23,
+      "norm_label": "db_flush_every_n_frames",
+      "id": "main_config_pipeline_db_flush_every_n_frames"
+    },
+    {
+      "label": "sync_min_votes",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L6",
+      "community": 23,
+      "norm_label": "sync_min_votes",
+      "id": "main_config_pipeline_sync_min_votes"
+    },
+    {
+      "label": "sync_max_trigger_gap",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L7",
+      "community": 23,
+      "norm_label": "sync_max_trigger_gap",
+      "id": "main_config_pipeline_sync_max_trigger_gap"
+    },
+    {
+      "label": "services",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L9",
+      "community": 23,
+      "norm_label": "services",
+      "id": "main_config_services"
+    },
+    {
+      "label": "yolo_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L10",
+      "community": 23,
+      "norm_label": "yolo_port",
+      "id": "main_config_services_yolo_port"
+    },
+    {
+      "label": "ocr_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L11",
+      "community": 23,
+      "norm_label": "ocr_port",
+      "id": "main_config_services_ocr_port"
+    },
+    {
+      "label": "frame_extractor_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L12",
+      "community": 23,
+      "norm_label": "frame_extractor_port",
+      "id": "main_config_services_frame_extractor_port"
+    },
+    {
+      "label": "sync_engine_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L13",
+      "community": 23,
+      "norm_label": "sync_engine_port",
+      "id": "main_config_services_sync_engine_port"
+    },
+    {
+      "label": "correlation_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L14",
+      "community": 23,
+      "norm_label": "correlation_port",
+      "id": "main_config_services_correlation_port"
+    },
+    {
+      "label": "report_generator_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L15",
+      "community": 23,
+      "norm_label": "report_generator_port",
+      "id": "main_config_services_report_generator_port"
+    },
+    {
+      "label": "backend_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L16",
+      "community": 23,
+      "norm_label": "backend_port",
+      "id": "main_config_services_backend_port"
+    },
+    {
+      "label": "frontend_port",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L17",
+      "community": 23,
+      "norm_label": "frontend_port",
+      "id": "main_config_services_frontend_port"
+    },
+    {
+      "label": "upload",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L19",
+      "community": 23,
+      "norm_label": "upload",
+      "id": "main_config_upload"
+    },
+    {
+      "label": "max_file_size_gb",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L20",
+      "community": 23,
+      "norm_label": "max_file_size_gb",
+      "id": "main_config_upload_max_file_size_gb"
+    },
+    {
+      "label": "max_cameras",
+      "file_type": "code",
+      "source_file": "config.json",
+      "source_location": "L21",
+      "community": 23,
+      "norm_label": "max_cameras",
+      "id": "main_config_upload_max_cameras"
+    },
+    {
+      "label": "sessions.js",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sessions.js",
+      "source_location": "L1",
+      "community": 26,
+      "norm_label": "sessions.js",
+      "id": "devlab_backend_src_routes_sessions_js"
+    },
+    {
+      "label": "{ Router }",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sessions.js",
+      "source_location": "L1",
+      "community": 26,
+      "norm_label": "{ router }",
+      "id": "routes_sessions_router"
+    },
+    {
+      "label": "{ PrismaClient }",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sessions.js",
+      "source_location": "L2",
+      "community": 26,
+      "norm_label": "{ prismaclient }",
+      "id": "routes_sessions_prismaclient"
+    },
+    {
+      "label": "where",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sessions.js",
+      "source_location": "L37",
+      "community": 26,
+      "norm_label": "where",
+      "id": "routes_sessions_where"
+    },
+    {
+      "label": "types",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sessions.js",
+      "source_location": "L146",
+      "community": 26,
+      "norm_label": "types",
+      "id": "routes_sessions_types"
+    },
+    {
+      "label": "sync.js",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sync.js",
+      "source_location": "L1",
+      "community": 26,
+      "norm_label": "sync.js",
+      "id": "devlab_backend_src_routes_sync_js"
+    },
+    {
+      "label": "{ Router }",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sync.js",
+      "source_location": "L1",
+      "community": 26,
+      "norm_label": "{ router }",
+      "id": "routes_sync_router"
+    },
+    {
+      "label": "{ PrismaClient }",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sync.js",
+      "source_location": "L2",
+      "community": 26,
+      "norm_label": "{ prismaclient }",
+      "id": "routes_sync_prismaclient"
+    },
+    {
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sync.js",
+      "source_location": "L3",
+      "community": 26,
+      "norm_label": "axios",
+      "id": "routes_sync_axios"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/sync.js",
+      "source_location": "L6",
+      "community": 26,
+      "norm_label": "prisma",
+      "id": "routes_sync_prisma"
+    },
+    {
+      "label": "yolo.js",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L1",
+      "community": 26,
+      "norm_label": "yolo.js",
+      "id": "devlab_backend_src_routes_yolo_js"
+    },
+    {
+      "label": "{ Router }",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L1",
+      "community": 26,
+      "norm_label": "{ router }",
+      "id": "routes_yolo_router"
+    },
+    {
+      "label": "{ PrismaClient }",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L2",
+      "community": 26,
+      "norm_label": "{ prismaclient }",
+      "id": "routes_yolo_prismaclient"
+    },
+    {
+      "label": "axios",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L3",
+      "community": 26,
+      "norm_label": "axios",
+      "id": "routes_yolo_axios"
+    },
+    {
+      "label": "FormData",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L4",
+      "community": 26,
+      "norm_label": "formdata",
+      "id": "routes_yolo_formdata"
+    },
+    {
+      "label": "prisma",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L7",
+      "community": 26,
+      "norm_label": "prisma",
+      "id": "routes_yolo_prisma"
+    },
+    {
+      "label": "downloadFrameBuffer()",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L11",
+      "community": 26,
+      "norm_label": "downloadframebuffer()",
+      "id": "routes_yolo_downloadframebuffer"
+    },
+    {
+      "label": "form",
+      "file_type": "code",
+      "source_file": "devlab/backend/src/routes/yolo.js",
+      "source_location": "L43",
+      "community": 26,
+      "norm_label": "form",
+      "id": "routes_yolo_form"
+    },
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L1",
+      "community": 29,
+      "norm_label": "package.json",
+      "id": "devlab_frontend_package_json"
+    },
+    {
+      "label": "name",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L2",
+      "community": 29,
+      "norm_label": "name",
+      "id": "frontend_package_name"
+    },
+    {
+      "label": "private",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L3",
+      "community": 29,
+      "norm_label": "private",
+      "id": "frontend_package_private"
+    },
+    {
+      "label": "version",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L4",
+      "community": 29,
+      "norm_label": "version",
+      "id": "frontend_package_version"
+    },
+    {
+      "label": "type",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L5",
+      "community": 29,
+      "norm_label": "type",
+      "id": "frontend_package_type"
+    },
+    {
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L6",
+      "community": 29,
+      "norm_label": "scripts",
+      "id": "frontend_package_scripts"
+    },
+    {
+      "label": "dev",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L7",
+      "community": 29,
+      "norm_label": "dev",
+      "id": "frontend_package_scripts_dev"
+    },
+    {
+      "label": "build",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L8",
+      "community": 29,
+      "norm_label": "build",
+      "id": "frontend_package_scripts_build"
+    },
+    {
+      "label": "preview",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L9",
+      "community": 29,
+      "norm_label": "preview",
+      "id": "frontend_package_scripts_preview"
+    },
+    {
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L11",
+      "community": 29,
+      "norm_label": "dependencies",
+      "id": "frontend_package_dependencies"
+    },
+    {
+      "label": "lucide-react",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L12",
+      "community": 29,
+      "norm_label": "lucide-react",
+      "id": "frontend_package_dependencies_lucide_react"
+    },
+    {
+      "label": "react",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L13",
+      "community": 29,
+      "norm_label": "react",
+      "id": "frontend_package_dependencies_react"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L14",
+      "community": 29,
+      "norm_label": "react-dom",
+      "id": "frontend_package_dependencies_react_dom"
+    },
+    {
+      "label": "react-router-dom",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L15",
+      "community": 29,
+      "norm_label": "react-router-dom",
+      "id": "frontend_package_dependencies_react_router_dom"
+    },
+    {
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L17",
+      "community": 29,
+      "norm_label": "devdependencies",
+      "id": "frontend_package_devdependencies"
+    },
+    {
+      "label": "@vitejs/plugin-react",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L18",
+      "community": 29,
+      "norm_label": "@vitejs/plugin-react",
+      "id": "frontend_package_devdependencies_vitejs_plugin_react"
+    },
+    {
+      "label": "autoprefixer",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L19",
+      "community": 29,
+      "norm_label": "autoprefixer",
+      "id": "frontend_package_devdependencies_autoprefixer"
+    },
+    {
+      "label": "postcss",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L20",
+      "community": 29,
+      "norm_label": "postcss",
+      "id": "frontend_package_devdependencies_postcss"
+    },
+    {
+      "label": "tailwindcss",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L21",
+      "community": 29,
+      "norm_label": "tailwindcss",
+      "id": "frontend_package_devdependencies_tailwindcss"
+    },
+    {
+      "label": "vite",
+      "file_type": "code",
+      "source_file": "devlab/frontend/package.json",
+      "source_location": "L22",
+      "community": 29,
+      "norm_label": "vite",
+      "id": "frontend_package_devdependencies_vite"
+    },
+    {
+      "label": "postcss.config.js",
+      "file_type": "code",
+      "source_file": "devlab/frontend/postcss.config.js",
+      "source_location": "L1",
+      "community": 35,
+      "norm_label": "postcss.config.js",
+      "id": "devlab_frontend_postcss_config_js"
+    },
+    {
+      "label": "App.jsx",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/App.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "app.jsx",
+      "id": "devlab_frontend_src_app_jsx"
+    },
+    {
+      "label": "nav",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/App.jsx",
+      "source_location": "L8",
+      "community": 28,
+      "norm_label": "nav",
+      "id": "src_app_nav"
+    },
+    {
+      "label": "App()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/App.jsx",
+      "source_location": "L15",
+      "community": 28,
+      "norm_label": "app()",
+      "id": "src_app_app"
+    },
+    {
+      "label": "BboxOverlay.jsx",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/BboxOverlay.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "bboxoverlay.jsx",
+      "id": "devlab_frontend_src_components_bboxoverlay_jsx"
+    },
+    {
+      "label": "BboxOverlay()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/BboxOverlay.jsx",
+      "source_location": "L4",
+      "community": 28,
+      "norm_label": "bboxoverlay()",
+      "id": "components_bboxoverlay_bboxoverlay"
+    },
+    {
+      "label": "FrameGrid.jsx",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/FrameGrid.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "framegrid.jsx",
+      "id": "devlab_frontend_src_components_framegrid_jsx"
+    },
+    {
+      "label": "FrameGrid()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/FrameGrid.jsx",
+      "source_location": "L4",
+      "community": 28,
+      "norm_label": "framegrid()",
+      "id": "components_framegrid_framegrid"
+    },
+    {
+      "label": "ResultPanel.jsx",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/ResultPanel.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "resultpanel.jsx",
+      "id": "devlab_frontend_src_components_resultpanel_jsx"
+    },
+    {
+      "label": "ResultPanel()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/ResultPanel.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "resultpanel()",
+      "id": "components_resultpanel_resultpanel"
+    },
+    {
+      "label": "SessionPicker.jsx",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/SessionPicker.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "sessionpicker.jsx",
+      "id": "devlab_frontend_src_components_sessionpicker_jsx"
+    },
+    {
+      "label": "SessionPicker()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/components/SessionPicker.jsx",
+      "source_location": "L3",
+      "community": 28,
+      "norm_label": "sessionpicker()",
+      "id": "components_sessionpicker_sessionpicker"
+    },
+    {
+      "label": "main.jsx",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/main.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "main.jsx",
+      "id": "devlab_frontend_src_main_jsx"
+    },
+    {
+      "label": "ComponentTester.jsx",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
+      "source_location": "L1",
+      "community": 28,
+      "norm_label": "componenttester.jsx",
+      "id": "devlab_frontend_src_pages_componenttester_jsx"
+    },
+    {
+      "label": "SEVERITY_COLOR",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
+      "source_location": "L9",
+      "community": 28,
+      "norm_label": "severity_color",
+      "id": "pages_componenttester_severity_color"
+    },
+    {
+      "label": "ComponentTester()",
+      "file_type": "code",
+      "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
+      "source_location": "L20",
+      "community": 28,
+      "norm_label": "componenttester()",
+      "id": "pages_componenttester_componenttester"
+    },
+    {
+      "label": "tailwind.config.js",
+      "file_type": "code",
+      "source_file": "devlab/frontend/tailwind.config.js",
+      "source_location": "L1",
+      "community": 36,
+      "norm_label": "tailwind.config.js",
+      "id": "devlab_frontend_tailwind_config_js"
+    },
+    {
+      "label": "vite.config.js",
+      "file_type": "code",
+      "source_file": "devlab/frontend/vite.config.js",
+      "source_location": "L1",
+      "community": 37,
+      "norm_label": "vite.config.js",
+      "id": "devlab_frontend_vite_config_js"
+    },
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "devlab/package.json",
+      "source_location": "L1",
+      "community": 32,
+      "norm_label": "package.json",
+      "id": "devlab_package_json"
+    },
+    {
+      "label": "name",
+      "file_type": "code",
+      "source_file": "devlab/package.json",
+      "source_location": "L2",
+      "community": 32,
+      "norm_label": "name",
+      "id": "devlab_package_name"
+    },
+    {
+      "label": "version",
+      "file_type": "code",
+      "source_file": "devlab/package.json",
+      "source_location": "L3",
+      "community": 32,
+      "norm_label": "version",
+      "id": "devlab_package_version"
+    },
+    {
+      "label": "private",
+      "file_type": "code",
+      "source_file": "devlab/package.json",
+      "source_location": "L4",
+      "community": 32,
+      "norm_label": "private",
+      "id": "devlab_package_private"
+    },
+    {
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "devlab/package.json",
+      "source_location": "L5",
+      "community": 32,
+      "norm_label": "scripts",
+      "id": "devlab_package_scripts"
+    },
+    {
+      "label": "start",
+      "file_type": "code",
+      "source_file": "devlab/package.json",
+      "source_location": "L6",
+      "community": 32,
+      "norm_label": "start",
+      "id": "devlab_package_scripts_start"
+    },
+    {
+      "label": "install:all",
+      "file_type": "code",
+      "source_file": "devlab/package.json",
+      "source_location": "L7",
+      "community": 32,
+      "norm_label": "install:all",
+      "id": "devlab_package_scripts_install_all"
+    },
+    {
+      "label": "{ spawn }",
+      "file_type": "code",
+      "source_file": "devlab/start.js",
+      "source_location": "L1",
+      "community": 34,
+      "norm_label": "{ spawn }",
+      "id": "devlab_start_spawn"
     },
     {
       "label": "backend",
       "file_type": "code",
       "source_file": "devlab/start.js",
       "source_location": "L16",
-      "id": "devlab_start_backend",
       "community": 34,
-      "norm_label": "backend"
+      "norm_label": "backend",
+      "id": "devlab_start_backend"
     },
     {
       "label": "frontend",
       "file_type": "code",
       "source_file": "devlab/start.js",
       "source_location": "L17",
-      "id": "devlab_start_frontend",
       "community": 34,
-      "norm_label": "frontend"
+      "norm_label": "frontend",
+      "id": "devlab_start_frontend"
     },
     {
       "label": "HierarchyTree.jsx",
       "file_type": "code",
       "source_file": "frontend/src/components/workspace/HierarchyTree.jsx",
       "source_location": "L1",
-      "id": "frontend_src_components_workspace_hierarchytree_jsx",
       "community": 6,
-      "norm_label": "hierarchytree.jsx"
+      "norm_label": "hierarchytree.jsx",
+      "id": "frontend_src_components_workspace_hierarchytree_jsx"
     },
     {
       "label": "_coachShape",
       "file_type": "code",
       "source_file": "frontend/src/components/workspace/HierarchyTree.jsx",
       "source_location": "L25",
-      "id": "workspace_hierarchytree_coachshape",
       "community": 6,
-      "norm_label": "_coachshape"
+      "norm_label": "_coachshape",
+      "id": "workspace_hierarchytree_coachshape"
     },
     {
       "label": "normalizeCoach()",
       "file_type": "code",
       "source_file": "frontend/src/components/workspace/HierarchyTree.jsx",
       "source_location": "L112",
-      "id": "workspace_hierarchytree_normalizecoach",
       "community": 6,
-      "norm_label": "normalizecoach()"
+      "norm_label": "normalizecoach()",
+      "id": "workspace_hierarchytree_normalizecoach"
     },
     {
       "label": "HierarchyTree()",
       "file_type": "code",
       "source_file": "frontend/src/components/workspace/HierarchyTree.jsx",
       "source_location": "L126",
-      "id": "workspace_hierarchytree_hierarchytree",
       "community": 6,
-      "norm_label": "hierarchytree()"
+      "norm_label": "hierarchytree()",
+      "id": "workspace_hierarchytree_hierarchytree"
     },
     {
       "label": "api.js",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L1",
-      "id": "frontend_src_lib_api_js",
       "community": 6,
-      "norm_label": "api.js"
+      "norm_label": "api.js",
+      "id": "frontend_src_lib_api_js"
     },
     {
       "label": "_fetch()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L3",
-      "id": "lib_api_fetch",
       "community": 6,
-      "norm_label": "_fetch()"
+      "norm_label": "_fetch()",
+      "id": "lib_api_fetch"
     },
     {
       "label": "getSessions()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L13",
-      "id": "lib_api_getsessions",
       "community": 6,
-      "norm_label": "getsessions()"
+      "norm_label": "getsessions()",
+      "id": "lib_api_getsessions"
     },
     {
       "label": "getSession()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L14",
-      "id": "lib_api_getsession",
       "community": 6,
-      "norm_label": "getsession()"
+      "norm_label": "getsession()",
+      "id": "lib_api_getsession"
     },
     {
       "label": "uploadSession()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L15",
-      "id": "lib_api_uploadsession",
       "community": 6,
-      "norm_label": "uploadsession()"
+      "norm_label": "uploadsession()",
+      "id": "lib_api_uploadsession"
     },
     {
       "label": "processSession()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L16",
-      "id": "lib_api_processsession",
       "community": 6,
-      "norm_label": "processsession()"
+      "norm_label": "processsession()",
+      "id": "lib_api_processsession"
     },
     {
       "label": "getHierarchy()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L17",
-      "id": "lib_api_gethierarchy",
       "community": 6,
-      "norm_label": "gethierarchy()"
+      "norm_label": "gethierarchy()",
+      "id": "lib_api_gethierarchy"
     },
     {
       "label": "getIntelligence()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L18",
-      "id": "lib_api_getintelligence",
       "community": 6,
-      "norm_label": "getintelligence()"
+      "norm_label": "getintelligence()",
+      "id": "lib_api_getintelligence"
     },
     {
       "label": "getTimeline()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L19",
-      "id": "lib_api_gettimeline",
       "community": 6,
-      "norm_label": "gettimeline()"
+      "norm_label": "gettimeline()",
+      "id": "lib_api_gettimeline"
     },
     {
       "label": "generateReport()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L20",
-      "id": "lib_api_generatereport",
       "community": 6,
-      "norm_label": "generatereport()"
+      "norm_label": "generatereport()",
+      "id": "lib_api_generatereport"
     },
     {
       "label": "getReport()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L21",
-      "id": "lib_api_getreport",
       "community": 6,
-      "norm_label": "getreport()"
+      "norm_label": "getreport()",
+      "id": "lib_api_getreport"
     },
     {
       "label": "getConfig()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L24",
-      "id": "lib_api_getconfig",
       "community": 6,
-      "norm_label": "getconfig()"
+      "norm_label": "getconfig()",
+      "id": "lib_api_getconfig"
     },
     {
       "label": "getDashboardKpis()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L27",
-      "id": "lib_api_getdashboardkpis",
       "community": 6,
-      "norm_label": "getdashboardkpis()"
+      "norm_label": "getdashboardkpis()",
+      "id": "lib_api_getdashboardkpis"
     },
     {
       "label": "getLiveQueue()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L28",
-      "id": "lib_api_getlivequeue",
       "community": 6,
-      "norm_label": "getlivequeue()"
+      "norm_label": "getlivequeue()",
+      "id": "lib_api_getlivequeue"
     },
     {
       "label": "getServicesHealth()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L29",
-      "id": "lib_api_getserviceshealth",
       "community": 6,
-      "norm_label": "getserviceshealth()"
+      "norm_label": "getserviceshealth()",
+      "id": "lib_api_getserviceshealth"
     },
     {
       "label": "getFrames()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L30",
-      "id": "lib_api_getframes",
       "community": 6,
-      "norm_label": "getframes()"
+      "norm_label": "getframes()",
+      "id": "lib_api_getframes"
     },
     {
       "label": "getCoachFrames()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L31",
-      "id": "lib_api_getcoachframes",
       "community": 6,
-      "norm_label": "getcoachframes()"
+      "norm_label": "getcoachframes()",
+      "id": "lib_api_getcoachframes"
     },
     {
       "label": "STATUS_MAP",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L34",
-      "id": "lib_api_status_map",
       "community": 6,
-      "norm_label": "status_map"
+      "norm_label": "status_map",
+      "id": "lib_api_status_map"
     },
     {
       "label": "STAGE_STATUS_MAP",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L43",
-      "id": "lib_api_stage_status_map",
       "community": 6,
-      "norm_label": "stage_status_map"
+      "norm_label": "stage_status_map",
+      "id": "lib_api_stage_status_map"
     },
     {
       "label": "normalizeSession()",
       "file_type": "code",
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L50",
-      "id": "lib_api_normalizesession",
       "community": 6,
-      "norm_label": "normalizesession()"
+      "norm_label": "normalizesession()",
+      "id": "lib_api_normalizesession"
     },
     {
       "label": "TrainWorkspace.jsx",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L1",
-      "id": "frontend_src_pages_trainworkspace_jsx",
       "community": 6,
-      "norm_label": "trainworkspace.jsx"
+      "norm_label": "trainworkspace.jsx",
+      "id": "frontend_src_pages_trainworkspace_jsx"
     },
     {
       "label": "PROCESSING_STATUSES",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L18",
-      "id": "pages_trainworkspace_processing_statuses",
       "community": 6,
-      "norm_label": "processing_statuses"
+      "norm_label": "processing_statuses",
+      "id": "pages_trainworkspace_processing_statuses"
     },
     {
       "label": "STAGE_META",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L21",
-      "id": "pages_trainworkspace_stage_meta",
       "community": 6,
-      "norm_label": "stage_meta"
+      "norm_label": "stage_meta",
+      "id": "pages_trainworkspace_stage_meta"
     },
     {
       "label": "stageChip()",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L31",
-      "id": "pages_trainworkspace_stagechip",
       "community": 6,
-      "norm_label": "stagechip()"
+      "norm_label": "stagechip()",
+      "id": "pages_trainworkspace_stagechip"
     },
     {
       "label": "PipelineProgressView()",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L42",
-      "id": "pages_trainworkspace_pipelineprogressview",
       "community": 6,
-      "norm_label": "pipelineprogressview()"
+      "norm_label": "pipelineprogressview()",
+      "id": "pages_trainworkspace_pipelineprogressview"
     },
     {
       "label": "TrainWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L252",
-      "id": "pages_trainworkspace_trainworkspace",
       "community": 6,
-      "norm_label": "trainworkspace()"
+      "norm_label": "trainworkspace()",
+      "id": "pages_trainworkspace_trainworkspace"
     },
     {
       "label": "engine.py",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L1",
-      "id": "services_sync_engine_engine_py",
       "community": 3,
-      "norm_label": "engine.py"
+      "norm_label": "engine.py",
+      "id": "services_sync_engine_engine_py"
     },
     {
       "label": "_load_config()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L25",
-      "id": "sync_engine_engine_load_config",
       "community": 3,
-      "norm_label": "_load_config()"
+      "norm_label": "_load_config()",
+      "id": "sync_engine_engine_load_config"
     },
     {
       "label": "load_ocr_by_trigger()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L40",
-      "id": "sync_engine_engine_load_ocr_by_trigger",
       "community": 3,
-      "norm_label": "load_ocr_by_trigger()"
+      "norm_label": "load_ocr_by_trigger()",
+      "id": "sync_engine_engine_load_ocr_by_trigger"
     },
     {
       "label": "detect_segments()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L75",
-      "id": "sync_engine_engine_detect_segments",
       "community": 3,
-      "norm_label": "detect_segments()"
+      "norm_label": "detect_segments()",
+      "id": "sync_engine_engine_detect_segments"
     },
     {
       "label": "_new_seg()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L120",
-      "id": "sync_engine_engine_new_seg",
       "community": 3,
-      "norm_label": "_new_seg()"
+      "norm_label": "_new_seg()",
+      "id": "sync_engine_engine_new_seg"
     },
     {
       "label": "_close()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L130",
-      "id": "sync_engine_engine_close",
       "community": 3,
-      "norm_label": "_close()"
+      "norm_label": "_close()",
+      "id": "sync_engine_engine_close"
     },
     {
       "label": "create_coaches()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L138",
-      "id": "sync_engine_engine_create_coaches",
       "community": 3,
-      "norm_label": "create_coaches()"
+      "norm_label": "create_coaches()",
+      "id": "sync_engine_engine_create_coaches"
     },
     {
       "label": "assign_frames()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L167",
-      "id": "sync_engine_engine_assign_frames",
       "community": 3,
-      "norm_label": "assign_frames()"
+      "norm_label": "assign_frames()",
+      "id": "sync_engine_engine_assign_frames"
     },
     {
       "label": "_find_coach()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L239",
-      "id": "sync_engine_engine_find_coach",
       "community": 3,
-      "norm_label": "_find_coach()"
+      "norm_label": "_find_coach()",
+      "id": "sync_engine_engine_find_coach"
     },
     {
       "label": "create_timeline_events()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L265",
-      "id": "sync_engine_engine_create_timeline_events",
       "community": 3,
-      "norm_label": "create_timeline_events()"
+      "norm_label": "create_timeline_events()",
+      "id": "sync_engine_engine_create_timeline_events"
     },
     {
       "label": "run_sync()",
       "file_type": "code",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L301",
-      "id": "sync_engine_engine_run_sync",
       "community": 3,
-      "norm_label": "run_sync()"
+      "norm_label": "run_sync()",
+      "id": "sync_engine_engine_run_sync"
     },
     {
       "label": "Sync Engine \u2014 gap detection on trigger_id axis.  Algorithm:   1. Read ocr_result",
       "file_type": "rationale",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L1",
-      "id": "sync_engine_engine_rationale_1",
       "community": 3,
-      "norm_label": "sync engine \u2014 gap detection on trigger_id axis.  algorithm:   1. read ocr_result"
+      "norm_label": "sync engine \u2014 gap detection on trigger_id axis.  algorithm:   1. read ocr_result",
+      "id": "sync_engine_engine_rationale_1"
     },
     {
       "label": "Returns list of { trigger_id, coach_number, confidence } sorted by trigger_id AS",
       "file_type": "rationale",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L41",
-      "id": "sync_engine_engine_rationale_41",
       "community": 3,
-      "norm_label": "returns list of { trigger_id, coach_number, confidence } sorted by trigger_id as"
+      "norm_label": "returns list of { trigger_id, coach_number, confidence } sorted by trigger_id as",
+      "id": "sync_engine_engine_rationale_41"
     },
     {
       "label": "Returns list of accepted coach segments:       { coach_number, start_trigger_id,",
       "file_type": "rationale",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L76",
-      "id": "sync_engine_engine_rationale_76",
       "community": 3,
-      "norm_label": "returns list of accepted coach segments:       { coach_number, start_trigger_id,"
+      "norm_label": "returns list of accepted coach segments:       { coach_number, start_trigger_id,",
+      "id": "sync_engine_engine_rationale_76"
     },
     {
       "label": "Inserts one coaches row per segment.     Returns segments enriched with coach_id",
       "file_type": "rationale",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L139",
-      "id": "sync_engine_engine_rationale_139",
       "community": 3,
-      "norm_label": "inserts one coaches row per segment.     returns segments enriched with coach_id"
+      "norm_label": "inserts one coaches row per segment.     returns segments enriched with coach_id",
+      "id": "sync_engine_engine_rationale_139"
     },
     {
       "label": "For every frame in the session, assigns coach_id based on trigger_id position.",
       "file_type": "rationale",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L168",
-      "id": "sync_engine_engine_rationale_168",
       "community": 3,
-      "norm_label": "for every frame in the session, assigns coach_id based on trigger_id position."
+      "norm_label": "for every frame in the session, assigns coach_id based on trigger_id position.",
+      "id": "sync_engine_engine_rationale_168"
     },
     {
       "label": "Find which coach segment a trigger_id belongs to.",
       "file_type": "rationale",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L240",
-      "id": "sync_engine_engine_rationale_240",
       "community": 3,
-      "norm_label": "find which coach segment a trigger_id belongs to."
+      "norm_label": "find which coach segment a trigger_id belongs to.",
+      "id": "sync_engine_engine_rationale_240"
     },
     {
       "label": "OCR_ANCHOR events at segment start, COACH_GAP events at boundaries.",
       "file_type": "rationale",
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L266",
-      "id": "sync_engine_engine_rationale_266",
       "community": 3,
-      "norm_label": "ocr_anchor events at segment start, coach_gap events at boundaries."
-    },
-    {
-      "label": "ocr_engine.py",
-      "file_type": "code",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L1",
-      "community": 7,
-      "norm_label": "ocr_engine.py",
-      "id": "gpu_ocr_ocr_engine_py"
-    },
-    {
-      "label": "_cudnn8_available()",
-      "file_type": "code",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L26",
-      "community": 7,
-      "norm_label": "_cudnn8_available()",
-      "id": "ocr_ocr_engine_cudnn8_available"
-    },
-    {
-      "label": "get_ocr()",
-      "file_type": "code",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L48",
-      "community": 7,
-      "norm_label": "get_ocr()",
-      "id": "ocr_ocr_engine_get_ocr"
-    },
-    {
-      "label": "run_ocr()",
-      "file_type": "code",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L88",
-      "community": 7,
-      "norm_label": "run_ocr()",
-      "id": "ocr_ocr_engine_run_ocr"
-    },
-    {
-      "label": "PaddleOCR singleton \u2014 GPU with CPU fallback. Windows CUDA DLL injection included",
-      "file_type": "rationale",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L1",
-      "community": 7,
-      "norm_label": "paddleocr singleton \u2014 gpu with cpu fallback. windows cuda dll injection included",
-      "id": "ocr_ocr_engine_rationale_1"
-    },
-    {
-      "label": "PaddlePaddle 2.x requires cuDNN 8 (cudnn_ops_infer64_8.dll on Windows).     PyTo",
-      "file_type": "rationale",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L27",
-      "community": 7,
-      "norm_label": "paddlepaddle 2.x requires cudnn 8 (cudnn_ops_infer64_8.dll on windows).     pyto",
-      "id": "ocr_ocr_engine_rationale_27"
+      "norm_label": "ocr_anchor events at segment start, coach_gap events at boundaries.",
+      "id": "sync_engine_engine_rationale_266"
     },
     {
       "label": "server.py",
@@ -2627,7 +2843,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L1",
-      "community": 12,
+      "community": 13,
       "norm_label": "server.py",
       "id": "services_report_generator_server_py"
     },
@@ -2636,7 +2852,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L30",
-      "community": 12,
+      "community": 13,
       "norm_label": "generaterequest",
       "id": "report_generator_server_generaterequest"
     },
@@ -2645,7 +2861,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L34",
-      "community": 12,
+      "community": 13,
       "norm_label": "get_conn()",
       "id": "report_generator_server_get_conn"
     },
@@ -2654,7 +2870,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L39",
-      "community": 12,
+      "community": 13,
       "norm_label": "health()",
       "id": "report_generator_server_health"
     },
@@ -2663,7 +2879,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L44",
-      "community": 12,
+      "community": 13,
       "norm_label": "generate()",
       "id": "report_generator_server_generate"
     },
@@ -2672,7 +2888,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L160",
-      "community": 12,
+      "community": 13,
       "norm_label": "get_report()",
       "id": "report_generator_server_get_report"
     },
@@ -2681,162 +2897,9 @@
       "file_type": "rationale",
       "source_file": "services/report_generator/server.py",
       "source_location": "L1",
-      "community": 12,
+      "community": 13,
       "norm_label": "report generator service \u2014 port 5006 post /generate { session_id } \u2192 builds pdf",
       "id": "report_generator_server_rationale_1"
-    },
-    {
-      "label": "start.js",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L1",
-      "community": 16,
-      "norm_label": "start.js",
-      "id": "start_js"
-    },
-    {
-      "label": "{ spawn }",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L14",
-      "community": 16,
-      "norm_label": "{ spawn }",
-      "id": "main_start_spawn"
-    },
-    {
-      "label": "http",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L15",
-      "community": 16,
-      "norm_label": "http",
-      "id": "main_start_http"
-    },
-    {
-      "label": "path",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L16",
-      "community": 16,
-      "norm_label": "path",
-      "id": "main_start_path"
-    },
-    {
-      "label": "fs",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L17",
-      "community": 16,
-      "norm_label": "fs",
-      "id": "main_start_fs"
-    },
-    {
-      "label": "LOG_DIR",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L21",
-      "community": 16,
-      "norm_label": "log_dir",
-      "id": "main_start_log_dir"
-    },
-    {
-      "label": "LOG_FILE",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L22",
-      "community": 16,
-      "norm_label": "log_file",
-      "id": "main_start_log_file"
-    },
-    {
-      "label": "logStream",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L27",
-      "community": 16,
-      "norm_label": "logstream",
-      "id": "main_start_logstream"
-    },
-    {
-      "label": "C",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L30",
-      "community": 16,
-      "norm_label": "c",
-      "id": "main_start_c"
-    },
-    {
-      "label": "SERVICES",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L43",
-      "community": 16,
-      "norm_label": "services",
-      "id": "main_start_services"
-    },
-    {
-      "label": "running",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L138",
-      "community": 16,
-      "norm_label": "running",
-      "id": "main_start_running"
-    },
-    {
-      "label": "log()",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L145",
-      "community": 16,
-      "norm_label": "log()",
-      "id": "main_start_log"
-    },
-    {
-      "label": "killAll()",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L155",
-      "community": 16,
-      "norm_label": "killall()",
-      "id": "main_start_killall"
-    },
-    {
-      "label": "pollHealth()",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L173",
-      "community": 16,
-      "norm_label": "pollhealth()",
-      "id": "main_start_pollhealth"
-    },
-    {
-      "label": "launch()",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L200",
-      "community": 16,
-      "norm_label": "launch()",
-      "id": "main_start_launch"
-    },
-    {
-      "label": "startService()",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L239",
-      "community": 16,
-      "norm_label": "startservice()",
-      "id": "main_start_startservice"
-    },
-    {
-      "label": "main()",
-      "file_type": "code",
-      "source_file": "start.js",
-      "source_location": "L273",
-      "community": 16,
-      "norm_label": "main()",
-      "id": "main_start_main"
     },
     {
       "label": "README.md",
@@ -2960,7 +3023,7 @@
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L10",
-      "community": 30,
+      "community": 31,
       "norm_label": "emitstage()",
       "id": "services_pipelineorchestrator_emitstage"
     },
@@ -2969,7 +3032,7 @@
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L17",
-      "community": 30,
+      "community": 31,
       "norm_label": "runocrpipeline()",
       "id": "services_pipelineorchestrator_runocrpipeline"
     },
@@ -3014,7 +3077,7 @@
       "file_type": "code",
       "source_file": "backend/src/services/wsGateway.js",
       "source_location": "L8",
-      "community": 30,
+      "community": 31,
       "norm_label": "_send()",
       "id": "services_wsgateway_send"
     },
@@ -3050,7 +3113,7 @@
       "file_type": "code",
       "source_file": "backend/src/services/wsGateway.js",
       "source_location": "L32",
-      "community": 30,
+      "community": 31,
       "norm_label": "broadcast()",
       "id": "services_wsgateway_broadcast"
     },
@@ -3059,7 +3122,7 @@
       "file_type": "code",
       "source_file": "backend/src/services/wsGateway.js",
       "source_location": "L40",
-      "community": 30,
+      "community": 31,
       "norm_label": "broadcastall()",
       "id": "services_wsgateway_broadcastall"
     },
@@ -3824,7 +3887,7 @@
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L26",
-      "community": 11,
+      "community": 12,
       "norm_label": "correlaterequest",
       "id": "correlation_server_correlaterequest"
     },
@@ -4301,7 +4364,7 @@
       "file_type": "code",
       "source_file": "backend/src/db/client.js",
       "source_location": "L1",
-      "community": 31,
+      "community": 4,
       "norm_label": "client.js",
       "id": "backend_src_db_client_js"
     },
@@ -4310,7 +4373,7 @@
       "file_type": "code",
       "source_file": "backend/src/db/client.js",
       "source_location": "L1",
-      "community": 31,
+      "community": 4,
       "norm_label": "{ prismaclient }",
       "id": "db_client_prismaclient"
     },
@@ -4319,7 +4382,7 @@
       "file_type": "code",
       "source_file": "backend/src/db/client.js",
       "source_location": "L3",
-      "community": 31,
+      "community": 4,
       "norm_label": "prisma",
       "id": "db_client_prisma"
     },
@@ -4379,6 +4442,100 @@
     }
   ],
   "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "gpu_ocr_ocr_engine_py",
+      "target": "ocr_ocr_engine_cudnn8_available"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "gpu_ocr_ocr_engine_py",
+      "target": "ocr_ocr_engine_get_ocr"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "gpu_ocr_ocr_engine_py",
+      "target": "ocr_ocr_engine_run_ocr"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ocr_ocr_engine_rationale_1",
+      "target": "gpu_ocr_ocr_engine_py"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ocr_ocr_engine_get_ocr",
+      "target": "ocr_ocr_engine_cudnn8_available"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ocr_ocr_engine_rationale_27",
+      "target": "ocr_ocr_engine_cudnn8_available"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/ocr_engine.py",
+      "source_location": "L54",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ocr_ocr_engine_run_ocr",
+      "target": "ocr_ocr_engine_get_ocr"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "ocr_server_run_pipeline",
+      "target": "ocr_ocr_engine_run_ocr"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "ocr_server_warmup",
+      "target": "ocr_ocr_engine_run_ocr"
+    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -4631,32 +4788,983 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "GPU/ocr/server.py",
-      "source_location": "L122",
-      "weight": 1.0,
-      "source": "ocr_server_run_pipeline",
-      "target": "ocr_ocr_engine_run_ocr"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "GPU/ocr/server.py",
       "source_location": "L128",
       "weight": 1.0,
       "source": "ocr_server_run_pipeline",
       "target": "ocr_preprocess_preprocess_frame"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_package_json",
+      "target": "backend_package_name"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_package_json",
+      "target": "backend_package_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_package_json",
+      "target": "backend_package_type"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_package_json",
+      "target": "backend_package_scripts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_package_json",
+      "target": "backend_package_dependencies"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_package_json",
+      "target": "backend_package_devdependencies"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_name"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_dev"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_start"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_generate"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_migrate"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_push"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_scripts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_seed"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_scripts",
+      "target": "backend_package_scripts_db_studio"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_prisma_client"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_axios"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_cors"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_express"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_form_data"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_dotenv"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_dependencies"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify_cors"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify_multipart"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify_websocket"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_cloudinary"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_dependencies",
+      "target": "backend_package_dependencies_fastify"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "backend_package_devdependencies",
+      "target": "backend_package_devdependencies_nodemon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_devdependencies",
+      "target": "backend_package_devdependencies_prisma"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/package.json",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_package_json",
+      "target": "backend_package_devdependencies"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "src_index_express"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "src_index_cors"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "src_index_sessionsrouter"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "devlab_backend_src_routes_ocr_js"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "src_index_ocrrouter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "src_index_syncrouter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "src_index_yolorouter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "src_index_app"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "devlab_backend_src_routes_sessions_js"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "devlab_backend_src_routes_sync_js"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/index.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_index_js",
+      "target": "devlab_backend_src_routes_yolo_js"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/routes/ocr.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_routes_ocr_js",
+      "target": "routes_ocr_router"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/routes/ocr.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_routes_ocr_js",
+      "target": "routes_ocr_prismaclient"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/routes/ocr.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_routes_ocr_js",
+      "target": "routes_ocr_axios"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/backend/src/routes/ocr.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_backend_src_routes_ocr_js",
+      "target": "routes_ocr_prisma"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/Home.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_home_jsx",
+      "target": "pages_home_homepage"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/App.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_app_jsx",
+      "target": "devlab_frontend_src_pages_home_jsx"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "devlab_frontend_src_pages_ocrtester_jsx",
+      "target": "pages_ocrtester_class_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "devlab_frontend_src_pages_ocrtester_jsx",
+      "target": "pages_ocrtester_classcolor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_ocrtester_jsx",
+      "target": "pages_ocrtester_ocrtester"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/App.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_app_jsx",
+      "target": "devlab_frontend_src_pages_ocrtester_jsx"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_ocrtester_jsx",
+      "target": "devlab_frontend_src_components_bboxoverlay_jsx"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_ocrtester_jsx",
+      "target": "devlab_frontend_src_components_framegrid_jsx"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_ocrtester_jsx",
+      "target": "devlab_frontend_src_components_resultpanel_jsx"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_ocrtester_jsx",
+      "target": "devlab_frontend_src_components_sessionpicker_jsx"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/SyncTester.jsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_synctester_jsx",
+      "target": "pages_synctester_synctester"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/App.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_app_jsx",
+      "target": "devlab_frontend_src_pages_synctester_jsx"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/SyncTester.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_synctester_jsx",
+      "target": "devlab_frontend_src_components_resultpanel_jsx"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/frontend/src/pages/SyncTester.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_frontend_src_pages_synctester_jsx",
+      "target": "devlab_frontend_src_components_sessionpicker_jsx"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_spawn_exec",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_path"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_killport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_run"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_spawn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_backend"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "devlab_start_js",
+      "target": "devlab_start_frontend"
+    },
+    {
       "relation": "calls",
       "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "GPU/ocr/server.py",
-      "source_location": "L154",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L51",
       "weight": 1.0,
-      "source": "ocr_server_warmup",
-      "target": "ocr_ocr_engine_run_ocr"
+      "source": "devlab_start_main",
+      "target": "devlab_start_killport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "devlab/start.js",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "devlab_start_main",
+      "target": "devlab_start_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "start_js",
+      "target": "main_start_spawn_exec",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_http"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_path"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_fs"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_log_dir"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_log_file"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_logstream"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_c"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_services"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_running"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L131",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_log"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L137",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_killall"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L155",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_pollhealth"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L182",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_launch"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L239",
+      "weight": 1.0,
+      "source": "start_js",
+      "target": "main_start_killport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L220",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_startservice"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L254",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "start_js",
+      "target": "main_start_main"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L140",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_start_killall",
+      "target": "main_start_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L221",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_start_startservice",
+      "target": "main_start_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L255",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_start_main",
+      "target": "main_start_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L269",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_start_main",
+      "target": "main_start_killall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L247",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_start_startservice",
+      "target": "main_start_pollhealth"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L222",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_start_startservice",
+      "target": "main_start_launch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L314",
+      "weight": 1.0,
+      "source": "main_start_main",
+      "target": "main_start_killport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "start.js",
+      "source_location": "L266",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "main_start_main",
+      "target": "main_start_startservice"
     },
     {
       "relation": "contains",
@@ -4826,9 +5934,9 @@
       "source_file": "devlab/backend/src/routes/sessions.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sessions_js",
-      "target": "routes_sessions_prisma",
-      "confidence_score": 1.0
+      "target": "routes_sessions_prisma"
     },
     {
       "relation": "contains",
@@ -4896,9 +6004,9 @@
       "source_file": "config.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "main_config_pipeline",
-      "target": "main_config_pipeline_sync_min_votes",
-      "confidence_score": 1.0
+      "target": "main_config_pipeline_sync_min_votes"
     },
     {
       "relation": "contains",
@@ -4906,9 +6014,9 @@
       "source_file": "config.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "main_config_pipeline",
-      "target": "main_config_pipeline_sync_max_trigger_gap",
-      "confidence_score": 1.0
+      "target": "main_config_pipeline_sync_max_trigger_gap"
     },
     {
       "relation": "contains",
@@ -5013,466 +6121,12 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "devlab_backend_package_json",
-      "target": "backend_package_name",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "devlab_backend_package_json",
-      "target": "backend_package_version",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "devlab_backend_package_json",
-      "target": "backend_package_type",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "devlab_backend_package_json",
-      "target": "backend_package_scripts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L12",
-      "weight": 1.0,
-      "source": "devlab_backend_package_json",
-      "target": "backend_package_dependencies",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L20",
-      "weight": 1.0,
-      "source": "devlab_backend_package_json",
-      "target": "backend_package_devdependencies",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_json",
-      "target": "backend_package_name"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_json",
-      "target": "backend_package_version"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_scripts",
-      "target": "backend_package_scripts_dev"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_scripts",
-      "target": "backend_package_scripts_start"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L12",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_scripts",
-      "target": "backend_package_scripts_db_generate"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "backend_package_scripts",
-      "target": "backend_package_scripts_db_migrate",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_scripts",
-      "target": "backend_package_scripts_db_push"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_json",
-      "target": "backend_package_scripts"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_scripts",
-      "target": "backend_package_scripts_db_seed"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_scripts",
-      "target": "backend_package_scripts_db_studio"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L18",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_prisma_client"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_axios"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L15",
-      "weight": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_cors",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_express",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/package.json",
-      "source_location": "L17",
-      "weight": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_form_data",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_dotenv"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L14",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_json",
-      "target": "backend_package_dependencies"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_fastify_cors"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_fastify_multipart"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_fastify_websocket"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_cloudinary"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_dependencies",
-      "target": "backend_package_dependencies_fastify"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L25",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_devdependencies",
-      "target": "backend_package_devdependencies_prisma"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/package.json",
-      "source_location": "L24",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "backend_package_json",
-      "target": "backend_package_devdependencies"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "src_index_express",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "src_index_cors",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "devlab_backend_src_routes_sessions_js",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "src_index_sessionsrouter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "devlab_backend_src_routes_ocr_js",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "src_index_ocrrouter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "devlab_backend_src_routes_sync_js",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "src_index_syncrouter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "devlab_backend_src_routes_yolo_js",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "src_index_yolorouter",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/index.js",
-      "source_location": "L10",
-      "weight": 1.0,
-      "source": "devlab_backend_src_index_js",
-      "target": "src_index_app",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/routes/ocr.js",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "devlab_backend_src_routes_ocr_js",
-      "target": "routes_ocr_router",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/routes/ocr.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "devlab_backend_src_routes_ocr_js",
-      "target": "routes_ocr_prismaclient",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/routes/ocr.js",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "devlab_backend_src_routes_ocr_js",
-      "target": "routes_ocr_axios",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/backend/src/routes/ocr.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "devlab_backend_src_routes_ocr_js",
-      "target": "routes_ocr_prisma",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "devlab/backend/src/routes/sessions.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sessions_js",
-      "target": "routes_sessions_router",
-      "confidence_score": 1.0
+      "target": "routes_sessions_router"
     },
     {
       "relation": "contains",
@@ -5480,9 +6134,9 @@
       "source_file": "devlab/backend/src/routes/sessions.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sessions_js",
-      "target": "routes_sessions_prismaclient",
-      "confidence_score": 1.0
+      "target": "routes_sessions_prismaclient"
     },
     {
       "relation": "contains",
@@ -5490,9 +6144,9 @@
       "source_file": "devlab/backend/src/routes/sessions.js",
       "source_location": "L112",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sessions_js",
-      "target": "routes_sessions_where",
-      "confidence_score": 1.0
+      "target": "routes_sessions_where"
     },
     {
       "relation": "contains",
@@ -5500,9 +6154,9 @@
       "source_file": "devlab/backend/src/routes/sessions.js",
       "source_location": "L146",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sessions_js",
-      "target": "routes_sessions_types",
-      "confidence_score": 1.0
+      "target": "routes_sessions_types"
     },
     {
       "relation": "contains",
@@ -5510,9 +6164,9 @@
       "source_file": "devlab/backend/src/routes/sync.js",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sync_js",
-      "target": "routes_sync_router",
-      "confidence_score": 1.0
+      "target": "routes_sync_router"
     },
     {
       "relation": "contains",
@@ -5520,9 +6174,9 @@
       "source_file": "devlab/backend/src/routes/sync.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sync_js",
-      "target": "routes_sync_prismaclient",
-      "confidence_score": 1.0
+      "target": "routes_sync_prismaclient"
     },
     {
       "relation": "contains",
@@ -5530,9 +6184,9 @@
       "source_file": "devlab/backend/src/routes/sync.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sync_js",
-      "target": "routes_sync_axios",
-      "confidence_score": 1.0
+      "target": "routes_sync_axios"
     },
     {
       "relation": "contains",
@@ -5540,9 +6194,9 @@
       "source_file": "devlab/backend/src/routes/sync.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_sync_js",
-      "target": "routes_sync_prisma",
-      "confidence_score": 1.0
+      "target": "routes_sync_prisma"
     },
     {
       "relation": "contains",
@@ -5550,9 +6204,9 @@
       "source_file": "devlab/backend/src/routes/yolo.js",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_yolo_js",
-      "target": "routes_yolo_router",
-      "confidence_score": 1.0
+      "target": "routes_yolo_router"
     },
     {
       "relation": "contains",
@@ -5560,9 +6214,9 @@
       "source_file": "devlab/backend/src/routes/yolo.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_yolo_js",
-      "target": "routes_yolo_prismaclient",
-      "confidence_score": 1.0
+      "target": "routes_yolo_prismaclient"
     },
     {
       "relation": "contains",
@@ -5570,9 +6224,9 @@
       "source_file": "devlab/backend/src/routes/yolo.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_yolo_js",
-      "target": "routes_yolo_axios",
-      "confidence_score": 1.0
+      "target": "routes_yolo_axios"
     },
     {
       "relation": "contains",
@@ -5580,9 +6234,9 @@
       "source_file": "devlab/backend/src/routes/yolo.js",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_yolo_js",
-      "target": "routes_yolo_formdata",
-      "confidence_score": 1.0
+      "target": "routes_yolo_formdata"
     },
     {
       "relation": "contains",
@@ -5590,9 +6244,9 @@
       "source_file": "devlab/backend/src/routes/yolo.js",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_yolo_js",
-      "target": "routes_yolo_prisma",
-      "confidence_score": 1.0
+      "target": "routes_yolo_prisma"
     },
     {
       "relation": "contains",
@@ -5600,9 +6254,9 @@
       "source_file": "devlab/backend/src/routes/yolo.js",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_yolo_js",
-      "target": "routes_yolo_downloadframebuffer",
-      "confidence_score": 1.0
+      "target": "routes_yolo_downloadframebuffer"
     },
     {
       "relation": "contains",
@@ -5610,9 +6264,9 @@
       "source_file": "devlab/backend/src/routes/yolo.js",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_backend_src_routes_yolo_js",
-      "target": "routes_yolo_form",
-      "confidence_score": 1.0
+      "target": "routes_yolo_form"
     },
     {
       "relation": "contains",
@@ -5620,9 +6274,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_package_json",
-      "target": "frontend_package_name",
-      "confidence_score": 1.0
+      "target": "frontend_package_name"
     },
     {
       "relation": "contains",
@@ -5630,9 +6284,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_package_json",
-      "target": "frontend_package_private",
-      "confidence_score": 1.0
+      "target": "frontend_package_private"
     },
     {
       "relation": "contains",
@@ -5640,9 +6294,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_package_json",
-      "target": "frontend_package_version",
-      "confidence_score": 1.0
+      "target": "frontend_package_version"
     },
     {
       "relation": "contains",
@@ -5650,9 +6304,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_package_json",
-      "target": "frontend_package_type",
-      "confidence_score": 1.0
+      "target": "frontend_package_type"
     },
     {
       "relation": "contains",
@@ -5660,9 +6314,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_package_json",
-      "target": "frontend_package_scripts",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts"
     },
     {
       "relation": "contains",
@@ -5670,9 +6324,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_package_json",
-      "target": "frontend_package_dependencies",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies"
     },
     {
       "relation": "contains",
@@ -5680,9 +6334,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_package_json",
-      "target": "frontend_package_devdependencies",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies"
     },
     {
       "relation": "contains",
@@ -5690,9 +6344,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_scripts",
-      "target": "frontend_package_scripts_dev",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts_dev"
     },
     {
       "relation": "contains",
@@ -5700,9 +6354,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_scripts",
-      "target": "frontend_package_scripts_build",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts_build"
     },
     {
       "relation": "contains",
@@ -5710,9 +6364,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_scripts",
-      "target": "frontend_package_scripts_preview",
-      "confidence_score": 1.0
+      "target": "frontend_package_scripts_preview"
     },
     {
       "relation": "contains",
@@ -5720,9 +6374,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_lucide_react",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies_lucide_react"
     },
     {
       "relation": "contains",
@@ -5730,9 +6384,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_react",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies_react"
     },
     {
       "relation": "contains",
@@ -5740,9 +6394,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_react_dom",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies_react_dom"
     },
     {
       "relation": "contains",
@@ -5750,9 +6404,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_dependencies",
-      "target": "frontend_package_dependencies_react_router_dom",
-      "confidence_score": 1.0
+      "target": "frontend_package_dependencies_react_router_dom"
     },
     {
       "relation": "contains",
@@ -5760,9 +6414,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_vitejs_plugin_react",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_vitejs_plugin_react"
     },
     {
       "relation": "contains",
@@ -5770,9 +6424,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_autoprefixer",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_autoprefixer"
     },
     {
       "relation": "contains",
@@ -5780,9 +6434,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_postcss",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_postcss"
     },
     {
       "relation": "contains",
@@ -5790,9 +6444,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_tailwindcss",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_tailwindcss"
     },
     {
       "relation": "contains",
@@ -5800,42 +6454,9 @@
       "source_file": "devlab/frontend/package.json",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_package_devdependencies",
-      "target": "frontend_package_devdependencies_vite",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/App.jsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_app_jsx",
-      "target": "devlab_frontend_src_pages_home_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/App.jsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_app_jsx",
-      "target": "devlab_frontend_src_pages_ocrtester_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/App.jsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_app_jsx",
-      "target": "devlab_frontend_src_pages_synctester_jsx",
-      "confidence_score": 1.0
+      "target": "frontend_package_devdependencies_vite"
     },
     {
       "relation": "imports_from",
@@ -5844,9 +6465,9 @@
       "source_file": "devlab/frontend/src/App.jsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_app_jsx",
-      "target": "devlab_frontend_src_pages_componenttester_jsx",
-      "confidence_score": 1.0
+      "target": "devlab_frontend_src_pages_componenttester_jsx"
     },
     {
       "relation": "contains",
@@ -5854,9 +6475,9 @@
       "source_file": "devlab/frontend/src/App.jsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_app_jsx",
-      "target": "src_app_nav",
-      "confidence_score": 1.0
+      "target": "src_app_nav"
     },
     {
       "relation": "contains",
@@ -5864,9 +6485,9 @@
       "source_file": "devlab/frontend/src/App.jsx",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_app_jsx",
-      "target": "src_app_app",
-      "confidence_score": 1.0
+      "target": "src_app_app"
     },
     {
       "relation": "imports_from",
@@ -5875,9 +6496,9 @@
       "source_file": "devlab/frontend/src/main.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_main_jsx",
-      "target": "devlab_frontend_src_app_jsx",
-      "confidence_score": 1.0
+      "target": "devlab_frontend_src_app_jsx"
     },
     {
       "relation": "contains",
@@ -5885,9 +6506,9 @@
       "source_file": "devlab/frontend/src/components/BboxOverlay.jsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_components_bboxoverlay_jsx",
-      "target": "components_bboxoverlay_bboxoverlay",
-      "confidence_score": 1.0
+      "target": "components_bboxoverlay_bboxoverlay"
     },
     {
       "relation": "imports_from",
@@ -5896,20 +6517,9 @@
       "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_pages_componenttester_jsx",
-      "target": "devlab_frontend_src_components_bboxoverlay_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_ocrtester_jsx",
-      "target": "devlab_frontend_src_components_bboxoverlay_jsx",
-      "confidence_score": 1.0
+      "target": "devlab_frontend_src_components_bboxoverlay_jsx"
     },
     {
       "relation": "contains",
@@ -5917,9 +6527,9 @@
       "source_file": "devlab/frontend/src/components/FrameGrid.jsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_components_framegrid_jsx",
-      "target": "components_framegrid_framegrid",
-      "confidence_score": 1.0
+      "target": "components_framegrid_framegrid"
     },
     {
       "relation": "imports_from",
@@ -5928,20 +6538,9 @@
       "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_pages_componenttester_jsx",
-      "target": "devlab_frontend_src_components_framegrid_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_ocrtester_jsx",
-      "target": "devlab_frontend_src_components_framegrid_jsx",
-      "confidence_score": 1.0
+      "target": "devlab_frontend_src_components_framegrid_jsx"
     },
     {
       "relation": "contains",
@@ -5949,9 +6548,9 @@
       "source_file": "devlab/frontend/src/components/ResultPanel.jsx",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_components_resultpanel_jsx",
-      "target": "components_resultpanel_resultpanel",
-      "confidence_score": 1.0
+      "target": "components_resultpanel_resultpanel"
     },
     {
       "relation": "imports_from",
@@ -5960,31 +6559,9 @@
       "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_pages_componenttester_jsx",
-      "target": "devlab_frontend_src_components_resultpanel_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_ocrtester_jsx",
-      "target": "devlab_frontend_src_components_resultpanel_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/SyncTester.jsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_synctester_jsx",
-      "target": "devlab_frontend_src_components_resultpanel_jsx",
-      "confidence_score": 1.0
+      "target": "devlab_frontend_src_components_resultpanel_jsx"
     },
     {
       "relation": "contains",
@@ -5992,9 +6569,9 @@
       "source_file": "devlab/frontend/src/components/SessionPicker.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_components_sessionpicker_jsx",
-      "target": "components_sessionpicker_sessionpicker",
-      "confidence_score": 1.0
+      "target": "components_sessionpicker_sessionpicker"
     },
     {
       "relation": "imports_from",
@@ -6003,31 +6580,9 @@
       "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_pages_componenttester_jsx",
-      "target": "devlab_frontend_src_components_sessionpicker_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_ocrtester_jsx",
-      "target": "devlab_frontend_src_components_sessionpicker_jsx",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/SyncTester.jsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_synctester_jsx",
-      "target": "devlab_frontend_src_components_sessionpicker_jsx",
-      "confidence_score": 1.0
+      "target": "devlab_frontend_src_components_sessionpicker_jsx"
     },
     {
       "relation": "contains",
@@ -6035,9 +6590,9 @@
       "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_pages_componenttester_jsx",
-      "target": "pages_componenttester_severity_color",
-      "confidence_score": 1.0
+      "target": "pages_componenttester_severity_color"
     },
     {
       "relation": "contains",
@@ -6045,39 +6600,9 @@
       "source_file": "devlab/frontend/src/pages/ComponentTester.jsx",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_frontend_src_pages_componenttester_jsx",
-      "target": "pages_componenttester_componenttester",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/Home.jsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_home_jsx",
-      "target": "pages_home_homepage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/OcrTester.jsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_ocrtester_jsx",
-      "target": "pages_ocrtester_ocrtester",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/frontend/src/pages/SyncTester.jsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "devlab_frontend_src_pages_synctester_jsx",
-      "target": "pages_synctester_synctester",
-      "confidence_score": 1.0
+      "target": "pages_componenttester_componenttester"
     },
     {
       "relation": "contains",
@@ -6085,9 +6610,9 @@
       "source_file": "devlab/package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_package_json",
-      "target": "devlab_package_name",
-      "confidence_score": 1.0
+      "target": "devlab_package_name"
     },
     {
       "relation": "contains",
@@ -6095,9 +6620,9 @@
       "source_file": "devlab/package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_package_json",
-      "target": "devlab_package_version",
-      "confidence_score": 1.0
+      "target": "devlab_package_version"
     },
     {
       "relation": "contains",
@@ -6105,9 +6630,9 @@
       "source_file": "devlab/package.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_package_json",
-      "target": "devlab_package_private",
-      "confidence_score": 1.0
+      "target": "devlab_package_private"
     },
     {
       "relation": "contains",
@@ -6115,9 +6640,9 @@
       "source_file": "devlab/package.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_package_json",
-      "target": "devlab_package_scripts",
-      "confidence_score": 1.0
+      "target": "devlab_package_scripts"
     },
     {
       "relation": "contains",
@@ -6125,9 +6650,9 @@
       "source_file": "devlab/package.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_package_scripts",
-      "target": "devlab_package_scripts_start",
-      "confidence_score": 1.0
+      "target": "devlab_package_scripts_start"
     },
     {
       "relation": "contains",
@@ -6135,59 +6660,9 @@
       "source_file": "devlab/package.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "devlab_package_scripts",
-      "target": "devlab_package_scripts_install_all",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/start.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "devlab_start_js",
-      "target": "devlab_start_spawn",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/start.js",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "devlab_start_js",
-      "target": "devlab_start_path",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/start.js",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "devlab_start_js",
-      "target": "devlab_start_run",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/start.js",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "devlab_start_js",
-      "target": "devlab_start_backend",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "devlab/start.js",
-      "source_location": "L17",
-      "weight": 1.0,
-      "source": "devlab_start_js",
-      "target": "devlab_start_frontend",
-      "confidence_score": 1.0
+      "target": "devlab_package_scripts_install_all"
     },
     {
       "relation": "contains",
@@ -6407,9 +6882,9 @@
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_lib_api_js",
-      "target": "lib_api_getcoachframes",
-      "confidence_score": 1.0
+      "target": "lib_api_getcoachframes"
     },
     {
       "relation": "contains",
@@ -6679,9 +7154,9 @@
       "source_file": "frontend/src/lib/api.js",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "lib_api_getcoachframes",
-      "target": "lib_api_fetch",
-      "confidence_score": 1.0
+      "target": "lib_api_fetch"
     },
     {
       "relation": "imports",
@@ -6855,9 +7330,9 @@
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_pages_trainworkspace_jsx",
-      "target": "lib_api_getcoachframes",
-      "confidence_score": 1.0
+      "target": "lib_api_getcoachframes"
     },
     {
       "relation": "imports",
@@ -7089,9 +7564,9 @@
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_sync_engine_engine_py",
-      "target": "sync_engine_engine_load_config",
-      "confidence_score": 1.0
+      "target": "sync_engine_engine_load_config"
     },
     {
       "relation": "contains",
@@ -7210,9 +7685,9 @@
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sync_engine_engine_rationale_41",
-      "target": "sync_engine_engine_load_ocr_by_trigger",
-      "confidence_score": 1.0
+      "target": "sync_engine_engine_load_ocr_by_trigger"
     },
     {
       "relation": "rationale_for",
@@ -7263,9 +7738,9 @@
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sync_engine_engine_rationale_76",
-      "target": "sync_engine_engine_detect_segments",
-      "confidence_score": 1.0
+      "target": "sync_engine_engine_detect_segments"
     },
     {
       "relation": "rationale_for",
@@ -7294,9 +7769,9 @@
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sync_engine_engine_rationale_139",
-      "target": "sync_engine_engine_create_coaches",
-      "confidence_score": 1.0
+      "target": "sync_engine_engine_create_coaches"
     },
     {
       "relation": "rationale_for",
@@ -7336,9 +7811,9 @@
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L168",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sync_engine_engine_rationale_168",
-      "target": "sync_engine_engine_assign_frames",
-      "confidence_score": 1.0
+      "target": "sync_engine_engine_assign_frames"
     },
     {
       "relation": "rationale_for",
@@ -7356,9 +7831,9 @@
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L240",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sync_engine_engine_rationale_240",
-      "target": "sync_engine_engine_find_coach",
-      "confidence_score": 1.0
+      "target": "sync_engine_engine_find_coach"
     },
     {
       "relation": "rationale_for",
@@ -7387,9 +7862,9 @@
       "source_file": "services/sync_engine/engine.py",
       "source_location": "L266",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sync_engine_engine_rationale_266",
-      "target": "sync_engine_engine_create_timeline_events",
-      "confidence_score": 1.0
+      "target": "sync_engine_engine_create_timeline_events"
     },
     {
       "relation": "rationale_for",
@@ -7411,78 +7886,6 @@
       "weight": 1.0,
       "source": "sync_engine_server_sync",
       "target": "sync_engine_engine_run_sync"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L26",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "gpu_ocr_ocr_engine_py",
-      "target": "ocr_ocr_engine_cudnn8_available"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "gpu_ocr_ocr_engine_py",
-      "target": "ocr_ocr_engine_get_ocr"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L50",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "gpu_ocr_ocr_engine_py",
-      "target": "ocr_ocr_engine_run_ocr"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ocr_ocr_engine_rationale_1",
-      "target": "gpu_ocr_ocr_engine_py"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L56",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ocr_ocr_engine_get_ocr",
-      "target": "ocr_ocr_engine_cudnn8_available"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L27",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ocr_ocr_engine_rationale_27",
-      "target": "ocr_ocr_engine_cudnn8_available"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/ocr_engine.py",
-      "source_location": "L54",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ocr_ocr_engine_run_ocr",
-      "target": "ocr_ocr_engine_get_ocr"
     },
     {
       "relation": "contains",
@@ -8537,243 +8940,6 @@
       "weight": 1.0,
       "source": "report_generator_server_generate",
       "target": "report_generator_builder_generate_report"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L14",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_spawn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_http"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_path"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_fs"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_log_dir"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_log_file"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L27",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_logstream"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_c"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L35",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_services"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L127",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_running"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L131",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_log"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L137",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_killall"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L155",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_pollhealth"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L182",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_launch"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L220",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_startservice"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L254",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "start_js",
-      "target": "main_start_main"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L140",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "main_start_killall",
-      "target": "main_start_log"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L221",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "main_start_startservice",
-      "target": "main_start_log"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L255",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "main_start_main",
-      "target": "main_start_log"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L269",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "main_start_main",
-      "target": "main_start_killall"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L247",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "main_start_startservice",
-      "target": "main_start_pollhealth"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L222",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "main_start_startservice",
-      "target": "main_start_launch"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "start.js",
-      "source_location": "L266",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "main_start_main",
-      "target": "main_start_startservice"
     },
     {
       "relation": "contains",
@@ -10512,5 +10678,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "bdf3a46c69eb11eca609be79f283fc1cf837eb65"
+  "built_at_commit": "de13c2a785d8efa0e60afa8a763501212040406c"
 }

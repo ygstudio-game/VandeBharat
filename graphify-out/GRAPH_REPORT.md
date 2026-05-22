@@ -1,16 +1,16 @@
-# Graph Report - Main  (2026-05-21)
+# Graph Report - Main  (2026-05-22)
 
 ## Corpus Check
-- 109 files · ~251,710 words
+- 109 files · ~252,663 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 486 nodes · 596 edges · 38 communities (28 shown, 10 thin omitted)
+- 493 nodes · 606 edges · 38 communities (29 shown, 9 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bdf3a46c`
+- Built from commit: `de13c2a7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -54,8 +54,8 @@
 ## God Nodes (most connected - your core abstractions)
 1. `_fetch()` - 16 edges
 2. `VandeInspect AI — Backend Build Progress` - 16 edges
-3. `services` - 9 edges
-4. `scripts` - 9 edges
+3. `scripts` - 9 edges
+4. `services` - 9 edges
 5. `useSessionSocket()` - 8 edges
 6. `run_pipeline()` - 7 edges
 7. `run_sync()` - 7 edges
@@ -68,14 +68,14 @@
   GPU/ocr/server.py → GPU/ocr/preprocess.py
 - `sync()` --calls--> `run_sync()`  [INFERRED]
   services/sync_engine/server.py → services/sync_engine/engine.py
-- `generate()` --calls--> `generate_report()`  [INFERRED]
-  services/report_generator/server.py → services/report_generator/builder.py
-- `_best_candidate_from()` --calls--> `filter_train_numbers()`  [INFERRED]
-  GPU/ocr/server.py → GPU/ocr/train_number_filter.py
 - `run_pipeline()` --calls--> `run_ocr()`  [INFERRED]
   GPU/ocr/server.py → GPU/ocr/ocr_engine.py
+- `warmup()` --calls--> `run_ocr()`  [INFERRED]
+  GPU/ocr/server.py → GPU/ocr/ocr_engine.py
+- `_best_candidate_from()` --calls--> `filter_train_numbers()`  [INFERRED]
+  GPU/ocr/server.py → GPU/ocr/train_number_filter.py
 
-## Communities (38 total, 10 thin omitted)
+## Communities (38 total, 9 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.14
@@ -83,7 +83,7 @@ Nodes (11): axios, CAM_TYPES, config, fs, path, { pipeline }, PIPELINE_STAGES, {
 
 ### Community 1 - "Community 1"
 Cohesion: 0.08
-Nodes (27): dependencies, axios, cloudinary, cors, dotenv, express, fastify, @fastify/cors (+19 more)
+Nodes (28): dependencies, axios, cloudinary, cors, dotenv, express, fastify, @fastify/cors (+20 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.08
@@ -94,8 +94,8 @@ Cohesion: 0.11
 Nodes (22): assign_frames(), _close(), create_coaches(), create_timeline_events(), detect_segments(), _find_coach(), load_ocr_by_trigger(), _new_seg() (+14 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.22
-Nodes (8): config, cors, fastify, msg, multipart, prisma, websocketPlugin, wsGateway
+Cohesion: 0.17
+Nodes (10): prisma, { PrismaClient }, config, cors, fastify, msg, multipart, prisma (+2 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.07
@@ -110,20 +110,20 @@ Cohesion: 0.22
 Nodes (8): decode_bytes(), predict(), predict_train_number(), YOLO Service — port 5002 Two models loaded at startup on GPU:   best.pt, Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2, Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2
 
 ### Community 11 - "Community 11"
-Cohesion: 0.21
-Nodes (10): correlate_coach(), _fetch_frame_bytes(), load_manifest(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to that, Run defect + component correlation for one coach.     Returns summary dict., _run_yolo(), correlate(), CorrelateRequest (+2 more)
+Cohesion: 0.23
+Nodes (9): correlate_coach(), _fetch_frame_bytes(), load_manifest(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to that, Run defect + component correlation for one coach.     Returns summary dict., _run_yolo(), correlate(), get_conn() (+1 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.09
-Nodes (20): BaseModel, _all_cameras_done(), ExtractRequest, _flush_rows(), get_conn(), Frame Extractor Service — port 5003 Receives video path → OpenCV extracts every, True when every session_camera for this session has frame_count > 0., True when every session_camera for this session has frame_count > 0. (+12 more)
+Cohesion: 0.11
+Nodes (16): BaseModel, CorrelateRequest, _all_cameras_done(), ExtractRequest, _flush_rows(), get_conn(), Frame Extractor Service — port 5003 Receives video path → OpenCV extracts every, True when every session_camera for this session has frame_count > 0. (+8 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.26
-Nodes (10): FPDF, build_json_report(), build_pdf_report(), generate_report(), _health_color(), load_session_data(), _PDF, Report builder — Phase 4 Reads full session from DB → builds PDF (fpdf2) + JSON (+2 more)
+Cohesion: 0.15
+Nodes (15): FPDF, build_json_report(), build_pdf_report(), generate_report(), _health_color(), load_session_data(), _PDF, Report builder — Phase 4 Reads full session from DB → builds PDF (fpdf2) + JSON (+7 more)
 
 ### Community 16 - "Community 16"
-Cohesion: 0.17
-Nodes (16): C, fs, http, killAll(), launch(), log(), LOG_DIR, LOG_FILE (+8 more)
+Cohesion: 0.16
+Nodes (17): C, fs, http, killAll(), killPort(), launch(), log(), LOG_DIR (+9 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.40
@@ -153,17 +153,21 @@ Nodes (11): BACKEND_MODULES, C, deleteCloudinaryAssets(), dotenv, getAllCloudina
 Cohesion: 0.06
 Nodes (26): axios, prisma, { PrismaClient }, { Router }, prisma, { PrismaClient }, { Router }, types (+18 more)
 
+### Community 28 - "Community 28"
+Cohesion: 0.11
+Nodes (3): SEVERITY_COLOR, CLASS_COLOR, nav
+
 ### Community 29 - "Community 29"
 Cohesion: 0.10
 Nodes (19): dependencies, lucide-react, react, react-dom, react-router-dom, devDependencies, autoprefixer, postcss (+11 more)
 
 ### Community 30 - "Community 30"
-Cohesion: 0.23
-Nodes (8): emitStage(), runOcrPipeline(), broadcast(), broadcastAll(), clients, globalClients, _send(), sessionRooms
+Cohesion: 0.29
+Nodes (3): clients, globalClients, sessionRooms
 
 ### Community 31 - "Community 31"
-Cohesion: 0.22
-Nodes (6): prisma, { PrismaClient }, axios, { broadcast, broadcastAll }, config, prisma
+Cohesion: 0.27
+Nodes (9): axios, { broadcast, broadcastAll }, config, emitStage(), prisma, runOcrPipeline(), broadcast(), broadcastAll() (+1 more)
 
 ### Community 32 - "Community 32"
 Cohesion: 0.29
@@ -174,13 +178,13 @@ Cohesion: 0.33
 Nodes (3): app, config, config
 
 ### Community 34 - "Community 34"
-Cohesion: 0.33
-Nodes (4): backend, frontend, path, { spawn }
+Cohesion: 0.28
+Nodes (8): backend, frontend, killPort(), main(), path, run(), { spawn }, { spawn, exec }
 
 ## Knowledge Gaps
-- **193 isolated node(s):** `path`, `fs`, `{ pipeline }`, `{ randomUUID }`, `axios` (+188 more)
+- **196 isolated node(s):** `type`, `dev`, `start`, `db:generate`, `db:migrate` (+191 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -188,13 +192,13 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `OcrRequest` connect `Community 12` to `Community 7`?**
   _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **Why does `sync()` connect `Community 12` to `Community 3`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
-- **What connects `OCR Service — port 5000 YOLO-first ROI pipeline, ported from POC/backend/OCR/ser`, `Return (coach_number, confidence) from the highest-confidence valid result, else`, `Last-resort: extract any 5-6 digit substring from detected text.` to the rest of the system?**
-  _231 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **What connects `PaddleOCR singleton — GPU with CPU fallback. Windows CUDA DLL injection included`, `PaddlePaddle 2.x requires cuDNN 8 (cudnn_ops_infer64_8.dll on Windows).     PyTo`, `OCR Service — port 5000 YOLO-first ROI pipeline, ported from POC/backend/OCR/ser` to the rest of the system?**
+  _234 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.07881773399014778 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07586206896551724 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.07977207977207977 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**

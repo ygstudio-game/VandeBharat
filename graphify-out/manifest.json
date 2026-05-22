@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\ocr\\server.py": {
-    "mtime": 1779377140.9548357,
-    "ast_hash": "51cbdb2d56c1912bbcc5569fbe7d5ad1",
+    "mtime": 1779463718.831524,
+    "ast_hash": "459369328c32437fa175861eca7c62c6",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\shared\\cloudinary_client.py": {
@@ -470,8 +470,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\ocr\\ocr_engine.py": {
-    "mtime": 1779341038.4399161,
-    "ast_hash": "93311fae44d031a9c80fa53ba1a5e05b",
+    "mtime": 1779461487.718747,
+    "ast_hash": "b48b1b79a55e3c509e6ba2701e4cde49",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\ocr\\preprocess.py": {
@@ -540,8 +540,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\start.js": {
-    "mtime": 1779373764.3812187,
-    "ast_hash": "f12b9c6d8342431c68b88a586b729735",
+    "mtime": 1779464683.1678855,
+    "ast_hash": "6c89e3a447d7862be898df9ab01a8dee",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\yolo\\models\\README.md": {
@@ -605,23 +605,23 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\start.js": {
-    "mtime": 1779377620.143333,
-    "ast_hash": "33a9aa18ccb114dac84087fc8a18cf66",
+    "mtime": 1779464666.3203826,
+    "ast_hash": "0a19c80138b09f65f3bec00a3c76eecd",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\backend\\package.json": {
-    "mtime": 1779377280.9373116,
-    "ast_hash": "67174fbdd436e50ee3d2f05e9bc65cb7",
+    "mtime": 1779464656.1997702,
+    "ast_hash": "37a1e5851e1819baaed34c73e83ced92",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\backend\\src\\index.js": {
-    "mtime": 1779377354.3447883,
-    "ast_hash": "8f33d66d02cfef9805d3f3890ef5f009",
+    "mtime": 1779461165.5171955,
+    "ast_hash": "953eab94feac4f63e3289bd4badf7145",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\backend\\src\\routes\\ocr.js": {
-    "mtime": 1779377384.61413,
-    "ast_hash": "51ed5a4004895917e40a523fe70c8c2d",
+    "mtime": 1779463733.525744,
+    "ast_hash": "098a59fc2aefdd5e6e3eb08b709300f4",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\backend\\src\\routes\\sessions.js": {
@@ -695,18 +695,18 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\frontend\\src\\pages\\Home.jsx": {
-    "mtime": 1779377524.7393584,
-    "ast_hash": "b67fa64984100f278711bed6eb438cdd",
+    "mtime": 1779460812.656288,
+    "ast_hash": "9a10d54408e4c108c7e9551d2b9543c9",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\frontend\\src\\pages\\OcrTester.jsx": {
-    "mtime": 1779377555.469583,
-    "ast_hash": "488b3464691e7dd6bf40ccb635b4728d",
+    "mtime": 1779463260.181255,
+    "ast_hash": "cdfa2675b9df60c50331782442da7da6",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\frontend\\src\\pages\\SyncTester.jsx": {
-    "mtime": 1779377580.0357194,
-    "ast_hash": "d2c88ce02bf67395c951d0039ae7156d",
+    "mtime": 1779463276.4116294,
+    "ast_hash": "95d6df754f5e62aff9700b167d5ca31f",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\devlab\\frontend\\index.html": {
@@ -757,6 +757,26 @@
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\f94afaca-47f3-4f1b-86d8-f3d92e13ec1e\\cam_1.mp4": {
     "mtime": 1779377808.7391288,
     "ast_hash": "a1ed41f0e40716284ba0fed6f262c563",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\yolo\\models\\train_num_detector.yaml": {
+    "mtime": 1779460424.9224954,
+    "ast_hash": "de1e3b5893bb9584abe846b62559b37f",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\9ada7469-1599-4578-93ab-08c03e034292\\cam_1.mp4": {
+    "mtime": 1779464797.7402039,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\ca74537c-7638-4fdf-8b7f-784d32eac5b4\\cam_1.mp4": {
+    "mtime": 1779464465.8812096,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\f5bba0a9-2663-4fb6-9925-de71bacaa799\\cam_1.mp4": {
+    "mtime": 1779464439.423855,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
     "semantic_hash": ""
   }
 }

@@ -182,7 +182,7 @@ def ocr(req: OcrRequest):
                 "bbox_x": x1, "bbox_y": y1, "bbox_w": x2 - x1, "bbox_h": y2 - y1}
     yolo_boxes_out = [_norm_box(b) for b in all_yolo_boxes]
 
-    # Write ocr_results row
+    # Write ocr_results + gap_detections rows
     try:
         conn = get_conn()
         with conn.cursor() as cur:
@@ -208,6 +208,27 @@ def ocr(req: OcrRequest):
                     json.dumps([{"text": r.get("text"), "conf": r.get("confidence")} for r in raw_ocr]),
                 ),
             )
+            # Write one row per gap box detected by YOLO
+            for b in all_yolo_boxes:
+                if b.get("label", "").lower() == "gap":
+                    x1, y1, x2, y2 = b.get("bbox_xyxy", [None, None, None, None])
+                    cur.execute(
+                        """
+                        INSERT INTO gap_detections
+                          (id, session_id, frame_id, trigger_id, confidence,
+                           bbox_x, bbox_y, bbox_w, bbox_h)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            str(uuid.uuid4()),
+                            req.session_id, req.frame_id, req.trigger_id,
+                            round(b.get("confidence", 0), 4),
+                            int(x1) if x1 is not None else None,
+                            int(y1) if y1 is not None else None,
+                            int(x2 - x1) if x1 is not None else None,
+                            int(y2 - y1) if y1 is not None else None,
+                        ),
+                    )
             conn.commit()
         conn.close()
     except Exception as exc:

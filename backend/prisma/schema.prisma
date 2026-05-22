@@ -120,6 +120,7 @@ model InspectionSession {
   frames               Frame[]
   coaches              Coach[]
   ocr_results          OcrResult[]
+  gap_detections       GapDetection[]
   coach_frame_maps     CoachFrameMap[]
   component_detections ComponentDetection[]
   defects              Defect[]
@@ -197,6 +198,7 @@ model Frame {
   coach          Coach?            @relation("FrameToCoach", fields: [coach_id], references: [id])
 
   ocr_results          OcrResult[]
+  gap_detections       GapDetection[]
   coach_frame_map      CoachFrameMap?
   component_detections ComponentDetection[]
   defects              Defect[]
@@ -270,6 +272,25 @@ model OcrResult {
   mapped_coach Coach?            @relation(fields: [mapped_coach_id], references: [id])
 
   @@map("ocr_results")
+}
+
+model GapDetection {
+  id         String   @id @default(uuid()) @db.Uuid
+  session_id String   @db.Uuid
+  frame_id   String   @db.Uuid
+  trigger_id BigInt
+  confidence Decimal  @db.Decimal(4, 3)
+  bbox_x     Int?
+  bbox_y     Int?
+  bbox_w     Int?
+  bbox_h     Int?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
+  frame   Frame             @relation(fields: [frame_id], references: [id], onDelete: Cascade)
+
+  @@index([session_id, trigger_id])
+  @@map("gap_detections")
 }
 
 model CoachFrameMap {

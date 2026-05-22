@@ -114,7 +114,7 @@ function normalizeCoach(c) {
     id: c.id,
     coachNumber: c.coach_number,
     stats: {
-      ocrFramesCount: Math.floor((c.total_frames || 0) * 0.15),
+      ocrFramesCount: c.ocr_frame_count || 0,
       componentFramesCount: c.total_frames || 0,
       criticalDefects: c.critical_defects || 0,
       missingComponents: c.missing_components_count || 0,

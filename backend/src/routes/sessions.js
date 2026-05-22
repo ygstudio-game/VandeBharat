@@ -235,6 +235,7 @@ async function sessions(fastify) {
         ocr_confidence: c.ocr_confidence ? Number(c.ocr_confidence) : null,
         health_score: c.health_score ? Number(c.health_score) : null,
         total_frames: c.total_frames,
+        ocr_frame_count: c.ocr_frame_count || 0,
         frames_count: c._count.frames,
         defects_count: c._count.defects,
         start_trigger_id: c.start_trigger_id ? Number(c.start_trigger_id) : null,

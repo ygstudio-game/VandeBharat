@@ -4,7 +4,9 @@
     "ocr_concurrency": 1,
     "db_flush_every_n_frames": 10,
     "sync_min_votes": 1,
-    "sync_max_trigger_gap": 150
+    "sync_max_trigger_gap": 150,
+    "sync_gap_cluster_radius": 30,
+    "sync_gap_min_confidence": 0.4
   },
   "services": {
     "yolo_port": 5002,
