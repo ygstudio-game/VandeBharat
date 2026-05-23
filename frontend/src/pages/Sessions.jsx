@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSessions, uploadSession, normalizeSession, getConfig } from '../lib/api';
+import { getSessions, uploadSession, normalizeSession, getConfig, deleteSession } from '../lib/api';
 import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
 import { 
@@ -40,13 +40,14 @@ export const Sessions = () => {
   const [sessions, setSessions] = useState([]);
   const [uploadError, setUploadError] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [deletingIds, setDeletingIds] = useState(new Set());
 
   const loadSessions = useCallback(async () => {
     try {
       const data = await getSessions();
-      setSessions((data.sessions || []).map(normalizeSession));
+      setSessions((data.sessions || []).map(normalizeSession).filter(s => !deletingIds.has(s.id)));
     } catch (_) { /* silent — keep stale data */ }
-  }, []);
+  }, [deletingIds]);
 
   useEffect(() => {
     loadSessions();
@@ -104,6 +105,7 @@ export const Sessions = () => {
 
   // Modal edit/delete state
   const [deletingSessionId, setDeletingSessionId] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [editingSession, setEditingSession] = useState(null);
 
   // Toggle row expansion
@@ -148,10 +150,38 @@ export const Sessions = () => {
     }
   };
 
-  // Handle Delete — removes from local state; polling will re-sync from server
-  const handleDeleteSession = (id) => {
+  // Handle Delete — optimistic removal, API in background
+  const handleDeleteSession = async (id) => {
+    setDeleteLoading(true);
+    // Add to deletingIds set and remove from sessions immediately
+    setDeletingIds(prev => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
     setSessions(prev => prev.filter(s => s.id !== id));
     setDeletingSessionId(null);
+    setDeleteLoading(false);
+    toast.success('Session deletion initiated. Cleaning up server data…', 'Deleting');
+    
+    // Fire API in background
+    try {
+      await deleteSession(id);
+      toast.success('Session permanently deleted.', 'Done');
+      setDeletingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    } catch (err) {
+      toast.error(err.message || 'Server cleanup failed — refresh to re-sync.', 'Error');
+      setDeletingIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+      loadSessions(); // re-sync if API failed
+    }
   };
 
   // Handle Edit Save — optimistic local update only (no server-side edit endpoint yet)
@@ -827,15 +857,18 @@ export const Sessions = () => {
             <div className="flex justify-end gap-2 text-xs font-bold uppercase pt-2">
               <button
                 onClick={() => setDeletingSessionId(null)}
-                className="px-3 py-2 border border-border bg-white text-slate-700 hover:bg-slate-50 rounded"
+                disabled={deleteLoading}
+                className="px-3 py-2 border border-border bg-white text-slate-700 hover:bg-slate-50 rounded disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDeleteSession(deletingSessionId)}
-                className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+                disabled={deleteLoading}
+                className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded flex items-center gap-1.5 disabled:opacity-75"
               >
-                Permanently Delete
+                {deleteLoading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                {deleteLoading ? 'Deleting…' : 'Permanently Delete'}
               </button>
             </div>
           </div>

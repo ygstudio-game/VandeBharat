@@ -102,6 +102,51 @@ async function reports(fastify) {
       is_signed: report.is_signed,
     };
   });
+
+  // PUT /api/sessions/:id/report/sign
+  fastify.put('/:id/report/sign', async (req, reply) => {
+    const sessionId = req.params.id;
+    const session = await prisma.inspectionSession.findUnique({
+      where: { id: sessionId },
+      include: { report: true }
+    });
+
+    if (!session) {
+      reply.status(404);
+      return { error: 'Session not found' };
+    }
+
+    if (!session.report) {
+      await prisma.report.create({
+        data: {
+          session_id: sessionId,
+          train_number: session.train_number,
+          total_coaches: session.total_coaches || 0,
+          total_frames: session.total_frames || 0,
+          total_defects: session.critical_defects || 0,
+          critical_defects: session.critical_defects || 0,
+          missing_components_count: session.missing_components_count || 0,
+          overall_health: session.health_score || 100,
+          status: 'completed',
+          is_signed: true,
+          signed_off_at: new Date(),
+          sign_off_notes: req.body?.notes || 'Signed off by inspector via Reports dashboard',
+        }
+      });
+    } else {
+      await prisma.report.update({
+        where: { session_id: sessionId },
+        data: {
+          is_signed: true,
+          status: 'completed',
+          signed_off_at: new Date(),
+          sign_off_notes: req.body?.notes || 'Signed off by inspector via Reports dashboard',
+        }
+      });
+    }
+
+    return { success: true, message: `Report signed off successfully` };
+  });
 }
 
 module.exports = reports;

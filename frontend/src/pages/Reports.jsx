@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePolling } from '../hooks/usePolling';
-import { getSessions, getReport, normalizeSession } from '../lib/api';
+import { getSessions, getReport, getHierarchy, getIntelligence, signReport, normalizeSession } from '../lib/api';
 import { 
   FileText, 
   Search, 
@@ -57,8 +57,10 @@ function sessionToReport(s) {
     criticalDefects: s.criticalDefects || 0,
     minorDefects: 0,
     totalCoaches: s.totalCoaches || 0,
+    totalFrames: s.totalFrames || 0,
     ocrConf: s.ocrConfidence || 0,
     syncStability: s.syncHealth || 0,
+    healthScore: s.healthScore,
     verifiedComponentsCount: s.totalFrames || 0,
     pdfUrl: null, // loaded on demand
   };
@@ -87,15 +89,21 @@ export const Reports = () => {
   
   // Navigation & detailed report workspace state
   const [selectedReport, setSelectedReport] = useState(null);
-  const [activeCoach, setActiveCoach] = useState('B1');
+  const [activeCoach, setActiveCoach] = useState(null); // real coach object or label
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playheadPercent, setPlayheadPercent] = useState(31.5);
-  const [playbackTime, setPlaybackTime] = useState('00:01:22');
+  const [playheadPercent, setPlayheadPercent] = useState(0);
+  const [playbackTime, setPlaybackTime] = useState('00:00:00');
   const [isMuted, setIsMuted] = useState(false);
 
+  // Real data from backend
+  const [realCoaches, setRealCoaches] = useState([]);
+  const [coachIntel, setCoachIntel] = useState(null); // intelligence response for active coach
+  const [intelLoading, setIntelLoading] = useState(false);
+  const [activeDefectIndex, setActiveDefectIndex] = useState(0);
+
   // Operator review actions
-  const [pendingReviews, setPendingReviews] = useState(3);
-  const [showReviewCard, setShowReviewCard] = useState(true);
+  const [pendingReviews, setPendingReviews] = useState(0);
+  const [showReviewCard, setShowReviewCard] = useState(false);
 
   // Dialog state
   const [signingReport, setSigningReport] = useState(null);
@@ -123,74 +131,79 @@ export const Reports = () => {
     }
   };
 
-  const handleSign = (e) => {
+  const handleSign = async (e) => {
     e.preventDefault();
     if (!pinInput || pinInput !== '1234') {
       alert('Invalid Security Pin. Please enter the supervisor authorization PIN (1234).');
       return;
     }
     setIsSigningLoading(true);
-    setTimeout(() => {
+    try {
+      await signReport(signingReport.id, `Signed off via Reports dashboard`);
       setLocalStatusOverrides(prev => ({ ...prev, [signingReport.id]: 'APPROVED' }));
       if (selectedReport && selectedReport.id === signingReport.id) {
         setSelectedReport(prev => ({ ...prev, status: 'APPROVED' }));
       }
+    } catch (err) {
+      alert('Sign-off failed: ' + (err.message || 'Unknown error'));
+    } finally {
       setIsSigningLoading(false);
       setSigningReport(null);
       setPinInput('');
-    }, 1500);
+    }
   };
 
-  // Playhead auto-update simulation
+  // Fetch coaches when a report is selected
+  useEffect(() => {
+    if (!selectedReport) { setRealCoaches([]); setCoachIntel(null); setActiveCoach(null); return; }
+    getHierarchy(selectedReport.id)
+      .then(data => {
+        const coaches = data?.coaches || [];
+        setRealCoaches(coaches);
+        if (coaches.length > 0 && !activeCoach) setActiveCoach(coaches[0].coach_number || `B${coaches[0].coach_index + 1}`);
+      })
+      .catch(() => setRealCoaches([]));
+  }, [selectedReport?.id]);
+
+  // Fetch intelligence when active coach changes
+  useEffect(() => {
+    if (!selectedReport || !activeCoach || realCoaches.length === 0) return;
+    const coachObj = realCoaches.find(c => (c.coach_number || `B${c.coach_index + 1}`) === activeCoach);
+    if (!coachObj) return;
+    setIntelLoading(true);
+    setActiveDefectIndex(0);
+    getIntelligence(selectedReport.id, coachObj.id)
+      .then(data => setCoachIntel(data))
+      .catch(() => setCoachIntel(null))
+      .finally(() => setIntelLoading(false));
+  }, [activeCoach, selectedReport?.id, realCoaches]);
+
+  // Playhead auto-update
   useEffect(() => {
     let interval;
-    if (isPlaying) {
+    if (isPlaying && realCoaches.length > 0) {
       interval = setInterval(() => {
         setPlayheadPercent(prev => {
           let next = prev + 0.5;
           if (next > 100) next = 0;
-          
-          // Map playhead percent to timeline timestamps
-          const totalSeconds = 261; // 4:21 total
-          const currentSeconds = Math.floor((next / 100) * totalSeconds);
-          const min = String(Math.floor(currentSeconds / 60)).padStart(2, '0');
-          const sec = String(currentSeconds % 60).padStart(2, '0');
-          setPlaybackTime(`00:${min}:${sec}`);
-
-          // Sync active coach based on percent regions
-          if (next < 10) setActiveCoach('B1');
-          else if (next < 20) setActiveCoach('B2');
-          else if (next < 30) setActiveCoach('B3');
-          else if (next < 40) setActiveCoach('B4');
-          else if (next < 50) setActiveCoach('B5');
-          else if (next < 60) setActiveCoach('B6');
-          else setActiveCoach('B7');
-
+          const coachCount = realCoaches.length || 1;
+          const coachIdx = Math.min(Math.floor((next / 100) * coachCount), coachCount - 1);
+          const c = realCoaches[coachIdx];
+          setActiveCoach(c?.coach_number || `B${(c?.coach_index ?? coachIdx) + 1}`);
           return next;
         });
       }, 150);
     }
     return () => clearInterval(interval);
-  }, [isPlaying]);
+  }, [isPlaying, realCoaches]);
 
-  // Jump to specific coach / defect
-  const jumpToCoach = (coachNum) => {
-    setActiveCoach(coachNum);
-    if (coachNum === 'B1') {
-      setPlayheadPercent(31.5);
-      setPlaybackTime('00:01:22');
-    } else if (coachNum === 'B2') {
-      setPlayheadPercent(38.2);
-      setPlaybackTime('00:01:39');
-    } else {
-      const coachIndex = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'].indexOf(coachNum);
-      const targetPercent = coachIndex * 14.2 + 7.1;
-      setPlayheadPercent(targetPercent);
-      const totalSeconds = 261;
-      const currentSeconds = Math.floor((targetPercent / 100) * totalSeconds);
-      const min = String(Math.floor(currentSeconds / 60)).padStart(2, '0');
-      const sec = String(currentSeconds % 60).padStart(2, '0');
-      setPlaybackTime(`00:${min}:${sec}`);
+  // Jump to specific coach
+  const jumpToCoach = (coachLabel) => {
+    setActiveCoach(coachLabel);
+    const idx = realCoaches.findIndex(c => (c.coach_number || `B${c.coach_index + 1}`) === coachLabel);
+    if (idx >= 0 && realCoaches.length > 0) {
+      const pct = ((idx + 0.5) / realCoaches.length) * 100;
+      setPlayheadPercent(pct);
     }
   };
 
@@ -201,75 +214,47 @@ export const Reports = () => {
     return matchesSearch && matchesStatus;
   });
 
+  // Derive coach labels for the sidebar + timeline
+  const coachLabels = realCoaches.map(c => c.coach_number || `B${c.coach_index + 1}`);
+
   // Render detailed Report Generation Workspace
   if (selectedReport) {
-    // Dynamic data based on active coach selection
-    let activeDefect = null;
-    let coachBreakdown = {
-      title: `Coach ${activeCoach} Breakdown`,
-      healthScore: 100,
-      complianceScore: 100,
-      stressScore: 35,
-      items: [
-        { name: "Suspension Units", value: "4/4 NOMINAL", isError: false },
-        { name: "Axle Bearings", value: "8/8 NOMINAL", isError: false },
-        { name: "Brake Pad Wear", value: "NOMINAL", isError: false }
-      ]
+    // Derive coachBreakdown and activeDefect from real intelligence data
+    const defects = coachIntel?.defects || [];
+    const components = coachIntel?.components_detected || [];
+    const missing = coachIntel?.missing_components || [];
+    const summary = coachIntel?.summary || {};
+    const coachData = coachIntel?.coach || {};
+
+    const healthScore = coachData.health_score ?? (defects.length === 0 ? 100 : Math.max(0, 100 - defects.length * 15));
+
+    const coachBreakdown = {
+      title: `Coach ${activeCoach || '—'} Breakdown`,
+      healthScore: Math.round(healthScore),
+      complianceScore: missing.length === 0 ? 100 : Math.max(0, 100 - missing.length * 10),
+      stressScore: summary.critical > 0 ? 70 : summary.high > 0 ? 50 : 25,
+      items: components.length > 0
+        ? components.slice(0, 6).map(c => ({
+            name: c.component_name || c.component_code,
+            value: `${Math.round(c.confidence * 100)}% CONF`,
+            isError: c.confidence < 0.5,
+          }))
+        : [
+            { name: 'Components Detected', value: String(summary.components_detected ?? 0), isError: false },
+            { name: 'Missing Components', value: String(summary.missing_components ?? 0), isError: (summary.missing_components ?? 0) > 0 },
+            { name: 'Total Defects', value: String(summary.total_defects ?? 0), isError: (summary.total_defects ?? 0) > 0 },
+          ],
     };
 
-    if (activeCoach === 'B1') {
-      activeDefect = {
-        name: "CRITICAL DEFECT: Brake Assembly Crack",
-        ref: "DEF-B1-009",
-        timestamp: "T: 00:01:22.45",
-        cams: [SPECS_IMAGES.crackL, SPECS_IMAGES.crackC, SPECS_IMAGES.crackR],
-        aiReasoning: "Structural discontinuity detected across 14 synchronized frames. Fracture geometry exceeds 3mm safety threshold. 94.4% probability of propagation within 500km.",
-        confidence: 92
-      };
-      coachBreakdown = {
-        title: "Coach B1 Breakdown",
-        healthScore: 82,
-        complianceScore: 100,
-        stressScore: 64,
-        items: [
-          { name: "Suspension Units", value: "4/4 NOMINAL", isError: false },
-          { name: "Axle Bearings", value: "8/8 NOMINAL", isError: false },
-          { name: "Brake Pad Wear", value: "REPLACE AT DEPOT", isError: true }
-        ]
-      };
-    } else if (activeCoach === 'B2') {
-      activeDefect = {
-        name: "CRITICAL DEFECT: Wheel Tread Scuffing",
-        ref: "DEF-B2-012",
-        timestamp: "T: 00:01:39.12",
-        cams: [SPECS_IMAGES.scuffL, SPECS_IMAGES.scuffC, SPECS_IMAGES.scuffR],
-        aiReasoning: "AI flagged possible scuffing and flat-spot patterns on the inner tread of B2. Heat signature indicates moderate friction build-up.",
-        confidence: 88
-      };
-      coachBreakdown = {
-        title: "Coach B2 Breakdown",
-        healthScore: 78,
-        complianceScore: 92,
-        stressScore: 58,
-        items: [
-          { name: "Suspension Units", value: "4/4 NOMINAL", isError: false },
-          { name: "Axle Bearings", value: "8/8 NOMINAL", isError: false },
-          { name: "Brake Pad Wear", value: "MONITOR TEMPERATURE", isError: true }
-        ]
-      };
-    } else {
-      coachBreakdown = {
-        title: `Coach ${activeCoach} Breakdown`,
-        healthScore: 100,
-        complianceScore: 100,
-        stressScore: 28,
-        items: [
-          { name: "Suspension Units", value: "4/4 NOMINAL", isError: false },
-          { name: "Axle Bearings", value: "8/8 NOMINAL", isError: false },
-          { name: "Brake Pad Wear", value: "NOMINAL", isError: false }
-        ]
-      };
-    }
+    const currentDefect = defects[activeDefectIndex] || null;
+    const activeDefect = currentDefect ? {
+      name: `${currentDefect.severity} DEFECT: ${currentDefect.defect_type}`,
+      ref: currentDefect.id?.slice(0, 12) || 'N/A',
+      timestamp: currentDefect.created_at ? new Date(currentDefect.created_at).toLocaleTimeString() : '—',
+      cams: [currentDefect.frame_url, currentDefect.annotated_frame_url].filter(Boolean),
+      aiReasoning: currentDefect.ai_notes || `AI detected ${currentDefect.defect_type} with ${Math.round(currentDefect.confidence * 100)}% confidence. Severity: ${currentDefect.severity}. Review status: ${currentDefect.review_status || 'pending'}.`,
+      confidence: Math.round(currentDefect.confidence * 100),
+    } : null;
 
     return (
       <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#faf9ff] overflow-hidden font-sans">
@@ -359,40 +344,38 @@ export const Reports = () => {
               {/* Train Node */}
               <div className="flex items-center gap-2 p-2 bg-slate-200/80 text-slate-800 font-bold rounded cursor-pointer text-xs">
                 <Train className="w-4 h-4 text-primary" />
-                <span>Train VB22901</span>
+                <span>Train {selectedReport.trainNumber}</span>
               </div>
               
               {/* Nested Coaches */}
               <div className="ml-4 space-y-1 border-l-2 border-slate-200 pl-2">
-                {[
-                  { num: 'B1', hasDefect: true },
-                  { num: 'B2', hasDefect: true },
-                  { num: 'B3', hasDefect: false },
-                  { num: 'B4', hasDefect: false },
-                  { num: 'B5', hasDefect: false },
-                  { num: 'B6', hasDefect: false },
-                  { num: 'B7', hasDefect: false }
-                ].map(coach => (
+                {coachLabels.length === 0 ? (
+                  <div className="text-[10px] text-slate-400 p-2 italic">Loading coaches…</div>
+                ) : coachLabels.map((label, idx) => {
+                  const coachObj = realCoaches[idx];
+                  const hasDefect = (coachObj?.critical_defects || 0) > 0;
+                  return (
                   <div 
-                    key={coach.num}
-                    onClick={() => jumpToCoach(coach.num)}
-                    className={`flex items-center justify-between p-2 rounded text-xs transition-colors cursor-pointer ${activeCoach === coach.num ? 'bg-primary/10 font-bold text-primary border border-primary/20' : 'hover:bg-slate-100 text-slate-600'}`}
+                    key={label}
+                    onClick={() => jumpToCoach(label)}
+                    className={`flex items-center justify-between p-2 rounded text-xs transition-colors cursor-pointer ${activeCoach === label ? 'bg-primary/10 font-bold text-primary border border-primary/20' : 'hover:bg-slate-100 text-slate-600'}`}
                   >
                     <div className="flex items-center gap-2">
-                      {coach.hasDefect ? (
+                      {hasDefect ? (
                         <AlertTriangle className="w-4 h-4 text-red-600" />
                       ) : (
                         <CheckCircle2 className="w-4 h-4 text-slate-400" />
                       )}
-                      <span>Coach {coach.num}</span>
+                      <span>Coach {label}</span>
                     </div>
-                    {coach.hasDefect && (
+                    {hasDefect && (
                       <span className="bg-red-600 text-white text-[8px] font-bold px-1 py-0.25 rounded uppercase">
                         Defect
                       </span>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -433,7 +416,7 @@ export const Reports = () => {
               <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
                 <div>
                   <span className="text-[10px] font-black text-slate-400 uppercase block">Sync Confidence</span>
-                  <span className="text-lg font-black text-slate-800">98.2%</span>
+                  <span className="text-lg font-black text-slate-800">{((selectedReport.syncStability || 0) * 100).toFixed(1)}%</span>
                 </div>
                 <Activity className="text-primary w-8 h-8 opacity-80" />
               </div>
@@ -441,7 +424,7 @@ export const Reports = () => {
               <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
                 <div>
                   <span className="text-[10px] font-black text-slate-400 uppercase block">OCR Accuracy</span>
-                  <span className="text-lg font-black text-slate-800">97.1%</span>
+                  <span className="text-lg font-black text-slate-800">{((selectedReport.ocrConf || 0) * 100).toFixed(1)}%</span>
                 </div>
                 <Sparkles className="text-primary w-8 h-8 opacity-80" />
               </div>
@@ -461,27 +444,45 @@ export const Reports = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
+                    {defects.length > 1 && (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setActiveDefectIndex(prev => Math.max(0, prev - 1))}
+                          disabled={activeDefectIndex === 0}
+                          className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[9px] font-bold disabled:opacity-30 hover:bg-slate-100"
+                        >◀</button>
+                        <span className="text-[9px] font-mono text-slate-500">{activeDefectIndex + 1}/{defects.length}</span>
+                        <button
+                          onClick={() => setActiveDefectIndex(prev => Math.min(defects.length - 1, prev + 1))}
+                          disabled={activeDefectIndex >= defects.length - 1}
+                          className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[9px] font-bold disabled:opacity-30 hover:bg-slate-100"
+                        >▶</button>
+                      </div>
+                    )}
                     <span className="text-[10px] font-mono text-slate-400 font-bold">{activeDefect.timestamp}</span>
-                    <MoreVertical className="w-4 h-4 text-slate-400 cursor-pointer hover:text-primary" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-4">
-                  {/* Multicam View */}
-                  <div className="xl:col-span-3 p-4 grid grid-cols-3 gap-2 bg-slate-950">
-                    {activeDefect.cams.map((src, i) => (
+                  {/* Multicam / Frame View */}
+                  <div className={`xl:col-span-3 p-4 gap-2 bg-slate-950 grid ${activeDefect.cams.length >= 3 ? 'grid-cols-3' : activeDefect.cams.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                    {activeDefect.cams.length > 0 ? activeDefect.cams.map((src, i) => (
                       <div key={i} className="relative aspect-video bg-black overflow-hidden border border-white/10 group rounded">
                         <img 
                           className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
                           src={src} 
-                          alt={`Camera feed ${i+1}`}
+                          alt={`Frame ${i+1}`}
                         />
                         <div className="absolute inset-0 border-2 border-primary/20 pointer-events-none"></div>
                         <div className="absolute top-2 left-2 bg-black/60 px-1.5 py-0.5 rounded text-[8px] font-mono text-white">
-                          {i === 0 ? 'CAM_01_L' : i === 1 ? 'CAM_02_C' : 'CAM_03_R'}
+                          {i === 0 ? 'ORIGINAL' : 'ANNOTATED'}
                         </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="col-span-3 flex items-center justify-center p-8 text-slate-500 text-xs">
+                        No frame images available for this defect.
+                      </div>
+                    )}
                   </div>
 
                   {/* AI Reasoning */}
@@ -667,22 +668,25 @@ export const Reports = () => {
             {/* Timeline Track */}
             <div className="w-full h-1 bg-white/20 rounded-full" />
             
-            {/* Defect Markers */}
-            <div 
-              onClick={() => jumpToCoach('B1')}
-              className="absolute left-[31.5%] -top-1 cursor-pointer group flex flex-col items-center"
-            >
-              <div className="w-3 h-3 bg-red-600 rounded-full border-2 border-white hover:scale-130 transition-transform shadow" />
-              <div className="absolute -bottom-6 text-[8px] text-red-500 font-bold bg-slate-900 border border-red-900/40 px-1 rounded whitespace-nowrap">DEF-01</div>
-            </div>
-
-            <div 
-              onClick={() => jumpToCoach('B2')}
-              className="absolute left-[38.2%] -top-1 cursor-pointer group flex flex-col items-center"
-            >
-              <div className="w-3 h-3 bg-red-600 rounded-full border-2 border-white hover:scale-130 transition-transform shadow" />
-              <div className="absolute -bottom-6 text-[8px] text-red-500 font-bold bg-slate-900 border border-red-900/40 px-1 rounded whitespace-nowrap">DEF-02</div>
-            </div>
+            {/* Defect Markers — placed dynamically per coach with defects */}
+            {realCoaches.map((c, idx) => {
+              if ((c.critical_defects || 0) === 0) return null;
+              const label = c.coach_number || `B${c.coach_index + 1}`;
+              const pct = ((idx + 0.5) / (realCoaches.length || 1)) * 100;
+              return (
+                <div 
+                  key={`def-${label}`}
+                  onClick={() => jumpToCoach(label)}
+                  className="absolute -top-1 cursor-pointer group flex flex-col items-center"
+                  style={{ left: `${pct}%` }}
+                >
+                  <div className="w-3 h-3 bg-red-600 rounded-full border-2 border-white hover:scale-130 transition-transform shadow" />
+                  <div className="absolute -bottom-6 text-[8px] text-red-500 font-bold bg-slate-900 border border-red-900/40 px-1 rounded whitespace-nowrap">
+                    DEF-{label}
+                  </div>
+                </div>
+              );
+            })}
 
             {/* Playhead */}
             <div 
@@ -692,13 +696,14 @@ export const Reports = () => {
 
             {/* Coach Blocks Grid */}
             <div className="absolute inset-0 flex items-end pb-1 pointer-events-none">
-              {['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'].map((coach, idx) => (
+              {coachLabels.map((label) => (
                 <div 
-                  key={coach} 
-                  className={`w-[14.2%] border-r border-white/10 text-[9px] font-mono font-bold pl-2 cursor-pointer pointer-events-auto select-none ${activeCoach === coach ? 'text-primary font-black' : 'text-white/30 hover:text-white/60'}`}
-                  onClick={() => jumpToCoach(coach)}
+                  key={label} 
+                  className={`border-r border-white/10 text-[9px] font-mono font-bold pl-2 cursor-pointer pointer-events-auto select-none ${activeCoach === label ? 'text-primary font-black' : 'text-white/30 hover:text-white/60'}`}
+                  style={{ width: `${100 / (coachLabels.length || 1)}%` }}
+                  onClick={() => jumpToCoach(label)}
                 >
-                  {coach}
+                  {label}
                 </div>
               ))}
             </div>

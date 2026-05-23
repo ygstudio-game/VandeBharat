@@ -325,6 +325,43 @@ async function sessions(fastify) {
       message: 'OCR pipeline started. Poll GET /api/sessions/:id for progress.',
     };
   });
+
+  // DELETE /api/sessions/:id
+  fastify.delete('/:id', async (req, reply) => {
+    const sessionId = req.params.id;
+    const session = await prisma.inspectionSession.findUnique({
+      where: { id: sessionId },
+    });
+
+    if (!session) {
+      reply.status(404);
+      return { error: 'Session not found' };
+    }
+
+    // Delete any associated audit logs first
+    await prisma.auditLog.deleteMany({
+      where: { session_id: sessionId },
+    });
+
+    // Delete session (cascades to other tables)
+    await prisma.inspectionSession.delete({
+      where: { id: sessionId },
+    });
+
+    // Delete session files from uploads directory asynchronously (fire-and-forget)
+    const sessionDir = path.join(UPLOAD_DIR, sessionId);
+    if (fs.existsSync(sessionDir)) {
+      fs.rm(sessionDir, { recursive: true, force: true }, (err) => {
+        if (err) {
+          fastify.log.error({ msg: 'Failed to delete session directory asynchronously', session_id: sessionId, error: err.message });
+        } else {
+          fastify.log.info({ msg: 'Asynchronously deleted session directory', session_id: sessionId });
+        }
+      });
+    }
+
+    return { success: true, message: `Session ${sessionId} deleted successfully` };
+  });
 }
 
 module.exports = sessions;

@@ -19,6 +19,8 @@ export const getIntelligence= (id, cid) => _fetch(`/api/sessions/${id}/coaches/$
 export const getTimeline    = (id)      => _fetch(`/api/sessions/${id}/timeline-events`);
 export const generateReport = (id)      => _fetch(`/api/sessions/${id}/report`, { method: 'POST' });
 export const getReport      = (id)      => _fetch(`/api/sessions/${id}/report`);
+export const deleteSession  = (id)      => _fetch(`/api/sessions/${id}`, { method: 'DELETE' });
+export const signReport     = (id, notes) => _fetch(`/api/sessions/${id}/report/sign`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ notes }) });
 
 // ── Config ──────────────────────────────────────────────────────────────────
 export const getConfig = () => _fetch('/api/config');
