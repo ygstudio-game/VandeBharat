@@ -56,3 +56,6 @@ GEMINI.md
 # Python cache files
 **/__pycache__/
 *.pyc
+
+# Enterprise Report Docs
+# /docs/enterprise-report/
