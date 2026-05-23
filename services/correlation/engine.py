@@ -18,7 +18,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-YOLO_URL = os.environ.get("YOLO_SERVICE_URL", "http://localhost:5002/api/yolo/predict")
+YOLO_URL = os.environ.get("YOLO_SERVICE_URL", "http://127.0.0.1:5002/api/yolo/predict")
 SAMPLE_EVERY_N = int(os.environ.get("CORRELATION_SAMPLE_N", "3"))  # check every Nth frame
 
 SEVERITY_PENALTY = {

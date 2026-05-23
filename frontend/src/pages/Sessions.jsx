@@ -166,65 +166,81 @@ export const Sessions = () => {
   };
 
   const getStatusBadge = (status, progressPercent = 0) => {
+    let dotColor = 'bg-slate-300';
+    let dotShadow = '';
+    let dotAnimation = '';
+    let text = status;
+
     switch (status) {
       case 'SYNCHRONIZING':
-        return (
-          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-            <RefreshCw className="w-3 h-3 animate-spin" />
-            Sync ({progressPercent}%)
-          </span>
-        );
+        dotColor = 'bg-blue-500';
+        dotShadow = 'shadow-[0_0_6px_rgba(59,130,246,0.4)]';
+        dotAnimation = 'animate-spin text-blue-500';
+        text = `Sync (${progressPercent}%)`;
+        break;
       case 'PROCESSING':
-        return (
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200">
-            <Activity className="w-3.5 h-3.5 animate-pulse text-cyan-600" />
-            Processing ({progressPercent}%)
-          </span>
-        );
+        dotColor = 'bg-cyan-500';
+        dotShadow = 'shadow-[0_0_6px_rgba(6,182,212,0.4)]';
+        dotAnimation = 'animate-pulse';
+        text = `Processing (${progressPercent}%)`;
+        break;
       case 'COMPLETED':
-        return (
-          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <CheckCircle2 className="w-3 h-3" />
-            Completed
-          </span>
-        );
+        dotColor = 'bg-emerald-500';
+        dotShadow = 'shadow-[0_0_6px_rgba(16,185,129,0.4)]';
+        text = 'Completed';
+        break;
       case 'FAILED':
-        return (
-          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200">
-            <AlertTriangle className="w-3 h-3" />
-            Failed
-          </span>
-        );
+        dotColor = 'bg-red-500';
+        dotShadow = 'shadow-[0_0_6px_rgba(239,68,68,0.4)]';
+        text = 'Failed';
+        break;
       default:
-        return (
-          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
-            {status}
-          </span>
-        );
+        break;
     }
+
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-white text-slate-800 border border-slate-200 shadow-sm transition-all hover:border-slate-300">
+        {status === 'SYNCHRONIZING' ? (
+          <RefreshCw className="w-3 h-3 animate-spin text-blue-500" />
+        ) : (
+          <span className={`w-1.5 h-1.5 rounded-full ${dotColor} ${dotShadow} ${dotAnimation}`} />
+        )}
+        <span>{text}</span>
+      </span>
+    );
   };
 
   const getSeverityBadge = (severity, defectsText) => {
+    let dotColor = 'bg-slate-300';
+    let dotShadow = '';
+    let textColor = 'text-slate-600';
+    let bg = 'bg-slate-50';
+
     switch (severity) {
       case 'CRITICAL':
-        return (
-          <span className="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200">
-            {defectsText}
-          </span>
-        );
+        dotColor = 'bg-red-500';
+        dotShadow = 'shadow-[0_0_6px_rgba(239,68,68,0.4)]';
+        textColor = 'text-slate-800';
+        bg = 'bg-white';
+        break;
       case 'REVIEW':
-        return (
-          <span className="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-            {defectsText}
-          </span>
-        );
+        dotColor = 'bg-amber-500';
+        dotShadow = 'shadow-[0_0_6px_rgba(245,158,11,0.4)]';
+        textColor = 'text-slate-800';
+        bg = 'bg-white';
+        break;
       default:
-        return (
-          <span className="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
-            None
-          </span>
-        );
+        break;
     }
+
+    return (
+      <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full border border-slate-200 ${bg} ${textColor} shadow-sm`}>
+        {severity !== 'NONE' && (
+          <span className={`w-1.5 h-1.5 rounded-full ${dotColor} ${dotShadow}`} />
+        )}
+        <span>{severity === 'NONE' ? 'None' : defectsText}</span>
+      </span>
+    );
   };
 
   return (

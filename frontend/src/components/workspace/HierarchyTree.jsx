@@ -228,7 +228,7 @@ export const HierarchyTree = ({ onSelectNode, coaches: coachesProp, trainNumber,
                   <div className="pl-6 border-l border-dashed border-border ml-3.5 space-y-0.5 pt-0.5 pb-1">
                     {/* OCR Frames subnode */}
                     <div 
-                      onClick={() => handleSelect('ocr', `${coach.id}-ocr`)}
+                      onClick={() => handleSelect('ocr', `${coach.id}-ocr`, { coachId: coach.id, coachNumber: coach.coachNumber })}
                       className={cn(
                         "flex items-center justify-between p-1.5 rounded cursor-pointer transition-colors text-[11px]",
                         selectedId === `${coach.id}-ocr` ? "bg-primary/5 text-primary font-bold border-l-2 border-primary" : "text-muted-foreground hover:text-foreground hover:bg-slate-100/50"

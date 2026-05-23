@@ -7,9 +7,9 @@ import { toast } from '../hooks/useToast';
 import { getSession, getHierarchy, getIntelligence, generateReport, getFrames, getCoachFrames, normalizeSession } from '../lib/api';
 import {
   ArrowLeft, Cpu, Train, ShieldAlert, Activity, FileCheck,
-  ChevronRight, ShieldQuestion, LayoutGrid, Maximize, Sparkles,
+  ChevronRight, ChevronLeft, ShieldQuestion, LayoutGrid, Maximize, Sparkles,
   CheckCircle, AlertTriangle, RefreshCw, Camera, ZoomIn, ZoomOut,
-  Clock, Inbox, XCircle, Image as ImageIcon, ScanSearch
+  Clock, Inbox, XCircle, Image as ImageIcon, ScanSearch, Minimize2, Maximize2, FolderTree
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -29,22 +29,61 @@ const STAGE_META = [
 
 // ── Stage status chip ────────────────────────────────────────────────────────
 function stageChip(status, label, doneLabel) {
-  if (status === 'COMPLETED' || status === 'completed')
-    return { text: `✓ ${doneLabel}`, cls: 'border-emerald-200 bg-emerald-50 text-emerald-700' };
-  if (status === 'IN_PROGRESS' || status === 'running')
-    return { text: `~ ${label}`, cls: 'border-blue-200 bg-blue-50 text-blue-700 animate-pulse' };
-  if (status === 'FAILED' || status === 'failed')
-    return { text: `✗ ${label}`, cls: 'border-red-200 bg-red-50 text-red-700' };
-  return { text: `• ${label}`, cls: 'border-slate-200 bg-slate-100 text-slate-400' };
+  let dotColor = 'bg-slate-300';
+  let dotShadow = '';
+  let dotAnimation = '';
+  let textColor = 'text-slate-500';
+  let text = label;
+
+  if (status === 'COMPLETED' || status === 'completed') {
+    dotColor = 'bg-emerald-500';
+    dotShadow = 'shadow-[0_0_6px_rgba(16,185,129,0.4)]';
+    textColor = 'text-slate-800';
+    text = doneLabel;
+  } else if (status === 'IN_PROGRESS' || status === 'running') {
+    dotColor = 'bg-blue-500';
+    dotShadow = 'shadow-[0_0_6px_rgba(59,130,246,0.4)]';
+    dotAnimation = 'animate-pulse';
+    textColor = 'text-slate-800';
+  } else if (status === 'FAILED' || status === 'failed') {
+    dotColor = 'bg-red-500';
+    dotShadow = 'shadow-[0_0_6px_rgba(239,68,68,0.4)]';
+    textColor = 'text-slate-800';
+  }
+
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 bg-white text-[10px] font-black uppercase tracking-wider shadow-sm transition-all hover:border-slate-300">
+      <span className={`w-1.5 h-1.5 rounded-full ${dotColor} ${dotShadow} ${dotAnimation}`} />
+      <span className={textColor}>{text}</span>
+    </span>
+  );
 }
 
 // ── Pipeline Progress View (shown while processing) ──────────────────────────
 function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProgress }) {
   const statusColor = {
-    completed: 'text-emerald-600 bg-emerald-50 border-emerald-200',
-    running:   'text-blue-700   bg-blue-50   border-blue-200   animate-pulse',
-    failed:    'text-red-700    bg-red-50    border-red-200',
-    pending:   'text-slate-400  bg-slate-100 border-slate-200',
+    completed: 'text-slate-800 bg-white border-slate-200',
+    running:   'text-slate-800 bg-white border-slate-200',
+    failed:    'text-slate-800 bg-white border-slate-200',
+    pending:   'text-slate-400 bg-slate-50 border-slate-200',
+  };
+
+  const statusDot = (status) => {
+    let dotColor = 'bg-slate-300';
+    let dotShadow = '';
+    let dotAnimation = '';
+    if (status === 'completed') {
+      dotColor = 'bg-emerald-500';
+      dotShadow = 'shadow-[0_0_6px_rgba(16,185,129,0.4)]';
+    } else if (status === 'running') {
+      dotColor = 'bg-blue-500';
+      dotShadow = 'shadow-[0_0_6px_rgba(59,130,246,0.4)]';
+      dotAnimation = 'animate-pulse';
+    } else if (status === 'failed') {
+      dotColor = 'bg-red-500';
+      dotShadow = 'shadow-[0_0_6px_rgba(239,68,68,0.4)]';
+    }
+    return <span className={`w-1.5 h-1.5 rounded-full ${dotColor} ${dotShadow} ${dotAnimation}`} />;
   };
 
   const getStageData = (key) => {
@@ -82,34 +121,43 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
       <div className="max-w-5xl mx-auto space-y-6">
 
         {/* Overall progress */}
-        <div className="bg-white border border-border rounded-lg p-4 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
           <div className="flex justify-between items-center mb-2 text-xs font-bold text-slate-600 uppercase">
             <span>Overall Pipeline Progress</span>
             <span className="font-mono">{rawSession?.progress_pct || 0}%</span>
           </div>
-          <Progress value={rawSession?.progress_pct || 0} className="h-3" />
-          <p className="text-[10px] text-muted-foreground mt-2 font-semibold uppercase">
-            Status: <span className="text-foreground">{rawSession?.status || '—'}</span>
-            {totalFrames > 0 && <span className="ml-4">Total frames in DB: <span className="text-foreground">{totalFrames}</span></span>}
-          </p>
+          <Progress value={rawSession?.progress_pct || 0} className="h-3 rounded-full" />
+          <div className="text-[10px] text-muted-foreground mt-3 font-semibold uppercase flex items-center gap-3">
+            <span>Status:</span>
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-slate-200 bg-slate-50 text-slate-700">
+              <span className={`w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse`} />
+              {rawSession?.status || '—'}
+            </span>
+            {totalFrames > 0 && (
+              <span className="ml-4">
+                Total frames in DB: <span className="text-foreground font-bold">{totalFrames}</span>
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
           {/* Frame Extraction Card */}
-          <Card className={`border-2 shadow-sm ${extraction.status === 'running' ? 'border-blue-300' : extraction.status === 'completed' ? 'border-emerald-300' : 'border-border'}`}>
+          <Card className={`border shadow-sm transition-all duration-300 ${extraction.status === 'running' ? 'border-blue-200 shadow-blue-50/50' : extraction.status === 'completed' ? 'border-emerald-100 shadow-emerald-50/20' : 'border-slate-200'}`}>
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2 text-slate-800">
                   <Camera className="w-4 h-4 text-primary" /> Frame Extraction
                 </CardTitle>
-                <Badge className={`text-[9px] font-black border ${statusColor[extraction.status] || statusColor.pending}`}>
+                <Badge className={`text-[9px] font-black border flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${statusColor[extraction.status] || statusColor.pending}`}>
+                  {statusDot(extraction.status)}
                   {extraction.status.toUpperCase()}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-3 pt-0">
-              {/* Live frame counter — updates every ~10 frames from DB */}
+              {/* Live frame counter */}
               <div>
                 <div className="flex justify-between text-[10px] font-bold text-slate-600 mb-1">
                   <span>Frames in DB</span>
@@ -119,7 +167,7 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
                   </span>
                 </div>
                 {expectedFrames > 0 ? (
-                  <Progress value={extractionPct} className="h-2" />
+                  <Progress value={extractionPct} className="h-2 rounded-full" />
                 ) : (
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div className="h-full w-1/3 bg-blue-400 rounded-full animate-pulse" />
@@ -129,7 +177,7 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
                   <p className="text-[10px] text-slate-400 mt-1 font-mono">{extractionPct}% — raw video has {statsVideoTotal} frames</p>
                 )}
               </div>
-              {/* Per-camera: show done/running status */}
+              {/* Per-camera */}
               {sessionCameras.length > 0 && (
                 <div className="space-y-1">
                   {sessionCameras.map((cam) => (
@@ -150,13 +198,14 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
           </Card>
 
           {/* OCR Detection Card */}
-          <Card className={`border-2 shadow-sm ${ocr.status === 'running' ? 'border-blue-300' : ocr.status === 'completed' ? 'border-emerald-300' : 'border-border'}`}>
+          <Card className={`border shadow-sm transition-all duration-300 ${ocr.status === 'running' ? 'border-blue-200 shadow-blue-50/50' : ocr.status === 'completed' ? 'border-emerald-100 shadow-emerald-50/20' : 'border-slate-200'}`}>
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2 text-slate-800">
                   <Sparkles className="w-4 h-4 text-primary" /> OCR Detection
                 </CardTitle>
-                <Badge className={`text-[9px] font-black border ${statusColor[ocr.status] || statusColor.pending}`}>
+                <Badge className={`text-[9px] font-black border flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${statusColor[ocr.status] || statusColor.pending}`}>
+                  {statusDot(ocr.status)}
                   {ocr.status.toUpperCase()}
                 </Badge>
               </div>
@@ -172,7 +221,7 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
                       <span>Frames processed</span>
                       <span className="font-mono">{ocr.stats.processed || 0} / {ocr.stats.total}</span>
                     </div>
-                    <Progress value={ocr.stats.progress_pct || 0} className="h-2" />
+                    <Progress value={ocr.stats.progress_pct || 0} className="h-2 rounded-full" />
                   </div>
                   <p className="text-[10px] font-mono text-slate-500">
                     Valid coach detections: <span className="text-foreground font-bold">{ocr.stats.valid || ocr.stats.valid_detections || 0}</span>
@@ -186,13 +235,14 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
           </Card>
 
           {/* Synchronization Card */}
-          <Card className={`border-2 shadow-sm ${sync.status === 'running' ? 'border-blue-300' : sync.status === 'completed' ? 'border-emerald-300' : 'border-border'}`}>
+          <Card className={`border shadow-sm transition-all duration-300 ${sync.status === 'running' ? 'border-blue-200 shadow-blue-50/50' : sync.status === 'completed' ? 'border-emerald-100 shadow-emerald-50/20' : 'border-slate-200'}`}>
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2 text-slate-800">
                   <Activity className="w-4 h-4 text-primary" /> Synchronization
                 </CardTitle>
-                <Badge className={`text-[9px] font-black border ${statusColor[sync.status] || statusColor.pending}`}>
+                <Badge className={`text-[9px] font-black border flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${statusColor[sync.status] || statusColor.pending}`}>
+                  {statusDot(sync.status)}
                   {sync.status.toUpperCase()}
                 </Badge>
               </div>
@@ -211,14 +261,15 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
           </Card>
 
           {/* Component + Defect Card */}
-          <Card className={`border-2 shadow-sm ${component.status === 'running' || defect.status === 'running' ? 'border-blue-300' : component.status === 'completed' ? 'border-emerald-300' : 'border-border'}`}>
+          <Card className={`border shadow-sm transition-all duration-300 ${component.status === 'running' || defect.status === 'running' ? 'border-blue-200 shadow-blue-50/50' : component.status === 'completed' ? 'border-emerald-100 shadow-emerald-50/20' : 'border-slate-200'}`}>
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2 text-slate-800">
                   <Cpu className="w-4 h-4 text-primary" /> Component & Defect Analysis
                 </CardTitle>
                 <div className="flex gap-1">
-                  <Badge className={`text-[9px] font-black border ${statusColor[component.status] || statusColor.pending}`}>
+                  <Badge className={`text-[9px] font-black border flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${statusColor[component.status] || statusColor.pending}`}>
+                    {statusDot(component.status)}
                     COMP: {component.status.toUpperCase()}
                   </Badge>
                 </div>
@@ -268,9 +319,16 @@ export const TrainWorkspace = () => {
 
   // Component frames mode — active when user clicks "Component Frames" in tree
   const [componentMode,        setComponentMode]        = useState(false);
+  const [ocrMode,              setOcrMode]              = useState(false);
   const [componentFrames,      setComponentFrames]      = useState([]); // frames for selected coach
   const [componentDetectionMap, setComponentDetectionMap] = useState({}); // frameId → detections[]
   const [componentFramesLoading, setComponentFramesLoading] = useState(false);
+
+  // Fullscreen and Collapsible Sidebar
+  const [isFullscreen,         setIsFullscreen]         = useState(false);
+  const [sidebarCollapsed,     setSidebarCollapsed]     = useState(false);
+  const [fullscreenLeftOpen,   setFullscreenLeftOpen]   = useState(false);
+  const [fullscreenRightOpen,  setFullscreenRightOpen]  = useState(false);
 
   // Bounding box overlays
   const [showOcrBoxes,        setShowOcrBoxes]        = useState(false);
@@ -278,6 +336,8 @@ export const TrainWorkspace = () => {
   const [showComponentBoxes,  setShowComponentBoxes]  = useState(true);
   const imgRef    = useRef(null);
   const canvasRef = useRef(null);
+  const fullscreenImgRef    = useRef(null);
+  const fullscreenCanvasRef = useRef(null);
 
   // Intelligence for selected coach
   const [intelligence, setIntelligence]               = useState(null);
@@ -376,13 +436,6 @@ export const TrainWorkspace = () => {
       }
     }
 
-    if (showDefectBoxes) {
-      for (const d of selectedFrame?.defects || []) {
-        const color = d.severity === 'CRITICAL' ? 'rgb(239,68,68)' : 'rgb(245,158,11)';
-        drawBox(d.bbox_x, d.bbox_y, d.bbox_w, d.bbox_h, color, d.defect_type);
-      }
-    }
-
     if (showComponentBoxes && selectedFrame) {
       const dets = componentDetectionMap[selectedFrame.id] || [];
       for (const d of dets) {
@@ -390,9 +443,128 @@ export const TrainWorkspace = () => {
         drawBox(d.bbox.x, d.bbox.y, d.bbox.w, d.bbox.h, 'rgb(163,230,53)', label); // lime-400
       }
     }
+
+    if (showDefectBoxes) {
+      for (const d of selectedFrame?.defects || []) {
+        const color = d.severity === 'CRITICAL' ? 'rgb(239,68,68)' : 'rgb(245,158,11)';
+        drawBox(d.bbox_x, d.bbox_y, d.bbox_w, d.bbox_h, color, d.defect_type);
+      }
+    }
   }, [showOcrBoxes, showDefectBoxes, showComponentBoxes, selectedFrame, componentDetectionMap]);
 
   useEffect(() => { drawOverlay(); }, [drawOverlay]);
+
+  const drawFullscreenOverlay = useCallback(() => {
+    const img    = fullscreenImgRef.current;
+    const canvas = fullscreenCanvasRef.current;
+    if (!img || !canvas || !isFullscreen) return;
+
+    canvas.width  = img.offsetWidth;
+    canvas.height = img.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!showOcrBoxes && !showDefectBoxes && !showComponentBoxes) return;
+    if (!img.naturalWidth) return;
+
+    // Compute letterbox offsets for object-contain scaling
+    const scaleX  = img.offsetWidth  / img.naturalWidth;
+    const scaleY  = img.offsetHeight / img.naturalHeight;
+    const scale   = Math.min(scaleX, scaleY);
+    const offX    = (img.offsetWidth  - img.naturalWidth  * scale) / 2;
+    const offY    = (img.offsetHeight - img.naturalHeight * scale) / 2;
+
+    const drawBox = (bx, by, bw, bh, color, label) => {
+      if (bx == null) return;
+      const x = bx * scale + offX;
+      const y = by * scale + offY;
+      const w = bw * scale;
+      const h = bh * scale;
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2.5; // Slightly thicker for fullscreen view
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle   = color.replace(')', ', 0.12)').replace('rgb', 'rgba');
+      ctx.fillRect(x, y, w, h);
+      if (label) {
+        ctx.font      = 'bold 12px monospace';
+        ctx.fillStyle = color;
+        const tw = ctx.measureText(label).width;
+        ctx.fillStyle = 'rgba(0,0,0,0.75)';
+        ctx.fillRect(x, y > 15 ? y - 15 : y, tw + 4, 14);
+        ctx.fillStyle = color;
+        ctx.fillText(label, x + 2, y > 15 ? y - 3 : y + 11);
+      }
+    };
+
+    if (showOcrBoxes) {
+      for (const r of selectedFrame?.ocr_results || []) {
+        const label = r.is_valid
+          ? `Coach ${r.coach_number} (${Math.round(r.confidence * 100)}%)`
+          : `? (${Math.round(r.confidence * 100)}%)`;
+        drawBox(r.bbox_x, r.bbox_y, r.bbox_w, r.bbox_h, 'rgb(59,130,246)', label);
+      }
+    }
+
+    if (showComponentBoxes && selectedFrame) {
+      const dets = componentDetectionMap[selectedFrame.id] || [];
+      for (const d of dets) {
+        const label = `${d.component_name ?? d.component_code} ${Math.round(d.confidence * 100)}%`;
+        drawBox(d.bbox.x, d.bbox.y, d.bbox.w, d.bbox.h, 'rgb(163,230,53)', label);
+      }
+    }
+
+    if (showDefectBoxes) {
+      for (const d of selectedFrame?.defects || []) {
+        const color = d.severity === 'CRITICAL' ? 'rgb(239,68,68)' : 'rgb(245,158,11)';
+        drawBox(d.bbox_x, d.bbox_y, d.bbox_w, d.bbox_h, color, d.defect_type);
+      }
+    }
+  }, [showOcrBoxes, showDefectBoxes, showComponentBoxes, selectedFrame, componentDetectionMap, isFullscreen]);
+
+  useEffect(() => {
+    if (isFullscreen) {
+      drawFullscreenOverlay();
+    }
+  }, [drawFullscreenOverlay, isFullscreen, selectedFrame]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      drawOverlay();
+      if (isFullscreen) drawFullscreenOverlay();
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [drawOverlay, drawFullscreenOverlay, isFullscreen]);
+
+  // Arrow key frame navigation & fullscreen exit
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ignore key events if focused on input/textarea
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') {
+        return;
+      }
+      const list = (componentMode || ocrMode) ? componentFrames : frames;
+      if (!list || list.length === 0 || !selectedFrame) return;
+
+      const currentIndex = list.findIndex((f) => f.id === selectedFrame.id);
+      if (currentIndex === -1) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % list.length;
+        setSelectedFrame(list[nextIndex]);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIndex = (currentIndex - 1 + list.length) % list.length;
+        setSelectedFrame(list[prevIndex]);
+      } else if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [componentMode, ocrMode, componentFrames, frames, selectedFrame, isFullscreen]);
 
   const loadIntelligence = useCallback(async (coachId) => {
     setIntelligenceLoading(true);
@@ -406,11 +578,49 @@ export const TrainWorkspace = () => {
   const handleSelectNode = async (type, id, metadata) => {
     if (type === 'coach' && metadata?.id) {
       setComponentMode(false);
+      setOcrMode(false);
       loadIntelligence(metadata.id);
+      setShowOcrBoxes(true);
+      setShowDefectBoxes(true);
+      setShowComponentBoxes(true);
+    }
+
+    if (type === 'ocr' && metadata?.coachId) {
+      setComponentMode(false);
+      setOcrMode(true);
+      setComponentFrames([]);
+      setComponentDetectionMap({});
+      setSelectedFrame(null);
+      setComponentFramesLoading(true);
+
+      try {
+        const [framesData, intel] = await Promise.all([
+          getCoachFrames(sessionId, metadata.coachId),
+          getIntelligence(sessionId, metadata.coachId),
+        ]);
+
+        const allFrames = framesData.frames || framesData || [];
+        const ocrFrames = allFrames.filter(
+          (f) => f.is_ocr_candidate || (f.ocr_results && f.ocr_results.length > 0)
+        );
+
+        setComponentFrames(ocrFrames);
+        if (ocrFrames.length > 0) setSelectedFrame(ocrFrames[0]);
+
+        setIntelligence(intel);
+        setShowOcrBoxes(true);
+        setShowDefectBoxes(false);
+        setShowComponentBoxes(false);
+      } catch (_) {
+        setOcrMode(false);
+      } finally {
+        setComponentFramesLoading(false);
+      }
     }
 
     if (type === 'components' && metadata?.coachId) {
       setComponentMode(true);
+      setOcrMode(false);
       setComponentFrames([]);
       setComponentDetectionMap({});
       setSelectedFrame(null);
@@ -444,6 +654,9 @@ export const TrainWorkspace = () => {
         if (firstWithDets) setSelectedFrame(firstWithDets);
 
         setIntelligence(intel);
+        setShowComponentBoxes(true);
+        setShowDefectBoxes(true);
+        setShowOcrBoxes(false);
       } catch (_) {
         setComponentMode(false);
       } finally {
@@ -493,14 +706,16 @@ export const TrainWorkspace = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-6 text-xs font-mono font-bold">
-        <div className="text-right">
-          <span className="text-[9px] text-slate-400 block leading-none mb-1">HEALTH SCORE</span>
-          <span className="text-slate-900 font-extrabold">{session?.healthScore != null ? `${session.healthScore}%` : '—'}</span>
+      <div className="flex items-center gap-3 font-sans">
+        <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center min-w-[100px]">
+          <span className="text-[8px] font-black text-slate-400 uppercase tracking-wider leading-none mb-1">HEALTH SCORE</span>
+          <span className="text-sm font-black text-[#003d9b] leading-none">
+            {session?.healthScore != null ? `${session.healthScore}%` : '—'}
+          </span>
         </div>
-        <div className="text-right">
-          <span className="text-[9px] text-slate-400 block leading-none mb-1">OCR CONFIDENCE</span>
-          <span className="text-slate-900 font-extrabold">
+        <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center min-w-[110px]">
+          <span className="text-[8px] font-black text-slate-400 uppercase tracking-wider leading-none mb-1">OCR CONFIDENCE</span>
+          <span className="text-sm font-black text-[#003d9b] leading-none">
             {session?.ocrConfidence ? `${(session.ocrConfidence * 100).toFixed(1)}%` : '—'}
           </span>
         </div>
@@ -526,7 +741,7 @@ export const TrainWorkspace = () => {
         <Progress value={session?.progressPercent ?? 0} className="h-2 bg-slate-200 w-40 rounded-full" />
         <span className="font-mono text-slate-900">{session?.progressPercent ?? 0}%</span>
       </div>
-      <div className="flex gap-2 items-center flex-wrap">
+      <div className="flex gap-1.5 items-center flex-wrap">
         {[
           stageChip(ps.frameExtraction,    'FRAMES',     'FRAMES'),
           stageChip(ps.ocrDetection,       'OCR',        'OCR'),
@@ -536,7 +751,7 @@ export const TrainWorkspace = () => {
           stageChip(ps.reportGeneration,   'REPORT',     'REPORT'),
         ].map((chip, i, arr) => (
           <React.Fragment key={i}>
-            <span className={`px-2 py-0.5 rounded border font-black ${chip.cls}`}>{chip.text}</span>
+            {chip}
             {i < arr.length - 1 && <ChevronRight className="w-3 h-3 text-slate-400" />}
           </React.Fragment>
         ))}
@@ -596,13 +811,22 @@ export const TrainWorkspace = () => {
       {pipelineBar}
 
       {/* Three-Panel Grid */}
-      <div className="flex-1 flex overflow-hidden min-h-0">
+      <div className="flex-1 flex overflow-hidden min-h-0 relative">
 
         {/* Left — Hierarchy Tree */}
-        <div className="w-80 border-r border-slate-200 p-4 shrink-0 flex flex-col h-full bg-white">
-          <div className="mb-3">
-            <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Fleet Hierarchy Tree</h3>
-            <p className="text-[10px] text-slate-400 font-bold uppercase">Coaches & Camera Feeds</p>
+        <div className={`border-r border-slate-200 shrink-0 flex flex-col h-full bg-white transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-0 overflow-hidden opacity-0 border-r-0 p-0' : 'w-80 p-4'}`}>
+          <div className="mb-3 flex justify-between items-center">
+            <div>
+              <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">Fleet Hierarchy Tree</h3>
+              <p className="text-[10px] text-slate-400 font-bold uppercase">Coaches & Camera Feeds</p>
+            </div>
+            <button 
+              onClick={() => setSidebarCollapsed(true)}
+              className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+              title="Collapse Sidebar"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
           </div>
           <div className="flex-1 min-h-0">
             <HierarchyTree
@@ -613,6 +837,17 @@ export const TrainWorkspace = () => {
             />
           </div>
         </div>
+
+        {/* Floating Expand Sidebar Button when collapsed */}
+        {sidebarCollapsed && (
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-slate-50 border border-l-0 border-slate-200 text-slate-500 hover:text-slate-800 p-1.5 py-3 rounded-r-md shadow-md z-30 transition-all cursor-pointer flex items-center justify-center"
+            title="Expand Sidebar"
+          >
+            <ChevronRight className="w-4.5 h-4.5 animate-pulse" />
+          </button>
+        )}
 
         {/* Center — Frame Viewer */}
         <div className="flex-1 flex flex-col min-w-0 p-4 bg-slate-50">
@@ -656,6 +891,15 @@ export const TrainWorkspace = () => {
                   <LayoutGrid className="w-3.5 h-3.5" />
                 </button>
               </div>
+              {layoutMode === 'single' && (
+                <button
+                  onClick={() => setIsFullscreen(true)}
+                  className="p-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded shadow-sm text-slate-500 hover:text-slate-800 transition-all cursor-pointer"
+                  title="Toggle Fullscreen"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                </button>
+              )}
               <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded p-1 shadow-sm text-xs font-mono font-bold">
                 <button onClick={() => setZoomLevel(p => Math.max(50, p - 10))} className="p-1 hover:bg-slate-50 rounded"><ZoomOut className="w-3.5 h-3.5 text-slate-500" /></button>
                 <span className="w-10 text-center">{zoomLevel}%</span>
@@ -928,6 +1172,300 @@ export const TrainWorkspace = () => {
           )}
         </div>
       </div>
+
+      {/* Fullscreen Overlay Viewport */}
+      {isFullscreen && (
+        <div className="fixed inset-0 bg-[#faf9ff] text-[#051a3e] z-50 flex flex-col justify-between p-6 select-none animate-in fade-in duration-200 font-sans">
+          {/* Top floating control panel */}
+          <div className="flex items-center justify-between bg-white border border-[#c3c6d6]/60 rounded-sm p-3 px-4 shadow-sm shrink-0">
+            <div className="flex items-center gap-3">
+              <span className="bg-[#003d9b]/10 text-[#003d9b] border border-[#003d9b]/20 text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded-sm">
+                FULLSCREEN
+              </span>
+              <div>
+                <h4 className="text-xs font-black text-[#051a3e] uppercase tracking-wider">
+                  {selectedFrame ? `Frame #${selectedFrame.sequence_number}` : 'Loading...'}
+                </h4>
+                <p className="text-[9px] text-[#737685] font-mono">
+                  {selectedFrame ? `TRIGGER_ID: ${selectedFrame.trigger_id}` : '—'}
+                </p>
+              </div>
+            </div>
+
+            {/* Bounding box toggles & Zoom in Fullscreen */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1 bg-[#e9edff] border border-[#c3c6d6]/50 rounded-sm p-0.5 shadow-sm">
+                <button
+                  onClick={() => setShowOcrBoxes(p => !p)}
+                  title="Toggle OCR bounding boxes"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-bold transition-all cursor-pointer ${showOcrBoxes ? 'bg-[#003d9b] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
+                >
+                  <ScanSearch className="w-3.5 h-3.5" /> OCR
+                </button>
+                <button
+                  onClick={() => setShowDefectBoxes(p => !p)}
+                  title="Toggle defect bounding boxes"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-bold transition-all cursor-pointer ${showDefectBoxes ? 'bg-[#ba1a1a] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
+                >
+                  <ShieldAlert className="w-3.5 h-3.5" /> Defects
+                </button>
+                <button
+                  onClick={() => setShowComponentBoxes(p => !p)}
+                  title="Toggle component detection boxes"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-bold transition-all cursor-pointer ${showComponentBoxes ? 'bg-[#004b59] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
+                >
+                  <Cpu className="w-3.5 h-3.5" /> Components
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-[#e9edff] border border-[#c3c6d6]/50 rounded-sm p-1 shadow-sm text-xs font-mono font-bold text-[#051a3e]">
+                <button onClick={() => setZoomLevel(p => Math.max(50, p - 10))} className="p-1 hover:bg-[#d8e2ff] rounded-sm cursor-pointer"><ZoomOut className="w-3.5 h-3.5 text-[#434654]" /></button>
+                <span className="w-10 text-center">{zoomLevel}%</span>
+                <button onClick={() => setZoomLevel(p => Math.min(200, p + 10))} className="p-1 hover:bg-[#d8e2ff] rounded-sm cursor-pointer"><ZoomIn className="w-3.5 h-3.5 text-[#434654]" /></button>
+              </div>
+            </div>
+
+            {/* Exit fullscreen button */}
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="p-1.5 rounded-sm bg-white hover:bg-[#e9edff] text-[#434654] hover:text-[#051a3e] transition-all cursor-pointer border border-[#c3c6d6]/60 shadow-sm"
+              title="Exit Fullscreen (Esc)"
+            >
+              <Minimize2 className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Main viewport area with drawers */}
+          <div className="flex-1 flex overflow-hidden min-h-0 relative my-4 gap-4">
+            
+            {/* Fullscreen Left Drawer: Hierarchy Tree */}
+            <div 
+              style={{ width: fullscreenLeftOpen ? '320px' : '0px', minWidth: fullscreenLeftOpen ? '320px' : '0px' }}
+              className="bg-white border border-[#c3c6d6]/60 rounded-sm shrink-0 flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out shadow-sm z-40"
+            >
+              <div className="p-4 flex-1 flex flex-col min-h-0">
+                <div className="mb-3 flex justify-between items-center shrink-0">
+                  <div>
+                    <h3 className="text-xs font-black text-[#051a3e] uppercase tracking-wider">Fleet Hierarchy Tree</h3>
+                    <p className="text-[10px] text-[#737685] font-bold uppercase">Coaches & Camera Feeds</p>
+                  </div>
+                  <button 
+                    onClick={() => setFullscreenLeftOpen(false)}
+                    className="p-1 rounded-sm hover:bg-[#e9edff] text-[#434654] hover:text-[#051a3e] transition-colors cursor-pointer"
+                    title="Collapse Hierarchy"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex-1 min-h-0 overflow-y-auto">
+                  <HierarchyTree
+                    onSelectNode={handleSelectNode}
+                    coaches={realCoaches}
+                    trainNumber={session?.trainNumber}
+                    sessionId={sessionId}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Left expand handle */}
+            {!fullscreenLeftOpen && (
+              <button
+                onClick={() => setFullscreenLeftOpen(true)}
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-[#f1f3ff] border border-l-0 border-[#c3c6d6] text-[#003d9b] p-1.5 py-4 rounded-r-md shadow-md z-35 transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5"
+                title="Expand Hierarchy"
+              >
+                <FolderTree className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5 animate-pulse" />
+              </button>
+            )}
+
+            {/* Center: Scaled Image & Canvas Overlay */}
+            <div className="flex-1 flex items-center justify-center relative overflow-hidden bg-slate-950 rounded-lg border border-slate-900 shadow-inner">
+              {componentFramesLoading || !selectedFrame ? (
+                <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2">
+                  <RefreshCw className="w-8 h-8 animate-spin text-[#003d9b]" />
+                  <span className="text-xs font-bold font-sans">Loading coach data...</span>
+                </div>
+              ) : (
+                <>
+                  {/* Step navigation overlay left */}
+                  <button
+                    onClick={() => {
+                      const list = (componentMode || ocrMode) ? componentFrames : frames;
+                      const idx = list.findIndex(f => f.id === selectedFrame.id);
+                      if (idx !== -1) {
+                        const prevIdx = (idx - 1 + list.length) % list.length;
+                        setSelectedFrame(list[prevIdx]);
+                      }
+                    }}
+                    className="absolute left-3 w-8 h-8 bg-slate-900/40 hover:bg-slate-900/80 text-white rounded-full border border-slate-800/40 z-30 transition-all cursor-pointer flex items-center justify-center hover:scale-105"
+                    title="Previous Frame (ArrowLeft)"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-200" style={{ transform: `scale(${zoomLevel / 100})` }}>
+                    <div className="relative max-w-full max-h-full">
+                      <img
+                        ref={fullscreenImgRef}
+                        src={selectedFrame.cloudinary_url}
+                        alt={`Fullscreen Frame ${selectedFrame.sequence_number}`}
+                        className="max-w-full max-h-full object-contain rounded border border-slate-900 shadow-2xl block"
+                        onLoad={drawFullscreenOverlay}
+                      />
+                      <canvas
+                        ref={fullscreenCanvasRef}
+                        className="absolute inset-0 pointer-events-none rounded"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Step navigation overlay right */}
+                  <button
+                    onClick={() => {
+                      const list = (componentMode || ocrMode) ? componentFrames : frames;
+                      const idx = list.findIndex(f => f.id === selectedFrame.id);
+                      if (idx !== -1) {
+                        const nextIdx = (idx + 1) % list.length;
+                        setSelectedFrame(list[nextIdx]);
+                      }
+                    }}
+                    className="absolute right-3 w-8 h-8 bg-slate-900/40 hover:bg-slate-900/80 text-white rounded-full border border-slate-800/40 z-30 transition-all cursor-pointer flex items-center justify-center hover:scale-105"
+                    title="Next Frame (ArrowRight)"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Right expand handle */}
+            {!fullscreenRightOpen && (
+              <button
+                onClick={() => setFullscreenRightOpen(true)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white hover:bg-[#f1f3ff] border border-r-0 border-[#c3c6d6] text-[#003d9b] p-1.5 py-4 rounded-l-md shadow-md z-35 transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5"
+                title="Expand Intelligence"
+              >
+                <Sparkles className="w-4 h-4" />
+                <ChevronLeft className="w-3.5 h-3.5 animate-pulse" />
+              </button>
+            )}
+
+            {/* Fullscreen Right Drawer: AI Intelligence Feed */}
+            <div 
+              style={{ width: fullscreenRightOpen ? '384px' : '0px', minWidth: fullscreenRightOpen ? '384px' : '0px' }}
+              className="bg-white border border-[#c3c6d6]/60 rounded-sm shrink-0 flex flex-col h-full overflow-hidden transition-all duration-300 ease-in-out shadow-sm z-40"
+            >
+              <div className="p-4 flex-1 flex flex-col min-h-0 overflow-y-auto">
+                <div className="mb-3 flex justify-between items-center shrink-0">
+                  <div>
+                    <h3 className="text-xs font-black text-[#051a3e] uppercase tracking-wider">AI Intelligence Feed</h3>
+                    <p className="text-[10px] text-[#737685] font-bold uppercase">Select a coach from the tree to load</p>
+                  </div>
+                  <button 
+                    onClick={() => setFullscreenRightOpen(false)}
+                    className="p-1 rounded-sm hover:bg-[#e9edff] text-[#434654] hover:text-[#051a3e] transition-colors cursor-pointer"
+                    title="Collapse Intelligence"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {intelligenceLoading ? (
+                  <div className="flex-1 flex items-center justify-center">
+                    <RefreshCw className="w-5 h-5 animate-spin text-primary" />
+                  </div>
+                ) : intelligence === null ? (
+                  <div className="flex-1 flex flex-col items-center justify-center gap-2 text-[#737685]">
+                    <Sparkles className="w-8 h-8 text-[#c3c6d6]" />
+                    <p className="text-xs font-semibold">No coach selected</p>
+                    <p className="text-[10px] text-center">Click a coach in the hierarchy tree to load its inspection results.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4 text-[#051a3e]">
+                    {/* Defects */}
+                    <div>
+                      <h4 className="text-[10px] font-black text-[#737685] uppercase tracking-wider mb-2 flex items-center gap-1">
+                        <ShieldAlert className="w-3.5 h-3.5 text-[#ba1a1a]" /> Detected Defects ({displayDefects.length})
+                      </h4>
+                      {displayDefects.length === 0 ? (
+                        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-sm text-center text-xs text-emerald-700 font-medium">
+                          ✓ No defects found for this coach.
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {displayDefects.map((d) => (
+                            <div key={d.id} className={`p-3 rounded-sm border text-xs ${d.severity === 'CRITICAL' ? 'bg-red-50 border-red-200 text-red-900' : 'bg-amber-50 border-amber-200 text-amber-905'}`}>
+                              <div className="flex justify-between items-start gap-2 mb-1">
+                                <span className={`px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase ${d.severity === 'CRITICAL' ? 'bg-[#ba1a1a] text-white' : 'bg-amber-600 text-white'}`}>{d.severity}</span>
+                                <span className="font-mono text-[9px] text-[#737685]">{d.conf}</span>
+                              </div>
+                              <p className="font-black text-[#051a3e]">{d.name}</p>
+                              {d.notes && <p className="text-[10px] text-[#737685] mt-0.5">{d.notes}</p>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Component checklist */}
+                    {displayComponents.length > 0 && (
+                      <Card className="border border-[#c3c6d6]/60 shadow-sm bg-white rounded-sm">
+                        <CardHeader className="p-3 border-b border-[#c3c6d6]/60 bg-[#f1f3ff]/50">
+                          <CardTitle className="text-[10px] font-black tracking-wider uppercase text-[#003d9b] flex items-center gap-1.5">
+                            <FileCheck className="w-4 h-4 text-primary" /> Structural Checklist
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-3">
+                          <table className="w-full text-[10px] font-mono text-left">
+                            <thead>
+                              <tr className="border-b border-[#c3c6d6]/65 text-[#737685]">
+                                <th className="pb-1.5 font-bold uppercase">Component</th>
+                                <th className="pb-1.5 font-bold uppercase text-right">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[#c3c6d6]/40">
+                              {displayComponents.map((c) => (
+                                <tr key={c.id} className="hover:bg-[#f1f3ff]/30">
+                                  <td className="py-2 font-bold text-[#051a3e]">{c.name}</td>
+                                  <td className="py-2 text-right">
+                                    <span className={`px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase ${c.status === 'OK' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200 animate-pulse'}`}>
+                                      {c.status}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </CardContent>
+                      </Card>
+                    )}
+
+                    {/* Pipeline diagnostics */}
+                    {intelligence.ocr_summary && (
+                      <Card className="border border-[#c3c6d6]/60 shadow-sm bg-white rounded-sm">
+                        <CardHeader className="p-3 border-b border-[#c3c6d6]/60 bg-[#f1f3ff]/50">
+                          <CardTitle className="text-[10px] font-black tracking-wider uppercase text-[#051a3e]">Pipeline Diagnostics</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-3 text-[10px] text-[#737685] font-medium space-y-1">
+                          <p><span className="text-primary font-bold">[OCR]</span> {intelligence.ocr_summary}</p>
+                          {intelligence.sync_summary && <p><span className="text-primary font-bold">[SYNC]</span> {intelligence.sync_summary}</p>}
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom metadata feed info */}
+          <div className="text-center font-mono text-[10px] text-[#737685] py-1 shrink-0">
+            Use Left/Right arrow keys to step frames · Zoom: scroll/buttons · Press ESC to exit
+          </div>
+        </div>
+      )}
     </div>
   );
 };

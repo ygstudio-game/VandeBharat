@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { ToastContainer } from '../ui/ToastContainer';
 import { 
@@ -11,7 +11,8 @@ import {
   Settings,
   Bell,
   User,
-  ShieldCheck
+  ShieldCheck,
+  Menu
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -28,10 +29,18 @@ const navItems = [
 ];
 
 export const Shell = () => {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans">
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-card border-r border-border flex flex-col shadow-sm z-10">
+      <aside 
+        style={{ width: sidebarCollapsed ? '0px' : '256px', minWidth: sidebarCollapsed ? '0px' : '256px' }}
+        className={cn(
+          "bg-card border-r border-border flex flex-col shadow-sm z-10 transition-all duration-300 ease-in-out shrink-0",
+          sidebarCollapsed ? "opacity-0 -translate-x-full overflow-hidden border-r-0" : "translate-x-0"
+        )}
+      >
         {/* Brand Header */}
         <div className="p-5 border-b border-border flex items-center gap-3">
           <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center shadow-md">
@@ -82,9 +91,16 @@ export const Shell = () => {
       {/* Main Layout Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Navbar */}
-        <header className="h-16 bg-card border-b border-border flex items-center justify-between px-8 shadow-sm">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-primary" />
+        <header className="h-16 bg-card border-b border-border flex items-center justify-between px-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-1.5 hover:bg-secondary rounded text-muted-foreground hover:text-foreground transition-all cursor-pointer flex items-center justify-center border border-border bg-card shadow-sm"
+              title={sidebarCollapsed ? "Expand Navigation" : "Collapse Navigation"}
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+            <ShieldCheck className="w-4 h-4 text-primary" />
             <span className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground">
               INDIAN RAILWAYS • SECURE AI PIPELINE
             </span>

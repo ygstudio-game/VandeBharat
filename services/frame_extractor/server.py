@@ -34,7 +34,7 @@ cloudinary.config(
 )
 
 DATABASE_URL = os.environ["DATABASE_URL"]
-BACKEND_URL  = os.environ.get("BACKEND_URL", "http://localhost:8001")
+BACKEND_URL  = os.environ.get("BACKEND_URL", "http://127.0.0.1:8001")
 
 app = FastAPI(title="VandeInspect Frame Extractor", version="1.0.0")
 

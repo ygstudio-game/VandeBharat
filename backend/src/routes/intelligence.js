@@ -121,11 +121,31 @@ async function intelligence(fastify) {
         width_px: true,
         height_px: true,
         is_ocr_candidate: true,
+        is_defect_flagged: true,
         coach_frame_map: { select: { assignment_method: true, confidence: true } },
         ocr_results: {
-          select: { coach_number: true, confidence: true, is_valid: true },
-          where: { is_valid: true },
-          take: 1,
+          select: {
+            coach_number: true,
+            confidence: true,
+            is_valid: true,
+            bbox_x: true,
+            bbox_y: true,
+            bbox_w: true,
+            bbox_h: true,
+          },
+          orderBy: { confidence: 'desc' },
+        },
+        defects: {
+          select: {
+            id: true,
+            defect_type: true,
+            severity: true,
+            confidence: true,
+            bbox_x: true,
+            bbox_y: true,
+            bbox_w: true,
+            bbox_h: true,
+          },
         },
       },
     });
@@ -145,8 +165,17 @@ async function intelligence(fastify) {
         width: f.width_px,
         height: f.height_px,
         is_ocr_candidate: f.is_ocr_candidate,
+        is_defect_flagged: f.is_defect_flagged,
         assignment_method: f.coach_frame_map?.assignment_method ?? null,
         ocr_result: f.ocr_results[0] ?? null,
+        ocr_results: f.ocr_results.map((r) => ({
+          ...r,
+          confidence: Number(r.confidence),
+        })),
+        defects: f.defects.map((d) => ({
+          ...d,
+          confidence: d.confidence ? Number(d.confidence) : undefined,
+        })),
       })),
     };
   });

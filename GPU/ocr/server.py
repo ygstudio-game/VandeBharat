@@ -36,7 +36,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
-YOLO_URL = os.environ.get("YOLO_SERVICE_URL", "http://localhost:5002/api/yolo/predict_train_number")
+YOLO_URL = os.environ.get("YOLO_SERVICE_URL", "http://127.0.0.1:5002/api/yolo/predict_train_number")
 
 app = FastAPI(title="VandeInspect OCR Service", version="1.0.0")
 

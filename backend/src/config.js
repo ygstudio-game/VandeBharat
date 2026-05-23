@@ -10,11 +10,11 @@ module.exports = {
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
   services: {
-    frameExtractor: process.env.FRAME_EXTRACTOR_URL || 'http://localhost:5003',
-    ocr:            process.env.OCR_SERVICE_URL      || 'http://localhost:5000',
-    yolo:           process.env.YOLO_SERVICE_URL     || 'http://localhost:5002',
-    syncEngine:     process.env.SYNC_ENGINE_URL      || 'http://localhost:5004',
-    correlation:    process.env.CORRELATION_URL      || 'http://localhost:5005',
-    reportGenerator:process.env.REPORT_GENERATOR_URL || 'http://localhost:5006',
+    frameExtractor: process.env.FRAME_EXTRACTOR_URL || 'http://127.0.0.1:5003',
+    ocr:            process.env.OCR_SERVICE_URL      || 'http://127.0.0.1:5000',
+    yolo:           process.env.YOLO_SERVICE_URL     || 'http://127.0.0.1:5002',
+    syncEngine:     process.env.SYNC_ENGINE_URL      || 'http://127.0.0.1:5004',
+    correlation:    process.env.CORRELATION_URL      || 'http://127.0.0.1:5005',
+    reportGenerator:process.env.REPORT_GENERATOR_URL || 'http://127.0.0.1:5006',
   },
 };

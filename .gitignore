@@ -45,3 +45,14 @@ lerna-debug.log*
 *.sw?
 .DS_Store
 Thumbs.db
+
+# AI Agent Skill Frameworks
+.superpowers/
+.matt-skills/
+AGENTS.md
+CONTEXT.md
+GEMINI.md
+
+# Python cache files
+**/__pycache__/
+*.pyc
