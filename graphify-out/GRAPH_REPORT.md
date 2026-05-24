@@ -1,16 +1,16 @@
 # Graph Report - Main  (2026-05-24)
 
 ## Corpus Check
-- 129 files · ~305,776 words
+- 129 files · ~305,935 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1744 nodes · 1924 edges · 220 communities (137 shown, 83 thin omitted)
+- 1758 nodes · 1941 edges · 222 communities (139 shown, 83 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dc88a15e`
+- Built from commit: `e1ba6bac`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -129,6 +129,8 @@
 - [[_COMMUNITY_Community 114|Community 114]]
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
+- [[_COMMUNITY_Community 118|Community 118]]
+- [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
 - [[_COMMUNITY_Community 124|Community 124]]
@@ -254,7 +256,7 @@
 - `Insert a batch of frame rows and update the live counters in the DB.` --rationale_for--> `_flush_rows()`  [EXTRACTED]
   services/frame_extractor/server.py → frame_extractor/server.py
 
-## Communities (220 total, 83 thin omitted)
+## Communities (222 total, 83 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.13
@@ -278,7 +280,7 @@ Nodes (11): app, config, config, config, cors, fastify, msg, multipart (+3 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.06
-Nodes (56): KPICard(), LiveTrainCard(), usePolling(), getSharedWs(), subscribers, subscribeSession(), useSessionSocket(), WS_BASE (+48 more)
+Nodes (57): DetectionLogTable(), KPICard(), LiveTrainCard(), usePolling(), getSharedWs(), subscribers, subscribeSession(), useSessionSocket() (+49 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.11
@@ -294,11 +296,11 @@ Nodes (15): correlate_coach(), _fetch_frame_bytes(), load_manifest(), _norm(), _
 
 ### Community 12 - "Community 12"
 Cohesion: 0.12
-Nodes (21): BaseModel, _all_cameras_done(), extract(), ExtractRequest, _flush_rows(), get_conn(), health(), _load_root_config() (+13 more)
+Nodes (22): BaseModel, _all_cameras_done(), extract(), ExtractRequest, _flush_rows(), get_conn(), health(), _load_root_config() (+14 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.19
-Nodes (15): FPDF, build_json_report(), build_pdf_report(), generate_report(), _health_color(), load_session_data(), _PDF, Report builder — Phase 4 Reads full session from DB → builds PDF (fpdf2) + JSON (+7 more)
+Cohesion: 0.20
+Nodes (14): FPDF, build_json_report(), build_pdf_report(), generate_report(), _health_color(), load_session_data(), _PDF, Report builder — Phase 4 Reads full session from DB → builds PDF (fpdf2) + JSON (+6 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.22
@@ -361,8 +363,8 @@ Cohesion: 0.29
 Nodes (6): name, private, scripts, install:all, start, version
 
 ### Community 33 - "Community 33"
-Cohesion: 0.67
-Nodes (3): 25. SCALABILITY STRATEGY, Future Scale, Horizontal Scaling
+Cohesion: 0.15
+Nodes (12): code:block1 (Step 1  SIMULTANEOUS CAPTURE), code:block2 (Session VB-2025-001   Train VB-22901), code:block3 (Create a professional technical presentation titled:), code:block4 (Design a single-page technical infographic titled:), Concrete Example (use in assets), Database Entities, Frame Synchronisation — Presentation & Infographic Prompts, How Frame Synchronisation Actually Works (Technical Reference) (+4 more)
 
 ### Community 34 - "Community 34"
 Cohesion: 0.28
@@ -393,8 +395,8 @@ Cohesion: 0.07
 Nodes (26): 1.1 Ingestion & Session Management, 1.2 Inspection Intelligence, 1. REST API Interface Specification, 2.1 Client Subscriptions, 2.2 Server Broadcasts, 2. WebSocket Protocol Schema, Coach Maps Completed (`coaches_mapped`), code:json ({) (+18 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.08
-Nodes (23): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 23. REAL-TIME MONITORING, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 27. INDUSTRIAL UI/UX PRINCIPLES, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+15 more)
+Cohesion: 0.10
+Nodes (20): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 25. SCALABILITY STRATEGY, 26. SECURITY ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT, 7. OCR PIPELINE (+12 more)
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
@@ -676,6 +678,14 @@ Nodes (4): CENTER VIEWER, code:text (Detection Controls), DETECTION WORKSPACE, L
 Cohesion: 0.67
 Nodes (3): 17. GPU SERVER ARCHITECTURE, code:text (Frontend Dashboard VPS), Recommended Production Architecture
 
+### Community 118 - "Community 118"
+Cohesion: 0.67
+Nodes (3): 23. REAL-TIME MONITORING, Monitoring Stack, Monitoring System
+
+### Community 119 - "Community 119"
+Cohesion: 0.67
+Nodes (3): 27. INDUSTRIAL UI/UX PRINCIPLES, code:text (Which train?), Core UX Principle
+
 ### Community 121 - "Community 121"
 Cohesion: 0.67
 Nodes (3): 2. HIGH-LEVEL PIPELINE FLOW, code:text (Train Passes Through Inspection Zone), Final Production Pipeline
@@ -781,24 +791,24 @@ Cohesion: 0.67
 Nodes (3): code:text (Report generated successfully.), code:text (Synchronization completed.), TOASTS (MANDATORY)
 
 ## Knowledge Gaps
-- **916 isolated node(s):** `prisma`, `path`, `fs`, `{ pipeline }`, `{ randomUUID }` (+911 more)
+- **922 isolated node(s):** `Database Entities`, `code:block1 (Step 1  SIMULTANEOUS CAPTURE)`, `code:block2 (Session VB-2025-001   Train VB-22901)`, `code:block3 (Create a professional technical presentation titled:)`, `code:block4 (Design a single-page technical infographic titled:)` (+917 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **83 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `run_sync()` connect `Community 3` to `Community 12`?**
+  _High betweenness centrality (0.003) - this node is a cross-community bridge._
 - **Why does `cn()` connect `Community 42` to `Community 29`, `Community 6`?**
-  _High betweenness centrality (0.004) - this node is a cross-community bridge._
+  _High betweenness centrality (0.003) - this node is a cross-community bridge._
 - **Are the 21 inferred relationships involving `cn()` (e.g. with `clsx` and `LiveTrainCard()`) actually correct?**
   _`cn()` has 21 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Download one frame and run YOLO. Returns (frame, detections).`, `Run defect + component correlation for one coach.     Returns summary dict.`, `Run defect + component correlation for one coach.     Returns summary dict.` to the rest of the system?**
-  _965 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Database Entities`, `code:block1 (Step 1  SIMULTANEOUS CAPTURE)`, `code:block2 (Session VB-2025-001   Train VB-22901)` to the rest of the system?**
+  _971 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.07586206896551724 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.07977207977207977 - nodes in this community are weakly interconnected._
-- **Should `Community 3` be split into smaller, more focused modules?**
-  _Cohesion score 0.06951219512195123 - nodes in this community are weakly interconnected._
