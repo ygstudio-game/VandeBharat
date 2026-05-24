@@ -1,16 +1,16 @@
 # Graph Report - Main  (2026-05-24)
 
 ## Corpus Check
-- 126 files · ~297,967 words
+- 126 files · ~299,201 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1727 nodes · 1865 edges · 224 communities (141 shown, 83 thin omitted)
+- 1728 nodes · 1866 edges · 220 communities (137 shown, 83 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1e966cd3`
+- Built from commit: `d0563dba`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -84,7 +84,6 @@
 - [[_COMMUNITY_Community 69|Community 69]]
 - [[_COMMUNITY_Community 70|Community 70]]
 - [[_COMMUNITY_Community 71|Community 71]]
-- [[_COMMUNITY_Community 72|Community 72]]
 - [[_COMMUNITY_Community 73|Community 73]]
 - [[_COMMUNITY_Community 74|Community 74]]
 - [[_COMMUNITY_Community 75|Community 75]]
@@ -109,13 +108,11 @@
 - [[_COMMUNITY_Community 94|Community 94]]
 - [[_COMMUNITY_Community 95|Community 95]]
 - [[_COMMUNITY_Community 96|Community 96]]
-- [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 99|Community 99]]
 - [[_COMMUNITY_Community 100|Community 100]]
 - [[_COMMUNITY_Community 101|Community 101]]
 - [[_COMMUNITY_Community 102|Community 102]]
-- [[_COMMUNITY_Community 103|Community 103]]
 - [[_COMMUNITY_Community 104|Community 104]]
 - [[_COMMUNITY_Community 105|Community 105]]
 - [[_COMMUNITY_Community 106|Community 106]]
@@ -130,7 +127,6 @@
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
 - [[_COMMUNITY_Community 118|Community 118]]
-- [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 120|Community 120]]
 - [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
@@ -258,11 +254,11 @@
 - `AccordionItem()` --calls--> `cn()`  [INFERRED]
   frontend/src/components/ui/accordion.jsx → frontend/src/lib/utils.js
 
-## Communities (224 total, 83 thin omitted)
+## Communities (220 total, 83 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.14
-Nodes (11): axios, CAM_TYPES, config, fs, path, { pipeline }, PIPELINE_STAGES, { randomUUID } (+3 more)
+Cohesion: 0.13
+Nodes (12): axios, CAM_TYPES, COMPONENT_CAM_TYPES, config, fs, path, { pipeline }, PIPELINE_STAGES (+4 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.08
@@ -277,8 +273,8 @@ Cohesion: 0.07
 Nodes (39): assign_frames(), assign_frames_to_coaches(), build_bogie_ranges(), _close(), cluster_gaps(), create_coaches(), create_coaches_from_ranges(), create_timeline_events() (+31 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.22
-Nodes (8): config, cors, fastify, msg, multipart, prisma, websocketPlugin, wsGateway
+Cohesion: 0.14
+Nodes (11): app, config, config, config, cors, fastify, msg, multipart (+3 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.06
@@ -293,12 +289,12 @@ Cohesion: 0.22
 Nodes (8): decode_bytes(), predict(), predict_train_number(), YOLO Service — port 5002 Two models loaded at startup on GPU:   best.pt, Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2, Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2
 
 ### Community 11 - "Community 11"
-Cohesion: 0.43
-Nodes (6): correlate_coach(), _fetch_frame_bytes(), load_manifest(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to th, Run defect + component correlation for one coach.     Returns summary dict., _run_yolo()
+Cohesion: 0.67
+Nodes (3): 14. AI INTELLIGENCE LAYER, Intelligence Features, Purpose
 
 ### Community 12 - "Community 12"
-Cohesion: 0.21
-Nodes (8): _all_cameras_done(), _flush_rows(), get_conn(), Frame Extractor Service — port 5003 Receives video path → OpenCV extracts every, True when every session_camera for this session has frame_count > 0., True when every session_camera for this session has frame_count > 0., Insert a batch of frame rows and update the live counters in the DB., run_extraction()
+Cohesion: 0.06
+Nodes (30): BaseModel, correlate_coach(), _fetch_frame_bytes(), load_manifest(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to th, Run defect + component correlation for one coach.     Returns summary dict., _run_yolo(), correlate() (+22 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.26
@@ -365,8 +361,8 @@ Cohesion: 0.29
 Nodes (6): name, private, scripts, install:all, start, version
 
 ### Community 33 - "Community 33"
-Cohesion: 0.33
-Nodes (3): app, config, config
+Cohesion: 0.67
+Nodes (3): 28. TRAIN-CENTRIC ARCHITECTURE, code:text (Dashboard), Correct Architecture
 
 ### Community 34 - "Community 34"
 Cohesion: 0.28
@@ -397,8 +393,8 @@ Cohesion: 0.07
 Nodes (26): 1.1 Ingestion & Session Management, 1.2 Inspection Intelligence, 1. REST API Interface Specification, 2.1 Client Subscriptions, 2.2 Server Broadcasts, 2. WebSocket Protocol Schema, Coach Maps Completed (`coaches_mapped`), code:json ({) (+18 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.08
-Nodes (23): 14. AI INTELLIGENCE LAYER, 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 28. TRAIN-CENTRIC ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+15 more)
+Cohesion: 0.10
+Nodes (20): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 25. SCALABILITY STRATEGY, 26. SECURITY ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT, 7. OCR PIPELINE (+12 more)
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
@@ -508,10 +504,6 @@ Nodes (11): code:text (⚠ Missing Bolt), code:text (Detected Components), code:
 Cohesion: 0.18
 Nodes (11): code:text (Train Number), code:text (Coach B1), code:text (Defect), code:text (Train), code:text (Coach B1), code:text (Train), code:text (Coach B2), code:text (Camera) (+3 more)
 
-### Community 72 - "Community 72"
-Cohesion: 0.22
-Nodes (8): BaseModel, ExtractRequest, OcrRequest, GenerateRequest, get_conn(), Sync Engine Service — port 5004 Receives { session_id } → runs trigger_id gap de, sync(), SyncRequest
-
 ### Community 73 - "Community 73"
 Cohesion: 0.20
 Nodes (10): 1.1 Transition to a Distributed Message Broker (RabbitMQ / Kafka), 1.2 Local Offline S3 Storage (MinIO), 1. Short-Term Scaling (v1.1 - v1.2), 2.1 Model Optimization via NVIDIA TensorRT, 2.2 Kubernetes Deployment Orchestration (K3s), 2. Medium-Term Infrastructure Optimization (v1.5), 3.1 Sensor Fusion with 3D Laser Profilers, 3.2 Workshop-Wide Federated Learning (+2 more)
@@ -604,10 +596,6 @@ Nodes (7): 4.1 Estimated Storage Per Inspection, 4.2 Daily and Monthly Volumes (
 Cohesion: 0.29
 Nodes (7): 1. FRAME EXTRACTION, 2. OCR DETECTION, 3. SYNCHRONIZATION & COACH MAPPING, code:text (Frames Extracted: 14,221), code:text (Coach Identifiers Detected), code:text (Train), STAGE DETAILS
 
-### Community 97 - "Community 97"
-Cohesion: 0.40
-Nodes (4): correlate(), CorrelateRequest, get_conn(), Correlation Service — port 5005 POST /correlate { session_id, coach_id }   → run
-
 ### Community 98 - "Community 98"
 Cohesion: 0.33
 Nodes (6): 11. DEFECT DETECTION PIPELINE, code:text (Detected Components), Defect Pipeline, Defect Types, Purpose, Severity Levels
@@ -627,10 +615,6 @@ Nodes (6): 3.1 Core Tables, 3.2 Critical Indexes, 3.3 What Goes in Postgres vs O
 ### Community 102 - "Community 102"
 Cohesion: 0.33
 Nodes (5): code:js (export default defineConfig([), code:js (// eslint.config.js), Expanding the ESLint configuration, React Compiler, React + TypeScript + Vite
-
-### Community 103 - "Community 103"
-Cohesion: 0.47
-Nodes (4): generate(), get_conn(), get_report(), Report Generator Service — port 5006 POST /generate { session_id } → builds PDF
 
 ### Community 104 - "Community 104"
 Cohesion: 0.40
@@ -683,10 +667,6 @@ Nodes (3): 17. GPU SERVER ARCHITECTURE, code:text (Frontend Dashboard VPS), Reco
 ### Community 118 - "Community 118"
 Cohesion: 0.67
 Nodes (3): 23. REAL-TIME MONITORING, Monitoring Stack, Monitoring System
-
-### Community 119 - "Community 119"
-Cohesion: 0.67
-Nodes (3): 25. SCALABILITY STRATEGY, Future Scale, Horizontal Scaling
 
 ### Community 120 - "Community 120"
 Cohesion: 0.67
@@ -801,7 +781,7 @@ Cohesion: 0.67
 Nodes (3): code:text (Report generated successfully.), code:text (Synchronization completed.), TOASTS (MANDATORY)
 
 ## Knowledge Gaps
-- **918 isolated node(s):** `{ execSync }`, `fs`, `path`, `C`, `VENV_DIRS` (+913 more)
+- **919 isolated node(s):** `prisma`, `path`, `fs`, `{ pipeline }`, `{ randomUUID }` (+914 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **83 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -809,15 +789,15 @@ Nodes (3): code:text (Report generated successfully.), code:text (Synchronizatio
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `cn()` connect `Community 42` to `Community 29`, `Community 6`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
 - **Why does `clsx` connect `Community 29` to `Community 42`?**
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
-- **Are the 21 inferred relationships involving `cn()` (e.g. with `LiveTrainCard()` and `Shell()`) actually correct?**
+- **Are the 21 inferred relationships involving `cn()` (e.g. with `clsx` and `LiveTrainCard()`) actually correct?**
   _`cn()` has 21 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `{ execSync }`, `fs`, `path` to the rest of the system?**
-  _965 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Run this script once to generate VandeBharat_TechDoc.docx   python generate_docs`, `prisma`, `path` to the rest of the system?**
+  _966 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.07586206896551724 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**

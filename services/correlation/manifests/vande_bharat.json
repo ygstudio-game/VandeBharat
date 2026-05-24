@@ -1,12 +1,24 @@
 {
   "coach_type": "VANDE_BHARAT",
   "components": [
-    { "code": "BRAKE_PAD",    "name": "Brake Pad",       "quantity": 2, "is_critical": true },
-    { "code": "SUSP_PIN",     "name": "Suspension Pin",  "quantity": 4, "is_critical": true },
-    { "code": "WATER_TANK",   "name": "Water Tank",      "quantity": 1, "is_critical": false },
-    { "code": "AXLE_BOX",     "name": "Axle Box Cover",  "quantity": 4, "is_critical": true },
-    { "code": "WHEEL_ASSY",   "name": "Wheel Assembly",  "quantity": 4, "is_critical": true },
-    { "code": "COUPLER",      "name": "Coupler",         "quantity": 2, "is_critical": true },
-    { "code": "BOGIE_FRAME",  "name": "Bogie Frame",     "quantity": 2, "is_critical": true }
+    { "code": "WHEEL_ASSY",    "name": "Wheel Assembly",              "quantity": 4, "is_critical": true  },
+    { "code": "AXLE_BOX",      "name": "Axle Box Cover",              "quantity": 4, "is_critical": true  },
+    { "code": "BRAKE_PAD",     "name": "Brake Pad",                   "quantity": 2, "is_critical": true  },
+    { "code": "BRAKE_CTRL",    "name": "Brake Control Module",        "quantity": 1, "is_critical": true  },
+    { "code": "SUSP_PRI",      "name": "Primary Suspension Spring",   "quantity": 4, "is_critical": true  },
+    { "code": "SUSP_SEC",      "name": "Secondary Suspension Spring", "quantity": 4, "is_critical": true  },
+    { "code": "SWING_HANGER",  "name": "Swing Hanger",                "quantity": 4, "is_critical": true  },
+    { "code": "DAMPER",        "name": "Damper",                      "quantity": 4, "is_critical": false },
+    { "code": "COUPLER",       "name": "Coupler",                     "quantity": 2, "is_critical": true  },
+    { "code": "BOGIE_FRAME",   "name": "Bogie Frame",                 "quantity": 2, "is_critical": true  },
+    { "code": "WATER_TANK",    "name": "Water Tank",                  "quantity": 1, "is_critical": false },
+    { "code": "BATTERY_BOX",   "name": "Battery Box",                 "quantity": 1, "is_critical": false },
+    { "code": "TRANSFORMER",   "name": "Transformer",                 "quantity": 1, "is_critical": false },
+    { "code": "HYD_VALVE",     "name": "Hydraulic Valve",             "quantity": 2, "is_critical": false },
+    { "code": "AUX_RESERVOIR", "name": "Auxiliary Reservoir",         "quantity": 1, "is_critical": false },
+    { "code": "NUT_BOLT",      "name": "Nut & Bolt Assembly",         "quantity": 8, "is_critical": false },
+    { "code": "ROD",           "name": "Connecting Rod",              "quantity": 4, "is_critical": false },
+    { "code": "SAFETY_STRAP",  "name": "Safety Strap",                "quantity": 4, "is_critical": false },
+    { "code": "STEPS",         "name": "Steps / Footboard",           "quantity": 2, "is_critical": false }
   ]
 }

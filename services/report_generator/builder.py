@@ -199,7 +199,7 @@ class _PDF(FPDF):
     def header(self):
         self.set_font("Helvetica", "B", 10)
         self.set_text_color(100, 100, 100)
-        self.cell(0, 8, "VandeInspect AI — Automated Train Inspection Report", align="R")
+        self.cell(0, 8, "VandeInspect AI - Automated Train Inspection Report", align="R")
         self.ln(4)
         self.set_draw_color(200, 200, 200)
         self.line(10, self.get_y(), 200, self.get_y())
@@ -209,7 +209,7 @@ class _PDF(FPDF):
         self.set_y(-12)
         self.set_font("Helvetica", "I", 8)
         self.set_text_color(150, 150, 150)
-        self.cell(0, 8, f"Page {self.page_no()} | Confidential — Indian Railways", align="C")
+        self.cell(0, 8, f"Page {self.page_no()} | Confidential - Indian Railways", align="C")
 
 
 def build_pdf_report(data: dict) -> bytes:
@@ -227,8 +227,8 @@ def build_pdf_report(data: dict) -> bytes:
     pdf.set_text_color(71, 85, 105)
     pdf.cell(0, 8, f"Train No: {s['train_number']}   |   Session: {s['session_code']}", ln=True, align="C")
 
-    started = s["started_at"].strftime("%d %b %Y, %H:%M") if s["started_at"] else "—"
-    pdf.cell(0, 7, f"Inspected: {started}   |   Station: {s['station_code'] or '—'}", ln=True, align="C")
+    started = s["started_at"].strftime("%d %b %Y, %H:%M") if s["started_at"] else "-"
+    pdf.cell(0, 7, f"Inspected: {started}   |   Station: {s['station_code'] or '-'}", ln=True, align="C")
     pdf.ln(6)
 
     # Health score banner
@@ -270,7 +270,7 @@ def build_pdf_report(data: dict) -> bytes:
 
         pdf.set_font("Helvetica", "B", 13)
         pdf.set_text_color(15, 23, 42)
-        ch_label = f"Coach {c['coach_index']}  —  #{c['coach_number']}"
+        ch_label = f"Coach {c['coach_index']}  -  #{c['coach_number']}"
         pdf.cell(0, 10, ch_label, ln=True)
 
         hs_c = float(c["health_score"]) if c["health_score"] else None
@@ -310,7 +310,7 @@ def build_pdf_report(data: dict) -> bytes:
             pdf.set_font("Helvetica", "", 9)
             pdf.set_text_color(15, 23, 42)
             for m in coach_miss:
-                pdf.cell(0, 5, f"    • {m['component_name']} ({m['component_code']})  — expected {m['expected_count']}, detected {m['detected_count']}", ln=True)
+                pdf.cell(0, 5, f"    - {m['component_name']} ({m['component_code']})  - expected {m['expected_count']}, detected {m['detected_count']}", ln=True)
             pdf.ln(3)
 
         if not coach_defs and not coach_miss:
