@@ -1,16 +1,16 @@
 # Graph Report - Main  (2026-05-24)
 
 ## Corpus Check
-- 126 files · ~299,201 words
+- 126 files · ~302,969 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1728 nodes · 1866 edges · 220 communities (137 shown, 83 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
+- 1737 nodes · 1899 edges · 220 communities (137 shown, 83 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d0563dba`
+- Built from commit: `fbcc8d87`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -237,22 +237,22 @@
 4. `run_sync()` - 15 edges
 5. `Vande Inspect AI — Complete System Design` - 15 edges
 6. `DEFECT ACTIONS` - 11 edges
-7. `services` - 9 edges
-8. `scripts` - 9 edges
-9. `useSessionSocket()` - 9 edges
-10. `VandeInspect AI — System Understanding & Deployment Plan` - 9 edges
+7. `correlate_coach()` - 9 edges
+8. `services` - 9 edges
+9. `scripts` - 9 edges
+10. `useSessionSocket()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `cn()` --calls--> `clsx`  [INFERRED]
-  frontend/src/lib/utils.js → frontend/package.json
-- `LiveTrainCard()` --calls--> `cn()`  [INFERRED]
-  frontend/src/components/dashboard/LiveTrainCard.jsx → frontend/src/lib/utils.js
-- `Shell()` --calls--> `cn()`  [INFERRED]
-  frontend/src/components/layout/Shell.jsx → frontend/src/lib/utils.js
-- `Accordion()` --calls--> `cn()`  [INFERRED]
-  frontend/src/components/ui/accordion.jsx → frontend/src/lib/utils.js
-- `AccordionItem()` --calls--> `cn()`  [INFERRED]
-  frontend/src/components/ui/accordion.jsx → frontend/src/lib/utils.js
+- `Run defect + component correlation for one coach.     Returns summary dict.` --rationale_for--> `correlate_coach()`  [EXTRACTED]
+  services/correlation/engine.py → correlation/engine.py
+- `correlate()` --calls--> `correlate_coach()`  [INFERRED]
+  services/correlation/server.py → correlation/engine.py
+- `True when every session_camera for this session has frame_count > 0.` --rationale_for--> `_all_cameras_done()`  [EXTRACTED]
+  services/frame_extractor/server.py → frame_extractor/server.py
+- `Insert a batch of frame rows and update the live counters in the DB.` --rationale_for--> `_flush_rows()`  [EXTRACTED]
+  services/frame_extractor/server.py → frame_extractor/server.py
+- `generate()` --calls--> `generate_report()`  [INFERRED]
+  services/report_generator/server.py → report_generator/builder.py
 
 ## Communities (220 total, 83 thin omitted)
 
@@ -289,16 +289,16 @@ Cohesion: 0.22
 Nodes (8): decode_bytes(), predict(), predict_train_number(), YOLO Service — port 5002 Two models loaded at startup on GPU:   best.pt, Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2, Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2
 
 ### Community 11 - "Community 11"
-Cohesion: 0.67
-Nodes (3): 14. AI INTELLIGENCE LAYER, Intelligence Features, Purpose
+Cohesion: 0.20
+Nodes (12): correlate_coach(), _fetch_frame_bytes(), load_manifest(), _norm(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to th, Run defect + component correlation for one coach.     Returns summary dict., Run defect + component correlation for one coach.     Returns summary dict., _run_yolo() (+4 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.06
-Nodes (30): BaseModel, correlate_coach(), _fetch_frame_bytes(), load_manifest(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to th, Run defect + component correlation for one coach.     Returns summary dict., _run_yolo(), correlate() (+22 more)
+Cohesion: 0.12
+Nodes (21): BaseModel, _all_cameras_done(), extract(), ExtractRequest, _flush_rows(), get_conn(), health(), _load_root_config() (+13 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.26
-Nodes (10): FPDF, build_json_report(), build_pdf_report(), generate_report(), _health_color(), load_session_data(), _PDF, Report builder — Phase 4 Reads full session from DB → builds PDF (fpdf2) + JSON (+2 more)
+Cohesion: 0.19
+Nodes (15): FPDF, build_json_report(), build_pdf_report(), generate_report(), _health_color(), load_session_data(), _PDF, Report builder — Phase 4 Reads full session from DB → builds PDF (fpdf2) + JSON (+7 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.22
@@ -362,7 +362,7 @@ Nodes (6): name, private, scripts, install:all, start, version
 
 ### Community 33 - "Community 33"
 Cohesion: 0.67
-Nodes (3): 28. TRAIN-CENTRIC ARCHITECTURE, code:text (Dashboard), Correct Architecture
+Nodes (3): 25. SCALABILITY STRATEGY, Future Scale, Horizontal Scaling
 
 ### Community 34 - "Community 34"
 Cohesion: 0.28
@@ -393,8 +393,8 @@ Cohesion: 0.07
 Nodes (26): 1.1 Ingestion & Session Management, 1.2 Inspection Intelligence, 1. REST API Interface Specification, 2.1 Client Subscriptions, 2.2 Server Broadcasts, 2. WebSocket Protocol Schema, Coach Maps Completed (`coaches_mapped`), code:json ({) (+18 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.10
-Nodes (20): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 25. SCALABILITY STRATEGY, 26. SECURITY ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT, 7. OCR PIPELINE (+12 more)
+Cohesion: 0.08
+Nodes (23): 14. AI INTELLIGENCE LAYER, 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 28. TRAIN-CENTRIC ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+15 more)
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
@@ -781,7 +781,7 @@ Cohesion: 0.67
 Nodes (3): code:text (Report generated successfully.), code:text (Synchronization completed.), TOASTS (MANDATORY)
 
 ## Knowledge Gaps
-- **919 isolated node(s):** `prisma`, `path`, `fs`, `{ pipeline }`, `{ randomUUID }` (+914 more)
+- **917 isolated node(s):** `prisma`, `path`, `fs`, `{ pipeline }`, `{ randomUUID }` (+912 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **83 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -789,13 +789,13 @@ Nodes (3): code:text (Report generated successfully.), code:text (Synchronizatio
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `cn()` connect `Community 42` to `Community 29`, `Community 6`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Why does `clsx` connect `Community 29` to `Community 42`?**
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
+- **Why does `run_sync()` connect `Community 3` to `Community 12`?**
+  _High betweenness centrality (0.003) - this node is a cross-community bridge._
 - **Are the 21 inferred relationships involving `cn()` (e.g. with `clsx` and `LiveTrainCard()`) actually correct?**
   _`cn()` has 21 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Run this script once to generate VandeBharat_TechDoc.docx   python generate_docs`, `prisma`, `path` to the rest of the system?**
-  _966 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Run defect + component correlation for one coach.     Returns summary dict.`, `True when every session_camera for this session has frame_count > 0.`, `After all cameras finish, find the camera with the fewest frames (shortest video` to the rest of the system?**
+  _964 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
