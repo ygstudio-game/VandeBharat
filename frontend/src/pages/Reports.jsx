@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePolling } from '../hooks/usePolling';
-import { getSessions, getReport, getHierarchy, getIntelligence, signReport, normalizeSession } from '../lib/api';
+import { getSessions, getReport, generateReport, getHierarchy, getIntelligence, signReport, normalizeSession, getCoachFrames, getFrames } from '../lib/api';
 import { 
   FileText, 
   Search, 
@@ -22,13 +22,20 @@ import {
   Volume2,
   VolumeX,
   Maximize,
+  Maximize2,
+  Cpu,
+  ScanSearch,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
   Activity,
   Sparkles,
   Info,
   CheckCircle,
   MoreVertical,
   SlidersHorizontal,
-  ChevronLeft
+  ChevronLeft,
+  LayoutGrid
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -91,8 +98,6 @@ export const Reports = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [activeCoach, setActiveCoach] = useState(null); // real coach object or label
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playheadPercent, setPlayheadPercent] = useState(0);
-  const [playbackTime, setPlaybackTime] = useState('00:00:00');
   const [isMuted, setIsMuted] = useState(false);
 
   // Real data from backend
@@ -100,6 +105,37 @@ export const Reports = () => {
   const [coachIntel, setCoachIntel] = useState(null); // intelligence response for active coach
   const [intelLoading, setIntelLoading] = useState(false);
   const [activeDefectIndex, setActiveDefectIndex] = useState(0);
+
+  // Frame player states
+  const [coachFrames, setCoachFrames] = useState([]);
+  const [selectedFrame, setSelectedFrame] = useState(null);
+  const [framesLoading, setFramesLoading] = useState(false);
+
+  // Bounding box overlay & zoom states
+  const [showOcrBoxes, setShowOcrBoxes] = useState(false);
+  const [showDefectBoxes, setShowDefectBoxes] = useState(true);
+  const [showComponentBoxes, setShowComponentBoxes] = useState(true);
+  const [zoomLevel, setZoomLevel] = useState(100);
+  const [layoutMode, setLayoutMode] = useState('single');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Canvas and Image references
+  const imgRef = useRef(null);
+  const canvasRef = useRef(null);
+  const fullscreenImgRef = useRef(null);
+  const fullscreenCanvasRef = useRef(null);
+  const pendingSeekFrameIndexRef = useRef(null);
+  const isPlayingRef = useRef(isPlaying);
+  const coachFramesRef = useRef(coachFrames);
+  const selectedFrameRef = useRef(selectedFrame);
+  const activeCoachRef = useRef(activeCoach);
+  const realCoachesRef = useRef(realCoaches);
+
+  useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
+  useEffect(() => { coachFramesRef.current = coachFrames; }, [coachFrames]);
+  useEffect(() => { selectedFrameRef.current = selectedFrame; }, [selectedFrame]);
+  useEffect(() => { activeCoachRef.current = activeCoach; }, [activeCoach]);
+  useEffect(() => { realCoachesRef.current = realCoaches; }, [realCoaches]);
 
   // Operator review actions
   const [pendingReviews, setPendingReviews] = useState(0);
@@ -112,20 +148,43 @@ export const Reports = () => {
   const [isDownloading, setIsDownloading] = useState(null); // report ID
 
   const handleDownload = async (report) => {
-    // Try to get the real PDF URL first
-    if (report.pdfUrl) {
-      window.open(report.pdfUrl, '_blank');
-      return;
-    }
-    setIsDownloading(report.id);
+    if (!report) return;
+    const reportId = typeof report === 'string' ? report : report.id;
+
+    setIsDownloading(reportId);
     try {
-      const data = await getReport(report.id);
-      if (data?.pdf_url) {
-        setReportOverrides(prev => ({ ...prev, [report.id]: { pdfUrl: data.pdf_url } }));
-        window.open(data.pdf_url, '_blank');
+      // Always generate or update report first to ensure it's generated
+      await generateReport(reportId);
+
+      // Poll GET /api/sessions/:id/report until the PDF is ready
+      let attempts = 0;
+      const maxAttempts = 30; // up to 60 seconds
+      let pdfUrl = null;
+
+      while (attempts < maxAttempts) {
+        attempts++;
+        // Wait 2 seconds
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const data = await getReport(reportId);
+        if (data && data.report_ready && data.pdf_url) {
+          pdfUrl = data.pdf_url;
+          break;
+        } else if (data && data.status === 'failed') {
+          throw new Error("Report generation failed in the background: " + (data.message || 'unknown error'));
+        }
       }
-    } catch (_) {
-      alert('Report PDF not yet available. Generate it first from the session workspace.');
+
+      if (pdfUrl) {
+        const fullUrl = pdfUrl.startsWith('http') ? pdfUrl : `http://localhost:8001${pdfUrl}`;
+        setReportOverrides(prev => ({ ...prev, [reportId]: { pdfUrl: fullUrl } }));
+        window.open(fullUrl, '_blank');
+      } else {
+        alert('Timeout waiting for PDF report generation. Please try again or verify session completion.');
+      }
+    } catch (err) {
+      console.error("PDF generation or retrieval failed:", err);
+      alert('Failed to generate or fetch PDF Report: ' + (err.message || 'Server error'));
     } finally {
       setIsDownloading(null);
     }
@@ -155,57 +214,375 @@ export const Reports = () => {
 
   // Fetch coaches when a report is selected
   useEffect(() => {
-    if (!selectedReport) { setRealCoaches([]); setCoachIntel(null); setActiveCoach(null); return; }
+    if (!selectedReport) { 
+      setRealCoaches([]); 
+      setCoachIntel(null); 
+      setCoachFrames([]);
+      setSelectedFrame(null);
+      setActiveCoach(null); 
+      setIsPlaying(false);
+      return; 
+    }
     getHierarchy(selectedReport.id)
       .then(data => {
         const coaches = data?.coaches || [];
         setRealCoaches(coaches);
-        if (coaches.length > 0 && !activeCoach) setActiveCoach(coaches[0].coach_number || `B${coaches[0].coach_index + 1}`);
+        if (coaches.length > 0) {
+          const firstCoachLabel = coaches[0].coach_number || `B${coaches[0].coach_index + 1}`;
+          setActiveCoach(firstCoachLabel);
+        } else {
+          // If no coaches exist, we should still fetch overall session frames!
+          setFramesLoading(true);
+          getFrames(selectedReport.id, 200)
+            .then(framesData => {
+              const fetchedFrames = framesData?.frames || [];
+              setCoachFrames(fetchedFrames);
+              if (fetchedFrames.length > 0) {
+                setSelectedFrame(fetchedFrames[0]);
+              }
+            })
+            .catch(err => console.error("Error loading overall frames:", err))
+            .finally(() => setFramesLoading(false));
+        }
       })
       .catch(() => setRealCoaches([]));
   }, [selectedReport?.id]);
 
-  // Fetch intelligence when active coach changes
+  // Fetch intelligence and frames in parallel when active coach changes
   useEffect(() => {
     if (!selectedReport || !activeCoach || realCoaches.length === 0) return;
     const coachObj = realCoaches.find(c => (c.coach_number || `B${c.coach_index + 1}`) === activeCoach);
     if (!coachObj) return;
     setIntelLoading(true);
+    setFramesLoading(true);
     setActiveDefectIndex(0);
-    getIntelligence(selectedReport.id, coachObj.id)
-      .then(data => setCoachIntel(data))
-      .catch(() => setCoachIntel(null))
-      .finally(() => setIntelLoading(false));
+
+    Promise.all([
+      getIntelligence(selectedReport.id, coachObj.id),
+      getCoachFrames(selectedReport.id, coachObj.id, 200)
+    ]).then(([intelData, framesData]) => {
+      setCoachIntel(intelData);
+      const fetchedFrames = framesData?.frames || [];
+      setCoachFrames(fetchedFrames);
+      
+      // Auto-select first defect frame, or first frame if none has defect, or target seek frame if available
+      if (fetchedFrames.length > 0) {
+        if (pendingSeekFrameIndexRef.current !== null) {
+          const idx = Math.min(fetchedFrames.length - 1, Math.max(0, pendingSeekFrameIndexRef.current));
+          setSelectedFrame(fetchedFrames[idx]);
+          pendingSeekFrameIndexRef.current = null; // reset seek
+        } else {
+          const defectFrame = fetchedFrames.find(f => f.is_defect_flagged || f.defects?.length > 0);
+          setSelectedFrame(defectFrame || fetchedFrames[0]);
+        }
+      } else {
+        setSelectedFrame(null);
+      }
+    }).catch(err => {
+      console.error("Error loading coach data:", err);
+      setCoachIntel(null);
+      setCoachFrames([]);
+      setSelectedFrame(null);
+    }).finally(() => {
+      setIntelLoading(false);
+      setFramesLoading(false);
+    });
   }, [activeCoach, selectedReport?.id, realCoaches]);
 
-  // Playhead auto-update
+  // Ultra-smooth single-interval continuous video playback loop
   useEffect(() => {
-    let interval;
-    if (isPlaying && realCoaches.length > 0) {
-      interval = setInterval(() => {
-        setPlayheadPercent(prev => {
-          let next = prev + 0.5;
-          if (next > 100) next = 0;
-          const coachCount = realCoaches.length || 1;
-          const coachIdx = Math.min(Math.floor((next / 100) * coachCount), coachCount - 1);
-          const c = realCoaches[coachIdx];
-          setActiveCoach(c?.coach_number || `B${(c?.coach_index ?? coachIdx) + 1}`);
-          return next;
-        });
-      }, 150);
-    }
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      const frames = coachFramesRef.current;
+      const selected = selectedFrameRef.current;
+      const coaches = realCoachesRef.current;
+      const coach = activeCoachRef.current;
+
+      if (frames.length > 0 && selected) {
+        const currentIdx = frames.findIndex(f => f.id === selected.id);
+        if (currentIdx !== -1 && currentIdx < frames.length - 1) {
+          // Advance frame in current coach
+          setSelectedFrame(frames[currentIdx + 1]);
+        } else {
+          // Reached the end of current coach frames. Let's move to next coach!
+          if (coaches.length > 0) {
+            const activeIdx = coaches.findIndex(c => (c.coach_number || `B${c.coach_index + 1}`) === coach);
+            if (activeIdx !== -1 && activeIdx < coaches.length - 1) {
+              const nextCoach = coaches[activeIdx + 1];
+              const nextCoachLabel = nextCoach.coach_number || `B${nextCoach.coach_index + 1}`;
+              // Set pending index to 0 so the first frame gets selected immediately
+              pendingSeekFrameIndexRef.current = 0;
+              setActiveCoach(nextCoachLabel);
+            } else {
+              // Reached very end of train. Pause playback.
+              setIsPlaying(false);
+            }
+          } else {
+            // Reached end of single list playback
+            setIsPlaying(false);
+          }
+        }
+      }
+    }, 200);
     return () => clearInterval(interval);
-  }, [isPlaying, realCoaches]);
+  }, [isPlaying]);
+
+  // Arrow key frame navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ignore key events if focused on input/textarea
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') {
+        return;
+      }
+      if (coachFrames.length === 0 || !selectedFrame) return;
+
+      const currentIndex = coachFrames.findIndex((f) => f.id === selectedFrame.id);
+      if (currentIndex === -1) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % coachFrames.length;
+        setSelectedFrame(coachFrames[nextIndex]);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIndex = (currentIndex - 1 + coachFrames.length) % coachFrames.length;
+        setSelectedFrame(coachFrames[prevIndex]);
+      }
+
+      if (e.key === 'Escape') {
+        setIsFullscreen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [coachFrames, selectedFrame, isFullscreen]);
+
+  // Derived Playhead calculations
+  const activeCoachIdx = realCoaches.findIndex(c => (c.coach_number || `B${c.coach_index + 1}`) === activeCoach);
+  const currentFrameIdx = selectedFrame && coachFrames.length > 0 ? coachFrames.findIndex(f => f.id === selectedFrame.id) : 0;
+  
+  const totalCoaches = realCoaches.length || 1;
+  const coachFramesCount = coachFrames.length || 1;
+  
+  const coachContribution = (activeCoachIdx >= 0 ? activeCoachIdx : 0) / totalCoaches;
+  const frameContribution = (currentFrameIdx >= 0 ? currentFrameIdx : 0) / coachFramesCount / totalCoaches;
+  
+  const playheadPercent = (coachContribution + frameContribution) * 100;
+
+  // Format seconds to dynamic timer
+  const formatTime = (secs) => {
+    const h = Math.floor(secs / 3600).toString().padStart(2, '0');
+    const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
+
+  // Derive dynamic total duration from the selected session's completed_at vs started_at
+  const sessionObj = sessionsData?.sessions?.find(s => s.id === selectedReport?.id);
+  const started = sessionObj?.started_at ? new Date(sessionObj.started_at) : null;
+  const completed = sessionObj?.completed_at ? new Date(sessionObj.completed_at) : null;
+  const durationSeconds = started && completed ? Math.max(1, Math.floor((completed - started) / 1000)) : 261; // fallback to 4m 21s
+  const playbackTime = formatTime(Math.floor((playheadPercent / 100) * durationSeconds));
 
   // Jump to specific coach
   const jumpToCoach = (coachLabel) => {
     setActiveCoach(coachLabel);
-    const idx = realCoaches.findIndex(c => (c.coach_number || `B${c.coach_index + 1}`) === coachLabel);
-    if (idx >= 0 && realCoaches.length > 0) {
-      const pct = ((idx + 0.5) / realCoaches.length) * 100;
-      setPlayheadPercent(pct);
+  };
+
+  // Seek timeline by clicking on the timeline track
+  const handleTimelineClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickPct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+
+    if (realCoaches.length === 0) {
+      if (coachFrames.length > 0) {
+        const frameIdx = Math.min(coachFrames.length - 1, Math.max(0, Math.floor(clickPct * coachFrames.length)));
+        setSelectedFrame(coachFrames[frameIdx]);
+      }
+      return;
+    }
+
+    const totalPos = clickPct * totalCoaches;
+    const clickedCoachIdx = Math.min(totalCoaches - 1, Math.floor(totalPos));
+    const clickedCoach = realCoaches[clickedCoachIdx];
+    if (clickedCoach) {
+      const clickedCoachLabel = clickedCoach.coach_number || `B${clickedCoach.coach_index + 1}`;
+      const clickedFrameFraction = totalPos - clickedCoachIdx;
+      
+      // Target seeking frame index fraction
+      const targetFrameIdx = Math.floor(clickedFrameFraction * (coachFrames.length > 0 ? coachFrames.length : 29));
+
+      if (activeCoach === clickedCoachLabel) {
+        if (coachFrames.length > 0) {
+          const frameIdx = Math.min(coachFrames.length - 1, Math.max(0, targetFrameIdx));
+          setSelectedFrame(coachFrames[frameIdx]);
+        }
+      } else {
+        pendingSeekFrameIndexRef.current = targetFrameIdx;
+        setActiveCoach(clickedCoachLabel);
+      }
     }
   };
+
+  // Canvas drawing callback
+  const drawOverlay = useCallback(() => {
+    const img = imgRef.current;
+    const canvas = canvasRef.current;
+    if (!img || !canvas || !selectedFrame) return;
+
+    canvas.width = img.offsetWidth;
+    canvas.height = img.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!showOcrBoxes && !showDefectBoxes && !showComponentBoxes) return;
+    if (!img.naturalWidth) return;
+
+    // Compute letterbox offsets for object-contain scaling
+    const scaleX = img.offsetWidth / img.naturalWidth;
+    const scaleY = img.offsetHeight / img.naturalHeight;
+    const scale = Math.min(scaleX, scaleY);
+    const offX = (img.offsetWidth - img.naturalWidth * scale) / 2;
+    const offY = (img.offsetHeight - img.naturalHeight * scale) / 2;
+
+    const drawBox = (bx, by, bw, bh, color, label) => {
+      if (bx == null) return;
+      const x = bx * scale + offX;
+      const y = by * scale + offY;
+      const w = bw * scale;
+      const h = bh * scale;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = color.replace(')', ', 0.08)').replace('rgb', 'rgba');
+      ctx.fillRect(x, y, w, h);
+      if (label) {
+        ctx.font = 'bold 11px monospace';
+        ctx.fillStyle = color;
+        const tw = ctx.measureText(label).width;
+        ctx.fillStyle = 'rgba(0,0,0,0.65)';
+        ctx.fillRect(x, y > 14 ? y - 14 : y, tw + 4, 13);
+        ctx.fillStyle = color;
+        ctx.fillText(label, x + 2, y > 14 ? y - 3 : y + 10);
+      }
+    };
+
+    if (showOcrBoxes) {
+      for (const r of selectedFrame.ocr_results || []) {
+        const label = r.is_valid
+          ? `Coach ${r.coach_number} (${Math.round(r.confidence * 100)}%)`
+          : `? (${Math.round(r.confidence * 100)}%)`;
+        drawBox(r.bbox_x, r.bbox_y, r.bbox_w, r.bbox_h, 'rgb(59,130,246)', label);
+      }
+    }
+
+    if (showComponentBoxes) {
+      const currentDetections = coachIntel?.components_detected?.filter(
+        c => c.trigger_id === selectedFrame.trigger_id || c.frame_url === selectedFrame.cloudinary_url
+      ) || [];
+      for (const d of currentDetections) {
+        const label = `${d.component_name ?? d.component_code} ${Math.round(d.confidence * 100)}%`;
+        drawBox(d.bbox?.x, d.bbox?.y, d.bbox?.w, d.bbox?.h, 'rgb(163,230,53)', label);
+      }
+    }
+
+    if (showDefectBoxes) {
+      for (const d of selectedFrame.defects || []) {
+        const color = d.severity === 'CRITICAL' ? 'rgb(239,68,68)' : 'rgb(245,158,11)';
+        drawBox(d.bbox_x, d.bbox_y, d.bbox_w, d.bbox_h, color, d.defect_type);
+      }
+    }
+  }, [showOcrBoxes, showDefectBoxes, showComponentBoxes, selectedFrame, coachIntel]);
+
+  const drawFullscreenOverlay = useCallback(() => {
+    const img    = fullscreenImgRef.current;
+    const canvas = fullscreenCanvasRef.current;
+    if (!img || !canvas || !isFullscreen || !selectedFrame) return;
+
+    canvas.width  = img.offsetWidth;
+    canvas.height = img.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!showOcrBoxes && !showDefectBoxes && !showComponentBoxes) return;
+    if (!img.naturalWidth) return;
+
+    // Compute letterbox offsets for object-contain scaling
+    const scaleX  = img.offsetWidth  / img.naturalWidth;
+    const scaleY  = img.offsetHeight / img.naturalHeight;
+    const scale   = Math.min(scaleX, scaleY);
+    const offX    = (img.offsetWidth  - img.naturalWidth  * scale) / 2;
+    const offY    = (img.offsetHeight - img.naturalHeight * scale) / 2;
+
+    const drawBox = (bx, by, bw, bh, color, label) => {
+      if (bx == null) return;
+      const x = bx * scale + offX;
+      const y = by * scale + offY;
+      const w = bw * scale;
+      const h = bh * scale;
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2.5; // Slightly thicker for fullscreen view
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle   = color.replace(')', ', 0.12)').replace('rgb', 'rgba');
+      ctx.fillRect(x, y, w, h);
+      if (label) {
+        ctx.font      = 'bold 12px monospace';
+        ctx.fillStyle = color;
+        const tw = ctx.measureText(label).width;
+        ctx.fillStyle = 'rgba(0,0,0,0.75)';
+        ctx.fillRect(x, y > 15 ? y - 15 : y, tw + 4, 14);
+        ctx.fillStyle = color;
+        ctx.fillText(label, x + 2, y > 15 ? y - 3 : y + 11);
+      }
+    };
+
+    if (showOcrBoxes) {
+      for (const r of selectedFrame?.ocr_results || []) {
+        const label = r.is_valid
+          ? `Coach ${r.coach_number} (${Math.round(r.confidence * 100)}%)`
+          : `? (${Math.round(r.confidence * 100)}%)`;
+        drawBox(r.bbox_x, r.bbox_y, r.bbox_w, r.bbox_h, 'rgb(59,130,246)', label);
+      }
+    }
+
+    if (showComponentBoxes) {
+      const currentDetections = coachIntel?.components_detected?.filter(
+        c => c.trigger_id === selectedFrame.trigger_id || c.frame_url === selectedFrame.cloudinary_url
+      ) || [];
+      for (const d of currentDetections) {
+        const label = `${d.component_name ?? d.component_code} ${Math.round(d.confidence * 100)}%`;
+        drawBox(d.bbox?.x, d.bbox?.y, d.bbox?.w, d.bbox?.h, 'rgb(163,230,53)', label);
+      }
+    }
+
+    if (showDefectBoxes) {
+      for (const d of selectedFrame?.defects || []) {
+        const color = d.severity === 'CRITICAL' ? 'rgb(239,68,68)' : 'rgb(245,158,11)';
+        drawBox(d.bbox_x, d.bbox_y, d.bbox_w, d.bbox_h, color, d.defect_type);
+      }
+    }
+  }, [showOcrBoxes, showDefectBoxes, showComponentBoxes, selectedFrame, coachIntel, isFullscreen]);
+
+  useEffect(() => {
+    if (isFullscreen) {
+      const timer = setTimeout(() => {
+        drawFullscreenOverlay();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [drawFullscreenOverlay, isFullscreen, selectedFrame]);
+
+  // Hook to redraw canvas
+  useEffect(() => {
+    const handleResize = () => {
+      drawOverlay();
+      if (isFullscreen) drawFullscreenOverlay();
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [drawOverlay, drawFullscreenOverlay, isFullscreen, selectedFrame]);
 
   const filteredReports = displayReports.filter(rep => {
     const matchesSearch = rep.trainNumber.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -275,7 +652,7 @@ export const Reports = () => {
                   TRAIN {selectedReport.trainNumber}
                 </span>
                 <span className="text-slate-500 text-xs font-mono font-bold">
-                  / SESSION: INS-2026-0045
+                  / SESSION: {selectedReport.id}
                 </span>
                 <span className="ml-2">
                   {selectedReport.status === 'APPROVED' ? (
@@ -290,7 +667,7 @@ export const Reports = () => {
                 </span>
               </div>
               <div className="flex gap-4 mt-1 text-[10px] font-mono text-slate-400 font-bold uppercase">
-                <div className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> <span>00:04:21</span></div>
+                <div className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> <span>{formatTime(durationSeconds)}</span></div>
                 <div className="flex items-center gap-1"><Train className="w-3.5 h-3.5" /> <span>{selectedReport.totalCoaches} Coaches</span></div>
                 <div className="flex items-center gap-1 text-red-600 font-extrabold"><AlertTriangle className="w-3.5 h-3.5" /> <span>{selectedReport.criticalDefects} Critical Defects</span></div>
               </div>
@@ -299,7 +676,7 @@ export const Reports = () => {
           
           <div className="flex gap-2">
             <button 
-              onClick={() => handleDownload(selectedReport.id)}
+              onClick={() => handleDownload(selectedReport)}
               disabled={isDownloading === selectedReport.id}
               className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:bg-slate-50 text-primary text-xs font-bold uppercase tracking-wider transition-all rounded shadow-sm"
             >
@@ -429,95 +806,274 @@ export const Reports = () => {
                 <Sparkles className="text-primary w-8 h-8 opacity-80" />
               </div>
             </div>
-
-            {/* Defect Evidence Card */}
-            {activeDefect ? (
-              <div className="bg-white border border-slate-200 rounded shadow-sm overflow-hidden">
-                <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse"></span>
-                    <span className="text-xs font-black text-slate-800 uppercase tracking-tight">
-                      {activeDefect.name}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-400 font-bold">
-                      REF: {activeDefect.ref}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {defects.length > 1 && (
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => setActiveDefectIndex(prev => Math.max(0, prev - 1))}
-                          disabled={activeDefectIndex === 0}
-                          className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[9px] font-bold disabled:opacity-30 hover:bg-slate-100"
-                        >◀</button>
-                        <span className="text-[9px] font-mono text-slate-500">{activeDefectIndex + 1}/{defects.length}</span>
-                        <button
-                          onClick={() => setActiveDefectIndex(prev => Math.min(defects.length - 1, prev + 1))}
-                          disabled={activeDefectIndex >= defects.length - 1}
-                          className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[9px] font-bold disabled:opacity-30 hover:bg-slate-100"
-                        >▶</button>
-                      </div>
-                    )}
-                    <span className="text-[10px] font-mono text-slate-400 font-bold">{activeDefect.timestamp}</span>
-                  </div>
+            {/* Real-time Interactive Frame Viewer & Canvas Overlay System */}
+            <div className="bg-white border border-slate-200 rounded shadow-sm overflow-hidden flex flex-col">
+              {/* Toolbar */}
+              <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                {/* Overlay toggles */}
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-black text-slate-500 uppercase mr-1">Overlays:</span>
+                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 hover:bg-slate-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={showDefectBoxes}
+                      onChange={(e) => setShowDefectBoxes(e.target.checked)}
+                      className="rounded text-red-600 focus:ring-red-500"
+                    />
+                    <span className="flex items-center gap-1"><AlertTriangle className="w-3.5 h-3.5 text-red-600" /> Defects</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 hover:bg-slate-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={showComponentBoxes}
+                      onChange={(e) => setShowComponentBoxes(e.target.checked)}
+                      className="rounded text-lime-600 focus:ring-lime-500"
+                    />
+                    <span className="flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5 text-lime-600" /> Components</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 hover:bg-slate-50 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={showOcrBoxes}
+                      onChange={(e) => setShowOcrBoxes(e.target.checked)}
+                      className="rounded text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5 text-blue-600" /> OCR</span>
+                  </label>
                 </div>
+                {/* Zoom controls */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center bg-white border border-slate-200 rounded p-0.5 shadow-sm mr-2">
+                    <button 
+                      onClick={() => setLayoutMode('single')} 
+                      className={`p-1.5 rounded transition-all ${layoutMode === 'single' ? 'bg-slate-100 text-slate-800' : 'text-slate-400'}`} 
+                      title="Single frame"
+                    >
+                      <Maximize className="w-3.5 h-3.5" />
+                    </button>
+                    <button 
+                      onClick={() => setLayoutMode('grid')} 
+                      className={`p-1.5 rounded transition-all ${layoutMode === 'grid' ? 'bg-slate-100 text-slate-800' : 'text-slate-400'}`} 
+                      title="Frame grid"
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
 
-                <div className="grid grid-cols-1 xl:grid-cols-4">
-                  {/* Multicam / Frame View */}
-                  <div className={`xl:col-span-3 p-4 gap-2 bg-slate-950 grid ${activeDefect.cams.length >= 3 ? 'grid-cols-3' : activeDefect.cams.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                    {activeDefect.cams.length > 0 ? activeDefect.cams.map((src, i) => (
-                      <div key={i} className="relative aspect-video bg-black overflow-hidden border border-white/10 group rounded">
-                        <img 
-                          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" 
-                          src={src} 
-                          alt={`Frame ${i+1}`}
-                        />
-                        <div className="absolute inset-0 border-2 border-primary/20 pointer-events-none"></div>
-                        <div className="absolute top-2 left-2 bg-black/60 px-1.5 py-0.5 rounded text-[8px] font-mono text-white">
-                          {i === 0 ? 'ORIGINAL' : 'ANNOTATED'}
+                  {layoutMode === 'single' && (
+                    <button 
+                      onClick={() => setIsFullscreen(true)} 
+                      className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-slate-800 rounded transition-all border border-slate-200 bg-white shadow-sm cursor-pointer mr-2 flex items-center justify-center" 
+                      title="Toggle Fullscreen"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5 text-slate-600" />
+                    </button>
+                  )}
+
+                  <span className="text-xs font-bold text-slate-505 font-mono">{zoomLevel}%</span>
+                  <button
+                    onClick={() => setZoomLevel((prev) => Math.max(50, prev - 25))}
+                    className="p-1 bg-white border border-slate-200 rounded text-slate-600 hover:bg-slate-100 font-black text-xs px-2"
+                    title="Zoom Out"
+                  >
+                    -
+                  </button>
+                  <button
+                    onClick={() => setZoomLevel(100)}
+                    className="p-1 bg-white border border-slate-200 rounded text-xs text-slate-600 hover:bg-slate-100 px-2 font-bold"
+                  >
+                    1:1
+                  </button>
+                  <button
+                    onClick={() => setZoomLevel((prev) => Math.min(200, prev + 25))}
+                    className="p-1 bg-white border border-slate-200 rounded text-slate-600 hover:bg-slate-100 font-black text-xs px-2"
+                    title="Zoom In"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              {/* Viewport & Canvas Overlay Container */}
+              <div className="grid grid-cols-1 xl:grid-cols-4 h-[500px]">
+                <div className="xl:col-span-3 bg-slate-900 rounded-l flex flex-col items-center justify-center relative h-full overflow-hidden shadow-inner border border-slate-950 p-6 group">
+                  {framesLoading ? (
+                    <div className="flex flex-col items-center gap-3 text-white">
+                      <Loader2 className="w-8 h-8 animate-spin text-primary animate-pulse" />
+                      <span className="text-xs font-bold tracking-wider font-mono">LOADING COACH FRAMES...</span>
+                    </div>
+                  ) : coachFrames.length === 0 ? (
+                    <div className="text-slate-400 text-xs italic flex flex-col items-center gap-2">
+                      <Train className="w-8 h-8 opacity-40 text-slate-300" />
+                      No frames available for Coach {activeCoach || 'Overall Session'}.
+                    </div>
+                  ) : layoutMode === 'single' ? (
+                    selectedFrame ? (
+                      <div className="absolute inset-0 flex items-center justify-center p-4" style={{ transform: `scale(${zoomLevel / 100})`, transition: 'transform 0.15s ease-out' }}>
+                        <div className="relative max-w-full max-h-full flex items-center justify-center">
+                          <img
+                            ref={imgRef}
+                            src={selectedFrame.cloudinary_url}
+                            onLoad={drawOverlay}
+                            alt={`Frame Seq ${selectedFrame.sequence_number}`}
+                            className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl block mx-auto"
+                          />
+                          <canvas
+                            ref={canvasRef}
+                            className="absolute inset-0 pointer-events-none rounded"
+                          />
                         </div>
                       </div>
-                    )) : (
-                      <div className="col-span-3 flex items-center justify-center p-8 text-slate-500 text-xs">
-                        No frame images available for this defect.
-                      </div>
-                    )}
-                  </div>
-
-                  {/* AI Reasoning */}
-                  <div className="p-4 flex flex-col gap-4 bg-white">
-                    <div>
-                      <span className="text-[10px] font-black text-primary uppercase block">AI Reasoning</span>
-                      <p className="text-xs font-medium text-slate-700 leading-relaxed mt-2 italic">
-                        "{activeDefect.aiReasoning}"
-                      </p>
-                    </div>
-
-                    <div className="mt-auto pt-4 border-t border-slate-100">
-                      <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase mb-1">
-                        <span>Confidence Level</span>
-                        <span>{activeDefect.confidence}%</span>
-                      </div>
-                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    ) : (
+                      <div className="text-slate-400 text-xs italic">Select a frame to begin analysis.</div>
+                    )
+                  ) : (
+                    <div className="w-full h-[460px] grid grid-cols-3 gap-2 p-4 overflow-y-auto" style={{ transform: `scale(${zoomLevel / 100})`, transition: 'transform 0.2s ease-out' }}>
+                      {coachFrames.slice(0, 24).map((f) => (
                         <div 
-                          className="h-full bg-primary" 
-                          style={{ width: `${activeDefect.confidence}%` }}
-                        />
+                          key={f.id} 
+                          onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }} 
+                          className={`relative bg-slate-950 border rounded overflow-hidden cursor-pointer hover:border-primary transition-all aspect-video ${selectedFrame?.id === f.id ? 'border-primary ring-2 ring-primary/30' : 'border-slate-800'}`}
+                        >
+                          <img src={f.cloudinary_url} alt="" className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" />
+                          <div className="absolute bottom-1 left-1 bg-slate-950/80 px-1.5 py-0.5 rounded font-mono text-[8px] text-slate-300">
+                            #{f.sequence_number}
+                          </div>
+                          {(f.is_defect_flagged || f.defects?.length > 0) && (
+                            <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+                          )}
+                          {f.ocr_results?.some(r => r.is_valid) && (
+                            <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 rounded-full bg-blue-500" />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Frame details badge at top left of viewport */}
+                  {selectedFrame && layoutMode === 'single' && (
+                    <div className="absolute top-4 left-4 bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded border border-slate-800 text-[10px] font-mono text-white flex items-center gap-3 z-20">
+                      <span className="font-extrabold text-primary">FRAME #{selectedFrame.sequence_number}</span>
+                      <span className="text-slate-500">|</span>
+                      <span>TRIGGER: {selectedFrame.trigger_id}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* AI / Defect / Frame Inspector Panel */}
+                <div className="p-5 flex flex-col gap-4 bg-white border-l border-slate-200 h-full overflow-y-auto w-full">
+                  {selectedFrame && selectedFrame.defects && selectedFrame.defects.length > 0 ? (
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse"></span>
+                          <span className="text-[10px] font-black uppercase tracking-wider text-red-600">
+                            ANOMALY DETECTED
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 uppercase leading-snug">
+                          {selectedFrame.defects[0].defect_type}
+                        </h4>
+                        <p className="text-xs font-semibold text-slate-505 font-mono mt-1">
+                          SEVERITY: <span className={selectedFrame.defects[0].severity === 'CRITICAL' ? 'text-red-600 font-extrabold' : 'text-amber-500'}>{selectedFrame.defects[0].severity}</span>
+                        </p>
+                        
+                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100 italic">
+                          "{selectedFrame.defects[0].ai_notes || `Computer vision model flagged visual discrepancy matching target classes with ${Math.round(selectedFrame.defects[0].confidence * 100)}% accuracy.`}"
+                        </p>
+                      </div>
+
+                      <div className="pt-4 border-t border-slate-100">
+                        <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase mb-1">
+                          <span>Model Confidence</span>
+                          <span>{Math.round(selectedFrame.defects[0].confidence * 100)}%</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full ${selectedFrame.defects[0].severity === 'CRITICAL' ? 'bg-red-500' : 'bg-amber-500'}`}
+                            style={{ width: `${Math.round(selectedFrame.defects[0].confidence * 100)}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
+                          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">
+                            NOMINAL STATUS
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 uppercase leading-snug">
+                          Visual Diagnostics Clear
+                        </h4>
+                        <p className="text-xs font-medium text-slate-500 mt-1">
+                          Coach {activeCoach} Frame #{selectedFrame?.sequence_number || '—'}
+                        </p>
+                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100">
+                          Machine vision inspection registers no structural deviation. Suspensions, undercarriages, and safety attachments conform to baseline standards.
+                        </p>
+                      </div>
+                      
+                      {selectedFrame && coachIntel?.components_detected?.filter(
+                        c => c.trigger_id === selectedFrame.trigger_id || c.frame_url === selectedFrame.cloudinary_url
+                      ).length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-slate-100">
+                          <span className="text-[9px] font-black text-slate-400 uppercase block mb-2">Detected Components</span>
+                          <div className="flex flex-wrap gap-1">
+                            {coachIntel.components_detected
+                              .filter(c => c.trigger_id === selectedFrame.trigger_id || c.frame_url === selectedFrame.cloudinary_url)
+                              .map((c, i) => (
+                                <span key={i} className="text-[9px] font-bold px-2 py-0.5 rounded bg-lime-50 text-lime-700 border border-lime-200">
+                                  {c.component_name || c.component_code}
+                                </span>
+                              ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
-            ) : (
-              <div className="bg-white border border-slate-200 rounded p-8 shadow-sm flex flex-col items-center justify-center text-center">
-                <CheckCircle2 className="w-12 h-12 text-emerald-500 mb-3" />
-                <h4 className="text-sm font-bold text-slate-800 uppercase">Coach {activeCoach} Nominal</h4>
-                <p className="text-xs text-slate-500 max-w-sm mt-1">
-                  Machine vision analysis shows no anomalies. All primary suspension structures and braking components are within baseline tolerances.
-                </p>
-              </div>
-            )}
+
+              {/* Timeline Micro-Strip (Thumbnails) */}
+              {coachFrames.length > 0 && (
+                <div className="bg-slate-900 border-t border-slate-800 p-3 flex flex-col gap-2 shrink-0">
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Coach Frame Micro-timeline</span>
+                    <span className="text-[9px] font-mono text-slate-400 font-bold bg-slate-800 px-2 py-0.5 rounded">
+                      {coachFrames.findIndex(f => f.id === selectedFrame?.id) + 1} / {coachFrames.length} Frames
+                    </span>
+                  </div>
+                  
+                  <div className="flex gap-2 overflow-x-auto py-1 px-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                    {coachFrames.map((frame) => {
+                      const isSelected = selectedFrame?.id === frame.id;
+                      const hasDefects = frame.defects && frame.defects.length > 0;
+                      const hasOcr = frame.ocr_results && frame.ocr_results.length > 0;
+                      return (
+                        <button
+                          key={frame.id}
+                          onClick={() => setSelectedFrame(frame)}
+                          className={`relative aspect-video h-12 rounded overflow-hidden flex-shrink-0 border-2 transition-all ${isSelected ? 'border-primary scale-105 shadow-md shadow-primary/20' : 'border-slate-700 hover:border-slate-400 opacity-60 hover:opacity-100'}`}
+                        >
+                          <img
+                            src={frame.thumbnail_url || frame.cloudinary_url}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                          {hasDefects && (
+                            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-600 rounded-full border border-white animate-pulse" />
+                          )}
+                          {hasOcr && (
+                            <span className="absolute bottom-1 right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border border-white" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Secondary Intelligence Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -661,10 +1217,10 @@ export const Reports = () => {
             >
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
             </button>
-            <span className="text-white font-mono text-xs tracking-wider">{playbackTime} / 00:04:21</span>
+            <span className="text-white font-mono text-xs tracking-wider">{playbackTime} / {formatTime(durationSeconds)}</span>
           </div>
 
-          <div className="flex-1 relative h-10 flex items-center">
+          <div onClick={handleTimelineClick} className="flex-1 relative h-10 flex items-center cursor-pointer">
             {/* Timeline Track */}
             <div className="w-full h-1 bg-white/20 rounded-full" />
             
@@ -1009,6 +1565,132 @@ export const Reports = () => {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Overlay Viewport */}
+      {isFullscreen && (
+        <div className="fixed inset-0 bg-[#faf9ff] text-[#051a3e] z-[9999] flex flex-col justify-between p-6 select-none animate-in fade-in duration-200 font-sans">
+          {/* Top floating control panel */}
+          <div className="flex items-center justify-between bg-white border border-[#c3c6d6]/60 rounded p-3 px-4 shadow-sm shrink-0">
+            <div className="flex items-center gap-3">
+              <span className="bg-[#003d9b]/10 text-[#003d9b] border border-[#003d9b]/20 text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded">
+                FULLSCREEN
+              </span>
+              <div>
+                <h4 className="text-xs font-black text-[#051a3e] uppercase tracking-wider">
+                  {selectedFrame ? `Frame #${selectedFrame.sequence_number}` : 'Loading...'}
+                </h4>
+                <p className="text-[9px] text-[#737685] font-mono">
+                  {selectedFrame ? `TRIGGER_ID: ${selectedFrame.trigger_id}` : '—'}
+                </p>
+              </div>
+            </div>
+
+            {/* Bounding box toggles & Zoom in Fullscreen */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1 bg-[#e9edff] border border-[#c3c6d6]/50 rounded p-0.5 shadow-sm">
+                <button
+                  onClick={() => setShowOcrBoxes(p => !p)}
+                  title="Toggle OCR bounding boxes"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer ${showOcrBoxes ? 'bg-[#003d9b] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
+                >
+                  <ScanSearch className="w-3.5 h-3.5" /> OCR
+                </button>
+                <button
+                  onClick={() => setShowDefectBoxes(p => !p)}
+                  title="Toggle defect bounding boxes"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer ${showDefectBoxes ? 'bg-[#ba1a1a] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
+                >
+                  <AlertTriangle className="w-3.5 h-3.5" /> Defects
+                </button>
+                <button
+                  onClick={() => setShowComponentBoxes(p => !p)}
+                  title="Toggle component detection boxes"
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer ${showComponentBoxes ? 'bg-[#004b59] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
+                >
+                  <Cpu className="w-3.5 h-3.5" /> Components
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-[#e9edff] border border-[#c3c6d6]/50 rounded p-1 shadow-sm text-xs font-mono font-bold text-[#051a3e]">
+                <button onClick={() => setZoomLevel(p => Math.max(50, p - 10))} className="p-1 hover:bg-[#d8e2ff] rounded cursor-pointer"><ZoomOut className="w-3.5 h-3.5 text-[#434654]" /></button>
+                <span className="w-10 text-center">{zoomLevel}%</span>
+                <button onClick={() => setZoomLevel(p => Math.min(200, p + 10))} className="p-1 hover:bg-[#d8e2ff] rounded cursor-pointer"><ZoomIn className="w-3.5 h-3.5 text-[#434654]" /></button>
+              </div>
+            </div>
+
+            {/* Exit fullscreen button */}
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="p-1.5 rounded bg-white hover:bg-[#e9edff] text-[#434654] hover:text-[#051a3e] transition-all cursor-pointer border border-[#c3c6d6]/60 shadow-sm"
+              title="Exit Fullscreen (Esc)"
+            >
+              <Minimize2 className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Main viewport area */}
+          <div className="flex-1 flex overflow-hidden min-h-0 relative my-4 gap-4">
+            
+            {/* Center: Scaled Image & Canvas Overlay */}
+            <div className="flex-1 flex items-center justify-center relative overflow-hidden bg-slate-955 rounded-lg border border-slate-900 shadow-inner">
+              {!selectedFrame ? (
+                <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-2">
+                  <Loader2 className="w-8 h-8 animate-spin text-[#003d9b]" />
+                  <span className="text-xs font-bold font-sans">Loading frame data...</span>
+                </div>
+              ) : (
+                <>
+                  {/* Step navigation overlay left */}
+                  <button
+                    onClick={() => {
+                      const idx = coachFrames.findIndex(f => f.id === selectedFrame.id);
+                      if (idx !== -1) {
+                        const prevIdx = (idx - 1 + coachFrames.length) % coachFrames.length;
+                        setSelectedFrame(coachFrames[prevIdx]);
+                      }
+                    }}
+                    className="absolute left-3 w-8 h-8 bg-slate-900/40 hover:bg-slate-900/80 text-white rounded-full border border-slate-800/40 z-30 transition-all cursor-pointer flex items-center justify-center hover:scale-105"
+                    title="Previous Frame (ArrowLeft)"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-200" style={{ transform: `scale(${zoomLevel / 100})` }}>
+                    <div className="relative max-w-full max-h-full">
+                      <img
+                        ref={fullscreenImgRef}
+                        src={selectedFrame.cloudinary_url}
+                        alt={`Fullscreen Frame ${selectedFrame.sequence_number}`}
+                        className="max-w-full max-h-full object-contain rounded border border-slate-900 shadow-2xl block mx-auto"
+                        onLoad={drawFullscreenOverlay}
+                      />
+                      <canvas
+                        ref={fullscreenCanvasRef}
+                        className="absolute inset-0 pointer-events-none rounded"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Step navigation overlay right */}
+                  <button
+                    onClick={() => {
+                      const idx = coachFrames.findIndex(f => f.id === selectedFrame.id);
+                      if (idx !== -1) {
+                        const nextIdx = (idx + 1) % coachFrames.length;
+                        setSelectedFrame(coachFrames[nextIdx]);
+                      }
+                    }}
+                    className="absolute right-3 w-8 h-8 bg-slate-900/40 hover:bg-slate-900/80 text-white rounded-full border border-slate-800/40 z-30 transition-all cursor-pointer flex items-center justify-center hover:scale-105"
+                    title="Next Frame (ArrowRight)"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
