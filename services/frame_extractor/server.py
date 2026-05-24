@@ -60,6 +60,83 @@ def _all_cameras_done(conn, session_id: str) -> bool:
         return cur.fetchone()["remaining"] == 0
 
 
+def _trim_to_shortest_camera(conn, session_id: str) -> int:
+    """
+    After all cameras finish, find the camera with the fewest frames (shortest video)
+    and delete any frames from longer cameras that go beyond that trigger_id.
+    This ensures all cameras share the same trigger_id range before sync runs.
+    Returns the trim boundary trigger_id.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT session_camera_id, MAX(trigger_id) AS max_tid
+            FROM frames
+            WHERE session_id = %s
+            GROUP BY session_camera_id
+            """,
+            (session_id,),
+        )
+        rows = cur.fetchall()
+
+    if len(rows) <= 1:
+        # Single camera — nothing to trim
+        return int(rows[0]["max_tid"]) if rows else 0
+
+    cam_max = {r["session_camera_id"]: int(r["max_tid"]) for r in rows}
+    trim_at = min(cam_max.values())
+    overall_max = max(cam_max.values())
+
+    if overall_max == trim_at:
+        logger.info("session=%s all cameras end at trigger_id=%d, no trim needed", session_id, trim_at)
+        return trim_at
+
+    logger.info(
+        "session=%s shortest camera ends at trigger_id=%d, longest at %d — trimming excess",
+        session_id, trim_at, overall_max,
+    )
+
+    with conn.cursor() as cur:
+        cur.execute(
+            "DELETE FROM frames WHERE session_id = %s AND trigger_id > %s",
+            (session_id, trim_at),
+        )
+        deleted = cur.rowcount
+
+        # Recount total_frames on the session
+        cur.execute(
+            "SELECT COUNT(*) AS cnt FROM frames WHERE session_id = %s", (session_id,)
+        )
+        new_total = cur.fetchone()["cnt"]
+        cur.execute(
+            "UPDATE inspection_sessions SET total_frames = %s WHERE id = %s",
+            (new_total, session_id),
+        )
+
+        # Recompute frame_count per camera after trim
+        cur.execute(
+            """
+            UPDATE session_cameras sc
+            SET frame_count = sub.cnt
+            FROM (
+                SELECT session_camera_id, COUNT(*) AS cnt
+                FROM frames
+                WHERE session_id = %s
+                GROUP BY session_camera_id
+            ) sub
+            WHERE sc.id = sub.session_camera_id AND sc.session_id = %s
+            """,
+            (session_id, session_id),
+        )
+        conn.commit()
+
+    logger.info(
+        "session=%s trim done: deleted %d frames, new total=%d, all cameras now end at trigger_id=%d",
+        session_id, deleted, new_total, trim_at,
+    )
+    return trim_at
+
+
 def _load_root_config():
     import json
     cfg_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "config.json"))
@@ -232,6 +309,17 @@ def run_extraction(req: ExtractRequest):
 
         # ── Check if all cameras for this session are done ────────────────────
         if _all_cameras_done(conn, req.session_id):
+            # Trim all cameras to the shortest video before OCR/sync runs
+            trim_at = _trim_to_shortest_camera(conn, req.session_id)
+
+            # Re-read the true total after trim (may be less than sum of per-camera uploads)
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT total_frames FROM inspection_sessions WHERE id = %s",
+                    (req.session_id,),
+                )
+                final_total = (cur.fetchone() or {}).get("total_frames", uploaded)
+
             with conn.cursor() as cur:
                 cur.execute(
                     """
@@ -242,8 +330,8 @@ def run_extraction(req: ExtractRequest):
                     WHERE session_id=%s AND stage='frame_extraction'
                     """,
                     (
-                        f"All cameras extracted. {uploaded} frames uploaded.",
-                        json.dumps({"frames_uploaded": uploaded, "total_video_frames": total_video_frames}),
+                        f"All cameras extracted and trimmed to trigger_id {trim_at}. {final_total} frames kept.",
+                        json.dumps({"frames_uploaded": final_total, "total_video_frames": total_video_frames, "trim_trigger_id": trim_at}),
                         req.session_id,
                     ),
                 )

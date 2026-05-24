@@ -84,7 +84,8 @@ export const Sessions = () => {
   const [newTrainNumber, setNewTrainNumber] = useState('VB-22904');
   const [newDepot, setNewDepot] = useState('Mumbai Central CDO');
   const [newCoachesCount, setNewCoachesCount] = useState(16);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [ocrFile, setOcrFile] = useState(null);          // single OCR/placard camera video
+  const [componentFiles, setComponentFiles] = useState([]); // one or more component camera videos
   const [autoDetect, setAutoDetect] = useState(true);
   const [framesPerSecond, setFramesPerSecond] = useState(1); // default until config loads
 
@@ -128,21 +129,24 @@ export const Sessions = () => {
   });
 
 
-  // Handle Start Pipeline — upload video; frame extractor calls /process when done
+  // Handle Start Pipeline — upload videos; frame extractor calls /process when done
   const handleStartPipeline = async () => {
-    if (!selectedFile && !autoDetect) return;
+    if (!ocrFile) { setUploadError('Please select an OCR / placard camera video.'); return; }
+    if (componentFiles.length === 0) { setUploadError('Please add at least one component / assembly camera video.'); return; }
     setUploadError(null);
     setUploading(true);
     try {
       const fd = new FormData();
       fd.append('train_number', autoDetect ? `TRAIN-${Date.now()}` : newTrainNumber);
       fd.append('frames_per_second', String(framesPerSecond));
-      if (selectedFile) fd.append('video_files', selectedFile, selectedFile.name);
+      fd.append('ocr_video', ocrFile, ocrFile.name);
+      for (const f of componentFiles) fd.append('component_video', f, f.name);
       await uploadSession(fd);
       await loadSessions();
       setShowAddWizard(false);
       setWizardStep(1);
-      setSelectedFile(null);
+      setOcrFile(null);
+      setComponentFiles([]);
     } catch (err) {
       setUploadError(err.message);
     } finally {
@@ -285,6 +289,9 @@ export const Sessions = () => {
           onClick={() => {
             setShowAddWizard(true);
             setWizardStep(1);
+            setOcrFile(null);
+            setComponentFiles([]);
+            setUploadError(null);
           }}
           className="bg-primary hover:bg-slate-800 text-primary-foreground px-4 py-2 rounded text-xs font-bold tracking-wider uppercase transition-colors shadow-sm flex items-center gap-1.5"
         >
@@ -302,8 +309,8 @@ export const Sessions = () => {
               </CardTitle>
               <CardDescription className="text-xs">Setup train targets, select multi-camera feeds, and launch background AI pipeline inference.</CardDescription>
             </div>
-            <button 
-              onClick={() => setShowAddWizard(false)}
+            <button
+              onClick={() => { setShowAddWizard(false); setOcrFile(null); setComponentFiles([]); setUploadError(null); }}
               className="text-slate-400 hover:text-slate-655 cursor-pointer"
             >
               <X className="w-5 h-5" />
@@ -397,67 +404,108 @@ export const Sessions = () => {
                 </p>
               </div>
 
-              {/* Upload Zone */}
-              <div className="border-2 border-dashed border-border rounded-lg p-6 bg-white flex flex-col items-center justify-center text-center transition-all">
-                <input
-                  type="file"
-                  className="hidden"
-                  id="trigger-file"
-                  onChange={(e) => setSelectedFile(e.target.files[0])}
-                />
-                {selectedFile ? (
-                  <div className="space-y-3 w-full max-w-md mx-auto">
-                    <div className="flex items-center justify-between p-3 bg-slate-50 border border-border rounded-lg">
-                      <div className="flex items-center gap-2.5 text-left">
-                        <div className="p-2 bg-emerald-50 text-emerald-600 rounded">
-                          <FileText className="w-5 h-5" />
-                        </div>
+              {/* Camera Upload Zones */}
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                  Camera Feeds
+                </label>
+
+                {/* Zone A — OCR / Placard Camera (exactly 1, required) */}
+                <div className="border border-border rounded-lg p-4 bg-white space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-black text-slate-800">OCR / Placard Camera</p>
+                      <p className="text-[10px] text-muted-foreground font-semibold">
+                        The camera that films the coach number placard — 1 video, required
+                      </p>
+                    </div>
+                    <Badge className={`text-[9px] font-black border ${ocrFile ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                      {ocrFile ? 'Ready' : 'Required'}
+                    </Badge>
+                  </div>
+                  <input type="file" className="hidden" id="ocr-file-input" accept="video/*,.mp4,.h264,.avi,.mov"
+                    onChange={(e) => setOcrFile(e.target.files[0] || null)} />
+                  {ocrFile ? (
+                    <div className="flex items-center justify-between p-2.5 bg-slate-50 border border-border rounded">
+                      <div className="flex items-center gap-2 text-left">
+                        <FileText className="w-4 h-4 text-emerald-600 shrink-0" />
                         <div>
-                          <p className="text-xs font-bold text-slate-805 truncate max-w-[220px]">
-                            {selectedFile.name}
-                          </p>
-                          <p className="text-[10px] text-muted-foreground font-semibold">
-                            {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
-                          </p>
+                          <p className="text-xs font-bold text-slate-800 truncate max-w-[240px]">{ocrFile.name}</p>
+                          <p className="text-[10px] text-muted-foreground">{(ocrFile.size / (1024 * 1024)).toFixed(1)} MB</p>
                         </div>
                       </div>
-                      <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        Ready
-                      </Badge>
+                      <div className="flex gap-1.5">
+                        <button type="button" onClick={() => document.getElementById('ocr-file-input').click()}
+                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded border border-border cursor-pointer">
+                          Change
+                        </button>
+                        <button type="button" onClick={() => setOcrFile(null)}
+                          className="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 text-[10px] font-bold rounded border border-red-200 cursor-pointer">
+                          Remove
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => document.getElementById('trigger-file').click()}
-                        className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded uppercase tracking-wider transition-all border border-border cursor-pointer"
-                      >
-                        Change File
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedFile(null)}
-                        className="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-[10px] font-bold rounded uppercase tracking-wider transition-all border border-red-200 cursor-pointer"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div 
-                    onClick={() => document.getElementById('trigger-file').click()}
-                    className="cursor-pointer w-full flex flex-col items-center justify-center"
-                  >
-                    <Upload className="w-8 h-8 text-slate-400 mb-2" />
-                    <p className="text-xs font-bold text-slate-700">Drag & Drop Multi-Camera Inspection Feeds</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">Accepts CAM_LEFT, CAM_RIGHT, CAM_OCR feeds (.mp4, .h264)</p>
-                    <button 
-                      type="button" 
-                      className="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded uppercase tracking-wider"
-                    >
-                      Select Files
+                  ) : (
+                    <button type="button" onClick={() => document.getElementById('ocr-file-input').click()}
+                      className="w-full py-3 border-2 border-dashed border-border rounded text-xs font-bold text-slate-500 hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 cursor-pointer">
+                      <Upload className="w-4 h-4" /> Select OCR camera video
                     </button>
+                  )}
+                </div>
+
+                {/* Zone B — Component / Assembly Cameras (1–6, at least 1 required) */}
+                <div className="border border-border rounded-lg p-4 bg-white space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-black text-slate-800">Assembly / Component Cameras</p>
+                      <p className="text-[10px] text-muted-foreground font-semibold">
+                        Left rail, right rail, bottom, etc. — 1 to 6 videos, at least 1 required
+                      </p>
+                    </div>
+                    <Badge className={`text-[9px] font-black border ${componentFiles.length > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                      {componentFiles.length > 0 ? `${componentFiles.length} added` : 'Required'}
+                    </Badge>
                   </div>
-                )}
+                  <input type="file" className="hidden" id="component-file-input" accept="video/*,.mp4,.h264,.avi,.mov" multiple
+                    onChange={(e) => {
+                      const picked = Array.from(e.target.files || []);
+                      setComponentFiles(prev => {
+                        const merged = [...prev, ...picked];
+                        return merged.slice(0, 6); // cap at 6
+                      });
+                      e.target.value = ''; // allow re-selecting same file
+                    }} />
+                  {componentFiles.length > 0 && (
+                    <div className="space-y-1.5">
+                      {componentFiles.map((f, i) => (
+                        <div key={i} className="flex items-center justify-between p-2.5 bg-slate-50 border border-border rounded">
+                          <div className="flex items-center gap-2 text-left">
+                            <FileText className="w-4 h-4 text-primary shrink-0" />
+                            <div>
+                              <p className="text-xs font-bold text-slate-800 truncate max-w-[200px]">{f.name}</p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {['component_left', 'component_right', 'bottom', 'suspension', 'wheel', 'overview'][i] ?? `component_${i + 1}`}
+                                {' · '}{(f.size / (1024 * 1024)).toFixed(1)} MB
+                              </p>
+                            </div>
+                          </div>
+                          <button type="button"
+                            onClick={() => setComponentFiles(prev => prev.filter((_, idx) => idx !== i))}
+                            className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded cursor-pointer transition-colors">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {componentFiles.length < 6 && (
+                    <button type="button" onClick={() => document.getElementById('component-file-input').click()}
+                      className="w-full py-3 border-2 border-dashed border-border rounded text-xs font-bold text-slate-500 hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 cursor-pointer">
+                      <Upload className="w-4 h-4" />
+                      {componentFiles.length === 0 ? 'Select component camera videos' : 'Add another camera'}
+                    </button>
+                  )}
+                </div>
               </div>
 
               {uploadError && (
@@ -469,7 +517,7 @@ export const Sessions = () => {
               <div className="flex justify-end pt-4 border-t border-border gap-2">
                 <button
                   type="button"
-                  onClick={() => setShowAddWizard(false)}
+                  onClick={() => { setShowAddWizard(false); setOcrFile(null); setComponentFiles([]); setUploadError(null); }}
                   className="px-3 py-1.5 border border-border bg-white text-slate-700 hover:bg-slate-50 text-xs font-bold uppercase rounded cursor-pointer"
                 >
                   Cancel
@@ -477,11 +525,11 @@ export const Sessions = () => {
                 <button
                   type="button"
                   onClick={handleStartPipeline}
-                  disabled={uploading}
+                  disabled={uploading || !ocrFile || componentFiles.length === 0}
                   className="bg-primary hover:bg-slate-800 text-white text-xs font-bold uppercase px-4 py-2 rounded shadow transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {uploading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
-                  {uploading ? 'Uploading...' : 'Start Pipeline Inference'}
+                  {uploading ? 'Uploading...' : `Start Pipeline (${1 + componentFiles.length} cameras)`}
                 </button>
               </div>
             </div>

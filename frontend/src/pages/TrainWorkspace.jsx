@@ -324,6 +324,9 @@ export const TrainWorkspace = () => {
   const [componentDetectionMap, setComponentDetectionMap] = useState({}); // frameId → detections[]
   const [componentFramesLoading, setComponentFramesLoading] = useState(false);
 
+  // Per-camera timeline tracks — populated when a coach is selected
+  const [coachCameraGroups, setCoachCameraGroups] = useState([]); // [{ cameraType, cameraName, frames[] }]
+
   // Fullscreen and Collapsible Sidebar
   const [isFullscreen,         setIsFullscreen]         = useState(false);
   const [sidebarCollapsed,     setSidebarCollapsed]     = useState(false);
@@ -523,7 +526,10 @@ export const TrainWorkspace = () => {
 
   useEffect(() => {
     if (isFullscreen) {
-      drawFullscreenOverlay();
+      const timer = setTimeout(() => {
+        drawFullscreenOverlay();
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [drawFullscreenOverlay, isFullscreen, selectedFrame]);
 
@@ -579,15 +585,54 @@ export const TrainWorkspace = () => {
     if (type === 'coach' && metadata?.id) {
       setComponentMode(false);
       setOcrMode(false);
-      loadIntelligence(metadata.id);
       setShowOcrBoxes(true);
       setShowDefectBoxes(true);
       setShowComponentBoxes(true);
+      setComponentFramesLoading(true);
+      try {
+        const [framesData, intel] = await Promise.all([
+          getCoachFrames(sessionId, metadata.id, 300),
+          getIntelligence(sessionId, metadata.id),
+        ]);
+        setIntelligence(intel);
+
+        // Build frame URL → id map from loaded coach frames
+        const allCoachFrames = framesData.frames || framesData || [];
+
+        // Build componentDetectionMap so boxes render immediately on coach click
+        const detMap = {};
+        for (const det of intel.components_detected || []) {
+          const frame = allCoachFrames.find(f => f.cloudinary_url === det.frame_url);
+          if (frame) {
+            if (!detMap[frame.id]) detMap[frame.id] = [];
+            detMap[frame.id].push(det);
+          }
+        }
+        setComponentDetectionMap(detMap);
+
+        // Group frames by camera for the multi-track timeline
+        const groups = {};
+        for (const f of allCoachFrames) {
+          const key = f.camera_type ?? 'unknown';
+          if (!groups[key]) groups[key] = { cameraType: key, cameraName: f.camera_name ?? key, frames: [] };
+          groups[key].frames.push(f);
+        }
+        setCoachCameraGroups(Object.values(groups));
+
+        // Show the first frame that has detections, or just first frame
+        const firstWithDets = allCoachFrames.find(f => detMap[f.id]?.length > 0) || allCoachFrames[0];
+        if (firstWithDets) setSelectedFrame(firstWithDets);
+      } catch (_) {
+        setIntelligence(null);
+      } finally {
+        setComponentFramesLoading(false);
+      }
     }
 
     if (type === 'ocr' && metadata?.coachId) {
       setComponentMode(false);
       setOcrMode(true);
+      setCoachCameraGroups([]);
       setComponentFrames([]);
       setComponentDetectionMap({});
       setSelectedFrame(null);
@@ -621,6 +666,7 @@ export const TrainWorkspace = () => {
     if (type === 'components' && metadata?.coachId) {
       setComponentMode(true);
       setOcrMode(false);
+      setCoachCameraGroups([]);
       setComponentFrames([]);
       setComponentDetectionMap({});
       setSelectedFrame(null);
@@ -941,14 +987,14 @@ export const TrainWorkspace = () => {
                 <p className="text-slate-500 text-xs">Frames appear here after processing completes.</p>
               </div>
             ) : layoutMode === 'single' ? (
-              <div className="w-full h-full flex items-center justify-center p-6" style={{ transform: `scale(${zoomLevel / 100})` }}>
+              <div className="absolute inset-0 flex items-center justify-center p-4" style={{ transform: `scale(${zoomLevel / 100})`, transition: 'transform 0.15s ease-out' }}>
                 {selectedFrame ? (
-                  <div className="relative max-w-full max-h-full">
+                  <div className="relative max-w-full max-h-full flex items-center justify-center">
                     <img
                       ref={imgRef}
                       src={selectedFrame.cloudinary_url}
                       alt={`Frame ${selectedFrame.sequence_number}`}
-                      className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl block"
+                      className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl block mx-auto"
                       onLoad={drawOverlay}
                     />
                     <canvas
@@ -1088,94 +1134,190 @@ export const TrainWorkspace = () => {
         </div>
       </div>
 
-      {/* Bottom — Frame Timeline */}
-      <div className="h-28 bg-slate-900 border-t border-white/10 flex flex-col shrink-0 z-10">
-        <div className="px-4 py-1.5 flex items-center justify-between bg-slate-950 border-b border-white/10 shrink-0">
-          <span className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 ${componentMode ? 'text-lime-400' : 'text-slate-400'}`}>
-            {componentMode
-              ? <><Cpu className="w-4 h-4" /> Component Frames</>
-              : <><Activity className="w-4 h-4 text-primary" /> Frame Timeline</>}
-          </span>
-          <span className="text-[9px] text-slate-500 font-mono">
-            {selectedFrame ? `Selected: frame #${selectedFrame.sequence_number ?? '—'}` : 'Click a frame to view'}
-          </span>
-        </div>
+      {/* Bottom — Multi-Camera Frame Timeline */}
+      {(() => {
+        // Decide which mode to render
+        const showCameraGroups = coachCameraGroups.length > 0 && !componentMode && !ocrMode;
+        const showComponentTimeline = componentMode;
+        const showFlatTimeline = !showCameraGroups && !showComponentTimeline;
 
-        <div className="flex-1 overflow-x-auto flex items-center px-4 gap-2 py-2 bg-slate-900/90">
-          {componentMode ? (
-            componentFramesLoading ? (
-              <div className="flex-1 flex items-center justify-center gap-2 text-lime-700">
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span className="text-[10px] font-semibold">Loading…</span>
-              </div>
-            ) : componentFrames.length === 0 ? (
-              <div className="flex-1 flex items-center justify-center gap-2 text-slate-600">
-                <Inbox className="w-4 h-4" />
-                <span className="text-[10px] font-semibold">No component frames</span>
-              </div>
-            ) : (
-              componentFrames.map((f) => {
-                const isActive = selectedFrame?.id === f.id;
-                const detCount = componentDetectionMap[f.id]?.length ?? 0;
-                return (
-                  <div
-                    key={f.id}
-                    onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
-                    className={`flex-none w-20 h-14 rounded border relative cursor-pointer overflow-hidden transition-all ${isActive ? 'border-lime-400 ring-2 ring-lime-400/40 scale-105' : 'border-white/10 hover:border-lime-600'}`}
-                  >
-                    <img
-                      src={f.thumbnail_url || f.cloudinary_url}
-                      alt=""
-                      className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-90' : 'opacity-40 hover:opacity-65'}`}
-                    />
-                    <div className="absolute bottom-0.5 left-0.5 bg-black/70 px-1 rounded text-[7px] font-mono text-white">
-                      #{f.sequence_number ?? '—'}
+        // For camera-grouped view: compute ordered trigger_ids across all cameras
+        const allTriggerIds = showCameraGroups
+          ? [...new Set(coachCameraGroups.flatMap(g => g.frames.map(f => f.trigger_id)))].sort((a, b) => a - b)
+          : [];
+
+        const THUMB_W = 72; // px per frame slot
+
+        return (
+          <div
+            className="bg-slate-900 border-t border-white/10 flex flex-col shrink-0 z-10"
+            style={{ maxHeight: showCameraGroups ? `${32 + 16 + coachCameraGroups.length * 68}px` : '112px', minHeight: '112px' }}
+          >
+            {/* Header */}
+            <div className="px-4 py-1.5 flex items-center justify-between bg-slate-950 border-b border-white/10 shrink-0">
+              <span className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 ${componentMode ? 'text-lime-400' : showCameraGroups ? 'text-cyan-400' : 'text-slate-400'}`}>
+                {componentMode
+                  ? <><Cpu className="w-4 h-4" /> Component Frames</>
+                  : showCameraGroups
+                    ? <><Camera className="w-4 h-4" /> Camera Tracks</>
+                    : <><Activity className="w-4 h-4 text-primary" /> Frame Timeline</>}
+              </span>
+              <span className="text-[9px] text-slate-500 font-mono">
+                {componentFramesLoading
+                  ? 'Loading…'
+                  : selectedFrame
+                    ? `T:${selectedFrame.trigger_id} · #${selectedFrame.sequence_number ?? '—'}`
+                    : 'Click a frame to view'}
+              </span>
+            </div>
+
+            {/* Content */}
+            {showCameraGroups ? (
+              // ── Multi-camera synchronized tracks ──────────────────────────
+              componentFramesLoading ? (
+                <div className="flex-1 flex items-center justify-center gap-2 text-cyan-700">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span className="text-[10px] font-semibold">Loading coach frames…</span>
+                </div>
+              ) : (
+                <div className="flex-1 overflow-x-auto overflow-y-hidden" style={{ scrollbarWidth: 'thin' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: `72px repeat(${allTriggerIds.length}, ${THUMB_W}px)`, width: `${72 + allTriggerIds.length * THUMB_W}px` }}>
+
+                    {/* Trigger ruler row */}
+                    <div className="h-4 bg-slate-950 border-b border-white/5 flex items-center px-1">
+                      <span className="text-[7px] text-slate-600 font-mono uppercase">TRIGGER</span>
                     </div>
-                    {detCount > 0 && (
-                      <span className="absolute top-0.5 right-0.5 bg-lime-500 text-black text-[7px] font-black px-1 rounded-full">
-                        {detCount}
-                      </span>
-                    )}
+                    {allTriggerIds.map((tid) => (
+                      <div
+                        key={tid}
+                        className={`h-4 bg-slate-950 border-b border-white/5 flex items-center justify-center text-[7px] font-mono transition-colors ${selectedFrame?.trigger_id === tid ? 'text-cyan-400 font-bold' : 'text-slate-700'}`}
+                      >
+                        {tid}
+                      </div>
+                    ))}
+
+                    {/* One row per camera */}
+                    {coachCameraGroups.map(({ cameraType, cameraName, frames: camFrames }) => {
+                      const triggerMap = Object.fromEntries(camFrames.map(f => [f.trigger_id, f]));
+                      const isOcrCam = cameraType === 'ocr';
+                      return (
+                        <React.Fragment key={cameraType}>
+                          {/* Camera label */}
+                          <div className="h-16 bg-slate-950/60 border-b border-white/5 border-r border-white/5 flex flex-col items-start justify-center px-2 gap-0.5 shrink-0">
+                            <span className={`text-[8px] font-black uppercase tracking-wider truncate max-w-[64px] ${isOcrCam ? 'text-blue-400' : 'text-slate-400'}`}>
+                              {cameraType}
+                            </span>
+                            {cameraName && cameraName !== cameraType && (
+                              <span className="text-[7px] text-slate-600 truncate max-w-[64px]">{cameraName}</span>
+                            )}
+                          </div>
+
+                          {/* Frame slots aligned by trigger_id */}
+                          {allTriggerIds.map((tid) => {
+                            const f = triggerMap[tid];
+                            if (!f) {
+                              return (
+                                <div key={tid} className="h-16 border-b border-white/5 bg-slate-900/50 flex items-center justify-center">
+                                  <span className="w-1 h-1 rounded-full bg-white/10" />
+                                </div>
+                              );
+                            }
+                            const isActive = selectedFrame?.id === f.id;
+                            const detCount = componentDetectionMap[f.id]?.length ?? 0;
+                            return (
+                              <div
+                                key={tid}
+                                onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
+                                className={`h-16 border-b border-white/5 relative cursor-pointer overflow-hidden transition-all ${isActive ? 'ring-2 ring-inset ring-cyan-400' : 'hover:ring-1 hover:ring-inset hover:ring-white/20'}`}
+                              >
+                                <img
+                                  src={f.thumbnail_url || f.cloudinary_url}
+                                  alt=""
+                                  className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-100' : 'opacity-45 hover:opacity-70'}`}
+                                />
+                                {f.is_defect_flagged && <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 animate-pulse block" />}
+                                {isOcrCam && <span className="absolute top-0.5 left-0.5 w-2 h-2 rounded-full bg-blue-400 block" />}
+                                {detCount > 0 && (
+                                  <span className="absolute bottom-0.5 right-0.5 bg-lime-500 text-black text-[7px] font-black px-1 rounded-full">
+                                    {detCount}
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </React.Fragment>
+                      );
+                    })}
                   </div>
-                );
-              })
-            )
-          ) : (
-            frames.length === 0 ? (
-              <div className="flex-1 flex items-center justify-center gap-2 text-slate-600">
-                <Inbox className="w-4 h-4" />
-                <span className="text-[10px] font-semibold">No frames yet</span>
-              </div>
+                </div>
+              )
+            ) : showComponentTimeline ? (
+              // ── Component frames flat strip ────────────────────────────────
+              componentFramesLoading ? (
+                <div className="flex-1 flex items-center justify-center gap-2 text-lime-700">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span className="text-[10px] font-semibold">Loading…</span>
+                </div>
+              ) : componentFrames.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center gap-2 text-slate-600">
+                  <Inbox className="w-4 h-4" />
+                  <span className="text-[10px] font-semibold">No component frames</span>
+                </div>
+              ) : (
+                <div className="flex-1 overflow-x-auto flex items-center px-4 gap-1 py-2 bg-slate-900/90">
+                  {componentFrames.map((f) => {
+                    const isActive = selectedFrame?.id === f.id;
+                    const detCount = componentDetectionMap[f.id]?.length ?? 0;
+                    return (
+                      <div
+                        key={f.id}
+                        onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
+                        className={`flex-none w-20 h-14 rounded border relative cursor-pointer overflow-hidden transition-all ${isActive ? 'border-lime-400 ring-2 ring-lime-400/40 scale-105' : 'border-white/10 hover:border-lime-600'}`}
+                      >
+                        <img src={f.thumbnail_url || f.cloudinary_url} alt="" className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-90' : 'opacity-40 hover:opacity-65'}`} />
+                        <div className="absolute bottom-0.5 left-0.5 bg-black/70 px-1 rounded text-[7px] font-mono text-white">T:{f.trigger_id}</div>
+                        {detCount > 0 && (
+                          <span className="absolute top-0.5 right-0.5 bg-lime-500 text-black text-[7px] font-black px-1 rounded-full">{detCount}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )
             ) : (
-              frames.map((f) => {
-                const isActive = selectedFrame?.id === f.id;
-                return (
-                  <div
-                    key={f.id}
-                    onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
-                    className={`flex-none w-20 h-14 rounded border relative cursor-pointer overflow-hidden transition-all ${isActive ? 'border-primary ring-2 ring-primary/40 scale-105' : 'border-white/10 hover:border-white/30'}`}
-                  >
-                    <img
-                      src={f.thumbnail_url || f.cloudinary_url}
-                      alt=""
-                      className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-90' : 'opacity-40 hover:opacity-65'}`}
-                    />
-                    <div className="absolute bottom-0.5 left-0.5 bg-black/70 px-1 rounded text-[7px] font-mono text-white">
-                      #{f.sequence_number}
-                    </div>
-                    {f.is_defect_flagged && <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 block animate-pulse" />}
-                    {f.is_ocr_candidate && <span className="absolute top-0.5 left-0.5 w-2 h-2 rounded-full bg-blue-500 block" />}
-                  </div>
-                );
-              })
-            )
-          )}
-        </div>
-      </div>
+              // ── Flat session timeline (no coach selected) ─────────────────
+              frames.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center gap-2 text-slate-600">
+                  <Inbox className="w-4 h-4" />
+                  <span className="text-[10px] font-semibold">No frames yet</span>
+                </div>
+              ) : (
+                <div className="flex-1 overflow-x-auto flex items-center px-4 gap-1 py-2 bg-slate-900/90">
+                  {frames.map((f) => {
+                    const isActive = selectedFrame?.id === f.id;
+                    return (
+                      <div
+                        key={f.id}
+                        onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }}
+                        className={`flex-none w-20 h-14 rounded border relative cursor-pointer overflow-hidden transition-all ${isActive ? 'border-primary ring-2 ring-primary/40 scale-105' : 'border-white/10 hover:border-white/30'}`}
+                      >
+                        <img src={f.thumbnail_url || f.cloudinary_url} alt="" className={`w-full h-full object-cover transition-opacity ${isActive ? 'opacity-90' : 'opacity-40 hover:opacity-65'}`} />
+                        <div className="absolute bottom-0.5 left-0.5 bg-black/70 px-1 rounded text-[7px] font-mono text-white">T:{f.trigger_id}</div>
+                        {f.is_defect_flagged && <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500 block animate-pulse" />}
+                        {f.is_ocr_candidate && <span className="absolute top-0.5 left-0.5 w-2 h-2 rounded-full bg-blue-500 block" />}
+                      </div>
+                    );
+                  })}
+                </div>
+              )
+            )}
+          </div>
+        );
+      })()}
 
       {/* Fullscreen Overlay Viewport */}
       {isFullscreen && (
-        <div className="fixed inset-0 bg-[#faf9ff] text-[#051a3e] z-50 flex flex-col justify-between p-6 select-none animate-in fade-in duration-200 font-sans">
+        <div className="fixed inset-0 bg-[#faf9ff] text-[#051a3e] z-[9999] flex flex-col justify-between p-6 select-none animate-in fade-in duration-200 font-sans">
           {/* Top floating control panel */}
           <div className="flex items-center justify-between bg-white border border-[#c3c6d6]/60 rounded-sm p-3 px-4 shadow-sm shrink-0">
             <div className="flex items-center gap-3">

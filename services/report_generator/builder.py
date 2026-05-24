@@ -199,7 +199,7 @@ class _PDF(FPDF):
     def header(self):
         self.set_font("Helvetica", "B", 10)
         self.set_text_color(100, 100, 100)
-        self.cell(0, 8, "VandeInspect AI — Automated Train Inspection Report", align="R")
+        self.cell(0, 8, "VandeInspect AI - Automated Train Inspection Report", align="R")
         self.ln(4)
         self.set_draw_color(200, 200, 200)
         self.line(10, self.get_y(), 200, self.get_y())
@@ -209,7 +209,7 @@ class _PDF(FPDF):
         self.set_y(-12)
         self.set_font("Helvetica", "I", 8)
         self.set_text_color(150, 150, 150)
-        self.cell(0, 8, f"Page {self.page_no()} | Confidential — Indian Railways", align="C")
+        self.cell(0, 8, f"Page {self.page_no()} | Confidential - Indian Railways", align="C")
 
 
 def build_pdf_report(data: dict) -> bytes:
@@ -227,8 +227,8 @@ def build_pdf_report(data: dict) -> bytes:
     pdf.set_text_color(71, 85, 105)
     pdf.cell(0, 8, f"Train No: {s['train_number']}   |   Session: {s['session_code']}", ln=True, align="C")
 
-    started = s["started_at"].strftime("%d %b %Y, %H:%M") if s["started_at"] else "—"
-    pdf.cell(0, 7, f"Inspected: {started}   |   Station: {s['station_code'] or '—'}", ln=True, align="C")
+    started = s["started_at"].strftime("%d %b %Y, %H:%M") if s["started_at"] else "-"
+    pdf.cell(0, 7, f"Inspected: {started}   |   Station: {s['station_code'] or '-'}", ln=True, align="C")
     pdf.ln(6)
 
     # Health score banner
@@ -270,7 +270,7 @@ def build_pdf_report(data: dict) -> bytes:
 
         pdf.set_font("Helvetica", "B", 13)
         pdf.set_text_color(15, 23, 42)
-        ch_label = f"Coach {c['coach_index']}  —  #{c['coach_number']}"
+        ch_label = f"Coach {c['coach_index']}  -  #{c['coach_number']}"
         pdf.cell(0, 10, ch_label, ln=True)
 
         hs_c = float(c["health_score"]) if c["health_score"] else None
@@ -310,7 +310,7 @@ def build_pdf_report(data: dict) -> bytes:
             pdf.set_font("Helvetica", "", 9)
             pdf.set_text_color(15, 23, 42)
             for m in coach_miss:
-                pdf.cell(0, 5, f"    • {m['component_name']} ({m['component_code']})  — expected {m['expected_count']}, detected {m['detected_count']}", ln=True)
+                pdf.cell(0, 5, f"    - {m['component_name']} ({m['component_code']})  - expected {m['expected_count']}, detected {m['detected_count']}", ln=True)
             pdf.ln(3)
 
         if not coach_defs and not coach_miss:
@@ -366,6 +366,23 @@ def generate_report(conn, session_id: str) -> dict:
     logger.info("Building PDF report")
     pdf_bytes = build_pdf_report(data)
 
+    # Always write a local backup copy in backend/uploads/reports for robust offline operation
+    try:
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        uploads_reports_dir = os.path.join(root_dir, "backend", "uploads", "reports")
+        os.makedirs(uploads_reports_dir, exist_ok=True)
+        
+        local_pdf_path = os.path.join(uploads_reports_dir, f"report_{session_id}.pdf")
+        with open(local_pdf_path, "wb") as f:
+            f.write(pdf_bytes)
+            
+        local_json_path = os.path.join(uploads_reports_dir, f"report_{session_id}.json")
+        with open(local_json_path, "w", encoding="utf-8") as f:
+            f.write(json_str)
+        logger.info("Saved local backup copies of the report to backend/uploads/reports/")
+    except Exception as local_err:
+        logger.warning("Could not write local report backup files: %s", str(local_err))
+
     has_cloudinary = all([
         os.environ.get("CLOUDINARY_CLOUD_NAME"),
         os.environ.get("CLOUDINARY_API_KEY"),
@@ -376,8 +393,13 @@ def generate_report(conn, session_id: str) -> dict:
         logger.info("Uploading report to Cloudinary")
         urls = upload_report(pdf_bytes, json_str, session_id)
     else:
-        logger.warning("Cloudinary not configured — report URLs will be empty")
-        urls = {"pdf_url": None, "pdf_public_id": None, "json_url": None, "json_public_id": None}
+        logger.warning("Cloudinary not configured — using local Fastify fallback endpoints")
+        urls = {
+            "pdf_url": f"/api/sessions/{session_id}/report/pdf",
+            "pdf_public_id": f"local_{session_id}_pdf",
+            "json_url": f"/api/sessions/{session_id}/report/json",
+            "json_public_id": f"local_{session_id}_json",
+        }
 
     s = data["session"]
     result = {

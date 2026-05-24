@@ -122,6 +122,7 @@ async function intelligence(fastify) {
         height_px: true,
         is_ocr_candidate: true,
         is_defect_flagged: true,
+        session_camera: { select: { id: true, camera_type: true, name: true } },
         coach_frame_map: { select: { assignment_method: true, confidence: true } },
         ocr_results: {
           select: {
@@ -166,6 +167,8 @@ async function intelligence(fastify) {
         height: f.height_px,
         is_ocr_candidate: f.is_ocr_candidate,
         is_defect_flagged: f.is_defect_flagged,
+        camera_type: f.session_camera?.camera_type ?? null,
+        camera_name: f.session_camera?.name ?? null,
         assignment_method: f.coach_frame_map?.assignment_method ?? null,
         ocr_result: f.ocr_results[0] ?? null,
         ocr_results: f.ocr_results.map((r) => ({
