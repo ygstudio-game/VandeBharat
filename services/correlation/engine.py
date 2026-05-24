@@ -30,17 +30,60 @@ SEVERITY_PENALTY = {
 
 MANIFEST_DIR = Path(__file__).parent / "manifests"
 
-# Default label → component_code map (extend when real model classes are known)
+# Label → component_code map.
+# Keys are lowercase-normalised — lookup always does label.lower().replace(" ", "_").
+# Actual model class names confirmed from production logs.
 LABEL_TO_COMPONENT = {
-    "wheel":       "WHEEL_ASSY",
-    "wheel_assy":  "WHEEL_ASSY",
-    "axle_box":    "AXLE_BOX",
-    "brake_pad":   "BRAKE_PAD",
-    "suspension":  "SUSP_PIN",
-    "susp_pin":    "SUSP_PIN",
-    "coupler":     "COUPLER",
-    "bogie_frame": "BOGIE_FRAME",
-    "water_tank":  "WATER_TANK",
+    # Wheel assembly
+    "wheel":                      "WHEEL_ASSY",
+    "wheel_assy":                 "WHEEL_ASSY",
+    "wheel_assembly":             "WHEEL_ASSY",
+
+    # Axle box (model returns "axle_box_cover")
+    "axle_box":                   "AXLE_BOX",
+    "axle_box_cover":             "AXLE_BOX",
+    "axlebox":                    "AXLE_BOX",
+
+    # Brake
+    "brake_pad":                  "BRAKE_PAD",
+    "brake":                      "BRAKE_PAD",
+    "brake_control_module":       "BRAKE_CTRL",
+    "brake_ctrl":                 "BRAKE_CTRL",
+
+    # Suspension (primary / secondary springs + pin + swing hanger)
+    "suspension":                 "SUSP_PRI",
+    "susp_pin":                   "SUSP_PRI",
+    "suspension_pin":             "SUSP_PRI",
+    "primary_suspension_spring":  "SUSP_PRI",
+    "secondary_suspension_spring":"SUSP_SEC",
+    "swing_hanger":               "SWING_HANGER",
+    "damper":                     "DAMPER",
+
+    # Coupler
+    "coupler":                    "COUPLER",
+
+    # Bogie frame
+    "bogie_frame":                "BOGIE_FRAME",
+    "bogieframe":                 "BOGIE_FRAME",
+    "bogie":                      "BOGIE_FRAME",
+
+    # Water tank
+    "water_tank":                 "WATER_TANK",
+    "watertank":                  "WATER_TANK",
+
+    # Electrical / fluid systems
+    "battery_box":                "BATTERY_BOX",
+    "transformer":                "TRANSFORMER",
+    "hydraulic_valve":            "HYD_VALVE",
+    "auxiliary_reservoir":        "AUX_RESERVOIR",
+
+    # Hardware / safety
+    "nut_bolt":                   "NUT_BOLT",
+    "rod":                        "ROD",
+    "safety_strap":               "SAFETY_STRAP",
+    "steps_footboard":            "STEPS",
+    "steps":                      "STEPS",
+    "footboard":                  "STEPS",
 }
 
 DEFECT_SEVERITY = {
@@ -56,6 +99,10 @@ DEFECT_SEVERITY = {
     "hanging":        "MEDIUM",
     "loose":          "LOW",
 }
+
+# Normalise a raw model label to the same key format used in both maps above.
+def _norm(label: str) -> str:
+    return label.strip().lower().replace(" ", "_").replace("-", "_")
 
 
 def load_manifest(coach_type: str = "VANDE_BHARAT") -> list[dict]:
@@ -135,6 +182,8 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
     component_rows = []        # for bulk insert into component_detections
     component_detected = {}    # code → max_confidence seen
 
+    unknown_labels: set[str] = set()  # track labels not in either map — logged once per coach
+
     for frame in sampled:
         frame_bytes = _fetch_frame_bytes(frame["cloudinary_url"])
         if not frame_bytes:
@@ -143,7 +192,8 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
         detections = _run_yolo(frame_bytes)
 
         for det in detections:
-            label = det.get("label", "")
+            raw_label = det.get("label", "")
+            label = _norm(raw_label)          # normalise: lowercase + underscores
             conf = float(det.get("confidence", 0.0))
             bbox = det.get("bbox_xyxy", [0, 0, 0, 0])
             x1, y1, x2, y2 = bbox
@@ -168,6 +218,16 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
                 ))
                 if comp_code not in component_detected or conf > component_detected[comp_code]:
                     component_detected[comp_code] = conf
+            elif label not in DEFECT_SEVERITY:
+                # Label is neither a known defect nor a known component — record for diagnosis
+                unknown_labels.add(raw_label)
+
+    if unknown_labels:
+        logger.warning(
+            "Coach %s: YOLO returned %d label(s) not in LABEL_TO_COMPONENT or DEFECT_SEVERITY — "
+            "add them to the map if they are components: %s",
+            coach_id, len(unknown_labels), sorted(unknown_labels),
+        )
 
     # ── Find missing components ───────────────────────────────────────────────
     missing_rows = []
