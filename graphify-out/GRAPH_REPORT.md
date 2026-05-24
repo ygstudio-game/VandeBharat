@@ -1,16 +1,16 @@
 # Graph Report - Main  (2026-05-24)
 
 ## Corpus Check
-- 126 files · ~302,717 words
+- 129 files · ~305,776 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1741 nodes · 1909 edges · 219 communities (136 shown, 83 thin omitted)
+- 1744 nodes · 1924 edges · 220 communities (137 shown, 83 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dbb12481`
+- Built from commit: `dc88a15e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -109,11 +109,13 @@
 - [[_COMMUNITY_Community 94|Community 94]]
 - [[_COMMUNITY_Community 95|Community 95]]
 - [[_COMMUNITY_Community 96|Community 96]]
+- [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 99|Community 99]]
 - [[_COMMUNITY_Community 100|Community 100]]
 - [[_COMMUNITY_Community 101|Community 101]]
 - [[_COMMUNITY_Community 102|Community 102]]
+- [[_COMMUNITY_Community 103|Community 103]]
 - [[_COMMUNITY_Community 104|Community 104]]
 - [[_COMMUNITY_Community 105|Community 105]]
 - [[_COMMUNITY_Community 106|Community 106]]
@@ -127,7 +129,6 @@
 - [[_COMMUNITY_Community 114|Community 114]]
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
-- [[_COMMUNITY_Community 118|Community 118]]
 - [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
 - [[_COMMUNITY_Community 124|Community 124]]
@@ -253,7 +254,7 @@
 - `Insert a batch of frame rows and update the live counters in the DB.` --rationale_for--> `_flush_rows()`  [EXTRACTED]
   services/frame_extractor/server.py → frame_extractor/server.py
 
-## Communities (219 total, 83 thin omitted)
+## Communities (220 total, 83 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.13
@@ -277,7 +278,7 @@ Nodes (11): app, config, config, config, cors, fastify, msg, multipart (+3 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.06
-Nodes (55): KPICard(), LiveTrainCard(), usePolling(), getSharedWs(), subscribers, subscribeSession(), useSessionSocket(), WS_BASE (+47 more)
+Nodes (56): KPICard(), LiveTrainCard(), usePolling(), getSharedWs(), subscribers, subscribeSession(), useSessionSocket(), WS_BASE (+48 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.11
@@ -392,8 +393,8 @@ Cohesion: 0.07
 Nodes (26): 1.1 Ingestion & Session Management, 1.2 Inspection Intelligence, 1. REST API Interface Specification, 2.1 Client Subscriptions, 2.2 Server Broadcasts, 2. WebSocket Protocol Schema, Coach Maps Completed (`coaches_mapped`), code:json ({) (+18 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.07
-Nodes (26): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 27. INDUSTRIAL UI/UX PRINCIPLES, 28. TRAIN-CENTRIC ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+18 more)
+Cohesion: 0.08
+Nodes (23): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 23. REAL-TIME MONITORING, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 27. INDUSTRIAL UI/UX PRINCIPLES, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+15 more)
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
@@ -599,6 +600,10 @@ Nodes (7): 4.1 Estimated Storage Per Inspection, 4.2 Daily and Monthly Volumes (
 Cohesion: 0.29
 Nodes (7): 1. FRAME EXTRACTION, 2. OCR DETECTION, 3. SYNCHRONIZATION & COACH MAPPING, code:text (Frames Extracted: 14,221), code:text (Coach Identifiers Detected), code:text (Train), STAGE DETAILS
 
+### Community 97 - "Community 97"
+Cohesion: 0.67
+Nodes (3): 28. TRAIN-CENTRIC ARCHITECTURE, code:text (Dashboard), Correct Architecture
+
 ### Community 98 - "Community 98"
 Cohesion: 0.33
 Nodes (6): 11. DEFECT DETECTION PIPELINE, code:text (Detected Components), Defect Pipeline, Defect Types, Purpose, Severity Levels
@@ -618,6 +623,10 @@ Nodes (6): 3.1 Core Tables, 3.2 Critical Indexes, 3.3 What Goes in Postgres vs O
 ### Community 102 - "Community 102"
 Cohesion: 0.33
 Nodes (5): code:js (export default defineConfig([), code:js (// eslint.config.js), Expanding the ESLint configuration, React Compiler, React + TypeScript + Vite
+
+### Community 103 - "Community 103"
+Cohesion: 0.67
+Nodes (3): 5. VIDEO INGESTION PIPELINE, Ingestion Services, Raw Feed Ingestion
 
 ### Community 104 - "Community 104"
 Cohesion: 0.40
@@ -666,10 +675,6 @@ Nodes (4): CENTER VIEWER, code:text (Detection Controls), DETECTION WORKSPACE, L
 ### Community 117 - "Community 117"
 Cohesion: 0.67
 Nodes (3): 17. GPU SERVER ARCHITECTURE, code:text (Frontend Dashboard VPS), Recommended Production Architecture
-
-### Community 118 - "Community 118"
-Cohesion: 0.67
-Nodes (3): 23. REAL-TIME MONITORING, Monitoring Stack, Monitoring System
 
 ### Community 121 - "Community 121"
 Cohesion: 0.67
@@ -776,7 +781,7 @@ Cohesion: 0.67
 Nodes (3): code:text (Report generated successfully.), code:text (Synchronization completed.), TOASTS (MANDATORY)
 
 ## Knowledge Gaps
-- **917 isolated node(s):** `prisma`, `path`, `fs`, `{ pipeline }`, `{ randomUUID }` (+912 more)
+- **916 isolated node(s):** `prisma`, `path`, `fs`, `{ pipeline }`, `{ randomUUID }` (+911 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **83 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -784,11 +789,11 @@ Nodes (3): code:text (Report generated successfully.), code:text (Synchronizatio
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `cn()` connect `Community 42` to `Community 29`, `Community 6`?**
-  _High betweenness centrality (0.003) - this node is a cross-community bridge._
+  _High betweenness centrality (0.004) - this node is a cross-community bridge._
 - **Are the 21 inferred relationships involving `cn()` (e.g. with `clsx` and `LiveTrainCard()`) actually correct?**
   _`cn()` has 21 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Download one frame and run YOLO. Returns (frame, detections).`, `Run defect + component correlation for one coach.     Returns summary dict.`, `Run defect + component correlation for one coach.     Returns summary dict.` to the rest of the system?**
-  _966 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _965 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**

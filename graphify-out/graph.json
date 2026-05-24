@@ -4,85 +4,139 @@
   "graph": {},
   "nodes": [
     {
+      "label": "DetectionLogTable.jsx",
+      "file_type": "code",
+      "source_file": "components/DetectionLogTable.jsx",
+      "source_location": "L1",
+      "id": "components_detectionlogtable_jsx",
+      "community": 6,
+      "norm_label": "detectionlogtable.jsx"
+    },
+    {
+      "label": "DetectionLogTable()",
+      "file_type": "code",
+      "source_file": "components/DetectionLogTable.jsx",
+      "source_location": "L9",
+      "id": "components_detectionlogtable_detectionlogtable",
+      "community": 6,
+      "norm_label": "detectionlogtable()"
+    },
+    {
+      "label": "Reports.jsx",
+      "file_type": "code",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L1",
+      "id": "pages_reports_jsx",
+      "community": 6,
+      "norm_label": "reports.jsx"
+    },
+    {
+      "label": "SPECS_IMAGES",
+      "file_type": "code",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L44",
+      "id": "pages_reports_specs_images",
+      "community": 6,
+      "norm_label": "specs_images"
+    },
+    {
+      "label": "sessionToReport()",
+      "file_type": "code",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L57",
+      "id": "pages_reports_sessiontoreport",
+      "community": 6,
+      "norm_label": "sessiontoreport()"
+    },
+    {
+      "label": "Reports()",
+      "file_type": "code",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L76",
+      "id": "pages_reports_reports",
+      "community": 6,
+      "norm_label": "reports()"
+    },
+    {
       "label": "engine.py",
       "file_type": "code",
       "source_file": "engine.py",
       "source_location": "L1",
-      "id": "engine_py",
       "community": 11,
-      "norm_label": "engine.py"
+      "norm_label": "engine.py",
+      "id": "engine_py"
     },
     {
       "label": "_norm()",
       "file_type": "code",
       "source_file": "engine.py",
       "source_location": "L49",
-      "id": "correlation_engine_norm",
       "community": 11,
-      "norm_label": "_norm()"
+      "norm_label": "_norm()",
+      "id": "correlation_engine_norm"
     },
     {
       "label": "_fetch_frame_bytes()",
       "file_type": "code",
       "source_file": "engine.py",
       "source_location": "L53",
-      "id": "correlation_engine_fetch_frame_bytes",
       "community": 11,
-      "norm_label": "_fetch_frame_bytes()"
+      "norm_label": "_fetch_frame_bytes()",
+      "id": "correlation_engine_fetch_frame_bytes"
     },
     {
       "label": "_run_yolo()",
       "file_type": "code",
       "source_file": "engine.py",
       "source_location": "L63",
-      "id": "correlation_engine_run_yolo",
       "community": 11,
-      "norm_label": "_run_yolo()"
+      "norm_label": "_run_yolo()",
+      "id": "correlation_engine_run_yolo"
     },
     {
       "label": "_process_frame()",
       "file_type": "code",
       "source_file": "engine.py",
       "source_location": "L77",
-      "id": "correlation_engine_process_frame",
       "community": 11,
-      "norm_label": "_process_frame()"
+      "norm_label": "_process_frame()",
+      "id": "correlation_engine_process_frame"
     },
     {
       "label": "correlate_coach()",
       "file_type": "code",
       "source_file": "engine.py",
       "source_location": "L85",
-      "id": "correlation_engine_correlate_coach",
       "community": 11,
-      "norm_label": "correlate_coach()"
+      "norm_label": "correlate_coach()",
+      "id": "correlation_engine_correlate_coach"
     },
     {
       "label": "Correlation Engine \u2014 Phase 3 For each coach:   1. Sample frames assigned to that",
       "file_type": "rationale",
       "source_file": "engine.py",
       "source_location": "L1",
-      "id": "correlation_engine_rationale_1",
       "community": 11,
-      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to that"
+      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to that",
+      "id": "correlation_engine_rationale_1"
     },
     {
       "label": "Download one frame and run YOLO. Returns (frame, detections).",
       "file_type": "rationale",
       "source_file": "engine.py",
       "source_location": "L78",
-      "id": "correlation_engine_rationale_78",
       "community": 11,
-      "norm_label": "download one frame and run yolo. returns (frame, detections)."
+      "norm_label": "download one frame and run yolo. returns (frame, detections).",
+      "id": "correlation_engine_rationale_78"
     },
     {
       "label": "Run defect + component correlation for one coach.     Returns summary dict.",
       "file_type": "rationale",
       "source_file": "engine.py",
       "source_location": "L86",
-      "id": "correlation_engine_rationale_86",
       "community": 11,
-      "norm_label": "run defect + component correlation for one coach.     returns summary dict."
+      "norm_label": "run defect + component correlation for one coach.     returns summary dict.",
+      "id": "correlation_engine_rationale_86"
     },
     {
       "label": "engine.py",
@@ -6178,33 +6232,6 @@
       "id": "frontend_src_pages_reports_jsx"
     },
     {
-      "label": "SPECS_IMAGES",
-      "file_type": "code",
-      "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L37",
-      "community": 6,
-      "norm_label": "specs_images",
-      "id": "pages_reports_specs_images"
-    },
-    {
-      "label": "sessionToReport()",
-      "file_type": "code",
-      "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L50",
-      "community": 6,
-      "norm_label": "sessiontoreport()",
-      "id": "pages_reports_sessiontoreport"
-    },
-    {
-      "label": "Reports()",
-      "file_type": "code",
-      "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L69",
-      "community": 6,
-      "norm_label": "reports()",
-      "id": "pages_reports_reports"
-    },
-    {
       "label": "Settings.jsx",
       "file_type": "code",
       "source_file": "frontend/src/pages/Settings.jsx",
@@ -7847,7 +7874,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L168",
-      "community": 44,
+      "community": 103,
       "norm_label": "5. video ingestion pipeline",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_5_video_ingestion_pipeline"
     },
@@ -7856,7 +7883,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L170",
-      "community": 44,
+      "community": 103,
       "norm_label": "raw feed ingestion",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_raw_feed_ingestion"
     },
@@ -7865,7 +7892,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L189",
-      "community": 44,
+      "community": 103,
       "norm_label": "ingestion services",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_ingestion_services"
     },
@@ -8783,7 +8810,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1040",
-      "community": 118,
+      "community": 44,
       "norm_label": "23. real-time monitoring",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_23_real_time_monitoring"
     },
@@ -8792,7 +8819,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1042",
-      "community": 118,
+      "community": 44,
       "norm_label": "monitoring system",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_monitoring_system"
     },
@@ -8801,7 +8828,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1054",
-      "community": 118,
+      "community": 44,
       "norm_label": "monitoring stack",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_monitoring_stack"
     },
@@ -8900,7 +8927,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1147",
-      "community": 44,
+      "community": 97,
       "norm_label": "28. train-centric architecture",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_28_train_centric_architecture"
     },
@@ -8909,7 +8936,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1163",
-      "community": 44,
+      "community": 97,
       "norm_label": "correct architecture",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_correct_architecture"
     },
@@ -8918,7 +8945,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1165",
-      "community": 44,
+      "community": 97,
       "norm_label": "code:text (dashboard)",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_codeblock_23"
     },
@@ -15677,12 +15704,225 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "components/DetectionLogTable.jsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "components_detectionlogtable_jsx",
+      "target": "components_detectionlogtable_detectionlogtable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "components_detectionlogtable_jsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "hooks_usepolling_usepolling",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_getsessions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_getreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_generatereport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_gethierarchy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_getintelligence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_signreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_normalizesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_getcoachframes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "lib_api_getframes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "pages_reports_specs_images",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "pages_reports_sessiontoreport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "pages/Reports.jsx",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "pages_reports_jsx",
+      "target": "pages_reports_reports",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/pages/Reports.jsx",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_pages_reports_jsx",
+      "target": "pages_reports_specs_images"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/pages/Reports.jsx",
+      "source_location": "L50",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_pages_reports_jsx",
+      "target": "pages_reports_sessiontoreport"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.jsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_app_jsx",
+      "target": "pages_reports_reports"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "frontend/src/pages/Reports.jsx",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "pages_reports_reports",
+      "target": "hooks_usepolling_usepolling"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/pages/Reports.jsx",
+      "source_location": "L67",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_pages_reports_jsx",
+      "target": "pages_reports_reports"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "engine.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "engine_py",
-      "target": "correlation_engine_norm",
-      "confidence_score": 1.0
+      "target": "correlation_engine_norm"
     },
     {
       "relation": "contains",
@@ -15690,9 +15930,9 @@
       "source_file": "engine.py",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "engine_py",
-      "target": "correlation_engine_fetch_frame_bytes",
-      "confidence_score": 1.0
+      "target": "correlation_engine_fetch_frame_bytes"
     },
     {
       "relation": "contains",
@@ -15700,9 +15940,9 @@
       "source_file": "engine.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "engine_py",
-      "target": "correlation_engine_run_yolo",
-      "confidence_score": 1.0
+      "target": "correlation_engine_run_yolo"
     },
     {
       "relation": "contains",
@@ -15710,9 +15950,9 @@
       "source_file": "engine.py",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "engine_py",
-      "target": "correlation_engine_process_frame",
-      "confidence_score": 1.0
+      "target": "correlation_engine_process_frame"
     },
     {
       "relation": "contains",
@@ -15720,9 +15960,9 @@
       "source_file": "engine.py",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "engine_py",
-      "target": "correlation_engine_correlate_coach",
-      "confidence_score": 1.0
+      "target": "correlation_engine_correlate_coach"
     },
     {
       "relation": "rationale_for",
@@ -15730,9 +15970,9 @@
       "source_file": "engine.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_engine_rationale_1",
-      "target": "engine_py",
-      "confidence_score": 1.0
+      "target": "engine_py"
     },
     {
       "relation": "calls",
@@ -15762,9 +16002,9 @@
       "source_file": "engine.py",
       "source_location": "L79",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_engine_process_frame",
-      "target": "correlation_engine_fetch_frame_bytes",
-      "confidence_score": 1.0
+      "target": "correlation_engine_fetch_frame_bytes"
     },
     {
       "relation": "contains",
@@ -15804,9 +16044,9 @@
       "source_file": "engine.py",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_engine_process_frame",
-      "target": "correlation_engine_run_yolo",
-      "confidence_score": 1.0
+      "target": "correlation_engine_run_yolo"
     },
     {
       "relation": "contains",
@@ -15845,9 +16085,9 @@
       "source_file": "engine.py",
       "source_location": "L78",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_engine_rationale_78",
-      "target": "correlation_engine_process_frame",
-      "confidence_score": 1.0
+      "target": "correlation_engine_process_frame"
     },
     {
       "relation": "rationale_for",
@@ -15855,9 +16095,9 @@
       "source_file": "engine.py",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_engine_rationale_86",
-      "target": "correlation_engine_correlate_coach",
-      "confidence_score": 1.0
+      "target": "correlation_engine_correlate_coach"
     },
     {
       "relation": "contains",
@@ -22839,17 +23079,6 @@
       "target": "frontend_src_pages_reports_jsx"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/App.jsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_src_app_jsx",
-      "target": "pages_reports_reports"
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -23764,17 +23993,6 @@
       "target": "hooks_usepolling_usepolling"
     },
     {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L73",
-      "weight": 1.0,
-      "source": "pages_reports_reports",
-      "target": "hooks_usepolling_usepolling"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/hooks/useSessionSocket.js",
@@ -24586,36 +24804,6 @@
       "confidence_score": 1.0,
       "source": "frontend_src_pages_livequeue_jsx",
       "target": "pages_livequeue_livequeue"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L37",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_src_pages_reports_jsx",
-      "target": "pages_reports_specs_images"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L50",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_src_pages_reports_jsx",
-      "target": "pages_reports_sessiontoreport"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L67",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_src_pages_reports_jsx",
-      "target": "pages_reports_reports"
     },
     {
       "relation": "contains",
@@ -35014,5 +35202,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "dbb124816db7f37a265c5b9112fac4f4565d7e21"
+  "built_at_commit": "dc88a15e814b5ab1de27037dbdef3b7737406470"
 }
