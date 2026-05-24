@@ -366,6 +366,23 @@ def generate_report(conn, session_id: str) -> dict:
     logger.info("Building PDF report")
     pdf_bytes = build_pdf_report(data)
 
+    # Always write a local backup copy in backend/uploads/reports for robust offline operation
+    try:
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        uploads_reports_dir = os.path.join(root_dir, "backend", "uploads", "reports")
+        os.makedirs(uploads_reports_dir, exist_ok=True)
+        
+        local_pdf_path = os.path.join(uploads_reports_dir, f"report_{session_id}.pdf")
+        with open(local_pdf_path, "wb") as f:
+            f.write(pdf_bytes)
+            
+        local_json_path = os.path.join(uploads_reports_dir, f"report_{session_id}.json")
+        with open(local_json_path, "w", encoding="utf-8") as f:
+            f.write(json_str)
+        logger.info("Saved local backup copies of the report to backend/uploads/reports/")
+    except Exception as local_err:
+        logger.warning("Could not write local report backup files: %s", str(local_err))
+
     has_cloudinary = all([
         os.environ.get("CLOUDINARY_CLOUD_NAME"),
         os.environ.get("CLOUDINARY_API_KEY"),
@@ -376,8 +393,13 @@ def generate_report(conn, session_id: str) -> dict:
         logger.info("Uploading report to Cloudinary")
         urls = upload_report(pdf_bytes, json_str, session_id)
     else:
-        logger.warning("Cloudinary not configured — report URLs will be empty")
-        urls = {"pdf_url": None, "pdf_public_id": None, "json_url": None, "json_public_id": None}
+        logger.warning("Cloudinary not configured — using local Fastify fallback endpoints")
+        urls = {
+            "pdf_url": f"/api/sessions/{session_id}/report/pdf",
+            "pdf_public_id": f"local_{session_id}_pdf",
+            "json_url": f"/api/sessions/{session_id}/report/json",
+            "json_public_id": f"local_{session_id}_json",
+        }
 
     s = data["session"]
     result = {

@@ -147,6 +147,39 @@ async function reports(fastify) {
 
     return { success: true, message: `Report signed off successfully` };
   });
+
+  // GET /api/sessions/:id/report/pdf — serve local generated PDF report
+  fastify.get('/:id/report/pdf', async (req, reply) => {
+    const fs = require('fs');
+    const path = require('path');
+    const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
+    const pdfPath = path.join(UPLOAD_DIR, 'reports', `report_${req.params.id}.pdf`);
+
+    if (!fs.existsSync(pdfPath)) {
+      reply.status(404);
+      return { error: 'PDF Report not found. Please trigger generation first.' };
+    }
+
+    reply.type('application/pdf');
+    reply.header('Content-Disposition', `inline; filename="report_${req.params.id}.pdf"`);
+    return fs.createReadStream(pdfPath);
+  });
+
+  // GET /api/sessions/:id/report/json — serve local generated JSON report metadata
+  fastify.get('/:id/report/json', async (req, reply) => {
+    const fs = require('fs');
+    const path = require('path');
+    const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
+    const jsonPath = path.join(UPLOAD_DIR, 'reports', `report_${req.params.id}.json`);
+
+    if (!fs.existsSync(jsonPath)) {
+      reply.status(404);
+      return { error: 'JSON Report not found. Please trigger generation first.' };
+    }
+
+    reply.type('application/json');
+    return fs.createReadStream(jsonPath);
+  });
 }
 
 module.exports = reports;
