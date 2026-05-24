@@ -526,7 +526,10 @@ export const TrainWorkspace = () => {
 
   useEffect(() => {
     if (isFullscreen) {
-      drawFullscreenOverlay();
+      const timer = setTimeout(() => {
+        drawFullscreenOverlay();
+      }, 50);
+      return () => clearTimeout(timer);
     }
   }, [drawFullscreenOverlay, isFullscreen, selectedFrame]);
 
@@ -984,14 +987,14 @@ export const TrainWorkspace = () => {
                 <p className="text-slate-500 text-xs">Frames appear here after processing completes.</p>
               </div>
             ) : layoutMode === 'single' ? (
-              <div className="w-full h-full flex items-center justify-center p-6" style={{ transform: `scale(${zoomLevel / 100})` }}>
+              <div className="absolute inset-0 flex items-center justify-center p-4" style={{ transform: `scale(${zoomLevel / 100})`, transition: 'transform 0.15s ease-out' }}>
                 {selectedFrame ? (
-                  <div className="relative max-w-full max-h-full">
+                  <div className="relative max-w-full max-h-full flex items-center justify-center">
                     <img
                       ref={imgRef}
                       src={selectedFrame.cloudinary_url}
                       alt={`Frame ${selectedFrame.sequence_number}`}
-                      className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl block"
+                      className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl block mx-auto"
                       onLoad={drawOverlay}
                     />
                     <canvas
@@ -1314,7 +1317,7 @@ export const TrainWorkspace = () => {
 
       {/* Fullscreen Overlay Viewport */}
       {isFullscreen && (
-        <div className="fixed inset-0 bg-[#faf9ff] text-[#051a3e] z-50 flex flex-col justify-between p-6 select-none animate-in fade-in duration-200 font-sans">
+        <div className="fixed inset-0 bg-[#faf9ff] text-[#051a3e] z-[9999] flex flex-col justify-between p-6 select-none animate-in fade-in duration-200 font-sans">
           {/* Top floating control panel */}
           <div className="flex items-center justify-between bg-white border border-[#c3c6d6]/60 rounded-sm p-3 px-4 shadow-sm shrink-0">
             <div className="flex items-center gap-3">
