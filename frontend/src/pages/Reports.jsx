@@ -31,7 +31,6 @@ import {
   Activity,
   Sparkles,
   Info,
-  CheckCircle,
   MoreVertical,
   SlidersHorizontal,
   ChevronLeft,
@@ -39,6 +38,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import DetectionLogTable from '../components/DetectionLogTable';
 
 // Images from the HTML specs
 const SPECS_IMAGES = {
@@ -596,7 +596,7 @@ export const Reports = () => {
 
   // Render detailed Report Generation Workspace
   if (selectedReport) {
-    // Derive coachBreakdown and activeDefect from real intelligence data
+    // Derive coachBreakdown from real intelligence data
     const defects = coachIntel?.defects || [];
     const components = coachIntel?.components_detected || [];
     const missing = coachIntel?.missing_components || [];
@@ -622,16 +622,6 @@ export const Reports = () => {
             { name: 'Total Defects', value: String(summary.total_defects ?? 0), isError: (summary.total_defects ?? 0) > 0 },
           ],
     };
-
-    const currentDefect = defects[activeDefectIndex] || null;
-    const activeDefect = currentDefect ? {
-      name: `${currentDefect.severity} DEFECT: ${currentDefect.defect_type}`,
-      ref: currentDefect.id?.slice(0, 12) || 'N/A',
-      timestamp: currentDefect.created_at ? new Date(currentDefect.created_at).toLocaleTimeString() : '—',
-      cams: [currentDefect.frame_url, currentDefect.annotated_frame_url].filter(Boolean),
-      aiReasoning: currentDefect.ai_notes || `AI detected ${currentDefect.defect_type} with ${Math.round(currentDefect.confidence * 100)}% confidence. Severity: ${currentDefect.severity}. Review status: ${currentDefect.review_status || 'pending'}.`,
-      confidence: Math.round(currentDefect.confidence * 100),
-    } : null;
 
     return (
       <div className="flex flex-col h-[calc(100vh-4rem)] bg-[#faf9ff] overflow-hidden font-sans">
@@ -1075,56 +1065,15 @@ export const Reports = () => {
               )}
             </div>
 
-            {/* Secondary Intelligence Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                  <CheckCircle className="w-4 h-4 text-primary" />
-                  <h3 className="text-xs font-black uppercase text-slate-800">{coachBreakdown.title}</h3>
-                </div>
-                
-                <div className="space-y-2">
-                  {coachBreakdown.items.map((item, i) => (
-                    <div 
-                      key={i} 
-                      className={`flex justify-between p-2 text-xs border border-transparent rounded transition-all ${item.isError ? 'bg-red-50 border-red-200 font-bold text-red-700' : 'hover:bg-slate-50 text-slate-600'}`}
-                    >
-                      <span>{item.name}</span>
-                      <span className="font-mono">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                  <Activity className="w-4 h-4 text-primary" />
-                  <h3 className="text-xs font-black uppercase text-slate-800">Structural Compliance</h3>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center font-bold text-primary text-xs shrink-0">
-                      {coachBreakdown.complianceScore}
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-slate-800">IRS-S6 Compliance</p>
-                      <p className="text-[10px] text-slate-400 font-medium">Indian Railway Safety Standard Ver 2024.1</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-bold text-xs shrink-0 ${coachBreakdown.stressScore > 60 ? 'border-red-500 text-red-500' : 'border-primary text-primary'}`}>
-                      {coachBreakdown.stressScore}
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-slate-800">Bogie Stress Score</p>
-                      <p className="text-[10px] text-slate-400 font-medium">Aggregated vibration and visual stress index</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Detection Log Table */}
+            <DetectionLogTable
+              frames={coachFrames}
+              components={components}
+              onViewFrame={(frame) => {
+                setSelectedFrame(frame);
+                setLayoutMode('single');
+              }}
+            />
 
           </section>
 

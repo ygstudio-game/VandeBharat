@@ -6,35 +6,26 @@
     {
       "label": "engine.py",
       "file_type": "code",
-      "source_file": "correlation/engine.py",
+      "source_file": "engine.py",
       "source_location": "L1",
-      "id": "correlation_engine_py",
+      "id": "engine_py",
       "community": 11,
       "norm_label": "engine.py"
     },
     {
       "label": "_norm()",
       "file_type": "code",
-      "source_file": "correlation/engine.py",
-      "source_location": "L104",
+      "source_file": "engine.py",
+      "source_location": "L49",
       "id": "correlation_engine_norm",
       "community": 11,
       "norm_label": "_norm()"
     },
     {
-      "label": "load_manifest()",
-      "file_type": "code",
-      "source_file": "correlation/engine.py",
-      "source_location": "L108",
-      "id": "correlation_engine_load_manifest",
-      "community": 11,
-      "norm_label": "load_manifest()"
-    },
-    {
       "label": "_fetch_frame_bytes()",
       "file_type": "code",
-      "source_file": "correlation/engine.py",
-      "source_location": "L117",
+      "source_file": "engine.py",
+      "source_location": "L53",
       "id": "correlation_engine_fetch_frame_bytes",
       "community": 11,
       "norm_label": "_fetch_frame_bytes()"
@@ -42,317 +33,362 @@
     {
       "label": "_run_yolo()",
       "file_type": "code",
-      "source_file": "correlation/engine.py",
-      "source_location": "L127",
+      "source_file": "engine.py",
+      "source_location": "L63",
       "id": "correlation_engine_run_yolo",
       "community": 11,
       "norm_label": "_run_yolo()"
     },
     {
+      "label": "_process_frame()",
+      "file_type": "code",
+      "source_file": "engine.py",
+      "source_location": "L77",
+      "id": "correlation_engine_process_frame",
+      "community": 11,
+      "norm_label": "_process_frame()"
+    },
+    {
       "label": "correlate_coach()",
       "file_type": "code",
-      "source_file": "correlation/engine.py",
-      "source_location": "L141",
+      "source_file": "engine.py",
+      "source_location": "L85",
       "id": "correlation_engine_correlate_coach",
       "community": 11,
       "norm_label": "correlate_coach()"
     },
     {
-      "label": "Correlation Engine \u2014 Phase 3 For each coach:   1. Sample frames assigned to th",
+      "label": "Correlation Engine \u2014 Phase 3 For each coach:   1. Sample frames assigned to that",
       "file_type": "rationale",
-      "source_file": "correlation/engine.py",
+      "source_file": "engine.py",
       "source_location": "L1",
       "id": "correlation_engine_rationale_1",
       "community": 11,
-      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to th"
+      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to that"
+    },
+    {
+      "label": "Download one frame and run YOLO. Returns (frame, detections).",
+      "file_type": "rationale",
+      "source_file": "engine.py",
+      "source_location": "L78",
+      "id": "correlation_engine_rationale_78",
+      "community": 11,
+      "norm_label": "download one frame and run yolo. returns (frame, detections)."
+    },
+    {
+      "label": "Run defect + component correlation for one coach.     Returns summary dict.",
+      "file_type": "rationale",
+      "source_file": "engine.py",
+      "source_location": "L86",
+      "id": "correlation_engine_rationale_86",
+      "community": 11,
+      "norm_label": "run defect + component correlation for one coach.     returns summary dict."
+    },
+    {
+      "label": "engine.py",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L1",
+      "community": 11,
+      "norm_label": "engine.py",
+      "id": "correlation_engine_py"
+    },
+    {
+      "label": "load_manifest()",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L108",
+      "community": 11,
+      "norm_label": "load_manifest()",
+      "id": "correlation_engine_load_manifest"
     },
     {
       "label": "Run defect + component correlation for one coach.     Returns summary dict.",
       "file_type": "rationale",
       "source_file": "correlation/engine.py",
       "source_location": "L142",
-      "id": "correlation_engine_rationale_142",
       "community": 11,
-      "norm_label": "run defect + component correlation for one coach.     returns summary dict."
+      "norm_label": "run defect + component correlation for one coach.     returns summary dict.",
+      "id": "correlation_engine_rationale_142"
     },
     {
       "label": "vande_bharat.json",
       "file_type": "code",
       "source_file": "correlation/manifests/vande_bharat.json",
       "source_location": "L1",
-      "id": "correlation_manifests_vande_bharat_json",
       "community": 10,
-      "norm_label": "vande_bharat.json"
+      "norm_label": "vande_bharat.json",
+      "id": "correlation_manifests_vande_bharat_json"
     },
     {
       "label": "coach_type",
       "file_type": "code",
       "source_file": "correlation/manifests/vande_bharat.json",
       "source_location": "L2",
-      "id": "manifests_vande_bharat_coach_type",
       "community": 10,
-      "norm_label": "coach_type"
+      "norm_label": "coach_type",
+      "id": "manifests_vande_bharat_coach_type"
     },
     {
       "label": "components",
       "file_type": "code",
       "source_file": "correlation/manifests/vande_bharat.json",
       "source_location": "L3",
-      "id": "manifests_vande_bharat_components",
       "community": 10,
-      "norm_label": "components"
+      "norm_label": "components",
+      "id": "manifests_vande_bharat_components"
     },
     {
       "label": "server.py",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L1",
-      "id": "frame_extractor_server_py",
       "community": 12,
-      "norm_label": "server.py"
+      "norm_label": "server.py",
+      "id": "frame_extractor_server_py"
     },
     {
       "label": "ExtractRequest",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L42",
-      "id": "frame_extractor_server_extractrequest",
       "community": 12,
-      "norm_label": "extractrequest"
+      "norm_label": "extractrequest",
+      "id": "frame_extractor_server_extractrequest"
     },
     {
       "label": "BaseModel",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "basemodel",
       "community": 12,
-      "norm_label": "basemodel"
+      "norm_label": "basemodel",
+      "id": "basemodel"
     },
     {
       "label": "get_conn()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L49",
-      "id": "frame_extractor_server_get_conn",
       "community": 12,
-      "norm_label": "get_conn()"
+      "norm_label": "get_conn()",
+      "id": "frame_extractor_server_get_conn"
     },
     {
       "label": "_all_cameras_done()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L53",
-      "id": "frame_extractor_server_all_cameras_done",
       "community": 12,
-      "norm_label": "_all_cameras_done()"
+      "norm_label": "_all_cameras_done()",
+      "id": "frame_extractor_server_all_cameras_done"
     },
     {
       "label": "_trim_to_shortest_camera()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L63",
-      "id": "frame_extractor_server_trim_to_shortest_camera",
       "community": 12,
-      "norm_label": "_trim_to_shortest_camera()"
+      "norm_label": "_trim_to_shortest_camera()",
+      "id": "frame_extractor_server_trim_to_shortest_camera"
     },
     {
       "label": "_load_root_config()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L140",
-      "id": "frame_extractor_server_load_root_config",
       "community": 12,
-      "norm_label": "_load_root_config()"
+      "norm_label": "_load_root_config()",
+      "id": "frame_extractor_server_load_root_config"
     },
     {
       "label": "_flush_rows()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L153",
-      "id": "frame_extractor_server_flush_rows",
       "community": 12,
-      "norm_label": "_flush_rows()"
+      "norm_label": "_flush_rows()",
+      "id": "frame_extractor_server_flush_rows"
     },
     {
       "label": "run_extraction()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L189",
-      "id": "frame_extractor_server_run_extraction",
       "community": 12,
-      "norm_label": "run_extraction()"
+      "norm_label": "run_extraction()",
+      "id": "frame_extractor_server_run_extraction"
     },
     {
       "label": "health()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L374",
-      "id": "frame_extractor_server_health",
       "community": 12,
-      "norm_label": "health()"
+      "norm_label": "health()",
+      "id": "frame_extractor_server_health"
     },
     {
       "label": "extract()",
       "file_type": "code",
       "source_file": "frame_extractor/server.py",
       "source_location": "L379",
-      "id": "frame_extractor_server_extract",
       "community": 12,
-      "norm_label": "extract()"
+      "norm_label": "extract()",
+      "id": "frame_extractor_server_extract"
     },
     {
       "label": "Frame Extractor Service \u2014 port 5003 Receives video path \u2192 OpenCV extracts every",
       "file_type": "rationale",
       "source_file": "frame_extractor/server.py",
       "source_location": "L1",
-      "id": "frame_extractor_server_rationale_1",
       "community": 12,
-      "norm_label": "frame extractor service \u2014 port 5003 receives video path \u2192 opencv extracts every"
+      "norm_label": "frame extractor service \u2014 port 5003 receives video path \u2192 opencv extracts every",
+      "id": "frame_extractor_server_rationale_1"
     },
     {
       "label": "True when every session_camera for this session has frame_count > 0.",
       "file_type": "rationale",
       "source_file": "frame_extractor/server.py",
       "source_location": "L54",
-      "id": "frame_extractor_server_rationale_54",
       "community": 12,
-      "norm_label": "true when every session_camera for this session has frame_count > 0."
+      "norm_label": "true when every session_camera for this session has frame_count > 0.",
+      "id": "frame_extractor_server_rationale_54"
     },
     {
       "label": "After all cameras finish, find the camera with the fewest frames (shortest video",
       "file_type": "rationale",
       "source_file": "frame_extractor/server.py",
       "source_location": "L64",
-      "id": "frame_extractor_server_rationale_64",
       "community": 12,
-      "norm_label": "after all cameras finish, find the camera with the fewest frames (shortest video"
+      "norm_label": "after all cameras finish, find the camera with the fewest frames (shortest video",
+      "id": "frame_extractor_server_rationale_64"
     },
     {
       "label": "Insert a batch of frame rows and update the live counters in the DB.",
       "file_type": "rationale",
       "source_file": "frame_extractor/server.py",
       "source_location": "L154",
-      "id": "frame_extractor_server_rationale_154",
       "community": 12,
-      "norm_label": "insert a batch of frame rows and update the live counters in the db."
+      "norm_label": "insert a batch of frame rows and update the live counters in the db.",
+      "id": "frame_extractor_server_rationale_154"
     },
     {
       "label": "builder.py",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L1",
-      "id": "report_generator_builder_py",
       "community": 13,
-      "norm_label": "builder.py"
+      "norm_label": "builder.py",
+      "id": "report_generator_builder_py"
     },
     {
       "label": "load_session_data()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L40",
-      "id": "report_generator_builder_load_session_data",
       "community": 13,
-      "norm_label": "load_session_data()"
+      "norm_label": "load_session_data()",
+      "id": "report_generator_builder_load_session_data"
     },
     {
       "label": "build_json_report()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L123",
-      "id": "report_generator_builder_build_json_report",
       "community": 13,
-      "norm_label": "build_json_report()"
+      "norm_label": "build_json_report()",
+      "id": "report_generator_builder_build_json_report"
     },
     {
       "label": "_health_color()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L187",
-      "id": "report_generator_builder_health_color",
       "community": 13,
-      "norm_label": "_health_color()"
+      "norm_label": "_health_color()",
+      "id": "report_generator_builder_health_color"
     },
     {
       "label": "_PDF",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L198",
-      "id": "report_generator_builder_pdf",
       "community": 13,
-      "norm_label": "_pdf"
+      "norm_label": "_pdf",
+      "id": "report_generator_builder_pdf"
     },
     {
       "label": "FPDF",
       "file_type": "code",
       "source_file": "",
       "source_location": "",
-      "id": "fpdf",
       "community": 13,
-      "norm_label": "fpdf"
+      "norm_label": "fpdf",
+      "id": "fpdf"
     },
     {
       "label": ".header()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L199",
-      "id": "report_generator_builder_pdf_header",
       "community": 13,
-      "norm_label": ".header()"
+      "norm_label": ".header()",
+      "id": "report_generator_builder_pdf_header"
     },
     {
       "label": ".footer()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L208",
-      "id": "report_generator_builder_pdf_footer",
       "community": 13,
-      "norm_label": ".footer()"
+      "norm_label": ".footer()",
+      "id": "report_generator_builder_pdf_footer"
     },
     {
       "label": "build_pdf_report()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L215",
-      "id": "report_generator_builder_build_pdf_report",
       "community": 13,
-      "norm_label": "build_pdf_report()"
+      "norm_label": "build_pdf_report()",
+      "id": "report_generator_builder_build_pdf_report"
     },
     {
       "label": "_upload()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L332",
-      "id": "report_generator_builder_upload",
       "community": 13,
-      "norm_label": "_upload()"
+      "norm_label": "_upload()",
+      "id": "report_generator_builder_upload"
     },
     {
       "label": "upload_report()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L342",
-      "id": "report_generator_builder_upload_report",
       "community": 13,
-      "norm_label": "upload_report()"
+      "norm_label": "upload_report()",
+      "id": "report_generator_builder_upload_report"
     },
     {
       "label": "generate_report()",
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L356",
-      "id": "report_generator_builder_generate_report",
       "community": 13,
-      "norm_label": "generate_report()"
+      "norm_label": "generate_report()",
+      "id": "report_generator_builder_generate_report"
     },
     {
       "label": "Report builder \u2014 Phase 4 Reads full session from DB \u2192 builds PDF (fpdf2) + JSON",
       "file_type": "rationale",
       "source_file": "report_generator/builder.py",
       "source_location": "L1",
-      "id": "report_generator_builder_rationale_1",
       "community": 13,
-      "norm_label": "report builder \u2014 phase 4 reads full session from db \u2192 builds pdf (fpdf2) + json"
+      "norm_label": "report builder \u2014 phase 4 reads full session from db \u2192 builds pdf (fpdf2) + json",
+      "id": "report_generator_builder_rationale_1"
     },
     {
       "label": "generate_docs.py",
@@ -7811,7 +7847,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L168",
-      "community": 123,
+      "community": 44,
       "norm_label": "5. video ingestion pipeline",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_5_video_ingestion_pipeline"
     },
@@ -7820,7 +7856,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L170",
-      "community": 123,
+      "community": 44,
       "norm_label": "raw feed ingestion",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_raw_feed_ingestion"
     },
@@ -7829,7 +7865,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L189",
-      "community": 123,
+      "community": 44,
       "norm_label": "ingestion services",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_ingestion_services"
     },
@@ -8342,7 +8378,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L675",
-      "community": 44,
+      "community": 72,
       "norm_label": "14. ai intelligence layer",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_14_ai_intelligence_layer"
     },
@@ -8351,7 +8387,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L677",
-      "community": 44,
+      "community": 72,
       "norm_label": "purpose",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_purpose_677"
     },
@@ -8360,7 +8396,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L689",
-      "community": 44,
+      "community": 72,
       "norm_label": "intelligence features",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_intelligence_features"
     },
@@ -8837,7 +8873,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1117",
-      "community": 120,
+      "community": 44,
       "norm_label": "27. industrial ui/ux principles",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_27_industrial_ui_ux_principles"
     },
@@ -8846,7 +8882,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1132",
-      "community": 120,
+      "community": 44,
       "norm_label": "core ux principle",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_core_ux_principle"
     },
@@ -8855,7 +8891,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1136",
-      "community": 120,
+      "community": 44,
       "norm_label": "code:text (which train?)",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_codeblock_22"
     },
@@ -15641,61 +15677,61 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "correlation/engine.py",
-      "source_location": "L104",
+      "source_file": "engine.py",
+      "source_location": "L49",
       "weight": 1.0,
-      "source": "correlation_engine_py",
+      "source": "engine_py",
       "target": "correlation_engine_norm",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "correlation/engine.py",
-      "source_location": "L108",
+      "source_file": "engine.py",
+      "source_location": "L53",
       "weight": 1.0,
-      "source": "correlation_engine_py",
-      "target": "correlation_engine_load_manifest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "correlation/engine.py",
-      "source_location": "L117",
-      "weight": 1.0,
-      "source": "correlation_engine_py",
+      "source": "engine_py",
       "target": "correlation_engine_fetch_frame_bytes",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "correlation/engine.py",
-      "source_location": "L127",
+      "source_file": "engine.py",
+      "source_location": "L63",
       "weight": 1.0,
-      "source": "correlation_engine_py",
+      "source": "engine_py",
       "target": "correlation_engine_run_yolo",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "correlation/engine.py",
-      "source_location": "L141",
+      "source_file": "engine.py",
+      "source_location": "L77",
       "weight": 1.0,
-      "source": "correlation_engine_py",
+      "source": "engine_py",
+      "target": "correlation_engine_process_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "engine.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "engine_py",
       "target": "correlation_engine_correlate_coach",
       "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
-      "source_file": "correlation/engine.py",
+      "source_file": "engine.py",
       "source_location": "L1",
       "weight": 1.0,
       "source": "correlation_engine_rationale_1",
-      "target": "correlation_engine_py",
+      "target": "engine_py",
       "confidence_score": 1.0
     },
     {
@@ -15705,30 +15741,40 @@
       "source_file": "correlation/engine.py",
       "source_location": "L196",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_norm",
-      "confidence_score": 1.0
+      "target": "correlation_engine_norm"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_norm"
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L127",
+      "source_file": "engine.py",
+      "source_location": "L79",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_load_manifest"
+      "source": "correlation_engine_process_frame",
+      "target": "correlation_engine_fetch_frame_bytes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L61",
+      "source_file": "correlation/engine.py",
+      "source_location": "L117",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_load_manifest"
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_fetch_frame_bytes"
     },
     {
       "relation": "calls",
@@ -15755,6 +15801,27 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "engine.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "correlation_engine_process_frame",
+      "target": "correlation_engine_run_yolo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_run_yolo"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "source_file": "services/correlation/engine.py",
       "source_location": "L140",
       "weight": 1.0,
@@ -15775,12 +15842,53 @@
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
+      "source_file": "engine.py",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "correlation_engine_rationale_78",
+      "target": "correlation_engine_process_frame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "engine.py",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "correlation_engine_rationale_86",
+      "target": "correlation_engine_correlate_coach",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_correlate_coach"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_load_manifest"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
       "source_file": "correlation/engine.py",
       "source_location": "L142",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_engine_rationale_142",
-      "target": "correlation_engine_correlate_coach",
-      "confidence_score": 1.0
+      "target": "correlation_engine_correlate_coach"
     },
     {
       "relation": "contains",
@@ -15816,6 +15924,16 @@
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_rationale_1",
+      "target": "correlation_engine_py"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
       "source_file": "services/correlation/engine.py",
       "source_location": "L1",
       "weight": 1.0,
@@ -15826,12 +15944,32 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_load_manifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_load_manifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "correlation/manifests/vande_bharat.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_manifests_vande_bharat_json",
-      "target": "manifests_vande_bharat_coach_type",
-      "confidence_score": 1.0
+      "target": "manifests_vande_bharat_coach_type"
     },
     {
       "relation": "contains",
@@ -15839,9 +15977,9 @@
       "source_file": "correlation/manifests/vande_bharat.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "correlation_manifests_vande_bharat_json",
-      "target": "manifests_vande_bharat_components",
-      "confidence_score": 1.0
+      "target": "manifests_vande_bharat_components"
     },
     {
       "relation": "contains",
@@ -15869,9 +16007,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_extractrequest",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_extractrequest"
     },
     {
       "relation": "contains",
@@ -15879,9 +16017,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_get_conn",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_get_conn"
     },
     {
       "relation": "contains",
@@ -15889,9 +16027,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_all_cameras_done",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_all_cameras_done"
     },
     {
       "relation": "contains",
@@ -15899,9 +16037,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_trim_to_shortest_camera",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_trim_to_shortest_camera"
     },
     {
       "relation": "contains",
@@ -15909,9 +16047,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_load_root_config",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_load_root_config"
     },
     {
       "relation": "contains",
@@ -15919,9 +16057,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L153",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_flush_rows",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_flush_rows"
     },
     {
       "relation": "contains",
@@ -15929,9 +16067,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L189",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_run_extraction",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_run_extraction"
     },
     {
       "relation": "contains",
@@ -15939,9 +16077,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L374",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_health",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_health"
     },
     {
       "relation": "contains",
@@ -15949,9 +16087,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L379",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_py",
-      "target": "frame_extractor_server_extract",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_extract"
     },
     {
       "relation": "rationale_for",
@@ -15959,9 +16097,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_rationale_1",
-      "target": "frame_extractor_server_py",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_py"
     },
     {
       "relation": "inherits",
@@ -16092,9 +16230,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L313",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_run_extraction",
-      "target": "frame_extractor_server_trim_to_shortest_camera",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_trim_to_shortest_camera"
     },
     {
       "relation": "rationale_for",
@@ -16102,9 +16240,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_rationale_64",
-      "target": "frame_extractor_server_trim_to_shortest_camera",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_trim_to_shortest_camera"
     },
     {
       "relation": "contains",
@@ -16133,9 +16271,9 @@
       "source_file": "frame_extractor/server.py",
       "source_location": "L154",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frame_extractor_server_rationale_154",
-      "target": "frame_extractor_server_flush_rows",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_flush_rows"
     },
     {
       "relation": "contains",
@@ -16204,9 +16342,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "fpdf",
-      "confidence_score": 1.0
+      "target": "fpdf"
     },
     {
       "relation": "contains",
@@ -16214,9 +16352,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_load_session_data",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_load_session_data"
     },
     {
       "relation": "contains",
@@ -16224,9 +16362,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_build_json_report",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_build_json_report"
     },
     {
       "relation": "contains",
@@ -16234,9 +16372,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L187",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_health_color",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_health_color"
     },
     {
       "relation": "contains",
@@ -16244,9 +16382,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L198",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_pdf",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_pdf"
     },
     {
       "relation": "contains",
@@ -16254,9 +16392,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L215",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_build_pdf_report",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_build_pdf_report"
     },
     {
       "relation": "contains",
@@ -16264,9 +16402,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L332",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_upload",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_upload"
     },
     {
       "relation": "contains",
@@ -16274,9 +16412,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L342",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_upload_report",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_upload_report"
     },
     {
       "relation": "contains",
@@ -16284,9 +16422,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L356",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_py",
-      "target": "report_generator_builder_generate_report",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_generate_report"
     },
     {
       "relation": "rationale_for",
@@ -16294,9 +16432,9 @@
       "source_file": "report_generator/builder.py",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "report_generator_builder_rationale_1",
-      "target": "report_generator_builder_py",
-      "confidence_score": 1.0
+      "target": "report_generator_builder_py"
     },
     {
       "relation": "calls",
@@ -34876,5 +35014,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fbcc8d8760c5900f293204baa573716de694f3b9"
+  "built_at_commit": "dbb124816db7f37a265c5b9112fac4f4565d7e21"
 }

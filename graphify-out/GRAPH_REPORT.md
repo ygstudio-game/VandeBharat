@@ -1,16 +1,16 @@
 # Graph Report - Main  (2026-05-24)
 
 ## Corpus Check
-- 126 files · ~302,969 words
+- 126 files · ~302,717 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1737 nodes · 1899 edges · 220 communities (137 shown, 83 thin omitted)
+- 1741 nodes · 1909 edges · 219 communities (136 shown, 83 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `fbcc8d87`
+- Built from commit: `dbb12481`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -84,6 +84,7 @@
 - [[_COMMUNITY_Community 69|Community 69]]
 - [[_COMMUNITY_Community 70|Community 70]]
 - [[_COMMUNITY_Community 71|Community 71]]
+- [[_COMMUNITY_Community 72|Community 72]]
 - [[_COMMUNITY_Community 73|Community 73]]
 - [[_COMMUNITY_Community 74|Community 74]]
 - [[_COMMUNITY_Community 75|Community 75]]
@@ -127,10 +128,8 @@
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
 - [[_COMMUNITY_Community 118|Community 118]]
-- [[_COMMUNITY_Community 120|Community 120]]
 - [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
-- [[_COMMUNITY_Community 123|Community 123]]
 - [[_COMMUNITY_Community 124|Community 124]]
 - [[_COMMUNITY_Community 125|Community 125]]
 - [[_COMMUNITY_Community 126|Community 126]]
@@ -236,25 +235,25 @@
 3. `VandeInspect AI — Backend Build Progress` - 16 edges
 4. `run_sync()` - 15 edges
 5. `Vande Inspect AI — Complete System Design` - 15 edges
-6. `DEFECT ACTIONS` - 11 edges
-7. `correlate_coach()` - 9 edges
+6. `correlate_coach()` - 11 edges
+7. `DEFECT ACTIONS` - 11 edges
 8. `services` - 9 edges
 9. `scripts` - 9 edges
 10. `useSessionSocket()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Run defect + component correlation for one coach.     Returns summary dict.` --rationale_for--> `correlate_coach()`  [EXTRACTED]
-  services/correlation/engine.py → correlation/engine.py
+  correlation/engine.py → engine.py
+- `Run defect + component correlation for one coach.     Returns summary dict.` --rationale_for--> `correlate_coach()`  [EXTRACTED]
+  services/correlation/engine.py → engine.py
 - `correlate()` --calls--> `correlate_coach()`  [INFERRED]
-  services/correlation/server.py → correlation/engine.py
+  services/correlation/server.py → engine.py
 - `True when every session_camera for this session has frame_count > 0.` --rationale_for--> `_all_cameras_done()`  [EXTRACTED]
   services/frame_extractor/server.py → frame_extractor/server.py
 - `Insert a batch of frame rows and update the live counters in the DB.` --rationale_for--> `_flush_rows()`  [EXTRACTED]
   services/frame_extractor/server.py → frame_extractor/server.py
-- `generate()` --calls--> `generate_report()`  [INFERRED]
-  services/report_generator/server.py → report_generator/builder.py
 
-## Communities (220 total, 83 thin omitted)
+## Communities (219 total, 83 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.13
@@ -289,8 +288,8 @@ Cohesion: 0.22
 Nodes (8): decode_bytes(), predict(), predict_train_number(), YOLO Service — port 5002 Two models loaded at startup on GPU:   best.pt, Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2, Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2
 
 ### Community 11 - "Community 11"
-Cohesion: 0.20
-Nodes (12): correlate_coach(), _fetch_frame_bytes(), load_manifest(), _norm(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to th, Run defect + component correlation for one coach.     Returns summary dict., Run defect + component correlation for one coach.     Returns summary dict., _run_yolo() (+4 more)
+Cohesion: 0.18
+Nodes (15): correlate_coach(), _fetch_frame_bytes(), load_manifest(), _norm(), _process_frame(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to that, Run defect + component correlation for one coach.     Returns summary dict., Download one frame and run YOLO. Returns (frame, detections). (+7 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.12
@@ -393,8 +392,8 @@ Cohesion: 0.07
 Nodes (26): 1.1 Ingestion & Session Management, 1.2 Inspection Intelligence, 1. REST API Interface Specification, 2.1 Client Subscriptions, 2.2 Server Broadcasts, 2. WebSocket Protocol Schema, Coach Maps Completed (`coaches_mapped`), code:json ({) (+18 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.08
-Nodes (23): 14. AI INTELLIGENCE LAYER, 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 28. TRAIN-CENTRIC ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+15 more)
+Cohesion: 0.07
+Nodes (26): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 27. INDUSTRIAL UI/UX PRINCIPLES, 28. TRAIN-CENTRIC ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+18 more)
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
@@ -503,6 +502,10 @@ Nodes (11): code:text (⚠ Missing Bolt), code:text (Detected Components), code:
 ### Community 71 - "Community 71"
 Cohesion: 0.18
 Nodes (11): code:text (Train Number), code:text (Coach B1), code:text (Defect), code:text (Train), code:text (Coach B1), code:text (Train), code:text (Coach B2), code:text (Camera) (+3 more)
+
+### Community 72 - "Community 72"
+Cohesion: 0.67
+Nodes (3): 14. AI INTELLIGENCE LAYER, Intelligence Features, Purpose
 
 ### Community 73 - "Community 73"
 Cohesion: 0.20
@@ -668,10 +671,6 @@ Nodes (3): 17. GPU SERVER ARCHITECTURE, code:text (Frontend Dashboard VPS), Reco
 Cohesion: 0.67
 Nodes (3): 23. REAL-TIME MONITORING, Monitoring Stack, Monitoring System
 
-### Community 120 - "Community 120"
-Cohesion: 0.67
-Nodes (3): 27. INDUSTRIAL UI/UX PRINCIPLES, code:text (Which train?), Core UX Principle
-
 ### Community 121 - "Community 121"
 Cohesion: 0.67
 Nodes (3): 2. HIGH-LEVEL PIPELINE FLOW, code:text (Train Passes Through Inspection Zone), Final Production Pipeline
@@ -679,10 +678,6 @@ Nodes (3): 2. HIGH-LEVEL PIPELINE FLOW, code:text (Train Passes Through Inspecti
 ### Community 122 - "Community 122"
 Cohesion: 0.67
 Nodes (3): 3. CAMERA INFRASTRUCTURE, Camera Characteristics, Camera Layout
-
-### Community 123 - "Community 123"
-Cohesion: 0.67
-Nodes (3): 5. VIDEO INGESTION PIPELINE, Ingestion Services, Raw Feed Ingestion
 
 ### Community 124 - "Community 124"
 Cohesion: 0.67
@@ -789,16 +784,16 @@ Nodes (3): code:text (Report generated successfully.), code:text (Synchronizatio
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `cn()` connect `Community 42` to `Community 29`, `Community 6`?**
-  _High betweenness centrality (0.004) - this node is a cross-community bridge._
-- **Why does `run_sync()` connect `Community 3` to `Community 12`?**
   _High betweenness centrality (0.003) - this node is a cross-community bridge._
 - **Are the 21 inferred relationships involving `cn()` (e.g. with `clsx` and `LiveTrainCard()`) actually correct?**
   _`cn()` has 21 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Run defect + component correlation for one coach.     Returns summary dict.`, `True when every session_camera for this session has frame_count > 0.`, `After all cameras finish, find the camera with the fewest frames (shortest video` to the rest of the system?**
-  _964 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Download one frame and run YOLO. Returns (frame, detections).`, `Run defect + component correlation for one coach.     Returns summary dict.`, `Run defect + component correlation for one coach.     Returns summary dict.` to the rest of the system?**
+  _966 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.07586206896551724 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.07977207977207977 - nodes in this community are weakly interconnected._
+- **Should `Community 3` be split into smaller, more focused modules?**
+  _Cohesion score 0.06951219512195123 - nodes in this community are weakly interconnected._
