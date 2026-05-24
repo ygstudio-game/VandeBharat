@@ -116,8 +116,8 @@ export const Reports = () => {
   const [showDefectBoxes, setShowDefectBoxes] = useState(true);
   const [showComponentBoxes, setShowComponentBoxes] = useState(true);
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [layoutMode, setLayoutMode] = useState('single');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFrameModalOpen, setIsFrameModalOpen] = useState(false);
 
   // Canvas and Image references
   const imgRef = useRef(null);
@@ -351,6 +351,7 @@ export const Reports = () => {
 
       if (e.key === 'Escape') {
         setIsFullscreen(false);
+        setIsFrameModalOpen(false);
       }
     };
 
@@ -763,7 +764,7 @@ export const Reports = () => {
           </aside>
 
           {/* Center Panel: Report Workspace */}
-          <section className="flex-1 overflow-y-auto bg-slate-50/20 flex flex-col p-6 space-y-6">
+          <section className="flex-1 overflow-y-auto bg-slate-50/20 flex flex-col p-6 gap-6">
             
             {/* Inspection Summary Banner */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -796,282 +797,13 @@ export const Reports = () => {
                 <Sparkles className="text-primary w-8 h-8 opacity-80" />
               </div>
             </div>
-            {/* Real-time Interactive Frame Viewer & Canvas Overlay System */}
-            <div className="bg-white border border-slate-200 rounded shadow-sm overflow-hidden flex flex-col">
-              {/* Toolbar */}
-              <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
-                {/* Overlay toggles */}
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-black text-slate-500 uppercase mr-1">Overlays:</span>
-                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 hover:bg-slate-50 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={showDefectBoxes}
-                      onChange={(e) => setShowDefectBoxes(e.target.checked)}
-                      className="rounded text-red-600 focus:ring-red-500"
-                    />
-                    <span className="flex items-center gap-1"><AlertTriangle className="w-3.5 h-3.5 text-red-600" /> Defects</span>
-                  </label>
-                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 hover:bg-slate-50 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={showComponentBoxes}
-                      onChange={(e) => setShowComponentBoxes(e.target.checked)}
-                      className="rounded text-lime-600 focus:ring-lime-500"
-                    />
-                    <span className="flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5 text-lime-600" /> Components</span>
-                  </label>
-                  <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 hover:bg-slate-50 transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={showOcrBoxes}
-                      onChange={(e) => setShowOcrBoxes(e.target.checked)}
-                      className="rounded text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5 text-blue-600" /> OCR</span>
-                  </label>
-                </div>
-                {/* Zoom controls */}
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center bg-white border border-slate-200 rounded p-0.5 shadow-sm mr-2">
-                    <button 
-                      onClick={() => setLayoutMode('single')} 
-                      className={`p-1.5 rounded transition-all ${layoutMode === 'single' ? 'bg-slate-100 text-slate-800' : 'text-slate-400'}`} 
-                      title="Single frame"
-                    >
-                      <Maximize className="w-3.5 h-3.5" />
-                    </button>
-                    <button 
-                      onClick={() => setLayoutMode('grid')} 
-                      className={`p-1.5 rounded transition-all ${layoutMode === 'grid' ? 'bg-slate-100 text-slate-800' : 'text-slate-400'}`} 
-                      title="Frame grid"
-                    >
-                      <LayoutGrid className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-
-                  {layoutMode === 'single' && (
-                    <button 
-                      onClick={() => setIsFullscreen(true)} 
-                      className="p-1.5 hover:bg-slate-100 text-slate-500 hover:text-slate-800 rounded transition-all border border-slate-200 bg-white shadow-sm cursor-pointer mr-2 flex items-center justify-center" 
-                      title="Toggle Fullscreen"
-                    >
-                      <Maximize2 className="w-3.5 h-3.5 text-slate-600" />
-                    </button>
-                  )}
-
-                  <span className="text-xs font-bold text-slate-505 font-mono">{zoomLevel}%</span>
-                  <button
-                    onClick={() => setZoomLevel((prev) => Math.max(50, prev - 25))}
-                    className="p-1 bg-white border border-slate-200 rounded text-slate-600 hover:bg-slate-100 font-black text-xs px-2"
-                    title="Zoom Out"
-                  >
-                    -
-                  </button>
-                  <button
-                    onClick={() => setZoomLevel(100)}
-                    className="p-1 bg-white border border-slate-200 rounded text-xs text-slate-600 hover:bg-slate-100 px-2 font-bold"
-                  >
-                    1:1
-                  </button>
-                  <button
-                    onClick={() => setZoomLevel((prev) => Math.min(200, prev + 25))}
-                    className="p-1 bg-white border border-slate-200 rounded text-slate-600 hover:bg-slate-100 font-black text-xs px-2"
-                    title="Zoom In"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-              {/* Viewport & Canvas Overlay Container */}
-              <div className="grid grid-cols-1 xl:grid-cols-4 h-[500px]">
-                <div className="xl:col-span-3 bg-slate-900 rounded-l flex flex-col items-center justify-center relative h-full overflow-hidden shadow-inner border border-slate-950 p-6 group">
-                  {framesLoading ? (
-                    <div className="flex flex-col items-center gap-3 text-white">
-                      <Loader2 className="w-8 h-8 animate-spin text-primary animate-pulse" />
-                      <span className="text-xs font-bold tracking-wider font-mono">LOADING COACH FRAMES...</span>
-                    </div>
-                  ) : coachFrames.length === 0 ? (
-                    <div className="text-slate-400 text-xs italic flex flex-col items-center gap-2">
-                      <Train className="w-8 h-8 opacity-40 text-slate-300" />
-                      No frames available for Coach {activeCoach || 'Overall Session'}.
-                    </div>
-                  ) : layoutMode === 'single' ? (
-                    selectedFrame ? (
-                      <div className="absolute inset-0 flex items-center justify-center p-4" style={{ transform: `scale(${zoomLevel / 100})`, transition: 'transform 0.15s ease-out' }}>
-                        <div className="relative max-w-full max-h-full flex items-center justify-center">
-                          <img
-                            ref={imgRef}
-                            src={selectedFrame.cloudinary_url}
-                            onLoad={drawOverlay}
-                            alt={`Frame Seq ${selectedFrame.sequence_number}`}
-                            className="max-w-full max-h-full object-contain rounded border border-slate-800 shadow-2xl block mx-auto"
-                          />
-                          <canvas
-                            ref={canvasRef}
-                            className="absolute inset-0 pointer-events-none rounded"
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-slate-400 text-xs italic">Select a frame to begin analysis.</div>
-                    )
-                  ) : (
-                    <div className="w-full h-[460px] grid grid-cols-3 gap-2 p-4 overflow-y-auto" style={{ transform: `scale(${zoomLevel / 100})`, transition: 'transform 0.2s ease-out' }}>
-                      {coachFrames.slice(0, 24).map((f) => (
-                        <div 
-                          key={f.id} 
-                          onClick={() => { setSelectedFrame(f); setLayoutMode('single'); }} 
-                          className={`relative bg-slate-950 border rounded overflow-hidden cursor-pointer hover:border-primary transition-all aspect-video ${selectedFrame?.id === f.id ? 'border-primary ring-2 ring-primary/30' : 'border-slate-800'}`}
-                        >
-                          <img src={f.cloudinary_url} alt="" className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" />
-                          <div className="absolute bottom-1 left-1 bg-slate-950/80 px-1.5 py-0.5 rounded font-mono text-[8px] text-slate-300">
-                            #{f.sequence_number}
-                          </div>
-                          {(f.is_defect_flagged || f.defects?.length > 0) && (
-                            <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                          )}
-                          {f.ocr_results?.some(r => r.is_valid) && (
-                            <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 rounded-full bg-blue-500" />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {/* Frame details badge at top left of viewport */}
-                  {selectedFrame && layoutMode === 'single' && (
-                    <div className="absolute top-4 left-4 bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded border border-slate-800 text-[10px] font-mono text-white flex items-center gap-3 z-20">
-                      <span className="font-extrabold text-primary">FRAME #{selectedFrame.sequence_number}</span>
-                      <span className="text-slate-500">|</span>
-                      <span>TRIGGER: {selectedFrame.trigger_id}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* AI / Defect / Frame Inspector Panel */}
-                <div className="p-5 flex flex-col gap-4 bg-white border-l border-slate-200 h-full overflow-y-auto w-full">
-                  {selectedFrame && selectedFrame.defects && selectedFrame.defects.length > 0 ? (
-                    <div className="flex flex-col gap-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse"></span>
-                          <span className="text-[10px] font-black uppercase tracking-wider text-red-600">
-                            ANOMALY DETECTED
-                          </span>
-                        </div>
-                        <h4 className="text-sm font-black text-slate-800 uppercase leading-snug">
-                          {selectedFrame.defects[0].defect_type}
-                        </h4>
-                        <p className="text-xs font-semibold text-slate-505 font-mono mt-1">
-                          SEVERITY: <span className={selectedFrame.defects[0].severity === 'CRITICAL' ? 'text-red-600 font-extrabold' : 'text-amber-500'}>{selectedFrame.defects[0].severity}</span>
-                        </p>
-                        
-                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100 italic">
-                          "{selectedFrame.defects[0].ai_notes || `Computer vision model flagged visual discrepancy matching target classes with ${Math.round(selectedFrame.defects[0].confidence * 100)}% accuracy.`}"
-                        </p>
-                      </div>
-
-                      <div className="pt-4 border-t border-slate-100">
-                        <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase mb-1">
-                          <span>Model Confidence</span>
-                          <span>{Math.round(selectedFrame.defects[0].confidence * 100)}%</span>
-                        </div>
-                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${selectedFrame.defects[0].severity === 'CRITICAL' ? 'bg-red-500' : 'bg-amber-500'}`}
-                            style={{ width: `${Math.round(selectedFrame.defects[0].confidence * 100)}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
-                          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">
-                            NOMINAL STATUS
-                          </span>
-                        </div>
-                        <h4 className="text-sm font-black text-slate-800 uppercase leading-snug">
-                          Visual Diagnostics Clear
-                        </h4>
-                        <p className="text-xs font-medium text-slate-500 mt-1">
-                          Coach {activeCoach} Frame #{selectedFrame?.sequence_number || '—'}
-                        </p>
-                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100">
-                          Machine vision inspection registers no structural deviation. Suspensions, undercarriages, and safety attachments conform to baseline standards.
-                        </p>
-                      </div>
-                      
-                      {selectedFrame && coachIntel?.components_detected?.filter(
-                        c => c.trigger_id === selectedFrame.trigger_id || c.frame_url === selectedFrame.cloudinary_url
-                      ).length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-slate-100">
-                          <span className="text-[9px] font-black text-slate-400 uppercase block mb-2">Detected Components</span>
-                          <div className="flex flex-wrap gap-1">
-                            {coachIntel.components_detected
-                              .filter(c => c.trigger_id === selectedFrame.trigger_id || c.frame_url === selectedFrame.cloudinary_url)
-                              .map((c, i) => (
-                                <span key={i} className="text-[9px] font-bold px-2 py-0.5 rounded bg-lime-50 text-lime-700 border border-lime-200">
-                                  {c.component_name || c.component_code}
-                                </span>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Timeline Micro-Strip (Thumbnails) */}
-              {coachFrames.length > 0 && (
-                <div className="bg-slate-900 border-t border-slate-800 p-3 flex flex-col gap-2 shrink-0">
-                  <div className="flex justify-between items-center px-1">
-                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Coach Frame Micro-timeline</span>
-                    <span className="text-[9px] font-mono text-slate-400 font-bold bg-slate-800 px-2 py-0.5 rounded">
-                      {coachFrames.findIndex(f => f.id === selectedFrame?.id) + 1} / {coachFrames.length} Frames
-                    </span>
-                  </div>
-                  
-                  <div className="flex gap-2 overflow-x-auto py-1 px-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
-                    {coachFrames.map((frame) => {
-                      const isSelected = selectedFrame?.id === frame.id;
-                      const hasDefects = frame.defects && frame.defects.length > 0;
-                      const hasOcr = frame.ocr_results && frame.ocr_results.length > 0;
-                      return (
-                        <button
-                          key={frame.id}
-                          onClick={() => setSelectedFrame(frame)}
-                          className={`relative aspect-video h-12 rounded overflow-hidden flex-shrink-0 border-2 transition-all ${isSelected ? 'border-primary scale-105 shadow-md shadow-primary/20' : 'border-slate-700 hover:border-slate-400 opacity-60 hover:opacity-100'}`}
-                        >
-                          <img
-                            src={frame.thumbnail_url || frame.cloudinary_url}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
-                          {hasDefects && (
-                            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-600 rounded-full border border-white animate-pulse" />
-                          )}
-                          {hasOcr && (
-                            <span className="absolute bottom-1 right-1 w-2.5 h-2.5 bg-blue-500 rounded-full border border-white" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Detection Log Table */}
             <DetectionLogTable
               frames={coachFrames}
               components={components}
               onViewFrame={(frame) => {
                 setSelectedFrame(frame);
-                setLayoutMode('single');
+                setIsFrameModalOpen(true);
               }}
             />
 
@@ -1228,6 +960,193 @@ export const Reports = () => {
             <span className="font-mono text-[9px] uppercase font-bold tracking-wider">Codec: HEVC-10bit</span>
           </div>
         </footer>
+
+        {/* Frame Detail Modal */}
+        {isFrameModalOpen && selectedFrame && (
+          <div
+            className="fixed inset-0 z-[200] flex items-center justify-center p-6"
+            style={{ background: 'rgba(5,26,62,0.82)', backdropFilter: 'blur(5px)' }}
+            onClick={() => setIsFrameModalOpen(false)}
+          >
+            <div
+              className="w-full max-w-5xl flex rounded overflow-hidden shadow-2xl border border-slate-700"
+              style={{ maxHeight: '88vh' }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Left — Image + canvas overlay */}
+              <div className="flex-1 bg-slate-900 relative overflow-hidden flex items-center justify-center min-h-[400px]">
+
+                {/* Frame info badge — top left */}
+                <div className="absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur-sm px-3 py-1.5 rounded border border-slate-700 text-[10px] font-mono text-white flex items-center gap-2 pointer-events-none">
+                  <span className="font-extrabold text-primary">FRAME #{selectedFrame.sequence_number}</span>
+                  <span className="text-slate-600">·</span>
+                  <span className="text-slate-400">T:{selectedFrame.trigger_id}</span>
+                  <span className="text-slate-600">·</span>
+                  <span className="text-slate-400">
+                    {coachFrames.findIndex(f => f.id === selectedFrame.id) + 1} / {coachFrames.length}
+                  </span>
+                </div>
+
+                {/* Close button — top right */}
+                <button
+                  onClick={() => setIsFrameModalOpen(false)}
+                  className="absolute top-3 right-3 z-10 p-1.5 bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white rounded border border-slate-700 transition-colors"
+                  title="Close (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                {/* Prev arrow */}
+                {(() => {
+                  const idx = coachFrames.findIndex(f => f.id === selectedFrame.id);
+                  return (
+                    <button
+                      onClick={() => idx > 0 && setSelectedFrame(coachFrames[idx - 1])}
+                      disabled={idx <= 0}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-slate-800/70 hover:bg-primary text-white rounded-full border border-slate-700 disabled:opacity-20 transition-all"
+                      title="Previous frame (←)"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                  );
+                })()}
+
+                {/* Next arrow */}
+                {(() => {
+                  const idx = coachFrames.findIndex(f => f.id === selectedFrame.id);
+                  return (
+                    <button
+                      onClick={() => idx < coachFrames.length - 1 && setSelectedFrame(coachFrames[idx + 1])}
+                      disabled={idx >= coachFrames.length - 1}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-slate-800/70 hover:bg-primary text-white rounded-full border border-slate-700 disabled:opacity-20 transition-all"
+                      title="Next frame (→)"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  );
+                })()}
+
+                {/* Image + canvas */}
+                <div className="relative w-full h-full flex items-center justify-center p-8">
+                  <img
+                    ref={imgRef}
+                    src={selectedFrame.cloudinary_url}
+                    onLoad={drawOverlay}
+                    alt={`Frame ${selectedFrame.sequence_number}`}
+                    className="max-w-full max-h-full object-contain rounded shadow-2xl block"
+                  />
+                  <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Right — Detail panel */}
+              <div className="w-72 bg-white border-l border-slate-200 flex flex-col shrink-0">
+                <div className="flex-1 overflow-y-auto">
+                  {selectedFrame.defects?.length > 0 ? (
+                    <div className="p-5 flex flex-col gap-4">
+                      {/* Anomaly header */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+                          <span className="text-[10px] font-black uppercase tracking-wider text-red-600">Anomaly Detected</span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 uppercase leading-snug">
+                          {selectedFrame.defects[0].defect_type}
+                        </h4>
+                        <p className="text-xs font-semibold font-mono mt-1">
+                          SEVERITY:{' '}
+                          <span className={selectedFrame.defects[0].severity === 'CRITICAL' ? 'text-red-600 font-extrabold' : 'text-amber-500'}>
+                            {selectedFrame.defects[0].severity}
+                          </span>
+                        </p>
+                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100 italic">
+                          "{selectedFrame.defects[0].ai_notes ||
+                            `Computer vision model flagged visual discrepancy with ${Math.round(selectedFrame.defects[0].confidence * 100)}% confidence.`}"
+                        </p>
+                      </div>
+
+                      {/* Confidence bar */}
+                      <div className="pt-3 border-t border-slate-100">
+                        <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase mb-1.5">
+                          <span>Model Confidence</span>
+                          <span>{Math.round(selectedFrame.defects[0].confidence * 100)}%</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full transition-all ${selectedFrame.defects[0].severity === 'CRITICAL' ? 'bg-red-500' : 'bg-amber-500'}`}
+                            style={{ width: `${Math.round(selectedFrame.defects[0].confidence * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* All defects on this frame */}
+                      {selectedFrame.defects.length > 1 && (
+                        <div className="pt-3 border-t border-slate-100">
+                          <p className="text-[9px] font-black text-slate-400 uppercase mb-2">
+                            All Defects ({selectedFrame.defects.length})
+                          </p>
+                          <div className="flex flex-col gap-1.5">
+                            {selectedFrame.defects.map((d, i) => (
+                              <div key={i} className="flex items-center justify-between text-xs bg-red-50 border border-red-100 rounded px-2 py-1.5">
+                                <span className="font-bold text-red-700">{d.defect_type}</span>
+                                <span className={`text-[9px] font-black uppercase ${d.severity === 'CRITICAL' ? 'text-red-600' : 'text-amber-500'}`}>
+                                  {d.severity}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-5 flex flex-col gap-4">
+                      {/* Nominal header */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-2 h-2 bg-emerald-500 rounded-full" />
+                          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">Nominal Status</span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 uppercase">Visual Diagnostics Clear</h4>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Coach {activeCoach} · Frame #{selectedFrame.sequence_number}
+                        </p>
+                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100">
+                          Machine vision inspection registers no structural deviation. Components conform to baseline standards.
+                        </p>
+                      </div>
+
+                      {/* Components detected at this frame */}
+                      {coachIntel?.components_detected?.filter(
+                        c => c.trigger_id === selectedFrame.trigger_id || c.frame_id === selectedFrame.id
+                      ).length > 0 && (
+                        <div className="pt-3 border-t border-slate-100">
+                          <p className="text-[9px] font-black text-slate-400 uppercase mb-2">Detected Components</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {coachIntel.components_detected
+                              .filter(c => c.trigger_id === selectedFrame.trigger_id || c.frame_id === selectedFrame.id)
+                              .map((c, i) => (
+                                <span key={i} className="text-[9px] font-bold px-2 py-0.5 rounded bg-lime-50 text-lime-700 border border-lime-200">
+                                  {c.component_name || c.component_code}
+                                </span>
+                              ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Keyboard hint footer */}
+                <div className="px-5 py-3 border-t border-slate-200 bg-slate-50 flex items-center gap-2 shrink-0">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase mr-1">Navigate</span>
+                  {['←', '→', 'ESC'].map(k => (
+                    <span key={k} className="text-[9px] font-mono bg-white border border-slate-300 text-slate-600 px-1.5 py-0.5 rounded shadow-sm">{k}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Digital Signature Dialog inside workspace */}
         {signingReport && (

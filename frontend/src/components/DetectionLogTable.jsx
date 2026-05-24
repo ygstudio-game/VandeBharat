@@ -92,7 +92,7 @@ const DetectionLogTable = ({ frames = [], components = [], onViewFrame }) => {
   ];
 
   return (
-    <div className="bg-white border border-slate-200 rounded shadow-sm flex flex-col overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded shadow-sm flex flex-col overflow-hidden flex-1 min-h-0">
       {/* Toolbar */}
       <div className="px-4 py-3 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50 shrink-0">
         <div className="flex items-center gap-3">
@@ -134,7 +134,7 @@ const DetectionLogTable = ({ frames = [], components = [], onViewFrame }) => {
       </div>
 
       {/* Table */}
-      <div className="overflow-auto" style={{ maxHeight: 380 }}>
+      <div className="overflow-auto flex-1" style={{ minHeight: 0 }}>
         <table className="w-full text-left border-collapse">
           <thead className="sticky top-0 bg-slate-50 z-10">
             <tr className="text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-200">
