@@ -25,8 +25,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\config.js": {
-    "mtime": 1779299982.9456773,
-    "ast_hash": "ca59a677b2c015e4398c6424c8d7f04a",
+    "mtime": 1779613201.7729106,
+    "ast_hash": "240186dd3de827afc06fa80b9876bf1c",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\db\\client.js": {
@@ -40,8 +40,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\sessions.js": {
-    "mtime": 1779376005.6893919,
-    "ast_hash": "415b4fa1fa28036a0fb780fdb8b2e491",
+    "mtime": 1779613201.7769296,
+    "ast_hash": "de8611367e8a3f83f10946a4f689c43d",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\services\\cloudinaryService.js": {
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\layout\\Shell.jsx": {
-    "mtime": 1779305634.8104386,
-    "ast_hash": "6c94a49ff8e9e72491999ca888d22959",
+    "mtime": 1779613201.8169134,
+    "ast_hash": "467561765e4c63626c30a6ef52ae344d",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\ui\\accordion.jsx": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\workspace\\HierarchyTree.jsx": {
-    "mtime": 1779378607.5912356,
-    "ast_hash": "a1d0624ff5c84a28dc00eeb466d07f8b",
+    "mtime": 1779613201.8179111,
+    "ast_hash": "c61835839b74434f1d74d9256e7e1e2b",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\data\\mockData.js": {
@@ -185,13 +185,13 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Reports.jsx": {
-    "mtime": 1779304839.8012052,
-    "ast_hash": "9c277df5b83c6a9ce65f95700b75aa33",
+    "mtime": 1779613201.8219147,
+    "ast_hash": "7c46c85a2ff89ff83e50a2fefca7640a",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Sessions.jsx": {
-    "mtime": 1779374161.7954133,
-    "ast_hash": "c18b8c91fbb4601d68847c2fbb1371f6",
+    "mtime": 1779613201.8229609,
+    "ast_hash": "ee3267fcafb45999abe7930cf825bac1",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Settings.jsx": {
@@ -200,13 +200,13 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\TrainWorkspace.jsx": {
-    "mtime": 1779378699.7887406,
-    "ast_hash": "8780293c557db7c4f7c2f118e26cc745",
+    "mtime": 1779613201.8250108,
+    "ast_hash": "57af94edf143cbf144bfe711496a757c",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\ocr\\server.py": {
-    "mtime": 1779463718.831524,
-    "ast_hash": "459369328c32437fa175861eca7c62c6",
+    "mtime": 1779613201.7709062,
+    "ast_hash": "05c645e70f2389e991b9ce372ea6689a",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\GPU\\shared\\cloudinary_client.py": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\frame_extractor\\server.py": {
-    "mtime": 1779374172.9820087,
-    "ast_hash": "fc2e9db77deaf25380b27d30909a9b04",
+    "mtime": 1779613201.828786,
+    "ast_hash": "c8a76b845969a0192220556257331634",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\report_generator\\server.py": {
@@ -485,23 +485,23 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\sync_engine\\engine.py": {
-    "mtime": 1779377681.6141136,
-    "ast_hash": "decb2823765909b330f9cef65b93bc95",
+    "mtime": 1779466919.083907,
+    "ast_hash": "fb142c93c4308c5971ea18dfcc568cd9",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\intelligence.js": {
-    "mtime": 1779303283.1065998,
-    "ast_hash": "2fc5f24ce4fb372ca2a5ff4f2a99602c",
+    "mtime": 1779613201.7739065,
+    "ast_hash": "2451f56c66250e81b929c6fbb59c6782",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\correlation\\engine.py": {
-    "mtime": 1779303218.4184785,
-    "ast_hash": "01c0ad8456d8fe0e7aa22cb79cc3ccbb",
+    "mtime": 1779613201.82691,
+    "ast_hash": "b19330b8213a6e2dedb569f0d32ffc30",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\reports.js": {
-    "mtime": 1779303723.9779143,
-    "ast_hash": "088d4a70e3c02c8a25c5074acc46fd0e",
+    "mtime": 1779613201.7759092,
+    "ast_hash": "97806d56d2785a7555ad2223e2fd5dbd",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\report_generator\\builder.py": {
@@ -530,8 +530,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\lib\\api.js": {
-    "mtime": 1779378612.6661954,
-    "ast_hash": "b2516dce1a27328df6b2d84e713ea737",
+    "mtime": 1779613201.8199081,
+    "ast_hash": "decd256b4bcfb929f7578e4f60f0adb8",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\package.json": {
@@ -560,8 +560,8 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\config.json": {
-    "mtime": 1779377116.850955,
-    "ast_hash": "72529ae7a1de9ac0b9ce0fc5f4a2a3a4",
+    "mtime": 1779466038.3152535,
+    "ast_hash": "ebdd0869e25fe818ac4f32585e1136b7",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\config.js": {
@@ -777,6 +777,161 @@
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\f5bba0a9-2663-4fb6-9925-de71bacaa799\\cam_1.mp4": {
     "mtime": 1779464439.423855,
     "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\5388a8ab-32c4-4580-b6de-b0073bada5d2\\cam_1.mp4": {
+    "mtime": 1779467646.6537077,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\70c69371-dcbe-4007-8f1a-580c3b5bc1b5\\cam_1.mp4": {
+    "mtime": 1779466271.739056,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\list_sessions.js": {
+    "mtime": 1779613201.7719064,
+    "ast_hash": "2c3d50f155f1077cea4ebc6b2297d23b",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\DOC\\generate_docs.py": {
+    "mtime": 1779468913.6604152,
+    "ast_hash": "e063aa345e799973e31edf55560d10ce",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\build_docx.py": {
+    "mtime": 1779613201.7849052,
+    "ast_hash": "ef3ffc40e8c2c6dd51f5c1d4fa83632f",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\graphify-out\\converted\\VandeBharat_TechDoc_fa6398c9.md": {
+    "mtime": 1779615464.9395077,
+    "ast_hash": "aa682629ed23cebfaa812a4fbd5e5b46",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-01-system-overview.md": {
+    "mtime": 1779613201.805912,
+    "ast_hash": "07ca36fdee5b110d5d67c2e190cfd924",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-02-frontend-architecture.md": {
+    "mtime": 1779613201.8069086,
+    "ast_hash": "6ceba5eb392f459b2f242a7e5aaf5f94",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-03-backend-architecture.md": {
+    "mtime": 1779613201.80791,
+    "ast_hash": "196cca150a91febeb09df4cde915b919",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-04-ai-pipelines.md": {
+    "mtime": 1779613201.808908,
+    "ast_hash": "083a44380aa5a41c201e40d2a38ad4c0",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-05-synchronization-engine.md": {
+    "mtime": 1779613201.8099084,
+    "ast_hash": "59ebcc259e69c69191eb7bb0934a03eb",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-06-database-design.md": {
+    "mtime": 1779613201.810909,
+    "ast_hash": "3a002ae7c32e4c0a1b769b8620b6eacc",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-07-api-documentation.md": {
+    "mtime": 1779613201.810909,
+    "ast_hash": "4f3c1bb0450c1b7b65d5116679ea56d5",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-08-report-generation.md": {
+    "mtime": 1779613201.8119097,
+    "ast_hash": "3c57833f4411bd32566a712488d43ffa",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-09-engineering-decisions.md": {
+    "mtime": 1779613201.8129103,
+    "ast_hash": "93ebaf2cec107041eee2cda74f41591d",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-10-problems-solutions.md": {
+    "mtime": 1779613201.8139074,
+    "ast_hash": "b27b2f49f09b1a88db849f9e8fa94164",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-11-deployment-guide.md": {
+    "mtime": 1779613201.8149092,
+    "ast_hash": "95d4a18992fe1560ff178a63a4b434d9",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\phase-12-future-roadmap.md": {
+    "mtime": 1779613201.815909,
+    "ast_hash": "7a2d868e2bf1d25d11fee2abff1ac3d7",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\graphify-out\\converted\\VandeInspect_AI_Technical_Report_3ae7912f.md": {
+    "mtime": 1779615465.3241887,
+    "ast_hash": "6ceffcc909af6d71e13bc95993ec9be0",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_1.png": {
+    "mtime": 1779613201.7859054,
+    "ast_hash": "515307eb278d2b0ed3c85517816d95d9",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_10.png": {
+    "mtime": 1779613201.7869065,
+    "ast_hash": "a1db6165e0c2a5d7df1a062c02a30859",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_11.png": {
+    "mtime": 1779613201.7879076,
+    "ast_hash": "2901200792cfd8984c36ae9c515d243e",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_2.png": {
+    "mtime": 1779613201.7899115,
+    "ast_hash": "599c2966f3dc29455d4029cb971a23b9",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_3.png": {
+    "mtime": 1779613201.7929096,
+    "ast_hash": "fea7899861f92c545f4fe9b79c1ac6f0",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_4.png": {
+    "mtime": 1779613201.795908,
+    "ast_hash": "636559329ef4340eaced48dd3fde68bf",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_5.png": {
+    "mtime": 1779613201.7979076,
+    "ast_hash": "e16dced7c2016dd204775149129e7587",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_6.png": {
+    "mtime": 1779613201.7999077,
+    "ast_hash": "e0c53202d148e5c5d4a2d5d94e59be64",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_7.png": {
+    "mtime": 1779613201.8009114,
+    "ast_hash": "03ec4ee9b08b32ba78fb4bc39ad04c39",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_8.png": {
+    "mtime": 1779613201.8029125,
+    "ast_hash": "231d0fe4c24dffff04a2a5236b65ef6a",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\docs\\enterprise-report\\images\\diagram_9.png": {
+    "mtime": 1779613201.8049135,
+    "ast_hash": "068ab0c6e787f1d15861257a596f84b5",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\a139a18b-be44-40a2-a9d8-4ba6c2902245\\cam_1.mp4": {
+    "mtime": 1779615121.2240505,
+    "ast_hash": "a1ed41f0e40716284ba0fed6f262c563",
     "semantic_hash": ""
   }
 }

@@ -30,23 +30,37 @@ async function runOcrPipeline(sessionId, fastify) {
     });
     emitStage(sessionId, 'ocr_detection', 'running', 'Queuing frames for OCR...');
 
-    // ── 2. Load all frames, ordered by trigger_id ─────────────────────────────
+    // ── 2. Find OCR camera(s) for this session, load only their frames ─────────
+    const ocrCameras = await prisma.sessionCamera.findMany({
+      where: { session_id: sessionId, camera_type: 'ocr' },
+      select: { id: true },
+    });
+
+    // Fall back to all cameras if no OCR camera was tagged (legacy single-camera sessions)
+    const ocrCameraIds = ocrCameras.map((c) => c.id);
+    const frameFilter = ocrCameraIds.length > 0
+      ? { session_id: sessionId, session_camera_id: { in: ocrCameraIds } }
+      : { session_id: sessionId };
+
     const frames = await prisma.frame.findMany({
-      where: { session_id: sessionId },
+      where: frameFilter,
       orderBy: { trigger_id: 'asc' },
       select: { id: true, trigger_id: true, cloudinary_url: true },
     });
 
     if (frames.length === 0) {
-      throw new Error('No frames found for session — frame extraction may have failed');
+      throw new Error('No frames found for OCR — frame extraction may have failed');
     }
 
     const total = frames.length;
-    log.info({ msg: `OCR: processing ${total} frames`, session_id: sessionId });
+    log.info({
+      msg: `OCR: processing ${total} frames from ${ocrCameraIds.length || 'all'} OCR camera(s)`,
+      session_id: sessionId,
+    });
 
-    // Mark all frames as OCR candidates
+    // Mark only OCR camera frames as candidates (component frames stay false)
     await prisma.frame.updateMany({
-      where: { session_id: sessionId },
+      where: frameFilter,
       data: { is_ocr_candidate: true },
     });
 

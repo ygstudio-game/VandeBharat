@@ -106,12 +106,15 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
         if not coach:
             raise ValueError(f"Coach {coach_id} not found")
 
+        # Only use component camera frames — exclude the OCR/placard camera
+        # which shows coach number text only, not physical components/defects
         cur.execute(
             """
-            SELECT id, cloudinary_url, trigger_id
-            FROM frames
-            WHERE session_id = %s AND coach_id = %s
-            ORDER BY trigger_id ASC
+            SELECT f.id, f.cloudinary_url, f.trigger_id
+            FROM frames f
+            JOIN session_cameras sc ON f.session_camera_id = sc.id
+            WHERE f.session_id = %s AND f.coach_id = %s AND sc.camera_type != 'ocr'
+            ORDER BY f.trigger_id ASC
             """,
             (session_id, coach_id),
         )

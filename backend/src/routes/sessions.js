@@ -19,8 +19,8 @@ const PIPELINE_STAGES = [
   'report_generation',
 ];
 
-// Maps upload index to camera_type
-const CAM_TYPES = ['component_left', 'component_right', 'bottom', 'suspension', 'wheel', 'overview'];
+// camera_type values for component feeds (index 0 = first component video uploaded)
+const COMPONENT_CAM_TYPES = ['component_left', 'component_right', 'bottom', 'suspension', 'wheel', 'overview'];
 
 function generateSessionCode() {
   const year = new Date().getFullYear();
@@ -38,17 +38,26 @@ async function sessions(fastify) {
     fs.mkdirSync(sessionDir, { recursive: true });
 
     const fields = {};
-    const videoFiles = [];
+    const ocrFiles = [];        // from field name 'ocr_video' — exactly one expected
+    const componentFiles = [];  // from field name 'component_video' — one or more
 
-    // Iterate all multipart parts — collect fields and save files to disk
+    // Iterate all multipart parts — route files by fieldname
     for await (const part of request.parts()) {
       if (part.type === 'field') {
         fields[part.fieldname] = part.value;
       } else if (part.type === 'file') {
         const ext = path.extname(part.filename) || '.mp4';
-        const savePath = path.join(sessionDir, `cam_${videoFiles.length + 1}${ext}`);
-        await pipeline(part.file, fs.createWriteStream(savePath));
-        videoFiles.push({ savePath, originalName: part.filename });
+        if (part.fieldname === 'ocr_video') {
+          const savePath = path.join(sessionDir, `cam_ocr${ext}`);
+          await pipeline(part.file, fs.createWriteStream(savePath));
+          ocrFiles.push({ savePath, originalName: part.filename, cameraType: 'ocr' });
+        } else {
+          // component_video (repeated field) — or legacy video_files for backwards compat
+          const idx = componentFiles.length;
+          const savePath = path.join(sessionDir, `cam_component_${idx + 1}${ext}`);
+          await pipeline(part.file, fs.createWriteStream(savePath));
+          componentFiles.push({ savePath, originalName: part.filename, cameraType: COMPONENT_CAM_TYPES[idx] ?? `component_${idx + 1}` });
+        }
       }
     }
 
@@ -57,10 +66,17 @@ async function sessions(fastify) {
       reply.status(400);
       return { error: 'train_number field is required' };
     }
-    if (videoFiles.length === 0) {
+    if (ocrFiles.length === 0) {
       reply.status(400);
-      return { error: 'At least one video file is required' };
+      return { error: 'ocr_video is required — upload the placard/OCR camera feed' };
     }
+    if (componentFiles.length === 0) {
+      reply.status(400);
+      return { error: 'At least one component_video is required — upload one or more assembly camera feeds' };
+    }
+
+    // Combine: OCR camera first, then component cameras
+    const allFiles = [...ocrFiles, ...componentFiles];
 
     // Look up default camera setup (must exist — created by seed)
     const setup = await prisma.cameraSetup.findFirst({ where: { station_code: 'TEST01' } });
@@ -78,20 +94,20 @@ async function sessions(fastify) {
         station_code: 'TEST01',
         camera_setup_id: setup.id,
         status: 'extracting',
-        cameras_active: videoFiles.length,
+        cameras_active: allFiles.length,
       },
     });
 
-    // Create one camera + session_camera per uploaded video
+    // Create one camera + session_camera per uploaded video (OCR first, then component)
     const sessionCameras = [];
-    for (let i = 0; i < videoFiles.length; i++) {
-      const camType = CAM_TYPES[i] ?? `camera_${i + 1}`;
+    for (let i = 0; i < allFiles.length; i++) {
+      const { savePath, originalName, cameraType } = allFiles[i];
       const camera = await prisma.camera.create({
         data: {
           camera_setup_id: setup.id,
-          camera_code: `UPLOAD_${camType.toUpperCase()}_${sessionId.slice(0, 8)}`,
-          camera_type: camType,
-          position_label: `Upload Camera ${i + 1}`,
+          camera_code: `UPLOAD_${cameraType.toUpperCase()}_${sessionId.slice(0, 8)}`,
+          camera_type: cameraType,
+          position_label: cameraType === 'ocr' ? 'OCR / Placard Camera' : `Component Camera ${i}`,
         },
       });
 
@@ -99,12 +115,12 @@ async function sessions(fastify) {
         data: {
           session_id: sessionId,
           camera_id: camera.id,
-          camera_type: camType,
-          name: `Camera ${i + 1} — ${path.basename(videoFiles[i].originalName)}`,
+          camera_type: cameraType,
+          name: `${cameraType === 'ocr' ? 'OCR Camera' : `Component Cam ${i}`} — ${path.basename(originalName)}`,
         },
       });
 
-      sessionCameras.push({ ...sc, savePath: videoFiles[i].savePath });
+      sessionCameras.push({ ...sc, savePath });
     }
 
     // Create all pipeline stages
@@ -141,7 +157,9 @@ async function sessions(fastify) {
       session_code: session.session_code,
       status: 'extracting',
       cameras: sessionCameras.length,
-      message: `Extracting frames from ${sessionCameras.length} video(s). Poll GET /api/sessions/${sessionId} for status.`,
+      ocr_cameras: ocrFiles.length,
+      component_cameras: componentFiles.length,
+      message: `Extracting frames from ${sessionCameras.length} video(s) (1 OCR + ${componentFiles.length} component). Poll GET /api/sessions/${sessionId} for status.`,
     };
   });
 
