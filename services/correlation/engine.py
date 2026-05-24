@@ -2,24 +2,24 @@
 Correlation Engine — Phase 3
 For each coach:
   1. Sample frames assigned to that coach
-  2. POST each frame to YOLO /api/yolo/predict → get defect detections
-  3. Write component_detections + defects rows
-  4. Compare against component manifest → write missing_components rows
+  2. POST each frame to YOLO /api/yolo/predict → get detections
+  3. Write component_detections rows for EVERY detection (raw label, no mapping)
+  4. Write defects rows only for detections the YOLO server flagged as defects
   5. Calculate health_score, update coaches + inspection_sessions
 """
 import os
-import json
 import uuid
 import logging
 import requests
 import psycopg2
 import psycopg2.extras
-from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 logger = logging.getLogger(__name__)
 
 YOLO_URL = os.environ.get("YOLO_SERVICE_URL", "http://127.0.0.1:5002/api/yolo/predict")
-SAMPLE_EVERY_N = int(os.environ.get("CORRELATION_SAMPLE_N", "3"))  # check every Nth frame
+SAMPLE_EVERY_N = int(os.environ.get("CORRELATION_SAMPLE_N", "3"))
+YOLO_CONCURRENCY = int(os.environ.get("CORRELATION_CONCURRENCY", "4"))
 
 SEVERITY_PENALTY = {
     "CRITICAL": 15,
@@ -28,64 +28,9 @@ SEVERITY_PENALTY = {
     "LOW": 1,
 }
 
-MANIFEST_DIR = Path(__file__).parent / "manifests"
-
-# Label → component_code map.
-# Keys are lowercase-normalised — lookup always does label.lower().replace(" ", "_").
-# Actual model class names confirmed from production logs.
-LABEL_TO_COMPONENT = {
-    # Wheel assembly
-    "wheel":                      "WHEEL_ASSY",
-    "wheel_assy":                 "WHEEL_ASSY",
-    "wheel_assembly":             "WHEEL_ASSY",
-
-    # Axle box (model returns "axle_box_cover")
-    "axle_box":                   "AXLE_BOX",
-    "axle_box_cover":             "AXLE_BOX",
-    "axlebox":                    "AXLE_BOX",
-
-    # Brake
-    "brake_pad":                  "BRAKE_PAD",
-    "brake":                      "BRAKE_PAD",
-    "brake_control_module":       "BRAKE_CTRL",
-    "brake_ctrl":                 "BRAKE_CTRL",
-
-    # Suspension (primary / secondary springs + pin + swing hanger)
-    "suspension":                 "SUSP_PRI",
-    "susp_pin":                   "SUSP_PRI",
-    "suspension_pin":             "SUSP_PRI",
-    "primary_suspension_spring":  "SUSP_PRI",
-    "secondary_suspension_spring":"SUSP_SEC",
-    "swing_hanger":               "SWING_HANGER",
-    "damper":                     "DAMPER",
-
-    # Coupler
-    "coupler":                    "COUPLER",
-
-    # Bogie frame
-    "bogie_frame":                "BOGIE_FRAME",
-    "bogieframe":                 "BOGIE_FRAME",
-    "bogie":                      "BOGIE_FRAME",
-
-    # Water tank
-    "water_tank":                 "WATER_TANK",
-    "watertank":                  "WATER_TANK",
-
-    # Electrical / fluid systems
-    "battery_box":                "BATTERY_BOX",
-    "transformer":                "TRANSFORMER",
-    "hydraulic_valve":            "HYD_VALVE",
-    "auxiliary_reservoir":        "AUX_RESERVOIR",
-
-    # Hardware / safety
-    "nut_bolt":                   "NUT_BOLT",
-    "rod":                        "ROD",
-    "safety_strap":               "SAFETY_STRAP",
-    "steps_footboard":            "STEPS",
-    "steps":                      "STEPS",
-    "footboard":                  "STEPS",
-}
-
+# Authoritative defect class list — matches POC/backend/YOLO/server.py DEFECT_LABELS
+# and Main/GPU/yolo/server.py SEVERITY_MAP. YOLO response already carries defect+severity
+# fields; this map is kept as a local fallback for severity when the field is absent.
 DEFECT_SEVERITY = {
     "crack":          "CRITICAL",
     "leakage":        "CRITICAL",
@@ -100,18 +45,9 @@ DEFECT_SEVERITY = {
     "loose":          "LOW",
 }
 
-# Normalise a raw model label to the same key format used in both maps above.
+
 def _norm(label: str) -> str:
     return label.strip().lower().replace(" ", "_").replace("-", "_")
-
-
-def load_manifest(coach_type: str = "VANDE_BHARAT") -> list[dict]:
-    name = coach_type.lower().replace(" ", "_")
-    path = MANIFEST_DIR / f"{name}.json"
-    if not path.exists():
-        path = MANIFEST_DIR / "vande_bharat.json"
-    data = json.loads(path.read_text())
-    return data["components"]
 
 
 def _fetch_frame_bytes(url: str) -> bytes | None:
@@ -138,6 +74,14 @@ def _run_yolo(frame_bytes: bytes) -> list[dict]:
     return []
 
 
+def _process_frame(frame: dict) -> tuple[dict, list[dict]]:
+    """Download one frame and run YOLO. Returns (frame, detections)."""
+    frame_bytes = _fetch_frame_bytes(frame["cloudinary_url"])
+    if not frame_bytes:
+        return frame, []
+    return frame, _run_yolo(frame_bytes)
+
+
 def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
     """
     Run defect + component correlation for one coach.
@@ -154,7 +98,6 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
             raise ValueError(f"Coach {coach_id} not found")
 
         # Only use component camera frames — exclude the OCR/placard camera
-        # which shows coach number text only, not physical components/defects
         cur.execute(
             """
             SELECT f.id, f.cloudinary_url, f.trigger_id
@@ -174,70 +117,46 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
         coach_id, len(all_frames), len(sampled), SAMPLE_EVERY_N,
     )
 
-    manifest = load_manifest(coach.get("coach_type") or "VANDE_BHARAT")
-    manifest_codes = {c["code"]: c for c in manifest}
+    defect_rows = []      # for bulk insert into defects
+    component_rows = []   # for bulk insert into component_detections (ALL detections)
 
-    # Accumulate across frames
-    defect_rows = []           # for bulk insert into defects
-    component_rows = []        # for bulk insert into component_detections
-    component_detected = {}    # code → max_confidence seen
+    # Download + YOLO all sampled frames in parallel
+    with ThreadPoolExecutor(max_workers=YOLO_CONCURRENCY) as pool:
+        futures = {pool.submit(_process_frame, f): f for f in sampled}
+        frame_results = []
+        for fut in as_completed(futures):
+            try:
+                frame_results.append(fut.result())
+            except Exception as exc:
+                logger.warning("Frame worker raised: %s", exc)
 
-    unknown_labels: set[str] = set()  # track labels not in either map — logged once per coach
-
-    for frame in sampled:
-        frame_bytes = _fetch_frame_bytes(frame["cloudinary_url"])
-        if not frame_bytes:
-            continue
-
-        detections = _run_yolo(frame_bytes)
-
+    for frame, detections in frame_results:
         for det in detections:
             raw_label = det.get("label", "")
-            label = _norm(raw_label)          # normalise: lowercase + underscores
+            label = _norm(raw_label)
             conf = float(det.get("confidence", 0.0))
             bbox = det.get("bbox_xyxy", [0, 0, 0, 0])
             x1, y1, x2, y2 = bbox
             bw, bh = max(0, x2 - x1), max(0, y2 - y1)
 
-            if label in DEFECT_SEVERITY:
-                severity = DEFECT_SEVERITY[label]
+            # Store every detection as a component (raw label, no mapping needed)
+            component_rows.append((
+                str(uuid.uuid4()), session_id, coach_id, frame["id"],
+                label,      # component_code = normalised raw label
+                raw_label,  # component_name = original label from model
+                round(conf, 4),
+                x1, y1, bw, bh,
+            ))
+
+            # Only create a defect row if YOLO flagged it as a defect
+            is_defect = det.get("defect", label in DEFECT_SEVERITY)
+            if is_defect:
+                severity = det.get("severity") or DEFECT_SEVERITY.get(label, "LOW")
                 defect_rows.append((
                     str(uuid.uuid4()), session_id, coach_id, frame["id"],
                     label, severity, round(conf, 4),
                     x1, y1, bw, bh,
                 ))
-
-            comp_code = LABEL_TO_COMPONENT.get(label)
-            if comp_code:
-                component_rows.append((
-                    str(uuid.uuid4()), session_id, coach_id, frame["id"],
-                    comp_code,
-                    next((c["name"] for c in manifest if c["code"] == comp_code), comp_code),
-                    round(conf, 4),
-                    x1, y1, bw, bh,
-                ))
-                if comp_code not in component_detected or conf > component_detected[comp_code]:
-                    component_detected[comp_code] = conf
-            elif label not in DEFECT_SEVERITY:
-                # Label is neither a known defect nor a known component — record for diagnosis
-                unknown_labels.add(raw_label)
-
-    if unknown_labels:
-        logger.warning(
-            "Coach %s: YOLO returned %d label(s) not in LABEL_TO_COMPONENT or DEFECT_SEVERITY — "
-            "add them to the map if they are components: %s",
-            coach_id, len(unknown_labels), sorted(unknown_labels),
-        )
-
-    # ── Find missing components ───────────────────────────────────────────────
-    missing_rows = []
-    for code, spec in manifest_codes.items():
-        if code not in component_detected:
-            sev = "HIGH" if spec["is_critical"] else "MEDIUM"
-            missing_rows.append((
-                str(uuid.uuid4()), session_id, coach_id,
-                code, spec["name"], spec["quantity"], 0, sev,
-            ))
 
     # ── Write to DB ───────────────────────────────────────────────────────────
     with conn.cursor() as cur:
@@ -267,34 +186,17 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
                 component_rows,
             )
 
-        if missing_rows:
-            psycopg2.extras.execute_values(
-                cur,
-                """
-                INSERT INTO missing_components
-                  (id, session_id, coach_id, component_code, component_name,
-                   expected_count, detected_count, severity)
-                VALUES %s
-                ON CONFLICT DO NOTHING
-                """,
-                missing_rows,
-            )
-
-        # Count by severity for health score
+        # Count defects by severity for health score
         sev_counts = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
         for row in defect_rows:
-            sev_counts[row[5]] = sev_counts.get(row[5], 0) + 1
-
-        missing_critical = sum(1 for r in missing_rows if r[7] == "HIGH")
-        missing_other = len(missing_rows) - missing_critical
+            sev = row[5]
+            sev_counts[sev] = sev_counts.get(sev, 0) + 1
 
         penalty = (
             sev_counts["CRITICAL"] * SEVERITY_PENALTY["CRITICAL"]
             + sev_counts["HIGH"] * SEVERITY_PENALTY["HIGH"]
             + sev_counts["MEDIUM"] * SEVERITY_PENALTY["MEDIUM"]
             + sev_counts["LOW"] * SEVERITY_PENALTY["LOW"]
-            + missing_critical * 20
-            + missing_other * 5
         )
         health_score = max(0.0, round(100.0 - penalty, 2))
 
@@ -306,7 +208,7 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
                 health_score = %s
             WHERE id = %s
             """,
-            (sev_counts["CRITICAL"], len(missing_rows), health_score, coach_id),
+            (sev_counts["CRITICAL"], 0, health_score, coach_id),
         )
 
         conn.commit()
@@ -314,13 +216,13 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
     summary = {
         "coach_id": coach_id,
         "frames_sampled": len(sampled),
+        "components_detected": len(component_rows),
         "defects_found": len(defect_rows),
         "sev_counts": sev_counts,
-        "missing_components": len(missing_rows),
         "health_score": health_score,
     }
     logger.info(
-        "Correlation done coach=%s defects=%d missing=%d health=%.1f",
-        coach_id, len(defect_rows), len(missing_rows), health_score,
+        "Correlation done coach=%s components=%d defects=%d health=%.1f",
+        coach_id, len(component_rows), len(defect_rows), health_score,
     )
     return summary

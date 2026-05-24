@@ -4,2146 +4,2452 @@
   "graph": {},
   "nodes": [
     {
+      "label": "engine.py",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L1",
+      "id": "correlation_engine_py",
+      "community": 11,
+      "norm_label": "engine.py"
+    },
+    {
+      "label": "_norm()",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L104",
+      "id": "correlation_engine_norm",
+      "community": 11,
+      "norm_label": "_norm()"
+    },
+    {
+      "label": "load_manifest()",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L108",
+      "id": "correlation_engine_load_manifest",
+      "community": 11,
+      "norm_label": "load_manifest()"
+    },
+    {
+      "label": "_fetch_frame_bytes()",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L117",
+      "id": "correlation_engine_fetch_frame_bytes",
+      "community": 11,
+      "norm_label": "_fetch_frame_bytes()"
+    },
+    {
+      "label": "_run_yolo()",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L127",
+      "id": "correlation_engine_run_yolo",
+      "community": 11,
+      "norm_label": "_run_yolo()"
+    },
+    {
+      "label": "correlate_coach()",
+      "file_type": "code",
+      "source_file": "correlation/engine.py",
+      "source_location": "L141",
+      "id": "correlation_engine_correlate_coach",
+      "community": 11,
+      "norm_label": "correlate_coach()"
+    },
+    {
+      "label": "Correlation Engine \u2014 Phase 3 For each coach:   1. Sample frames assigned to th",
+      "file_type": "rationale",
+      "source_file": "correlation/engine.py",
+      "source_location": "L1",
+      "id": "correlation_engine_rationale_1",
+      "community": 11,
+      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to th"
+    },
+    {
+      "label": "Run defect + component correlation for one coach.     Returns summary dict.",
+      "file_type": "rationale",
+      "source_file": "correlation/engine.py",
+      "source_location": "L142",
+      "id": "correlation_engine_rationale_142",
+      "community": 11,
+      "norm_label": "run defect + component correlation for one coach.     returns summary dict."
+    },
+    {
+      "label": "vande_bharat.json",
+      "file_type": "code",
+      "source_file": "correlation/manifests/vande_bharat.json",
+      "source_location": "L1",
+      "id": "correlation_manifests_vande_bharat_json",
+      "community": 10,
+      "norm_label": "vande_bharat.json"
+    },
+    {
+      "label": "coach_type",
+      "file_type": "code",
+      "source_file": "correlation/manifests/vande_bharat.json",
+      "source_location": "L2",
+      "id": "manifests_vande_bharat_coach_type",
+      "community": 10,
+      "norm_label": "coach_type"
+    },
+    {
+      "label": "components",
+      "file_type": "code",
+      "source_file": "correlation/manifests/vande_bharat.json",
+      "source_location": "L3",
+      "id": "manifests_vande_bharat_components",
+      "community": 10,
+      "norm_label": "components"
+    },
+    {
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L1",
+      "id": "frame_extractor_server_py",
+      "community": 12,
+      "norm_label": "server.py"
+    },
+    {
+      "label": "ExtractRequest",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L42",
+      "id": "frame_extractor_server_extractrequest",
+      "community": 12,
+      "norm_label": "extractrequest"
+    },
+    {
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "basemodel",
+      "community": 12,
+      "norm_label": "basemodel"
+    },
+    {
+      "label": "get_conn()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L49",
+      "id": "frame_extractor_server_get_conn",
+      "community": 12,
+      "norm_label": "get_conn()"
+    },
+    {
+      "label": "_all_cameras_done()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L53",
+      "id": "frame_extractor_server_all_cameras_done",
+      "community": 12,
+      "norm_label": "_all_cameras_done()"
+    },
+    {
+      "label": "_trim_to_shortest_camera()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L63",
+      "id": "frame_extractor_server_trim_to_shortest_camera",
+      "community": 12,
+      "norm_label": "_trim_to_shortest_camera()"
+    },
+    {
+      "label": "_load_root_config()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L140",
+      "id": "frame_extractor_server_load_root_config",
+      "community": 12,
+      "norm_label": "_load_root_config()"
+    },
+    {
+      "label": "_flush_rows()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L153",
+      "id": "frame_extractor_server_flush_rows",
+      "community": 12,
+      "norm_label": "_flush_rows()"
+    },
+    {
+      "label": "run_extraction()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L189",
+      "id": "frame_extractor_server_run_extraction",
+      "community": 12,
+      "norm_label": "run_extraction()"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L374",
+      "id": "frame_extractor_server_health",
+      "community": 12,
+      "norm_label": "health()"
+    },
+    {
+      "label": "extract()",
+      "file_type": "code",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L379",
+      "id": "frame_extractor_server_extract",
+      "community": 12,
+      "norm_label": "extract()"
+    },
+    {
+      "label": "Frame Extractor Service \u2014 port 5003 Receives video path \u2192 OpenCV extracts every",
+      "file_type": "rationale",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L1",
+      "id": "frame_extractor_server_rationale_1",
+      "community": 12,
+      "norm_label": "frame extractor service \u2014 port 5003 receives video path \u2192 opencv extracts every"
+    },
+    {
+      "label": "True when every session_camera for this session has frame_count > 0.",
+      "file_type": "rationale",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L54",
+      "id": "frame_extractor_server_rationale_54",
+      "community": 12,
+      "norm_label": "true when every session_camera for this session has frame_count > 0."
+    },
+    {
+      "label": "After all cameras finish, find the camera with the fewest frames (shortest video",
+      "file_type": "rationale",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L64",
+      "id": "frame_extractor_server_rationale_64",
+      "community": 12,
+      "norm_label": "after all cameras finish, find the camera with the fewest frames (shortest video"
+    },
+    {
+      "label": "Insert a batch of frame rows and update the live counters in the DB.",
+      "file_type": "rationale",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L154",
+      "id": "frame_extractor_server_rationale_154",
+      "community": 12,
+      "norm_label": "insert a batch of frame rows and update the live counters in the db."
+    },
+    {
+      "label": "builder.py",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L1",
+      "id": "report_generator_builder_py",
+      "community": 13,
+      "norm_label": "builder.py"
+    },
+    {
+      "label": "load_session_data()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L40",
+      "id": "report_generator_builder_load_session_data",
+      "community": 13,
+      "norm_label": "load_session_data()"
+    },
+    {
+      "label": "build_json_report()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L123",
+      "id": "report_generator_builder_build_json_report",
+      "community": 13,
+      "norm_label": "build_json_report()"
+    },
+    {
+      "label": "_health_color()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L187",
+      "id": "report_generator_builder_health_color",
+      "community": 13,
+      "norm_label": "_health_color()"
+    },
+    {
+      "label": "_PDF",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L198",
+      "id": "report_generator_builder_pdf",
+      "community": 13,
+      "norm_label": "_pdf"
+    },
+    {
+      "label": "FPDF",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "fpdf",
+      "community": 13,
+      "norm_label": "fpdf"
+    },
+    {
+      "label": ".header()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L199",
+      "id": "report_generator_builder_pdf_header",
+      "community": 13,
+      "norm_label": ".header()"
+    },
+    {
+      "label": ".footer()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L208",
+      "id": "report_generator_builder_pdf_footer",
+      "community": 13,
+      "norm_label": ".footer()"
+    },
+    {
+      "label": "build_pdf_report()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L215",
+      "id": "report_generator_builder_build_pdf_report",
+      "community": 13,
+      "norm_label": "build_pdf_report()"
+    },
+    {
+      "label": "_upload()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L332",
+      "id": "report_generator_builder_upload",
+      "community": 13,
+      "norm_label": "_upload()"
+    },
+    {
+      "label": "upload_report()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L342",
+      "id": "report_generator_builder_upload_report",
+      "community": 13,
+      "norm_label": "upload_report()"
+    },
+    {
+      "label": "generate_report()",
+      "file_type": "code",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L356",
+      "id": "report_generator_builder_generate_report",
+      "community": 13,
+      "norm_label": "generate_report()"
+    },
+    {
+      "label": "Report builder \u2014 Phase 4 Reads full session from DB \u2192 builds PDF (fpdf2) + JSON",
+      "file_type": "rationale",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L1",
+      "id": "report_generator_builder_rationale_1",
+      "community": 13,
+      "norm_label": "report builder \u2014 phase 4 reads full session from db \u2192 builds pdf (fpdf2) + json"
+    },
+    {
       "label": "generate_docs.py",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L1",
-      "id": "doc_generate_docs_py",
       "community": 80,
-      "norm_label": "generate_docs.py"
+      "norm_label": "generate_docs.py",
+      "id": "doc_generate_docs_py"
     },
     {
       "label": "heading()",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L23",
-      "id": "doc_generate_docs_heading",
       "community": 80,
-      "norm_label": "heading()"
+      "norm_label": "heading()",
+      "id": "doc_generate_docs_heading"
     },
     {
       "label": "para()",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L26",
-      "id": "doc_generate_docs_para",
       "community": 80,
-      "norm_label": "para()"
+      "norm_label": "para()",
+      "id": "doc_generate_docs_para"
     },
     {
       "label": "bullet()",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L35",
-      "id": "doc_generate_docs_bullet",
       "community": 80,
-      "norm_label": "bullet()"
+      "norm_label": "bullet()",
+      "id": "doc_generate_docs_bullet"
     },
     {
       "label": "numbered()",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L40",
-      "id": "doc_generate_docs_numbered",
       "community": 80,
-      "norm_label": "numbered()"
+      "norm_label": "numbered()",
+      "id": "doc_generate_docs_numbered"
     },
     {
       "label": "code_block()",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L43",
-      "id": "doc_generate_docs_code_block",
       "community": 80,
-      "norm_label": "code_block()"
+      "norm_label": "code_block()",
+      "id": "doc_generate_docs_code_block"
     },
     {
       "label": "separator()",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L59",
-      "id": "doc_generate_docs_separator",
       "community": 80,
-      "norm_label": "separator()"
+      "norm_label": "separator()",
+      "id": "doc_generate_docs_separator"
     },
     {
       "label": "info_row()",
       "file_type": "code",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L62",
-      "id": "doc_generate_docs_info_row",
       "community": 80,
-      "norm_label": "info_row()"
+      "norm_label": "info_row()",
+      "id": "doc_generate_docs_info_row"
     },
     {
       "label": "Run this script once to generate VandeBharat_TechDoc.docx   python generate_docs",
       "file_type": "rationale",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L1",
-      "id": "doc_generate_docs_rationale_1",
       "community": 80,
-      "norm_label": "run this script once to generate vandebharat_techdoc.docx   python generate_docs"
+      "norm_label": "run this script once to generate vandebharat_techdoc.docx   python generate_docs",
+      "id": "doc_generate_docs_rationale_1"
     },
     {
       "label": "intelligence.js",
       "file_type": "code",
       "source_file": "backend/src/routes/intelligence.js",
       "source_location": "L1",
-      "id": "backend_src_routes_intelligence_js",
       "community": 14,
-      "norm_label": "intelligence.js"
+      "norm_label": "intelligence.js",
+      "id": "backend_src_routes_intelligence_js"
     },
     {
       "label": "prisma",
       "file_type": "code",
       "source_file": "backend/src/routes/intelligence.js",
       "source_location": "L8",
-      "id": "routes_intelligence_prisma",
       "community": 14,
-      "norm_label": "prisma"
+      "norm_label": "prisma",
+      "id": "routes_intelligence_prisma"
     },
     {
       "label": "intelligence()",
       "file_type": "code",
       "source_file": "backend/src/routes/intelligence.js",
       "source_location": "L10",
-      "id": "routes_intelligence_intelligence",
       "community": 14,
-      "norm_label": "intelligence()"
+      "norm_label": "intelligence()",
+      "id": "routes_intelligence_intelligence"
     },
     {
       "label": "sessions.js",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L1",
-      "id": "backend_src_routes_sessions_js",
       "community": 0,
-      "norm_label": "sessions.js"
+      "norm_label": "sessions.js",
+      "id": "backend_src_routes_sessions_js"
     },
     {
       "label": "path",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L1",
-      "id": "routes_sessions_path",
       "community": 0,
-      "norm_label": "path"
+      "norm_label": "path",
+      "id": "routes_sessions_path"
     },
     {
       "label": "fs",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L2",
-      "id": "routes_sessions_fs",
       "community": 0,
-      "norm_label": "fs"
+      "norm_label": "fs",
+      "id": "routes_sessions_fs"
     },
     {
       "label": "{ pipeline }",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L3",
-      "id": "routes_sessions_pipeline",
       "community": 0,
-      "norm_label": "{ pipeline }"
+      "norm_label": "{ pipeline }",
+      "id": "routes_sessions_pipeline"
     },
     {
       "label": "{ randomUUID }",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L4",
-      "id": "routes_sessions_randomuuid",
       "community": 0,
-      "norm_label": "{ randomuuid }"
+      "norm_label": "{ randomuuid }",
+      "id": "routes_sessions_randomuuid"
     },
     {
       "label": "axios",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L5",
-      "id": "routes_sessions_axios",
       "community": 0,
-      "norm_label": "axios"
+      "norm_label": "axios",
+      "id": "routes_sessions_axios"
     },
     {
       "label": "prisma",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L6",
-      "id": "routes_sessions_prisma",
       "community": 26,
-      "norm_label": "prisma"
+      "norm_label": "prisma",
+      "id": "routes_sessions_prisma"
     },
     {
       "label": "config",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L7",
-      "id": "routes_sessions_config",
       "community": 0,
-      "norm_label": "config"
+      "norm_label": "config",
+      "id": "routes_sessions_config"
     },
     {
       "label": "rootConfig",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L8",
-      "id": "routes_sessions_rootconfig",
       "community": 0,
-      "norm_label": "rootconfig"
+      "norm_label": "rootconfig",
+      "id": "routes_sessions_rootconfig"
     },
     {
       "label": "{ runOcrPipeline }",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L9",
-      "id": "routes_sessions_runocrpipeline",
       "community": 0,
-      "norm_label": "{ runocrpipeline }"
+      "norm_label": "{ runocrpipeline }",
+      "id": "routes_sessions_runocrpipeline"
     },
     {
       "label": "UPLOAD_DIR",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L11",
-      "id": "routes_sessions_upload_dir",
       "community": 0,
-      "norm_label": "upload_dir"
+      "norm_label": "upload_dir",
+      "id": "routes_sessions_upload_dir"
     },
     {
       "label": "PIPELINE_STAGES",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L13",
-      "id": "routes_sessions_pipeline_stages",
       "community": 0,
-      "norm_label": "pipeline_stages"
+      "norm_label": "pipeline_stages",
+      "id": "routes_sessions_pipeline_stages"
     },
     {
       "label": "COMPONENT_CAM_TYPES",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L23",
-      "id": "routes_sessions_component_cam_types",
       "community": 0,
-      "norm_label": "component_cam_types"
+      "norm_label": "component_cam_types",
+      "id": "routes_sessions_component_cam_types"
     },
     {
       "label": "generateSessionCode()",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L25",
-      "id": "routes_sessions_generatesessioncode",
       "community": 0,
-      "norm_label": "generatesessioncode()"
+      "norm_label": "generatesessioncode()",
+      "id": "routes_sessions_generatesessioncode"
     },
     {
       "label": "sessions()",
       "file_type": "code",
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L31",
-      "id": "routes_sessions_sessions",
       "community": 0,
-      "norm_label": "sessions()"
+      "norm_label": "sessions()",
+      "id": "routes_sessions_sessions"
     },
     {
       "label": "pipelineOrchestrator.js",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L1",
-      "id": "backend_src_services_pipelineorchestrator_js",
       "community": 31,
-      "norm_label": "pipelineorchestrator.js"
+      "norm_label": "pipelineorchestrator.js",
+      "id": "backend_src_services_pipelineorchestrator_js"
     },
     {
       "label": "axios",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L5",
-      "id": "services_pipelineorchestrator_axios",
       "community": 31,
-      "norm_label": "axios"
+      "norm_label": "axios",
+      "id": "services_pipelineorchestrator_axios"
     },
     {
       "label": "prisma",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L6",
-      "id": "services_pipelineorchestrator_prisma",
       "community": 31,
-      "norm_label": "prisma"
+      "norm_label": "prisma",
+      "id": "services_pipelineorchestrator_prisma"
     },
     {
       "label": "config",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L7",
-      "id": "services_pipelineorchestrator_config",
       "community": 31,
-      "norm_label": "config"
+      "norm_label": "config",
+      "id": "services_pipelineorchestrator_config"
     },
     {
       "label": "{ broadcast, broadcastAll }",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L8",
-      "id": "services_pipelineorchestrator_broadcast_broadcastall",
       "community": 31,
-      "norm_label": "{ broadcast, broadcastall }"
+      "norm_label": "{ broadcast, broadcastall }",
+      "id": "services_pipelineorchestrator_broadcast_broadcastall"
     },
     {
       "label": "emitStage()",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L10",
-      "id": "services_pipelineorchestrator_emitstage",
       "community": 31,
-      "norm_label": "emitstage()"
+      "norm_label": "emitstage()",
+      "id": "services_pipelineorchestrator_emitstage"
     },
     {
       "label": "runOcrPipeline()",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L17",
-      "id": "services_pipelineorchestrator_runocrpipeline",
       "community": 31,
-      "norm_label": "runocrpipeline()"
+      "norm_label": "runocrpipeline()",
+      "id": "services_pipelineorchestrator_runocrpipeline"
     },
     {
       "label": "runPipeline()",
       "file_type": "code",
       "source_file": "backend/src/services/pipelineOrchestrator.js",
       "source_location": "L270",
-      "id": "services_pipelineorchestrator_runpipeline",
       "community": 31,
-      "norm_label": "runpipeline()"
+      "norm_label": "runpipeline()",
+      "id": "services_pipelineorchestrator_runpipeline"
     },
     {
       "label": "Sessions.jsx",
       "file_type": "code",
       "source_file": "frontend/src/pages/Sessions.jsx",
       "source_location": "L1",
-      "id": "frontend_src_pages_sessions_jsx",
       "community": 6,
-      "norm_label": "sessions.jsx"
+      "norm_label": "sessions.jsx",
+      "id": "frontend_src_pages_sessions_jsx"
     },
     {
       "label": "Sessions()",
       "file_type": "code",
       "source_file": "frontend/src/pages/Sessions.jsx",
       "source_location": "L36",
-      "id": "pages_sessions_sessions",
       "community": 6,
-      "norm_label": "sessions()"
+      "norm_label": "sessions()",
+      "id": "pages_sessions_sessions"
     },
     {
       "label": "TrainWorkspace.jsx",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L1",
-      "id": "frontend_src_pages_trainworkspace_jsx",
       "community": 6,
-      "norm_label": "trainworkspace.jsx"
+      "norm_label": "trainworkspace.jsx",
+      "id": "frontend_src_pages_trainworkspace_jsx"
     },
     {
       "label": "PROCESSING_STATUSES",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L18",
-      "id": "pages_trainworkspace_processing_statuses",
       "community": 6,
-      "norm_label": "processing_statuses"
+      "norm_label": "processing_statuses",
+      "id": "pages_trainworkspace_processing_statuses"
     },
     {
       "label": "STAGE_META",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L21",
-      "id": "pages_trainworkspace_stage_meta",
       "community": 6,
-      "norm_label": "stage_meta"
+      "norm_label": "stage_meta",
+      "id": "pages_trainworkspace_stage_meta"
     },
     {
       "label": "stageChip()",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L31",
-      "id": "pages_trainworkspace_stagechip",
       "community": 6,
-      "norm_label": "stagechip()"
+      "norm_label": "stagechip()",
+      "id": "pages_trainworkspace_stagechip"
     },
     {
       "label": "PipelineProgressView()",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L63",
-      "id": "pages_trainworkspace_pipelineprogressview",
       "community": 6,
-      "norm_label": "pipelineprogressview()"
+      "norm_label": "pipelineprogressview()",
+      "id": "pages_trainworkspace_pipelineprogressview"
     },
     {
       "label": "TrainWorkspace()",
       "file_type": "code",
       "source_file": "frontend/src/pages/TrainWorkspace.jsx",
       "source_location": "L303",
-      "id": "pages_trainworkspace_trainworkspace",
       "community": 6,
-      "norm_label": "trainworkspace()"
+      "norm_label": "trainworkspace()",
+      "id": "pages_trainworkspace_trainworkspace"
     },
     {
       "label": "VandeBharat_TechDoc_fa6398c9.md",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L1",
-      "id": "graphify_out_converted_vandebharat_techdoc_fa6398c9_md",
       "community": 17,
-      "norm_label": "vandebharat_techdoc_fa6398c9.md"
+      "norm_label": "vandebharat_techdoc_fa6398c9.md",
+      "id": "graphify_out_converted_vandebharat_techdoc_fa6398c9_md"
     },
     {
       "label": "1. Project Overview",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L8",
-      "id": "converted_vandebharat_techdoc_fa6398c9_1_project_overview",
       "community": 17,
-      "norm_label": "1. project overview"
+      "norm_label": "1. project overview",
+      "id": "converted_vandebharat_techdoc_fa6398c9_1_project_overview"
     },
     {
       "label": "1.1  System Architecture",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L11",
-      "id": "converted_vandebharat_techdoc_fa6398c9_1_1_system_architecture",
       "community": 17,
-      "norm_label": "1.1  system architecture"
+      "norm_label": "1.1  system architecture",
+      "id": "converted_vandebharat_techdoc_fa6398c9_1_1_system_architecture"
     },
     {
       "label": "1.2  Database",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L22",
-      "id": "converted_vandebharat_techdoc_fa6398c9_1_2_database",
       "community": 17,
-      "norm_label": "1.2  database"
+      "norm_label": "1.2  database",
+      "id": "converted_vandebharat_techdoc_fa6398c9_1_2_database"
     },
     {
       "label": "2. Development Phases",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L33",
-      "id": "converted_vandebharat_techdoc_fa6398c9_2_development_phases",
       "community": 17,
-      "norm_label": "2. development phases"
+      "norm_label": "2. development phases",
+      "id": "converted_vandebharat_techdoc_fa6398c9_2_development_phases"
     },
     {
       "label": "Phase 1 \u2014 Basic Video Streaming & Frame Extraction",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L34",
-      "id": "converted_vandebharat_techdoc_fa6398c9_phase_1_basic_video_streaming_frame_extraction",
       "community": 17,
-      "norm_label": "phase 1 \u2014 basic video streaming & frame extraction"
+      "norm_label": "phase 1 \u2014 basic video streaming & frame extraction",
+      "id": "converted_vandebharat_techdoc_fa6398c9_phase_1_basic_video_streaming_frame_extraction"
     },
     {
       "label": "Phase 2 \u2014 OCR Pipeline (PaddleOCR, no ROI)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L42",
-      "id": "converted_vandebharat_techdoc_fa6398c9_phase_2_ocr_pipeline_paddleocr_no_roi",
       "community": 17,
-      "norm_label": "phase 2 \u2014 ocr pipeline (paddleocr, no roi)"
+      "norm_label": "phase 2 \u2014 ocr pipeline (paddleocr, no roi)",
+      "id": "converted_vandebharat_techdoc_fa6398c9_phase_2_ocr_pipeline_paddleocr_no_roi"
     },
     {
       "label": "Phase 3 \u2014 YOLO ROI Detection (Boogie Class)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L52",
-      "id": "converted_vandebharat_techdoc_fa6398c9_phase_3_yolo_roi_detection_boogie_class",
       "community": 17,
-      "norm_label": "phase 3 \u2014 yolo roi detection (boogie class)"
+      "norm_label": "phase 3 \u2014 yolo roi detection (boogie class)",
+      "id": "converted_vandebharat_techdoc_fa6398c9_phase_3_yolo_roi_detection_boogie_class"
     },
     {
       "label": "Phase 4 \u2014 Multi-Class YOLO (Boogie, Car Type, Engine, Gap)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L62",
-      "id": "converted_vandebharat_techdoc_fa6398c9_phase_4_multi_class_yolo_boogie_car_type_engine_gap",
       "community": 17,
-      "norm_label": "phase 4 \u2014 multi-class yolo (boogie, car type, engine, gap)"
+      "norm_label": "phase 4 \u2014 multi-class yolo (boogie, car type, engine, gap)",
+      "id": "converted_vandebharat_techdoc_fa6398c9_phase_4_multi_class_yolo_boogie_car_type_engine_gap"
     },
     {
       "label": "Phase 5 \u2014 Gap-Boundary Synchronisation & Multi-Camera Correlation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L70",
-      "id": "converted_vandebharat_techdoc_fa6398c9_phase_5_gap_boundary_synchronisation_multi_camera_correlation",
       "community": 17,
-      "norm_label": "phase 5 \u2014 gap-boundary synchronisation & multi-camera correlation"
+      "norm_label": "phase 5 \u2014 gap-boundary synchronisation & multi-camera correlation",
+      "id": "converted_vandebharat_techdoc_fa6398c9_phase_5_gap_boundary_synchronisation_multi_camera_correlation"
     },
     {
       "label": "3. OCR Pipeline \u2014 Detailed Walkthrough",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L78",
-      "id": "converted_vandebharat_techdoc_fa6398c9_3_ocr_pipeline_detailed_walkthrough",
       "community": 17,
-      "norm_label": "3. ocr pipeline \u2014 detailed walkthrough"
+      "norm_label": "3. ocr pipeline \u2014 detailed walkthrough",
+      "id": "converted_vandebharat_techdoc_fa6398c9_3_ocr_pipeline_detailed_walkthrough"
     },
     {
       "label": "3.1  Step-by-Step Flow",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L80",
-      "id": "converted_vandebharat_techdoc_fa6398c9_3_1_step_by_step_flow",
       "community": 17,
-      "norm_label": "3.1  step-by-step flow"
+      "norm_label": "3.1  step-by-step flow",
+      "id": "converted_vandebharat_techdoc_fa6398c9_3_1_step_by_step_flow"
     },
     {
       "label": "3.2  Preprocessing Pipeline",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L92",
-      "id": "converted_vandebharat_techdoc_fa6398c9_3_2_preprocessing_pipeline",
       "community": 17,
-      "norm_label": "3.2  preprocessing pipeline"
+      "norm_label": "3.2  preprocessing pipeline",
+      "id": "converted_vandebharat_techdoc_fa6398c9_3_2_preprocessing_pipeline"
     },
     {
       "label": "3.3  Train Number Filter",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L101",
-      "id": "converted_vandebharat_techdoc_fa6398c9_3_3_train_number_filter",
       "community": 17,
-      "norm_label": "3.3  train number filter"
+      "norm_label": "3.3  train number filter",
+      "id": "converted_vandebharat_techdoc_fa6398c9_3_3_train_number_filter"
     },
     {
       "label": "3.4  Database Writes",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L104",
-      "id": "converted_vandebharat_techdoc_fa6398c9_3_4_database_writes",
       "community": 17,
-      "norm_label": "3.4  database writes"
+      "norm_label": "3.4  database writes",
+      "id": "converted_vandebharat_techdoc_fa6398c9_3_4_database_writes"
     },
     {
       "label": "4. Synchronisation \u2014 Problem & Solution",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L109",
-      "id": "converted_vandebharat_techdoc_fa6398c9_4_synchronisation_problem_solution",
       "community": 17,
-      "norm_label": "4. synchronisation \u2014 problem & solution"
+      "norm_label": "4. synchronisation \u2014 problem & solution",
+      "id": "converted_vandebharat_techdoc_fa6398c9_4_synchronisation_problem_solution"
     },
     {
       "label": "4.1  The Problem",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L110",
-      "id": "converted_vandebharat_techdoc_fa6398c9_4_1_the_problem",
       "community": 17,
-      "norm_label": "4.1  the problem"
+      "norm_label": "4.1  the problem",
+      "id": "converted_vandebharat_techdoc_fa6398c9_4_1_the_problem"
     },
     {
       "label": "4.2  The Solution \u2014 Gap-Boundary Synchronisation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L122",
-      "id": "converted_vandebharat_techdoc_fa6398c9_4_2_the_solution_gap_boundary_synchronisation",
       "community": 17,
-      "norm_label": "4.2  the solution \u2014 gap-boundary synchronisation"
+      "norm_label": "4.2  the solution \u2014 gap-boundary synchronisation",
+      "id": "converted_vandebharat_techdoc_fa6398c9_4_2_the_solution_gap_boundary_synchronisation"
     },
     {
       "label": "4.3  Fallback \u2014 OCR Voting",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L134",
-      "id": "converted_vandebharat_techdoc_fa6398c9_4_3_fallback_ocr_voting",
       "community": 17,
-      "norm_label": "4.3  fallback \u2014 ocr voting"
+      "norm_label": "4.3  fallback \u2014 ocr voting",
+      "id": "converted_vandebharat_techdoc_fa6398c9_4_3_fallback_ocr_voting"
     },
     {
       "label": "4.4  Configuration",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L137",
-      "id": "converted_vandebharat_techdoc_fa6398c9_4_4_configuration",
       "community": 17,
-      "norm_label": "4.4  configuration"
+      "norm_label": "4.4  configuration",
+      "id": "converted_vandebharat_techdoc_fa6398c9_4_4_configuration"
     },
     {
       "label": "5. Running Multiple AI Models Without DLL Conflicts",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L144",
-      "id": "converted_vandebharat_techdoc_fa6398c9_5_running_multiple_ai_models_without_dll_conflicts",
       "community": 17,
-      "norm_label": "5. running multiple ai models without dll conflicts"
+      "norm_label": "5. running multiple ai models without dll conflicts",
+      "id": "converted_vandebharat_techdoc_fa6398c9_5_running_multiple_ai_models_without_dll_conflicts"
     },
     {
       "label": "5.1  The Problem",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L145",
-      "id": "converted_vandebharat_techdoc_fa6398c9_5_1_the_problem",
       "community": 17,
-      "norm_label": "5.1  the problem"
+      "norm_label": "5.1  the problem",
+      "id": "converted_vandebharat_techdoc_fa6398c9_5_1_the_problem"
     },
     {
       "label": "5.2  Root Cause",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L153",
-      "id": "converted_vandebharat_techdoc_fa6398c9_5_2_root_cause",
       "community": 17,
-      "norm_label": "5.2  root cause"
+      "norm_label": "5.2  root cause",
+      "id": "converted_vandebharat_techdoc_fa6398c9_5_2_root_cause"
     },
     {
       "label": "5.3  Solution \u2014 Process Isolation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L158",
-      "id": "converted_vandebharat_techdoc_fa6398c9_5_3_solution_process_isolation",
       "community": 17,
-      "norm_label": "5.3  solution \u2014 process isolation"
+      "norm_label": "5.3  solution \u2014 process isolation",
+      "id": "converted_vandebharat_techdoc_fa6398c9_5_3_solution_process_isolation"
     },
     {
       "label": "5.4  Additional Fixes Applied",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L164",
-      "id": "converted_vandebharat_techdoc_fa6398c9_5_4_additional_fixes_applied",
       "community": 17,
-      "norm_label": "5.4  additional fixes applied"
+      "norm_label": "5.4  additional fixes applied",
+      "id": "converted_vandebharat_techdoc_fa6398c9_5_4_additional_fixes_applied"
     },
     {
       "label": "ocr_engine.py",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L166",
-      "id": "converted_vandebharat_techdoc_fa6398c9_ocr_engine_py",
       "community": 17,
-      "norm_label": "ocr_engine.py"
+      "norm_label": "ocr_engine.py",
+      "id": "converted_vandebharat_techdoc_fa6398c9_ocr_engine_py"
     },
     {
       "label": "config.json  \u2192  \"ocr_concurrency\": 1",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L170",
-      "id": "converted_vandebharat_techdoc_fa6398c9_config_json_ocr_concurrency_1",
       "community": 17,
-      "norm_label": "config.json  \u2192  \"ocr_concurrency\": 1"
+      "norm_label": "config.json  \u2192  \"ocr_concurrency\": 1",
+      "id": "converted_vandebharat_techdoc_fa6398c9_config_json_ocr_concurrency_1"
     },
     {
       "label": "server.py  @app.on_event('startup')",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L173",
-      "id": "converted_vandebharat_techdoc_fa6398c9_server_py_app_on_event_startup",
       "community": 17,
-      "norm_label": "server.py  @app.on_event('startup')"
+      "norm_label": "server.py  @app.on_event('startup')",
+      "id": "converted_vandebharat_techdoc_fa6398c9_server_py_app_on_event_startup"
     },
     {
       "label": "6. Other Bugs & Fixes Log",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L178",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_other_bugs_fixes_log",
       "community": 17,
-      "norm_label": "6. other bugs & fixes log"
+      "norm_label": "6. other bugs & fixes log",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_other_bugs_fixes_log"
     },
     {
       "label": "6.1  BigInt serialization error in Node.js",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L179",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_1_bigint_serialization_error_in_node_js",
       "community": 17,
-      "norm_label": "6.1  bigint serialization error in node.js"
+      "norm_label": "6.1  bigint serialization error in node.js",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_1_bigint_serialization_error_in_node_js"
     },
     {
       "label": "6.2  Devlab backend 500 on all routes",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L185",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_2_devlab_backend_500_on_all_routes",
       "community": 17,
-      "norm_label": "6.2  devlab backend 500 on all routes"
+      "norm_label": "6.2  devlab backend 500 on all routes",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_2_devlab_backend_500_on_all_routes"
     },
     {
       "label": "6.3  dev_ocr_runs table missing",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L191",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_3_dev_ocr_runs_table_missing",
       "community": 17,
-      "norm_label": "6.3  dev_ocr_runs table missing"
+      "norm_label": "6.3  dev_ocr_runs table missing",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_3_dev_ocr_runs_table_missing"
     },
     {
       "label": "6.4  coach_frame_maps (plural) Prisma error",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L197",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_4_coach_frame_maps_plural_prisma_error",
       "community": 17,
-      "norm_label": "6.4  coach_frame_maps (plural) prisma error"
+      "norm_label": "6.4  coach_frame_maps (plural) prisma error",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_4_coach_frame_maps_plural_prisma_error"
     },
     {
       "label": "6.5  OCR Anchors always showing 0",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L203",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_5_ocr_anchors_always_showing_0",
       "community": 17,
-      "norm_label": "6.5  ocr anchors always showing 0"
+      "norm_label": "6.5  ocr anchors always showing 0",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_5_ocr_anchors_always_showing_0"
     },
     {
       "label": "6.6  Port conflicts on restart",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L209",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_6_port_conflicts_on_restart",
       "community": 17,
-      "norm_label": "6.6  port conflicts on restart"
+      "norm_label": "6.6  port conflicts on restart",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_6_port_conflicts_on_restart"
     },
     {
       "label": "6.7  Parallel YOLO + OCR call (wrong architecture)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L215",
-      "id": "converted_vandebharat_techdoc_fa6398c9_6_7_parallel_yolo_ocr_call_wrong_architecture",
       "community": 17,
-      "norm_label": "6.7  parallel yolo + ocr call (wrong architecture)"
+      "norm_label": "6.7  parallel yolo + ocr call (wrong architecture)",
+      "id": "converted_vandebharat_techdoc_fa6398c9_6_7_parallel_yolo_ocr_call_wrong_architecture"
     },
     {
       "label": "7. DevLab \u2014 Developer Testing Tool",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L222",
-      "id": "converted_vandebharat_techdoc_fa6398c9_7_devlab_developer_testing_tool",
       "community": 17,
-      "norm_label": "7. devlab \u2014 developer testing tool"
+      "norm_label": "7. devlab \u2014 developer testing tool",
+      "id": "converted_vandebharat_techdoc_fa6398c9_7_devlab_developer_testing_tool"
     },
     {
       "label": "7.1  Modules",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L224",
-      "id": "converted_vandebharat_techdoc_fa6398c9_7_1_modules",
       "community": 17,
-      "norm_label": "7.1  modules"
+      "norm_label": "7.1  modules",
+      "id": "converted_vandebharat_techdoc_fa6398c9_7_1_modules"
     },
     {
       "label": "7.2  YOLO Box Overlay",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L229",
-      "id": "converted_vandebharat_techdoc_fa6398c9_7_2_yolo_box_overlay",
       "community": 17,
-      "norm_label": "7.2  yolo box overlay"
+      "norm_label": "7.2  yolo box overlay",
+      "id": "converted_vandebharat_techdoc_fa6398c9_7_2_yolo_box_overlay"
     },
     {
       "label": "8. Configuration Reference \u2014 config.json",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L232",
-      "id": "converted_vandebharat_techdoc_fa6398c9_8_configuration_reference_config_json",
       "community": 17,
-      "norm_label": "8. configuration reference \u2014 config.json"
+      "norm_label": "8. configuration reference \u2014 config.json",
+      "id": "converted_vandebharat_techdoc_fa6398c9_8_configuration_reference_config_json"
     },
     {
       "label": "9. Running the System",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L243",
-      "id": "converted_vandebharat_techdoc_fa6398c9_9_running_the_system",
       "community": 17,
-      "norm_label": "9. running the system"
+      "norm_label": "9. running the system",
+      "id": "converted_vandebharat_techdoc_fa6398c9_9_running_the_system"
     },
     {
       "label": "9.1  Production Services",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L244",
-      "id": "converted_vandebharat_techdoc_fa6398c9_9_1_production_services",
       "community": 17,
-      "norm_label": "9.1  production services"
+      "norm_label": "9.1  production services",
+      "id": "converted_vandebharat_techdoc_fa6398c9_9_1_production_services"
     },
     {
       "label": "9.2  DevLab",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L248",
-      "id": "converted_vandebharat_techdoc_fa6398c9_9_2_devlab",
       "community": 17,
-      "norm_label": "9.2  devlab"
+      "norm_label": "9.2  devlab",
+      "id": "converted_vandebharat_techdoc_fa6398c9_9_2_devlab"
     },
     {
       "label": "9.3  GPU Services (separate terminal \u2014 GPU machine)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeBharat_TechDoc_fa6398c9.md",
       "source_location": "L252",
-      "id": "converted_vandebharat_techdoc_fa6398c9_9_3_gpu_services_separate_terminal_gpu_machine",
       "community": 17,
-      "norm_label": "9.3  gpu services (separate terminal \u2014 gpu machine)"
+      "norm_label": "9.3  gpu services (separate terminal \u2014 gpu machine)",
+      "id": "converted_vandebharat_techdoc_fa6398c9_9_3_gpu_services_separate_terminal_gpu_machine"
     },
     {
       "label": "VandeInspect_AI_Technical_Report_3ae7912f.md",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L1",
-      "id": "graphify_out_converted_vandeinspect_ai_technical_report_3ae7912f_md",
       "community": 65,
-      "norm_label": "vandeinspect_ai_technical_report_3ae7912f.md"
+      "norm_label": "vandeinspect_ai_technical_report_3ae7912f.md",
+      "id": "graphify_out_converted_vandeinspect_ai_technical_report_3ae7912f_md"
     },
     {
       "label": "Phase 1: System Overview & Industrial Context",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L3",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_1_system_overview_industrial_context",
       "community": 90,
-      "norm_label": "phase 1: system overview & industrial context"
+      "norm_label": "phase 1: system overview & industrial context",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_1_system_overview_industrial_context"
     },
     {
       "label": "1. Executive Summary",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L4",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_executive_summary",
       "community": 90,
-      "norm_label": "1. executive summary"
+      "norm_label": "1. executive summary",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_executive_summary"
     },
     {
       "label": "2. Problem Statement",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L12",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_problem_statement",
       "community": 90,
-      "norm_label": "2. problem statement"
+      "norm_label": "2. problem statement",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_problem_statement"
     },
     {
       "label": "The Inspection Challenge",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L14",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_the_inspection_challenge",
       "community": 90,
-      "norm_label": "the inspection challenge"
+      "norm_label": "the inspection challenge",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_the_inspection_challenge"
     },
     {
       "label": "3. Existing System Limitations",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L19",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_existing_system_limitations",
       "community": 90,
-      "norm_label": "3. existing system limitations"
+      "norm_label": "3. existing system limitations",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_existing_system_limitations"
     },
     {
       "label": "4. Proposed AI Solution: VandeInspect AI",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L22",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_proposed_ai_solution_vandeinspect_ai",
       "community": 90,
-      "norm_label": "4. proposed ai solution: vandeinspect ai"
+      "norm_label": "4. proposed ai solution: vandeinspect ai",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_proposed_ai_solution_vandeinspect_ai"
     },
     {
       "label": "Key Solution Pillars",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L26",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_key_solution_pillars",
       "community": 90,
-      "norm_label": "key solution pillars"
+      "norm_label": "key solution pillars",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_key_solution_pillars"
     },
     {
       "label": "Phase 2: Frontend Architecture",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L33",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_2_frontend_architecture",
       "community": 62,
-      "norm_label": "phase 2: frontend architecture"
+      "norm_label": "phase 2: frontend architecture",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_2_frontend_architecture"
     },
     {
       "label": "1. Technologies & Architecture Overview",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L34",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_technologies_architecture_overview",
       "community": 62,
-      "norm_label": "1. technologies & architecture overview"
+      "norm_label": "1. technologies & architecture overview",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_technologies_architecture_overview"
     },
     {
       "label": "Core Tech Stack",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L36",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_core_tech_stack",
       "community": 62,
-      "norm_label": "core tech stack"
+      "norm_label": "core tech stack",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_core_tech_stack"
     },
     {
       "label": "Client-Side Architecture Layout",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L43",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_client_side_architecture_layout",
       "community": 62,
-      "norm_label": "client-side architecture layout"
+      "norm_label": "client-side architecture layout",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_client_side_architecture_layout"
     },
     {
       "label": "2. Page Hierarchy & Routing Map",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L48",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_page_hierarchy_routing_map",
       "community": 62,
-      "norm_label": "2. page hierarchy & routing map"
+      "norm_label": "2. page hierarchy & routing map",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_page_hierarchy_routing_map"
     },
     {
       "label": "3. Global State Management (Zustand)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L59",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_global_state_management_zustand",
       "community": 62,
-      "norm_label": "3. global state management (zustand)"
+      "norm_label": "3. global state management (zustand)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_global_state_management_zustand"
     },
     {
       "label": "Toast Store Implementation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L61",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_toast_store_implementation",
       "community": 62,
-      "norm_label": "toast store implementation"
+      "norm_label": "toast store implementation",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_toast_store_implementation"
     },
     {
       "label": "4. Custom Hooks & Real-Time Sync",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L83",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_custom_hooks_real_time_sync",
       "community": 62,
-      "norm_label": "4. custom hooks & real-time sync"
+      "norm_label": "4. custom hooks & real-time sync",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_custom_hooks_real_time_sync"
     },
     {
       "label": "4.1 WebSocket Gateway Hook (useSessionSocket.js)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L85",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_1_websocket_gateway_hook_usesessionsocket_js",
       "community": 62,
-      "norm_label": "4.1 websocket gateway hook (usesessionsocket.js)"
+      "norm_label": "4.1 websocket gateway hook (usesessionsocket.js)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_1_websocket_gateway_hook_usesessionsocket_js"
     },
     {
       "label": "4.2 Fallback Polling Hook (usePolling.js)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L161",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_2_fallback_polling_hook_usepolling_js",
       "community": 62,
-      "norm_label": "4.2 fallback polling hook (usepolling.js)"
+      "norm_label": "4.2 fallback polling hook (usepolling.js)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_2_fallback_polling_hook_usepolling_js"
     },
     {
       "label": "5. UI Evolution: Plans vs.\u00a0Actual Implementation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L187",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_ui_evolution_plans_vs_actual_implementation",
       "community": 62,
-      "norm_label": "5. ui evolution: plans vs. actual implementation"
+      "norm_label": "5. ui evolution: plans vs. actual implementation",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_ui_evolution_plans_vs_actual_implementation"
     },
     {
       "label": "Phase 3: Backend Architecture & Orchestration",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L193",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_3_backend_architecture_orchestration",
       "community": 85,
-      "norm_label": "phase 3: backend architecture & orchestration"
+      "norm_label": "phase 3: backend architecture & orchestration",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_3_backend_architecture_orchestration"
     },
     {
       "label": "1. Fastify Gateway Server Design",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L194",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_fastify_gateway_server_design",
       "community": 85,
-      "norm_label": "1. fastify gateway server design"
+      "norm_label": "1. fastify gateway server design",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_fastify_gateway_server_design"
     },
     {
       "label": "Server Lifecycle & Registration",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L197",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_server_lifecycle_registration",
       "community": 85,
-      "norm_label": "server lifecycle & registration"
+      "norm_label": "server lifecycle & registration",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_server_lifecycle_registration"
     },
     {
       "label": "2. API Routes Mapping & Registry",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L221",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_api_routes_mapping_registry",
       "community": 85,
-      "norm_label": "2. api routes mapping & registry"
+      "norm_label": "2. api routes mapping & registry",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_api_routes_mapping_registry"
     },
     {
       "label": "3. Real-Time WebSocket Rooms Gateway",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L230",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_real_time_websocket_rooms_gateway",
       "community": 85,
-      "norm_label": "3. real-time websocket rooms gateway"
+      "norm_label": "3. real-time websocket rooms gateway",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_real_time_websocket_rooms_gateway"
     },
     {
       "label": "4. Pipeline Orchestrator (pipelineOrchestrator.js)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L236",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_pipeline_orchestrator_pipelineorchestrator_js",
       "community": 85,
-      "norm_label": "4. pipeline orchestrator (pipelineorchestrator.js)"
+      "norm_label": "4. pipeline orchestrator (pipelineorchestrator.js)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_pipeline_orchestrator_pipelineorchestrator_js"
     },
     {
       "label": "Pipeline Orchestration Algorithm",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L239",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_pipeline_orchestration_algorithm",
       "community": 85,
-      "norm_label": "pipeline orchestration algorithm"
+      "norm_label": "pipeline orchestration algorithm",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_pipeline_orchestration_algorithm"
     },
     {
       "label": "5. Direct HTTP Loopback vs.\u00a0Queue Systems",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L319",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_direct_http_loopback_vs_queue_systems",
       "community": 85,
-      "norm_label": "5. direct http loopback vs. queue systems"
+      "norm_label": "5. direct http loopback vs. queue systems",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_direct_http_loopback_vs_queue_systems"
     },
     {
       "label": "Phase 4: AI Pipelines (YOLO ROI-First & PaddleOCR)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L325",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_4_ai_pipelines_yolo_roi_first_paddleocr",
       "community": 64,
-      "norm_label": "phase 4: ai pipelines (yolo roi-first & paddleocr)"
+      "norm_label": "phase 4: ai pipelines (yolo roi-first & paddleocr)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_4_ai_pipelines_yolo_roi_first_paddleocr"
     },
     {
       "label": "1. YOLO-First ROI Detection Pipeline",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L326",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_yolo_first_roi_detection_pipeline",
       "community": 64,
-      "norm_label": "1. yolo-first roi detection pipeline"
+      "norm_label": "1. yolo-first roi detection pipeline",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_yolo_first_roi_detection_pipeline"
     },
     {
       "label": "Why ROI is Faster and More Accurate",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L350",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_why_roi_is_faster_and_more_accurate",
       "community": 64,
-      "norm_label": "why roi is faster and more accurate"
+      "norm_label": "why roi is faster and more accurate",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_why_roi_is_faster_and_more_accurate"
     },
     {
       "label": "2. Preprocessing & Dual-Pass OCR Engine",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L355",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_preprocessing_dual_pass_ocr_engine",
       "community": 64,
-      "norm_label": "2. preprocessing & dual-pass ocr engine"
+      "norm_label": "2. preprocessing & dual-pass ocr engine",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_preprocessing_dual_pass_ocr_engine"
     },
     {
       "label": "The Preprocessing Sequence",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L359",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_the_preprocessing_sequence",
       "community": 64,
-      "norm_label": "the preprocessing sequence"
+      "norm_label": "the preprocessing sequence",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_the_preprocessing_sequence"
     },
     {
       "label": "3. Train Number Filtering & VoteManager",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L384",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_train_number_filtering_votemanager",
       "community": 64,
-      "norm_label": "3. train number filtering & votemanager"
+      "norm_label": "3. train number filtering & votemanager",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_train_number_filtering_votemanager"
     },
     {
       "label": "Validation Constraints",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L386",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_validation_constraints",
       "community": 64,
-      "norm_label": "validation constraints"
+      "norm_label": "validation constraints",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_validation_constraints"
     },
     {
       "label": "VoteManager Buffer",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L390",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_votemanager_buffer",
       "community": 64,
-      "norm_label": "votemanager buffer"
+      "norm_label": "votemanager buffer",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_votemanager_buffer"
     },
     {
       "label": "4. CUDA Process Isolation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L393",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_cuda_process_isolation",
       "community": 64,
-      "norm_label": "4. cuda process isolation"
+      "norm_label": "4. cuda process isolation",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_cuda_process_isolation"
     },
     {
       "label": "Root Cause",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L395",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause",
       "community": 64,
-      "norm_label": "root cause"
+      "norm_label": "root cause",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause"
     },
     {
       "label": "Solution",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L397",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_solution",
       "community": 64,
-      "norm_label": "solution"
+      "norm_label": "solution",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_solution"
     },
     {
       "label": "Phase 5: Synchronization Engine",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L414",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_5_synchronization_engine",
       "community": 63,
-      "norm_label": "phase 5: synchronization engine"
+      "norm_label": "phase 5: synchronization engine",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_5_synchronization_engine"
     },
     {
       "label": "1. Why Timestamps Fail for Industrial Railway Inspection",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L415",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_why_timestamps_fail_for_industrial_railway_inspection",
       "community": 63,
-      "norm_label": "1. why timestamps fail for industrial railway inspection"
+      "norm_label": "1. why timestamps fail for industrial railway inspection",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_why_timestamps_fail_for_industrial_railway_inspection"
     },
     {
       "label": "2. Deterministic trigger_id Synchronization Concept",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L422",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_deterministic_trigger_id_synchronization_concept",
       "community": 63,
-      "norm_label": "2. deterministic trigger_id synchronization concept"
+      "norm_label": "2. deterministic trigger_id synchronization concept",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_deterministic_trigger_id_synchronization_concept"
     },
     {
       "label": "2.1 Production Mode (Hardware Sync Pulse)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L426",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_production_mode_hardware_sync_pulse",
       "community": 63,
-      "norm_label": "2.1 production mode (hardware sync pulse)"
+      "norm_label": "2.1 production mode (hardware sync pulse)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_production_mode_hardware_sync_pulse"
     },
     {
       "label": "2.2 Test Mode (Video Upload Sync)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L429",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_test_mode_video_upload_sync",
       "community": 63,
-      "norm_label": "2.2 test mode (video upload sync)"
+      "norm_label": "2.2 test mode (video upload sync)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_test_mode_video_upload_sync"
     },
     {
       "label": "3. Gap Detection and Clustering Algorithm",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L434",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_gap_detection_and_clustering_algorithm",
       "community": 63,
-      "norm_label": "3. gap detection and clustering algorithm"
+      "norm_label": "3. gap detection and clustering algorithm",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_gap_detection_and_clustering_algorithm"
     },
     {
       "label": "3.1 Proximity-Based Clustering",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L438",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_1_proximity_based_clustering",
       "community": 63,
-      "norm_label": "3.1 proximity-based clustering"
+      "norm_label": "3.1 proximity-based clustering",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_1_proximity_based_clustering"
     },
     {
       "label": "3.2 Timeline Segmentation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L440",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_2_timeline_segmentation",
       "community": 63,
-      "norm_label": "3.2 timeline segmentation"
+      "norm_label": "3.2 timeline segmentation",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_2_timeline_segmentation"
     },
     {
       "label": "4. Coach Range Mapping and OCR Anchoring",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L444",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_coach_range_mapping_and_ocr_anchoring",
       "community": 63,
-      "norm_label": "4. coach range mapping and ocr anchoring"
+      "norm_label": "4. coach range mapping and ocr anchoring",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_coach_range_mapping_and_ocr_anchoring"
     },
     {
       "label": "5. OCR Voting Fallback Algorithm",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L451",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_ocr_voting_fallback_algorithm",
       "community": 63,
-      "norm_label": "5. ocr voting fallback algorithm"
+      "norm_label": "5. ocr voting fallback algorithm",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_ocr_voting_fallback_algorithm"
     },
     {
       "label": "Step-by-Step Fallback Execution",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L455",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_step_by_step_fallback_execution",
       "community": 63,
-      "norm_label": "step-by-step fallback execution"
+      "norm_label": "step-by-step fallback execution",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_step_by_step_fallback_execution"
     },
     {
       "label": "Phase 6: Database Design & Prisma Schema",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L462",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_6_database_design_prisma_schema",
       "community": 61,
-      "norm_label": "phase 6: database design & prisma schema"
+      "norm_label": "phase 6: database design & prisma schema",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_6_database_design_prisma_schema"
     },
     {
       "label": "1. Schema Overview",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L463",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_schema_overview",
       "community": 61,
-      "norm_label": "1. schema overview"
+      "norm_label": "1. schema overview",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_schema_overview"
     },
     {
       "label": "2. Table Design and Key Relationships",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L470",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_table_design_and_key_relationships",
       "community": 61,
-      "norm_label": "2. table design and key relationships"
+      "norm_label": "2. table design and key relationships",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_table_design_and_key_relationships"
     },
     {
       "label": "2.1 Inspection Sessions (inspection_sessions)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L471",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_inspection_sessions_inspection_sessions",
       "community": 61,
-      "norm_label": "2.1 inspection sessions (inspection_sessions)"
+      "norm_label": "2.1 inspection sessions (inspection_sessions)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_inspection_sessions_inspection_sessions"
     },
     {
       "label": "2.2 Pipeline Stages (pipeline_stages)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L473",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_pipeline_stages_pipeline_stages",
       "community": 61,
-      "norm_label": "2.2 pipeline stages (pipeline_stages)"
+      "norm_label": "2.2 pipeline stages (pipeline_stages)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_pipeline_stages_pipeline_stages"
     },
     {
       "label": "2.3 Frames (frames)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L475",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_3_frames_frames",
       "community": 61,
-      "norm_label": "2.3 frames (frames)"
+      "norm_label": "2.3 frames (frames)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_3_frames_frames"
     },
     {
       "label": "2.4 Coaches (coaches)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L477",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_4_coaches_coaches",
       "community": 61,
-      "norm_label": "2.4 coaches (coaches)"
+      "norm_label": "2.4 coaches (coaches)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_4_coaches_coaches"
     },
     {
       "label": "2.5 Coach Frame Map (coach_frame_map)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L479",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_5_coach_frame_map_coach_frame_map",
       "community": 61,
-      "norm_label": "2.5 coach frame map (coach_frame_map)"
+      "norm_label": "2.5 coach frame map (coach_frame_map)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_5_coach_frame_map_coach_frame_map"
     },
     {
       "label": "2.6 Defects (defects)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L481",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_6_defects_defects",
       "community": 61,
-      "norm_label": "2.6 defects (defects)"
+      "norm_label": "2.6 defects (defects)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_6_defects_defects"
     },
     {
       "label": "3. Prisma Schema Reference",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L484",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_prisma_schema_reference",
       "community": 61,
-      "norm_label": "3. prisma schema reference"
+      "norm_label": "3. prisma schema reference",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_prisma_schema_reference"
     },
     {
       "label": "4. Session State Lifecycles",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L549",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_session_state_lifecycles",
       "community": 61,
-      "norm_label": "4. session state lifecycles"
+      "norm_label": "4. session state lifecycles",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_session_state_lifecycles"
     },
     {
       "label": "Phase 7: API Documentation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L564",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_7_api_documentation",
       "community": 89,
-      "norm_label": "phase 7: api documentation"
+      "norm_label": "phase 7: api documentation",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_7_api_documentation"
     },
     {
       "label": "1. REST API Interface Specification",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L565",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_rest_api_interface_specification",
       "community": 89,
-      "norm_label": "1. rest api interface specification"
+      "norm_label": "1. rest api interface specification",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_rest_api_interface_specification"
     },
     {
       "label": "1.1 Ingestion & Session Management",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L567",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_1_ingestion_session_management",
       "community": 89,
-      "norm_label": "1.1 ingestion & session management"
+      "norm_label": "1.1 ingestion & session management",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_1_ingestion_session_management"
     },
     {
       "label": "1.2 Inspection Intelligence",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L575",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_2_inspection_intelligence",
       "community": 89,
-      "norm_label": "1.2 inspection intelligence"
+      "norm_label": "1.2 inspection intelligence",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_2_inspection_intelligence"
     },
     {
       "label": "2. WebSocket Protocol Schema",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L581",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_websocket_protocol_schema",
       "community": 89,
-      "norm_label": "2. websocket protocol schema"
+      "norm_label": "2. websocket protocol schema",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_websocket_protocol_schema"
     },
     {
       "label": "2.1 Client Subscriptions",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L583",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_client_subscriptions",
       "community": 89,
-      "norm_label": "2.1 client subscriptions"
+      "norm_label": "2.1 client subscriptions",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_client_subscriptions"
     },
     {
       "label": "2.2 Server Broadcasts",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L589",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_server_broadcasts",
       "community": 89,
-      "norm_label": "2.2 server broadcasts"
+      "norm_label": "2.2 server broadcasts",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_server_broadcasts"
     },
     {
       "label": "Phase 8: Report Generation & Cloudinary Integration",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L626",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_8_report_generation_cloudinary_integration",
       "community": 84,
-      "norm_label": "phase 8: report generation & cloudinary integration"
+      "norm_label": "phase 8: report generation & cloudinary integration",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_8_report_generation_cloudinary_integration"
     },
     {
       "label": "1. Automated Reporting Engine Architecture",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L627",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_automated_reporting_engine_architecture",
       "community": 84,
-      "norm_label": "1. automated reporting engine architecture"
+      "norm_label": "1. automated reporting engine architecture",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_automated_reporting_engine_architecture"
     },
     {
       "label": "2. Structured JSON Serialization",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L645",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_structured_json_serialization",
       "community": 84,
-      "norm_label": "2. structured json serialization"
+      "norm_label": "2. structured json serialization",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_structured_json_serialization"
     },
     {
       "label": "JSON Schema Structure",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L647",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_json_schema_structure",
       "community": 84,
-      "norm_label": "json schema structure"
+      "norm_label": "json schema structure",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_json_schema_structure"
     },
     {
       "label": "3. PDF Compilation via fpdf2",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L677",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_pdf_compilation_via_fpdf2",
       "community": 84,
-      "norm_label": "3. pdf compilation via fpdf2"
+      "norm_label": "3. pdf compilation via fpdf2",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_pdf_compilation_via_fpdf2"
     },
     {
       "label": "Layout Elements",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L679",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_layout_elements",
       "community": 84,
-      "norm_label": "layout elements"
+      "norm_label": "layout elements",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_layout_elements"
     },
     {
       "label": "4. Cloudinary Storage and Secure Serving",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L698",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_cloudinary_storage_and_secure_serving",
       "community": 84,
-      "norm_label": "4. cloudinary storage and secure serving"
+      "norm_label": "4. cloudinary storage and secure serving",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_cloudinary_storage_and_secure_serving"
     },
     {
       "label": "Upload Implementation",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L700",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_upload_implementation",
       "community": 84,
-      "norm_label": "upload implementation"
+      "norm_label": "upload implementation",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_upload_implementation"
     },
     {
       "label": "Phase 9: Architectural Decision Records (ADRs)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L732",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_9_architectural_decision_records_adrs",
       "community": 49,
-      "norm_label": "phase 9: architectural decision records (adrs)"
+      "norm_label": "phase 9: architectural decision records (adrs)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_9_architectural_decision_records_adrs"
     },
     {
       "label": "ADR-001: Pivot from Express.js to Fastify for the API Gateway",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L735",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_001_pivot_from_express_js_to_fastify_for_the_api_gateway",
       "community": 49,
-      "norm_label": "adr-001: pivot from express.js to fastify for the api gateway"
+      "norm_label": "adr-001: pivot from express.js to fastify for the api gateway",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_001_pivot_from_express_js_to_fastify_for_the_api_gateway"
     },
     {
       "label": "Context",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L736",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context",
       "community": 49,
-      "norm_label": "context"
+      "norm_label": "context",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context"
     },
     {
       "label": "Decision",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L738",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision",
       "community": 49,
-      "norm_label": "decision"
+      "norm_label": "decision",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision"
     },
     {
       "label": "ADR-002: Pivot from RabbitMQ to Direct HTTP Loopback Orchestration",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L741",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_002_pivot_from_rabbitmq_to_direct_http_loopback_orchestration",
       "community": 49,
-      "norm_label": "adr-002: pivot from rabbitmq to direct http loopback orchestration"
+      "norm_label": "adr-002: pivot from rabbitmq to direct http loopback orchestration",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_002_pivot_from_rabbitmq_to_direct_http_loopback_orchestration"
     },
     {
       "label": "Context",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L742",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_742",
       "community": 49,
-      "norm_label": "context"
+      "norm_label": "context",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_742"
     },
     {
       "label": "Decision",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L744",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_744",
       "community": 49,
-      "norm_label": "decision"
+      "norm_label": "decision",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_744"
     },
     {
       "label": "ADR-003: CUDA Runtime DLL Path Injection (Process Isolation)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L747",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_003_cuda_runtime_dll_path_injection_process_isolation",
       "community": 49,
-      "norm_label": "adr-003: cuda runtime dll path injection (process isolation)"
+      "norm_label": "adr-003: cuda runtime dll path injection (process isolation)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_003_cuda_runtime_dll_path_injection_process_isolation"
     },
     {
       "label": "Context",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L748",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_748",
       "community": 49,
-      "norm_label": "context"
+      "norm_label": "context",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_748"
     },
     {
       "label": "Decision",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L752",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_752",
       "community": 49,
-      "norm_label": "decision"
+      "norm_label": "decision",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_752"
     },
     {
       "label": "ADR-004: Pivot from CPU Timestamps to Unified trigger_id",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L769",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_004_pivot_from_cpu_timestamps_to_unified_trigger_id",
       "community": 49,
-      "norm_label": "adr-004: pivot from cpu timestamps to unified trigger_id"
+      "norm_label": "adr-004: pivot from cpu timestamps to unified trigger_id",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_004_pivot_from_cpu_timestamps_to_unified_trigger_id"
     },
     {
       "label": "Context",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L770",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_770",
       "community": 49,
-      "norm_label": "context"
+      "norm_label": "context",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_770"
     },
     {
       "label": "Decision",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L772",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_772",
       "community": 49,
-      "norm_label": "decision"
+      "norm_label": "decision",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_772"
     },
     {
       "label": "ADR-005: Dual-Pass OCR Pipeline with Preprocessing",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L777",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_005_dual_pass_ocr_pipeline_with_preprocessing",
       "community": 49,
-      "norm_label": "adr-005: dual-pass ocr pipeline with preprocessing"
+      "norm_label": "adr-005: dual-pass ocr pipeline with preprocessing",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_adr_005_dual_pass_ocr_pipeline_with_preprocessing"
     },
     {
       "label": "Context",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L778",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_778",
       "community": 49,
-      "norm_label": "context"
+      "norm_label": "context",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_context_778"
     },
     {
       "label": "Decision",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L780",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_780",
       "community": 49,
-      "norm_label": "decision"
+      "norm_label": "decision",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_decision_780"
     },
     {
       "label": "Phase 10: Troubleshooting, Debugging & Incident Logs",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L783",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_10_troubleshooting_debugging_incident_logs",
       "community": 54,
-      "norm_label": "phase 10: troubleshooting, debugging & incident logs"
+      "norm_label": "phase 10: troubleshooting, debugging & incident logs",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_10_troubleshooting_debugging_incident_logs"
     },
     {
       "label": "Incident 1: PaddleOCR OpenMP / OneDNN Crash on Windows",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L786",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_1_paddleocr_openmp_onednn_crash_on_windows",
       "community": 54,
-      "norm_label": "incident 1: paddleocr openmp / onednn crash on windows"
+      "norm_label": "incident 1: paddleocr openmp / onednn crash on windows",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_1_paddleocr_openmp_onednn_crash_on_windows"
     },
     {
       "label": "Symptom",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L787",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom",
       "community": 54,
-      "norm_label": "symptom"
+      "norm_label": "symptom",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom"
     },
     {
       "label": "Root Cause",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L793",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_793",
       "community": 54,
-      "norm_label": "root cause"
+      "norm_label": "root cause",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_793"
     },
     {
       "label": "Resolution",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L795",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution",
       "community": 54,
-      "norm_label": "resolution"
+      "norm_label": "resolution",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution"
     },
     {
       "label": "Incident 2: YOLOv8 Startup Path Resolution Errors on Windows",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L800",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_2_yolov8_startup_path_resolution_errors_on_windows",
       "community": 54,
-      "norm_label": "incident 2: yolov8 startup path resolution errors on windows"
+      "norm_label": "incident 2: yolov8 startup path resolution errors on windows",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_2_yolov8_startup_path_resolution_errors_on_windows"
     },
     {
       "label": "Symptom",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L801",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom_801",
       "community": 54,
-      "norm_label": "symptom"
+      "norm_label": "symptom",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom_801"
     },
     {
       "label": "Root Cause",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L804",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_804",
       "community": 54,
-      "norm_label": "root cause"
+      "norm_label": "root cause",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_804"
     },
     {
       "label": "Resolution",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L806",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution_806",
       "community": 54,
-      "norm_label": "resolution"
+      "norm_label": "resolution",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution_806"
     },
     {
       "label": "Incident 3: Video Framing / Frame Extraction Mismatch",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L816",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_3_video_framing_frame_extraction_mismatch",
       "community": 54,
-      "norm_label": "incident 3: video framing / frame extraction mismatch"
+      "norm_label": "incident 3: video framing / frame extraction mismatch",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_3_video_framing_frame_extraction_mismatch"
     },
     {
       "label": "Symptom",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L817",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom_817",
       "community": 54,
-      "norm_label": "symptom"
+      "norm_label": "symptom",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom_817"
     },
     {
       "label": "Root Cause",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L820",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_820",
       "community": 54,
-      "norm_label": "root cause"
+      "norm_label": "root cause",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_820"
     },
     {
       "label": "Resolution",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L822",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution_822",
       "community": 54,
-      "norm_label": "resolution"
+      "norm_label": "resolution",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution_822"
     },
     {
       "label": "Calculate target frame index",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L829",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_calculate_target_frame_index",
       "community": 65,
-      "norm_label": "calculate target frame index"
+      "norm_label": "calculate target frame index",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_calculate_target_frame_index"
     },
     {
       "label": "Apply boundary constraints to prevent out-of-bounds errors",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L832",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_apply_boundary_constraints_to_prevent_out_of_bounds_errors",
       "community": 65,
-      "norm_label": "apply boundary constraints to prevent out-of-bounds errors"
+      "norm_label": "apply boundary constraints to prevent out-of-bounds errors",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_apply_boundary_constraints_to_prevent_out_of_bounds_errors"
     },
     {
       "label": "Incident 4: False Positive Defect Detections from Glare",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L839",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_4_false_positive_defect_detections_from_glare",
       "community": 65,
-      "norm_label": "incident 4: false positive defect detections from glare"
+      "norm_label": "incident 4: false positive defect detections from glare",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_incident_4_false_positive_defect_detections_from_glare"
     },
     {
       "label": "Symptom",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L840",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom_840",
       "community": 65,
-      "norm_label": "symptom"
+      "norm_label": "symptom",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_symptom_840"
     },
     {
       "label": "Root Cause",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L842",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_842",
       "community": 65,
-      "norm_label": "root cause"
+      "norm_label": "root cause",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_root_cause_842"
     },
     {
       "label": "Resolution",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L844",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution_844",
       "community": 65,
-      "norm_label": "resolution"
+      "norm_label": "resolution",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_resolution_844"
     },
     {
       "label": "Phase 11: DevOps & Production Operations Manual",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L849",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_11_devops_production_operations_manual",
       "community": 60,
-      "norm_label": "phase 11: devops & production operations manual"
+      "norm_label": "phase 11: devops & production operations manual",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_11_devops_production_operations_manual"
     },
     {
       "label": "1. Prerequisites and System Requirements",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L852",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_prerequisites_and_system_requirements",
       "community": 60,
-      "norm_label": "1. prerequisites and system requirements"
+      "norm_label": "1. prerequisites and system requirements",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_prerequisites_and_system_requirements"
     },
     {
       "label": "1.1 Edge Inspection Nodes (Wayside Station)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L853",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_1_edge_inspection_nodes_wayside_station",
       "community": 60,
-      "norm_label": "1.1 edge inspection nodes (wayside station)"
+      "norm_label": "1.1 edge inspection nodes (wayside station)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_1_edge_inspection_nodes_wayside_station"
     },
     {
       "label": "1.2 Central Cloud Server (Management Dashboard)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L860",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_2_central_cloud_server_management_dashboard",
       "community": 60,
-      "norm_label": "1.2 central cloud server (management dashboard)"
+      "norm_label": "1.2 central cloud server (management dashboard)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_2_central_cloud_server_management_dashboard"
     },
     {
       "label": "2. Environment Variables Configuration",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L864",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_environment_variables_configuration",
       "community": 60,
-      "norm_label": "2. environment variables configuration"
+      "norm_label": "2. environment variables configuration",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_environment_variables_configuration"
     },
     {
       "label": "2.1 Backend Gateway (backend/.env)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L866",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_backend_gateway_backend_env",
       "community": 60,
-      "norm_label": "2.1 backend gateway (backend/.env)"
+      "norm_label": "2.1 backend gateway (backend/.env)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_backend_gateway_backend_env"
     },
     {
       "label": "2.2 OCR Microservice (GPU/ocr/.env)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L874",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_ocr_microservice_gpu_ocr_env",
       "community": 60,
-      "norm_label": "2.2 ocr microservice (gpu/ocr/.env)"
+      "norm_label": "2.2 ocr microservice (gpu/ocr/.env)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_ocr_microservice_gpu_ocr_env"
     },
     {
       "label": "2.3 YOLO Microservice (GPU/yolo/.env)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L879",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_3_yolo_microservice_gpu_yolo_env",
       "community": 60,
-      "norm_label": "2.3 yolo microservice (gpu/yolo/.env)"
+      "norm_label": "2.3 yolo microservice (gpu/yolo/.env)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_3_yolo_microservice_gpu_yolo_env"
     },
     {
       "label": "3. Installation and Deployment Steps",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L883",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_installation_and_deployment_steps",
       "community": 60,
-      "norm_label": "3. installation and deployment steps"
+      "norm_label": "3. installation and deployment steps",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_installation_and_deployment_steps"
     },
     {
       "label": "Step 1: Database Migration",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L887",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_step_1_database_migration",
       "community": 60,
-      "norm_label": "step 1: database migration"
+      "norm_label": "step 1: database migration",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_step_1_database_migration"
     },
     {
       "label": "Step 2: Set Up Python Microservices",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L892",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_step_2_set_up_python_microservices",
       "community": 60,
-      "norm_label": "step 2: set up python microservices"
+      "norm_label": "step 2: set up python microservices",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_step_2_set_up_python_microservices"
     },
     {
       "label": "On Windows:",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L897",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_windows",
       "community": 65,
-      "norm_label": "on windows:"
+      "norm_label": "on windows:",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_windows"
     },
     {
       "label": "On Linux:",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L899",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_linux",
       "community": 65,
-      "norm_label": "on linux:"
+      "norm_label": "on linux:",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_linux"
     },
     {
       "label": "Ensure CUDA support is configured",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L902",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_ensure_cuda_support_is_configured",
       "community": 65,
-      "norm_label": "ensure cuda support is configured"
+      "norm_label": "ensure cuda support is configured",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_ensure_cuda_support_is_configured"
     },
     {
       "label": "On Windows:",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L907",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_windows_907",
       "community": 65,
-      "norm_label": "on windows:"
+      "norm_label": "on windows:",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_windows_907"
     },
     {
       "label": "On Linux:",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L909",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_linux_909",
       "community": 79,
-      "norm_label": "on linux:"
+      "norm_label": "on linux:",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_on_linux_909"
     },
     {
       "label": "4. Run Procedures (Startup Sequences)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L913",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_run_procedures_startup_sequences",
       "community": 79,
-      "norm_label": "4. run procedures (startup sequences)"
+      "norm_label": "4. run procedures (startup sequences)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_run_procedures_startup_sequences"
     },
     {
       "label": "1. Launch the YOLO Service",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L915",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_launch_the_yolo_service",
       "community": 79,
-      "norm_label": "1. launch the yolo service"
+      "norm_label": "1. launch the yolo service",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_launch_the_yolo_service"
     },
     {
       "label": "2. Launch the OCR Service",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L921",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_launch_the_ocr_service",
       "community": 79,
-      "norm_label": "2. launch the ocr service"
+      "norm_label": "2. launch the ocr service",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_launch_the_ocr_service"
     },
     {
       "label": "3. Start the Backend API Gateway",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L926",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_start_the_backend_api_gateway",
       "community": 79,
-      "norm_label": "3. start the backend api gateway"
+      "norm_label": "3. start the backend api gateway",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_start_the_backend_api_gateway"
     },
     {
       "label": "4. Start the Frontend Application",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L929",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_start_the_frontend_application",
       "community": 79,
-      "norm_label": "4. start the frontend application"
+      "norm_label": "4. start the frontend application",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_4_start_the_frontend_application"
     },
     {
       "label": "5. Operations & Monitoring",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L934",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_operations_monitoring",
       "community": 79,
-      "norm_label": "5. operations & monitoring"
+      "norm_label": "5. operations & monitoring",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_operations_monitoring"
     },
     {
       "label": "5.1 System Health Checks",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L935",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_1_system_health_checks",
       "community": 79,
-      "norm_label": "5.1 system health checks"
+      "norm_label": "5.1 system health checks",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_1_system_health_checks"
     },
     {
       "label": "5.2 Log Analysis",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L943",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_2_log_analysis",
       "community": 79,
-      "norm_label": "5.2 log analysis"
+      "norm_label": "5.2 log analysis",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_5_2_log_analysis"
     },
     {
       "label": "Phase 12: Future Roadmap & Scaling Strategy",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L947",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_12_future_roadmap_scaling_strategy",
       "community": 73,
-      "norm_label": "phase 12: future roadmap & scaling strategy"
+      "norm_label": "phase 12: future roadmap & scaling strategy",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_phase_12_future_roadmap_scaling_strategy"
     },
     {
       "label": "1. Short-Term Scaling (v1.1 - v1.2)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L950",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_short_term_scaling_v1_1_v1_2",
       "community": 73,
-      "norm_label": "1. short-term scaling (v1.1 - v1.2)"
+      "norm_label": "1. short-term scaling (v1.1 - v1.2)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_short_term_scaling_v1_1_v1_2"
     },
     {
       "label": "1.1 Transition to a Distributed Message Broker (RabbitMQ / Kafka)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L951",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_1_transition_to_a_distributed_message_broker_rabbitmq_kafka",
       "community": 73,
-      "norm_label": "1.1 transition to a distributed message broker (rabbitmq / kafka)"
+      "norm_label": "1.1 transition to a distributed message broker (rabbitmq / kafka)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_1_transition_to_a_distributed_message_broker_rabbitmq_kafka"
     },
     {
       "label": "1.2 Local Offline S3 Storage (MinIO)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L953",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_2_local_offline_s3_storage_minio",
       "community": 73,
-      "norm_label": "1.2 local offline s3 storage (minio)"
+      "norm_label": "1.2 local offline s3 storage (minio)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_1_2_local_offline_s3_storage_minio"
     },
     {
       "label": "2. Medium-Term Infrastructure Optimization (v1.5)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L956",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_medium_term_infrastructure_optimization_v1_5",
       "community": 73,
-      "norm_label": "2. medium-term infrastructure optimization (v1.5)"
+      "norm_label": "2. medium-term infrastructure optimization (v1.5)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_medium_term_infrastructure_optimization_v1_5"
     },
     {
       "label": "2.1 Model Optimization via NVIDIA TensorRT",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L957",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_model_optimization_via_nvidia_tensorrt",
       "community": 73,
-      "norm_label": "2.1 model optimization via nvidia tensorrt"
+      "norm_label": "2.1 model optimization via nvidia tensorrt",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_1_model_optimization_via_nvidia_tensorrt"
     },
     {
       "label": "2.2 Kubernetes Deployment Orchestration (K3s)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L959",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_kubernetes_deployment_orchestration_k3s",
       "community": 73,
-      "norm_label": "2.2 kubernetes deployment orchestration (k3s)"
+      "norm_label": "2.2 kubernetes deployment orchestration (k3s)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_2_2_kubernetes_deployment_orchestration_k3s"
     },
     {
       "label": "3. Long-Term Research & Development (v2.0)",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L962",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_long_term_research_development_v2_0",
       "community": 73,
-      "norm_label": "3. long-term research & development (v2.0)"
+      "norm_label": "3. long-term research & development (v2.0)",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_long_term_research_development_v2_0"
     },
     {
       "label": "3.1 Sensor Fusion with 3D Laser Profilers",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L963",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_1_sensor_fusion_with_3d_laser_profilers",
       "community": 73,
-      "norm_label": "3.1 sensor fusion with 3d laser profilers"
+      "norm_label": "3.1 sensor fusion with 3d laser profilers",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_1_sensor_fusion_with_3d_laser_profilers"
     },
     {
       "label": "3.2 Workshop-Wide Federated Learning",
       "file_type": "document",
       "source_file": "graphify-out/converted/VandeInspect_AI_Technical_Report_3ae7912f.md",
       "source_location": "L967",
-      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_2_workshop_wide_federated_learning",
       "community": 73,
-      "norm_label": "3.2 workshop-wide federated learning"
+      "norm_label": "3.2 workshop-wide federated learning",
+      "id": "converted_vandeinspect_ai_technical_report_3ae7912f_3_2_workshop_wide_federated_learning"
     },
     {
       "label": "engine.py",
       "file_type": "code",
       "source_file": "services/correlation/engine.py",
       "source_location": "L1",
-      "id": "services_correlation_engine_py",
-      "community": 12,
-      "norm_label": "engine.py"
-    },
-    {
-      "label": "load_manifest()",
-      "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L61",
-      "id": "correlation_engine_load_manifest",
-      "community": 12,
-      "norm_label": "load_manifest()"
-    },
-    {
-      "label": "_fetch_frame_bytes()",
-      "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L70",
-      "id": "correlation_engine_fetch_frame_bytes",
-      "community": 12,
-      "norm_label": "_fetch_frame_bytes()"
-    },
-    {
-      "label": "_run_yolo()",
-      "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L80",
-      "id": "correlation_engine_run_yolo",
-      "community": 12,
-      "norm_label": "_run_yolo()"
-    },
-    {
-      "label": "correlate_coach()",
-      "file_type": "code",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L94",
-      "id": "correlation_engine_correlate_coach",
-      "community": 12,
-      "norm_label": "correlate_coach()"
-    },
-    {
-      "label": "Correlation Engine \u2014 Phase 3 For each coach:   1. Sample frames assigned to th",
-      "file_type": "rationale",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L1",
-      "id": "correlation_engine_rationale_1",
-      "community": 12,
-      "norm_label": "correlation engine \u2014 phase 3 for each coach:   1. sample frames assigned to th"
+      "community": 11,
+      "norm_label": "engine.py",
+      "id": "services_correlation_engine_py"
     },
     {
       "label": "Run defect + component correlation for one coach.     Returns summary dict.",
       "file_type": "rationale",
       "source_file": "services/correlation/engine.py",
       "source_location": "L95",
-      "id": "correlation_engine_rationale_95",
-      "community": 12,
-      "norm_label": "run defect + component correlation for one coach.     returns summary dict."
+      "community": 11,
+      "norm_label": "run defect + component correlation for one coach.     returns summary dict.",
+      "id": "correlation_engine_rationale_95"
     },
     {
       "label": "check.js",
@@ -5980,15 +6286,6 @@
       "id": "ocr_server_ocrrequest"
     },
     {
-      "label": "BaseModel",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "community": 12,
-      "norm_label": "basemodel",
-      "id": "basemodel"
-    },
-    {
       "label": "get_conn()",
       "file_type": "code",
       "source_file": "GPU/ocr/server.py",
@@ -6263,7 +6560,7 @@
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L1",
-      "community": 12,
+      "community": 11,
       "norm_label": "server.py",
       "id": "services_correlation_server_py"
     },
@@ -6272,7 +6569,7 @@
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L26",
-      "community": 12,
+      "community": 11,
       "norm_label": "correlaterequest",
       "id": "correlation_server_correlaterequest"
     },
@@ -6281,7 +6578,7 @@
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L31",
-      "community": 12,
+      "community": 11,
       "norm_label": "get_conn()",
       "id": "correlation_server_get_conn"
     },
@@ -6290,7 +6587,7 @@
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L36",
-      "community": 12,
+      "community": 11,
       "norm_label": "health()",
       "id": "correlation_server_health"
     },
@@ -6299,7 +6596,7 @@
       "file_type": "code",
       "source_file": "services/correlation/server.py",
       "source_location": "L41",
-      "community": 12,
+      "community": 11,
       "norm_label": "correlate()",
       "id": "correlation_server_correlate"
     },
@@ -6308,7 +6605,7 @@
       "file_type": "rationale",
       "source_file": "services/correlation/server.py",
       "source_location": "L1",
-      "community": 12,
+      "community": 11,
       "norm_label": "correlation service \u2014 port 5005 post /correlate { session_id, coach_id }   \u2192 run",
       "id": "correlation_server_rationale_1"
     },
@@ -6322,24 +6619,6 @@
       "id": "services_correlation_manifests_vande_bharat_json"
     },
     {
-      "label": "coach_type",
-      "file_type": "code",
-      "source_file": "services/correlation/manifests/vande_bharat.json",
-      "source_location": "L2",
-      "community": 10,
-      "norm_label": "coach_type",
-      "id": "manifests_vande_bharat_coach_type"
-    },
-    {
-      "label": "components",
-      "file_type": "code",
-      "source_file": "services/correlation/manifests/vande_bharat.json",
-      "source_location": "L3",
-      "community": 10,
-      "norm_label": "components",
-      "id": "manifests_vande_bharat_components"
-    },
-    {
       "label": "server.py",
       "file_type": "code",
       "source_file": "services/frame_extractor/server.py",
@@ -6347,96 +6626,6 @@
       "community": 12,
       "norm_label": "server.py",
       "id": "services_frame_extractor_server_py"
-    },
-    {
-      "label": "ExtractRequest",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L42",
-      "community": 12,
-      "norm_label": "extractrequest",
-      "id": "frame_extractor_server_extractrequest"
-    },
-    {
-      "label": "get_conn()",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L49",
-      "community": 12,
-      "norm_label": "get_conn()",
-      "id": "frame_extractor_server_get_conn"
-    },
-    {
-      "label": "_all_cameras_done()",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L53",
-      "community": 12,
-      "norm_label": "_all_cameras_done()",
-      "id": "frame_extractor_server_all_cameras_done"
-    },
-    {
-      "label": "_load_root_config()",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L63",
-      "community": 12,
-      "norm_label": "_load_root_config()",
-      "id": "frame_extractor_server_load_root_config"
-    },
-    {
-      "label": "_flush_rows()",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L76",
-      "community": 12,
-      "norm_label": "_flush_rows()",
-      "id": "frame_extractor_server_flush_rows"
-    },
-    {
-      "label": "run_extraction()",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L112",
-      "community": 12,
-      "norm_label": "run_extraction()",
-      "id": "frame_extractor_server_run_extraction"
-    },
-    {
-      "label": "health()",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L286",
-      "community": 12,
-      "norm_label": "health()",
-      "id": "frame_extractor_server_health"
-    },
-    {
-      "label": "extract()",
-      "file_type": "code",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L291",
-      "community": 12,
-      "norm_label": "extract()",
-      "id": "frame_extractor_server_extract"
-    },
-    {
-      "label": "Frame Extractor Service \u2014 port 5003 Receives video path \u2192 OpenCV extracts every",
-      "file_type": "rationale",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L1",
-      "community": 12,
-      "norm_label": "frame extractor service \u2014 port 5003 receives video path \u2192 opencv extracts every",
-      "id": "frame_extractor_server_rationale_1"
-    },
-    {
-      "label": "True when every session_camera for this session has frame_count > 0.",
-      "file_type": "rationale",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L54",
-      "community": 12,
-      "norm_label": "true when every session_camera for this session has frame_count > 0.",
-      "id": "frame_extractor_server_rationale_54"
     },
     {
       "label": "Insert a batch of frame rows and update the live counters in the DB.",
@@ -6457,119 +6646,11 @@
       "id": "services_report_generator_builder_py"
     },
     {
-      "label": "load_session_data()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L40",
-      "community": 13,
-      "norm_label": "load_session_data()",
-      "id": "report_generator_builder_load_session_data"
-    },
-    {
-      "label": "build_json_report()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L123",
-      "community": 13,
-      "norm_label": "build_json_report()",
-      "id": "report_generator_builder_build_json_report"
-    },
-    {
-      "label": "_health_color()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L187",
-      "community": 13,
-      "norm_label": "_health_color()",
-      "id": "report_generator_builder_health_color"
-    },
-    {
-      "label": "_PDF",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L198",
-      "community": 13,
-      "norm_label": "_pdf",
-      "id": "report_generator_builder_pdf"
-    },
-    {
-      "label": "FPDF",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "community": 13,
-      "norm_label": "fpdf",
-      "id": "fpdf"
-    },
-    {
-      "label": ".header()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L199",
-      "community": 13,
-      "norm_label": ".header()",
-      "id": "report_generator_builder_pdf_header"
-    },
-    {
-      "label": ".footer()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L208",
-      "community": 13,
-      "norm_label": ".footer()",
-      "id": "report_generator_builder_pdf_footer"
-    },
-    {
-      "label": "build_pdf_report()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L215",
-      "community": 13,
-      "norm_label": "build_pdf_report()",
-      "id": "report_generator_builder_build_pdf_report"
-    },
-    {
-      "label": "_upload()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L332",
-      "community": 13,
-      "norm_label": "_upload()",
-      "id": "report_generator_builder_upload"
-    },
-    {
-      "label": "upload_report()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L342",
-      "community": 13,
-      "norm_label": "upload_report()",
-      "id": "report_generator_builder_upload_report"
-    },
-    {
-      "label": "generate_report()",
-      "file_type": "code",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L356",
-      "community": 13,
-      "norm_label": "generate_report()",
-      "id": "report_generator_builder_generate_report"
-    },
-    {
-      "label": "Report builder \u2014 Phase 4 Reads full session from DB \u2192 builds PDF (fpdf2) + JSON",
-      "file_type": "rationale",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L1",
-      "community": 13,
-      "norm_label": "report builder \u2014 phase 4 reads full session from db \u2192 builds pdf (fpdf2) + json",
-      "id": "report_generator_builder_rationale_1"
-    },
-    {
       "label": "server.py",
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L1",
-      "community": 12,
+      "community": 13,
       "norm_label": "server.py",
       "id": "services_report_generator_server_py"
     },
@@ -6578,7 +6659,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L30",
-      "community": 12,
+      "community": 13,
       "norm_label": "generaterequest",
       "id": "report_generator_server_generaterequest"
     },
@@ -6587,7 +6668,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L34",
-      "community": 12,
+      "community": 13,
       "norm_label": "get_conn()",
       "id": "report_generator_server_get_conn"
     },
@@ -6596,7 +6677,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L39",
-      "community": 12,
+      "community": 13,
       "norm_label": "health()",
       "id": "report_generator_server_health"
     },
@@ -6605,7 +6686,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L44",
-      "community": 12,
+      "community": 13,
       "norm_label": "generate()",
       "id": "report_generator_server_generate"
     },
@@ -6614,7 +6695,7 @@
       "file_type": "code",
       "source_file": "services/report_generator/server.py",
       "source_location": "L160",
-      "community": 12,
+      "community": 13,
       "norm_label": "get_report()",
       "id": "report_generator_server_get_report"
     },
@@ -6623,7 +6704,7 @@
       "file_type": "rationale",
       "source_file": "services/report_generator/server.py",
       "source_location": "L1",
-      "community": 12,
+      "community": 13,
       "norm_label": "report generator service \u2014 port 5006 post /generate { session_id } \u2192 builds pdf",
       "id": "report_generator_server_rationale_1"
     },
@@ -8261,7 +8342,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L675",
-      "community": 11,
+      "community": 44,
       "norm_label": "14. ai intelligence layer",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_14_ai_intelligence_layer"
     },
@@ -8270,7 +8351,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L677",
-      "community": 11,
+      "community": 44,
       "norm_label": "purpose",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_purpose_677"
     },
@@ -8279,7 +8360,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L689",
-      "community": 11,
+      "community": 44,
       "norm_label": "intelligence features",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_intelligence_features"
     },
@@ -8711,7 +8792,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1079",
-      "community": 44,
+      "community": 33,
       "norm_label": "25. scalability strategy",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_25_scalability_strategy"
     },
@@ -8720,7 +8801,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1081",
-      "community": 44,
+      "community": 33,
       "norm_label": "horizontal scaling",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_horizontal_scaling"
     },
@@ -8729,7 +8810,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1092",
-      "community": 44,
+      "community": 33,
       "norm_label": "future scale",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_future_scale"
     },
@@ -8783,7 +8864,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1147",
-      "community": 33,
+      "community": 44,
       "norm_label": "28. train-centric architecture",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_28_train_centric_architecture"
     },
@@ -8792,7 +8873,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1163",
-      "community": 33,
+      "community": 44,
       "norm_label": "correct architecture",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_correct_architecture"
     },
@@ -8801,7 +8882,7 @@
       "file_type": "document",
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1165",
-      "community": 33,
+      "community": 44,
       "norm_label": "code:text (dashboard)",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_codeblock_23"
     },
@@ -15560,6 +15641,885 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_norm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_load_manifest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_fetch_frame_bytes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_run_yolo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "correlation_engine_py",
+      "target": "correlation_engine_correlate_coach",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "correlation_engine_rationale_1",
+      "target": "correlation_engine_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_norm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_load_manifest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_load_manifest"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L136",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_fetch_frame_bytes"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_fetch_frame_bytes"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_correlate_coach",
+      "target": "correlation_engine_run_yolo"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L80",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_run_yolo"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/engine.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "correlation_engine_rationale_142",
+      "target": "correlation_engine_correlate_coach",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L94",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_engine_py",
+      "target": "correlation_engine_correlate_coach"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_rationale_95",
+      "target": "correlation_engine_correlate_coach"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "services/correlation/server.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "correlation_server_correlate",
+      "target": "correlation_engine_correlate_coach"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_engine_rationale_1",
+      "target": "services_correlation_engine_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/manifests/vande_bharat.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "correlation_manifests_vande_bharat_json",
+      "target": "manifests_vande_bharat_coach_type",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "correlation/manifests/vande_bharat.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "correlation_manifests_vande_bharat_json",
+      "target": "manifests_vande_bharat_components",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/manifests/vande_bharat.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_manifests_vande_bharat_json",
+      "target": "manifests_vande_bharat_coach_type"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/manifests/vande_bharat.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_correlation_manifests_vande_bharat_json",
+      "target": "manifests_vande_bharat_components"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_extractrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_get_conn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_all_cameras_done",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_trim_to_shortest_camera",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_load_root_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_flush_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L189",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_run_extraction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L374",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L379",
+      "weight": 1.0,
+      "source": "frame_extractor_server_py",
+      "target": "frame_extractor_server_extract",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "frame_extractor_server_rationale_1",
+      "target": "frame_extractor_server_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_extractrequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_extractrequest"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "GPU/ocr/server.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "ocr_server_ocrrequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/correlation/server.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "correlation_server_correlaterequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_server_generaterequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/sync_engine/server.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "sync_engine_server_syncrequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_run_extraction",
+      "target": "frame_extractor_server_get_conn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_get_conn"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L169",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_run_extraction",
+      "target": "frame_extractor_server_all_cameras_done"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L54",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_rationale_54",
+      "target": "frame_extractor_server_all_cameras_done"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_all_cameras_done"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_rationale_49",
+      "target": "frame_extractor_server_all_cameras_done"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L313",
+      "weight": 1.0,
+      "source": "frame_extractor_server_run_extraction",
+      "target": "frame_extractor_server_trim_to_shortest_camera",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "frame_extractor_server_rationale_64",
+      "target": "frame_extractor_server_trim_to_shortest_camera",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_load_root_config"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L208",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_run_extraction",
+      "target": "frame_extractor_server_flush_rows"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "frame_extractor/server.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "frame_extractor_server_rationale_154",
+      "target": "frame_extractor_server_flush_rows",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_flush_rows"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_rationale_77",
+      "target": "frame_extractor_server_flush_rows"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_run_extraction"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_health"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L221",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_frame_extractor_server_py",
+      "target": "frame_extractor_server_extract"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/frame_extractor/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frame_extractor_server_rationale_1",
+      "target": "services_frame_extractor_server_py"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "fpdf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_load_session_data",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_build_json_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L187",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_health_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_pdf",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_build_pdf_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L332",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_upload",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L342",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_upload_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L356",
+      "weight": 1.0,
+      "source": "report_generator_builder_py",
+      "target": "report_generator_builder_generate_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "report_generator/builder.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "report_generator_builder_rationale_1",
+      "target": "report_generator_builder_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L358",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_load_session_data"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_load_session_data"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L364",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_build_json_report"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_build_json_report"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L236",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_build_pdf_report",
+      "target": "report_generator_builder_health_color"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L187",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_health_color"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_pdf",
+      "target": "fpdf"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L199",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_pdf",
+      "target": "report_generator_builder_pdf_header"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L208",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_pdf",
+      "target": "report_generator_builder_pdf_footer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L217",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_build_pdf_report",
+      "target": "report_generator_builder_pdf"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_pdf"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "fpdf"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L367",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_build_pdf_report"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L215",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_build_pdf_report"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L344",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_upload_report",
+      "target": "report_generator_builder_upload"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L332",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_upload"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L377",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_generate_report",
+      "target": "report_generator_builder_upload_report"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L342",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_upload_report"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L356",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_report_generator_builder_py",
+      "target": "report_generator_builder_generate_report"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "services/report_generator/server.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "report_generator_server_generate",
+      "target": "report_generator_builder_generate_report"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "services/report_generator/builder.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "report_generator_builder_rationale_1",
+      "target": "services_report_generator_builder_py"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "DOC/generate_docs.py",
       "source_location": "L23",
       "weight": 1.0,
@@ -15806,9 +16766,9 @@
       "source_file": "backend/src/routes/sessions.js",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_src_routes_sessions_js",
-      "target": "routes_sessions_component_cam_types",
-      "confidence_score": 1.0
+      "target": "routes_sessions_component_cam_types"
     },
     {
       "relation": "contains",
@@ -18365,110 +19325,6 @@
       "confidence_score": 1.0,
       "source": "converted_vandeinspect_ai_technical_report_3ae7912f_3_long_term_research_development_v2_0",
       "target": "converted_vandeinspect_ai_technical_report_3ae7912f_3_2_workshop_wide_federated_learning"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L61",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_load_manifest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L70",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_fetch_frame_bytes"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L80",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_run_yolo"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L94",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_correlation_engine_py",
-      "target": "correlation_engine_correlate_coach"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "correlation_engine_rationale_1",
-      "target": "services_correlation_engine_py"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L127",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_load_manifest"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L136",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_fetch_frame_bytes"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L140",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "correlation_engine_correlate_coach",
-      "target": "correlation_engine_run_yolo"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/engine.py",
-      "source_location": "L95",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "correlation_engine_rationale_95",
-      "target": "correlation_engine_correlate_coach"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "services/correlation/server.py",
-      "source_location": "L56",
-      "weight": 1.0,
-      "source": "correlation_server_correlate",
-      "target": "correlation_engine_correlate_coach"
     },
     {
       "relation": "contains",
@@ -23859,56 +24715,6 @@
       "target": "gpu_ocr_server_py"
     },
     {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "GPU/ocr/server.py",
-      "source_location": "L44",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ocr_server_ocrrequest",
-      "target": "basemodel"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/server.py",
-      "source_location": "L26",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "correlation_server_correlaterequest",
-      "target": "basemodel"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L37",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_extractrequest",
-      "target": "basemodel"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/server.py",
-      "source_location": "L27",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_server_generaterequest",
-      "target": "basemodel"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "services/sync_engine/server.py",
-      "source_location": "L24",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "sync_engine_server_syncrequest",
-      "target": "basemodel"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -24246,398 +25052,6 @@
       "confidence_score": 1.0,
       "source": "correlation_server_correlate",
       "target": "correlation_server_get_conn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/manifests/vande_bharat.json",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_correlation_manifests_vande_bharat_json",
-      "target": "manifests_vande_bharat_coach_type"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/correlation/manifests/vande_bharat.json",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_correlation_manifests_vande_bharat_json",
-      "target": "manifests_vande_bharat_components"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L37",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_extractrequest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L44",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_get_conn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L48",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_all_cameras_done"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L63",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_load_root_config"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L76",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_flush_rows"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L58",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_run_extraction"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_health"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L221",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_extract"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_rationale_1",
-      "target": "services_frame_extractor_server_py"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L59",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_run_extraction",
-      "target": "frame_extractor_server_get_conn"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L169",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_run_extraction",
-      "target": "frame_extractor_server_all_cameras_done"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L54",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_rationale_54",
-      "target": "frame_extractor_server_all_cameras_done"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L49",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_rationale_49",
-      "target": "frame_extractor_server_all_cameras_done"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L208",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_run_extraction",
-      "target": "frame_extractor_server_flush_rows"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/frame_extractor/server.py",
-      "source_location": "L77",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frame_extractor_server_rationale_77",
-      "target": "frame_extractor_server_flush_rows"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "fpdf"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L40",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_load_session_data"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L123",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_build_json_report"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L187",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_health_color"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L198",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_pdf"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L215",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_build_pdf_report"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L332",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_upload"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L342",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_upload_report"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L356",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_report_generator_builder_py",
-      "target": "report_generator_builder_generate_report"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_rationale_1",
-      "target": "services_report_generator_builder_py"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L358",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_generate_report",
-      "target": "report_generator_builder_load_session_data"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L364",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_generate_report",
-      "target": "report_generator_builder_build_json_report"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L236",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_build_pdf_report",
-      "target": "report_generator_builder_health_color"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L198",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_pdf",
-      "target": "fpdf"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L199",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_pdf",
-      "target": "report_generator_builder_pdf_header"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L208",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_pdf",
-      "target": "report_generator_builder_pdf_footer"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L217",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_build_pdf_report",
-      "target": "report_generator_builder_pdf"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L367",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_generate_report",
-      "target": "report_generator_builder_build_pdf_report"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L344",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_upload_report",
-      "target": "report_generator_builder_upload"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "services/report_generator/builder.py",
-      "source_location": "L377",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "report_generator_builder_generate_report",
-      "target": "report_generator_builder_upload_report"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "services/report_generator/server.py",
-      "source_location": "L56",
-      "weight": 1.0,
-      "source": "report_generator_server_generate",
-      "target": "report_generator_builder_generate_report"
     },
     {
       "relation": "contains",
@@ -34462,5 +34876,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d0563dba1325ea0757b25bb84c26c5e323ba60cb"
+  "built_at_commit": "fbcc8d8760c5900f293204baa573716de694f3b9"
 }
