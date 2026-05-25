@@ -58,6 +58,7 @@ function sessionToReport(s) {
   return {
     id: s.id,
     trainNumber: s.trainNumber,
+    stationName: s.stationName || '—',
     date: s.completedAt ? new Date(s.completedAt).toISOString().slice(0, 10) : new Date(s.startedAt).toISOString().slice(0, 10),
     supervisor: 'Awaiting Signature',
     status: s.criticalDefects > 0 ? 'PENDING_SIGNATURE' : 'APPROVED',
@@ -99,6 +100,7 @@ export const Reports = () => {
   const [activeCoach, setActiveCoach] = useState(null); // real coach object or label
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [reviewCollapsed, setReviewCollapsed] = useState(false);
 
   // Real data from backend
   const [realCoaches, setRealCoaches] = useState([]);
@@ -747,15 +749,40 @@ export const Reports = () => {
               </div>
             </div>
 
-            {/* Hierarchy Footer */}
-            <div className="p-4 bg-slate-100 border-t border-slate-200 space-y-3">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                <span>System Health</span>
-                <span className="text-emerald-600 font-extrabold">OPTIMAL</span>
+            {/* Hierarchy Footer — session stats */}
+            <div className="p-3 bg-slate-100 border-t border-slate-200 space-y-2.5 shrink-0">
+              {/* Health Score */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Health Score</span>
+                  <span className={`text-xs font-black ${coachBreakdown.healthScore > 80 ? 'text-primary' : 'text-red-600'}`}>
+                    {coachBreakdown.healthScore}%
+                  </span>
+                </div>
+                <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${coachBreakdown.healthScore > 80 ? 'bg-primary' : 'bg-red-500'}`}
+                    style={{ width: `${coachBreakdown.healthScore}%` }}
+                  />
+                </div>
               </div>
-              <button 
+              {/* Sync Confidence */}
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Sync Confidence</span>
+                <span className="text-xs font-bold text-slate-700">
+                  {((selectedReport.syncStability || 0) * 100).toFixed(1)}%
+                </span>
+              </div>
+              {/* OCR Accuracy */}
+              <div className="flex items-center justify-between">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">OCR Accuracy</span>
+                <span className="text-xs font-bold text-slate-700">
+                  {((selectedReport.ocrConf || 0) * 100).toFixed(1)}%
+                </span>
+              </div>
+              <button
                 onClick={() => alert("Workspace settings configuration.")}
-                className="w-full flex items-center justify-center gap-2 p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded text-xs font-bold text-slate-700 transition-all shadow-sm"
+                className="w-full flex items-center justify-center gap-2 p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded text-xs font-bold text-slate-700 transition-all shadow-sm mt-1"
               >
                 <Settings className="w-4 h-4 text-slate-500" />
                 Workspace Settings
@@ -766,59 +793,39 @@ export const Reports = () => {
           {/* Center Panel: Report Workspace */}
           <section className="flex-1 overflow-y-auto bg-slate-50/20 flex flex-col p-6 gap-6">
             
-            {/* Inspection Summary Banner */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex flex-col justify-center gap-2">
-                <span className="text-[10px] font-black text-slate-400 uppercase">Health Score</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-xl font-black text-primary">{coachBreakdown.healthScore}%</span>
-                  <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full transition-all duration-500 ${coachBreakdown.healthScore > 80 ? 'bg-primary' : 'bg-red-500'}`} 
-                      style={{ width: `${coachBreakdown.healthScore}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase block">Sync Confidence</span>
-                  <span className="text-lg font-black text-slate-800">{((selectedReport.syncStability || 0) * 100).toFixed(1)}%</span>
-                </div>
-                <Activity className="text-primary w-8 h-8 opacity-80" />
-              </div>
-
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase block">OCR Accuracy</span>
-                  <span className="text-lg font-black text-slate-800">{((selectedReport.ocrConf || 0) * 100).toFixed(1)}%</span>
-                </div>
-                <Sparkles className="text-primary w-8 h-8 opacity-80" />
-              </div>
-            </div>
             {/* Detection Log Table */}
             <DetectionLogTable
               frames={coachFrames}
               components={components}
-              onViewFrame={(frame) => {
-                setSelectedFrame(frame);
-                setIsFrameModalOpen(true);
-              }}
+              stationName={selectedReport?.stationName}
+              activeCoach={activeCoach}
             />
 
           </section>
 
           {/* Right Panel: Operator Review & System Load */}
-          <aside className="w-80 border-l border-slate-200 bg-white flex flex-col shrink-0">
-            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-              <span className="text-[10px] font-black text-slate-700 uppercase">Operator Review</span>
-              <span className="bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full">
-                {pendingReviews} PENDING
-              </span>
+          <aside className={`${reviewCollapsed ? 'w-10' : 'w-80'} border-l border-slate-200 bg-white flex flex-col shrink-0 transition-all duration-200 overflow-hidden`}>
+            <div className="p-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+              {!reviewCollapsed && (
+                <span className="text-[10px] font-black text-slate-700 uppercase">Operator Review</span>
+              )}
+              <div className={`flex items-center gap-2 ${reviewCollapsed ? 'w-full justify-center' : ''}`}>
+                {!reviewCollapsed && (
+                  <span className="bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full">
+                    {pendingReviews} PENDING
+                  </span>
+                )}
+                <button
+                  onClick={() => setReviewCollapsed(p => !p)}
+                  className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-colors shrink-0"
+                  title={reviewCollapsed ? 'Expand panel' : 'Collapse panel'}
+                >
+                  <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 ${reviewCollapsed ? '' : 'rotate-180'}`} />
+                </button>
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className={`flex-1 overflow-y-auto p-4 space-y-4 ${reviewCollapsed ? 'hidden' : ''}`}>
               {showReviewCard ? (
                 <div className="border border-slate-200 p-4 space-y-3 hover:border-primary cursor-pointer transition-all bg-slate-50/50 rounded">
                   <div className="flex justify-between items-start">
@@ -889,10 +896,10 @@ export const Reports = () => {
 
         </main>
 
-        {/* Bottom Playback Timeline / Media Strip */}
+        {/* Bottom Playback Timeline / Media Strip — DISABLED (no longer needed with inline table expansion)
         <footer className="h-20 w-full bg-slate-900 border-t border-white/10 flex items-center px-6 shrink-0 z-10">
           <div className="flex items-center gap-3 mr-6 shrink-0">
-            <button 
+            <button
               onClick={() => setIsPlaying(!isPlaying)}
               className="p-1.5 bg-white/10 hover:bg-white/20 text-white rounded transition-colors"
             >
@@ -902,16 +909,14 @@ export const Reports = () => {
           </div>
 
           <div onClick={handleTimelineClick} className="flex-1 relative h-10 flex items-center cursor-pointer">
-            {/* Timeline Track */}
             <div className="w-full h-1 bg-white/20 rounded-full" />
-            
-            {/* Defect Markers — placed dynamically per coach with defects */}
+
             {realCoaches.map((c, idx) => {
               if ((c.critical_defects || 0) === 0) return null;
               const label = c.coach_number || `B${c.coach_index + 1}`;
               const pct = ((idx + 0.5) / (realCoaches.length || 1)) * 100;
               return (
-                <div 
+                <div
                   key={`def-${label}`}
                   onClick={() => jumpToCoach(label)}
                   className="absolute -top-1 cursor-pointer group flex flex-col items-center"
@@ -925,17 +930,15 @@ export const Reports = () => {
               );
             })}
 
-            {/* Playhead */}
-            <div 
+            <div
               className="absolute h-8 w-0.5 bg-primary shadow-[0_0_8px_#0052cc] z-20 pointer-events-none transition-all duration-150"
               style={{ left: `${playheadPercent}%` }}
             />
 
-            {/* Coach Blocks Grid */}
             <div className="absolute inset-0 flex items-end pb-1 pointer-events-none">
               {coachLabels.map((label) => (
-                <div 
-                  key={label} 
+                <div
+                  key={label}
                   className={`border-r border-white/10 text-[9px] font-mono font-bold pl-2 cursor-pointer pointer-events-auto select-none ${activeCoach === label ? 'text-primary font-black' : 'text-white/30 hover:text-white/60'}`}
                   style={{ width: `${100 / (coachLabels.length || 1)}%` }}
                   onClick={() => jumpToCoach(label)}
@@ -947,7 +950,7 @@ export const Reports = () => {
           </div>
 
           <div className="flex items-center gap-4 ml-6 shrink-0 text-white/60">
-            <button 
+            <button
               onClick={() => setIsMuted(!isMuted)}
               className="hover:text-white transition-colors"
             >
@@ -960,6 +963,7 @@ export const Reports = () => {
             <span className="font-mono text-[9px] uppercase font-bold tracking-wider">Codec: HEVC-10bit</span>
           </div>
         </footer>
+        */}
 
         {/* Frame Detail Modal */}
         {isFrameModalOpen && selectedFrame && (

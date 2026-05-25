@@ -60,6 +60,7 @@ export function normalizeSession(s) {
   return {
     id:            s.id,
     trainNumber:   s.train_number,
+    stationName:   s.station_name || '—',
     startedAt:     s.started_at,
     completedAt:   s.completed_at,
     status:        STATUS_MAP[s.status] || s.status?.toUpperCase() || 'UNKNOWN',
