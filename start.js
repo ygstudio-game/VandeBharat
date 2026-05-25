@@ -308,11 +308,9 @@ async function main() {
 
   for (const svc of SERVICES) {
     try {
-      // Free the frontend port before Vite tries to bind it
-      if (svc.port === 5173) {
-        log('ORCHESTRATOR', C.gray, 'freeing port 5173 before starting frontend…');
-        await killPort(5173);
-      }
+      // Free the port before starting each service so stale processes never block startup
+      log('ORCHESTRATOR', C.gray, `freeing port ${svc.port} before starting ${svc.name}…`);
+      await killPort(svc.port);
       await startService(svc);
     } catch (err) {
       log('ORCHESTRATOR', C.red, `${C.bold}ABORT — ${err.message}${C.reset}`);

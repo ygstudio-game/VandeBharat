@@ -1615,150 +1615,6 @@
       "norm_label": "broadcastall()"
     },
     {
-      "label": "report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L1",
-      "id": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
-      "community": 118,
-      "norm_label": "report_0b959235-b16d-4c09-b71a-60c022d7616a.json"
-    },
-    {
-      "label": "report_version",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L2",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_report_version",
-      "community": 118,
-      "norm_label": "report_version"
-    },
-    {
-      "label": "generated_at",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L3",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_generated_at",
-      "community": 118,
-      "norm_label": "generated_at"
-    },
-    {
-      "label": "session",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L4",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "community": 118,
-      "norm_label": "session"
-    },
-    {
-      "label": "id",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L5",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_id",
-      "community": 118,
-      "norm_label": "id"
-    },
-    {
-      "label": "session_code",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L6",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_session_code",
-      "community": 118,
-      "norm_label": "session_code"
-    },
-    {
-      "label": "train_number",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L7",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_train_number",
-      "community": 118,
-      "norm_label": "train_number"
-    },
-    {
-      "label": "station_code",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L8",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_station_code",
-      "community": 118,
-      "norm_label": "station_code"
-    },
-    {
-      "label": "started_at",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L9",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_started_at",
-      "community": 118,
-      "norm_label": "started_at"
-    },
-    {
-      "label": "completed_at",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L10",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_completed_at",
-      "community": 118,
-      "norm_label": "completed_at"
-    },
-    {
-      "label": "total_coaches",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L11",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_coaches",
-      "community": 118,
-      "norm_label": "total_coaches"
-    },
-    {
-      "label": "total_frames",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L12",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_frames",
-      "community": 118,
-      "norm_label": "total_frames"
-    },
-    {
-      "label": "critical_defects",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L13",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_critical_defects",
-      "community": 118,
-      "norm_label": "critical_defects"
-    },
-    {
-      "label": "missing_components_count",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L14",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_missing_components_count",
-      "community": 118,
-      "norm_label": "missing_components_count"
-    },
-    {
-      "label": "health_score",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L15",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_health_score",
-      "community": 118,
-      "norm_label": "health_score"
-    },
-    {
-      "label": "coaches",
-      "file_type": "code",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L17",
-      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_coaches",
-      "community": 118,
-      "norm_label": "coaches"
-    },
-    {
       "label": "package.json",
       "file_type": "code",
       "source_file": "devlab/package.json",
@@ -3262,10 +3118,19 @@
       "norm_label": "detectionlogtable.jsx"
     },
     {
+      "label": "ExpandedRow()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/DetectionLogTable.jsx",
+      "source_location": "L5",
+      "id": "components_detectionlogtable_expandedrow",
+      "community": 6,
+      "norm_label": "expandedrow()"
+    },
+    {
       "label": "DetectionLogTable()",
       "file_type": "code",
       "source_file": "frontend/src/components/DetectionLogTable.jsx",
-      "source_location": "L9",
+      "source_location": "L141",
       "id": "components_detectionlogtable_detectionlogtable",
       "community": 6,
       "norm_label": "detectionlogtable()"
@@ -4183,7 +4048,7 @@
       "label": "Reports()",
       "file_type": "code",
       "source_file": "frontend/src/pages/Reports.jsx",
-      "source_location": "L76",
+      "source_location": "L77",
       "id": "pages_reports_reports",
       "community": 6,
       "norm_label": "reports()"
@@ -4950,7 +4815,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L1",
       "id": "services_report_generator_builder_py",
-      "community": 13,
+      "community": 12,
       "norm_label": "builder.py"
     },
     {
@@ -4959,7 +4824,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L40",
       "id": "report_generator_builder_load_session_data",
-      "community": 13,
+      "community": 12,
       "norm_label": "load_session_data()"
     },
     {
@@ -4968,7 +4833,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L123",
       "id": "report_generator_builder_build_json_report",
-      "community": 13,
+      "community": 12,
       "norm_label": "build_json_report()"
     },
     {
@@ -4977,7 +4842,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L187",
       "id": "report_generator_builder_health_color",
-      "community": 13,
+      "community": 12,
       "norm_label": "_health_color()"
     },
     {
@@ -4986,7 +4851,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L198",
       "id": "report_generator_builder_pdf",
-      "community": 13,
+      "community": 12,
       "norm_label": "_pdf"
     },
     {
@@ -4995,7 +4860,7 @@
       "source_file": "",
       "source_location": "",
       "id": "fpdf",
-      "community": 13,
+      "community": 12,
       "norm_label": "fpdf"
     },
     {
@@ -5004,7 +4869,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L199",
       "id": "report_generator_builder_pdf_header",
-      "community": 13,
+      "community": 12,
       "norm_label": ".header()"
     },
     {
@@ -5013,7 +4878,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L208",
       "id": "report_generator_builder_pdf_footer",
-      "community": 13,
+      "community": 12,
       "norm_label": ".footer()"
     },
     {
@@ -5022,7 +4887,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L215",
       "id": "report_generator_builder_build_pdf_report",
-      "community": 13,
+      "community": 12,
       "norm_label": "build_pdf_report()"
     },
     {
@@ -5031,7 +4896,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L332",
       "id": "report_generator_builder_upload",
-      "community": 13,
+      "community": 12,
       "norm_label": "_upload()"
     },
     {
@@ -5040,7 +4905,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L342",
       "id": "report_generator_builder_upload_report",
-      "community": 13,
+      "community": 12,
       "norm_label": "upload_report()"
     },
     {
@@ -5049,7 +4914,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L356",
       "id": "report_generator_builder_generate_report",
-      "community": 13,
+      "community": 12,
       "norm_label": "generate_report()"
     },
     {
@@ -5058,7 +4923,7 @@
       "source_file": "services/report_generator/builder.py",
       "source_location": "L1",
       "id": "report_generator_builder_rationale_1",
-      "community": 13,
+      "community": 12,
       "norm_label": "report builder \u2014 phase 4 reads full session from db \u2192 builds pdf (fpdf2) + json"
     },
     {
@@ -5067,7 +4932,7 @@
       "source_file": "services/report_generator/server.py",
       "source_location": "L1",
       "id": "services_report_generator_server_py",
-      "community": 13,
+      "community": 12,
       "norm_label": "server.py"
     },
     {
@@ -5085,7 +4950,7 @@
       "source_file": "services/report_generator/server.py",
       "source_location": "L34",
       "id": "report_generator_server_get_conn",
-      "community": 13,
+      "community": 12,
       "norm_label": "get_conn()"
     },
     {
@@ -5094,7 +4959,7 @@
       "source_file": "services/report_generator/server.py",
       "source_location": "L39",
       "id": "report_generator_server_health",
-      "community": 13,
+      "community": 12,
       "norm_label": "health()"
     },
     {
@@ -5103,7 +4968,7 @@
       "source_file": "services/report_generator/server.py",
       "source_location": "L44",
       "id": "report_generator_server_generate",
-      "community": 13,
+      "community": 12,
       "norm_label": "generate()"
     },
     {
@@ -5112,7 +4977,7 @@
       "source_file": "services/report_generator/server.py",
       "source_location": "L160",
       "id": "report_generator_server_get_report",
-      "community": 13,
+      "community": 12,
       "norm_label": "get_report()"
     },
     {
@@ -5121,7 +4986,7 @@
       "source_file": "services/report_generator/server.py",
       "source_location": "L1",
       "id": "report_generator_server_rationale_1",
-      "community": 13,
+      "community": 12,
       "norm_label": "report generator service \u2014 port 5006 post /generate { session_id } \u2192 builds pdf"
     },
     {
@@ -5319,7 +5184,7 @@
       "source_file": "services/sync_engine/server.py",
       "source_location": "L1",
       "id": "services_sync_engine_server_py",
-      "community": 12,
+      "community": 3,
       "norm_label": "server.py"
     },
     {
@@ -5328,7 +5193,7 @@
       "source_file": "services/sync_engine/server.py",
       "source_location": "L24",
       "id": "sync_engine_server_syncrequest",
-      "community": 12,
+      "community": 3,
       "norm_label": "syncrequest"
     },
     {
@@ -5337,7 +5202,7 @@
       "source_file": "services/sync_engine/server.py",
       "source_location": "L28",
       "id": "sync_engine_server_get_conn",
-      "community": 12,
+      "community": 3,
       "norm_label": "get_conn()"
     },
     {
@@ -5346,7 +5211,7 @@
       "source_file": "services/sync_engine/server.py",
       "source_location": "L33",
       "id": "sync_engine_server_health",
-      "community": 12,
+      "community": 3,
       "norm_label": "health()"
     },
     {
@@ -5355,7 +5220,7 @@
       "source_file": "services/sync_engine/server.py",
       "source_location": "L38",
       "id": "sync_engine_server_sync",
-      "community": 12,
+      "community": 3,
       "norm_label": "sync()"
     },
     {
@@ -5364,7 +5229,7 @@
       "source_file": "services/sync_engine/server.py",
       "source_location": "L1",
       "id": "sync_engine_server_rationale_1",
-      "community": 12,
+      "community": 3,
       "norm_label": "sync engine service \u2014 port 5004 receives { session_id } \u2192 runs trigger_id gap de"
     },
     {
@@ -6228,7 +6093,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L168",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_5_video_ingestion_pipeline",
-      "community": 103,
+      "community": 44,
       "norm_label": "5. video ingestion pipeline"
     },
     {
@@ -6237,7 +6102,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L170",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_raw_feed_ingestion",
-      "community": 103,
+      "community": 44,
       "norm_label": "raw feed ingestion"
     },
     {
@@ -6246,7 +6111,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L189",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_ingestion_services",
-      "community": 103,
+      "community": 44,
       "norm_label": "ingestion services"
     },
     {
@@ -6759,7 +6624,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L675",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_14_ai_intelligence_layer",
-      "community": 72,
+      "community": 44,
       "norm_label": "14. ai intelligence layer"
     },
     {
@@ -6768,7 +6633,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L677",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_purpose_677",
-      "community": 72,
+      "community": 44,
       "norm_label": "purpose"
     },
     {
@@ -6777,7 +6642,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L689",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_intelligence_features",
-      "community": 72,
+      "community": 44,
       "norm_label": "intelligence features"
     },
     {
@@ -7164,7 +7029,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1040",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_23_real_time_monitoring",
-      "community": 44,
+      "community": 13,
       "norm_label": "23. real-time monitoring"
     },
     {
@@ -7173,7 +7038,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1042",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_monitoring_system",
-      "community": 44,
+      "community": 13,
       "norm_label": "monitoring system"
     },
     {
@@ -7182,7 +7047,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1054",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_monitoring_stack",
-      "community": 44,
+      "community": 13,
       "norm_label": "monitoring stack"
     },
     {
@@ -7209,7 +7074,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1079",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_25_scalability_strategy",
-      "community": 119,
+      "community": 44,
       "norm_label": "25. scalability strategy"
     },
     {
@@ -7218,7 +7083,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1081",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_horizontal_scaling",
-      "community": 119,
+      "community": 44,
       "norm_label": "horizontal scaling"
     },
     {
@@ -7227,7 +7092,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1092",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_future_scale",
-      "community": 119,
+      "community": 44,
       "norm_label": "future scale"
     },
     {
@@ -7254,7 +7119,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1117",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_27_industrial_ui_ux_principles",
-      "community": 44,
+      "community": 72,
       "norm_label": "27. industrial ui/ux principles"
     },
     {
@@ -7263,7 +7128,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1132",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_core_ux_principle",
-      "community": 44,
+      "community": 72,
       "norm_label": "core ux principle"
     },
     {
@@ -7272,7 +7137,7 @@
       "source_file": "backend/DOC/train_inspection_backend_pipeline_architecture_document.md",
       "source_location": "L1136",
       "id": "doc_train_inspection_backend_pipeline_architecture_document_codeblock_22",
-      "community": 44,
+      "community": 72,
       "norm_label": "code:text (which train?)"
     },
     {
@@ -15592,6 +15457,150 @@
       "norm_label": "yolo model files"
     },
     {
+      "label": "report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L1",
+      "community": 118,
+      "norm_label": "report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "id": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json"
+    },
+    {
+      "label": "report_version",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L2",
+      "community": 118,
+      "norm_label": "report_version",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_report_version"
+    },
+    {
+      "label": "generated_at",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L3",
+      "community": 118,
+      "norm_label": "generated_at",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_generated_at"
+    },
+    {
+      "label": "session",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L4",
+      "community": 118,
+      "norm_label": "session",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session"
+    },
+    {
+      "label": "id",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L5",
+      "community": 118,
+      "norm_label": "id",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_id"
+    },
+    {
+      "label": "session_code",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L6",
+      "community": 118,
+      "norm_label": "session_code",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_session_code"
+    },
+    {
+      "label": "train_number",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L7",
+      "community": 118,
+      "norm_label": "train_number",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_train_number"
+    },
+    {
+      "label": "station_code",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L8",
+      "community": 118,
+      "norm_label": "station_code",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_station_code"
+    },
+    {
+      "label": "started_at",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L9",
+      "community": 118,
+      "norm_label": "started_at",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_started_at"
+    },
+    {
+      "label": "completed_at",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L10",
+      "community": 118,
+      "norm_label": "completed_at",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_completed_at"
+    },
+    {
+      "label": "total_coaches",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L11",
+      "community": 118,
+      "norm_label": "total_coaches",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_coaches"
+    },
+    {
+      "label": "total_frames",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L12",
+      "community": 118,
+      "norm_label": "total_frames",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_frames"
+    },
+    {
+      "label": "critical_defects",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L13",
+      "community": 118,
+      "norm_label": "critical_defects",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_critical_defects"
+    },
+    {
+      "label": "missing_components_count",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L14",
+      "community": 118,
+      "norm_label": "missing_components_count",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_missing_components_count"
+    },
+    {
+      "label": "health_score",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L15",
+      "community": 118,
+      "norm_label": "health_score",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_health_score"
+    },
+    {
+      "label": "coaches",
+      "file_type": "code",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L17",
+      "community": 118,
+      "norm_label": "coaches",
+      "id": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_coaches"
+    },
+    {
       "label": "DetectionLogTable.jsx",
       "file_type": "code",
       "source_file": "components/DetectionLogTable.jsx",
@@ -15668,7 +15677,7 @@
       "file_type": "code",
       "source_file": "report_generator/builder.py",
       "source_location": "L1",
-      "community": 13,
+      "community": 12,
       "norm_label": "builder.py",
       "id": "report_generator_builder_py"
     },
@@ -18113,156 +18122,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_report_version",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L3",
-      "weight": 1.0,
-      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_generated_at",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L17",
-      "weight": 1.0,
-      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_coaches",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L5",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_id",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_session_code",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_train_number",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_station_code",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_started_at",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L10",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_completed_at",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_coaches",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L12",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_frames",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_critical_defects",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L14",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_missing_components_count",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
-      "source_location": "L15",
-      "weight": 1.0,
-      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
-      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_health_score",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "devlab/package.json",
       "source_location": "L2",
       "weight": 1.0,
@@ -20120,6 +19979,16 @@
       "confidence_score": 1.0,
       "source": "frontend_src_main_jsx",
       "target": "frontend_src_app_jsx"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/DetectionLogTable.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "frontend_src_components_detectionlogtable_jsx",
+      "target": "components_detectionlogtable_expandedrow",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -22996,9 +22865,9 @@
       "source_file": "services/correlation/engine.py",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_correlation_engine_py",
-      "target": "correlation_engine_norm",
-      "confidence_score": 1.0
+      "target": "correlation_engine_norm"
     },
     {
       "relation": "contains",
@@ -23026,9 +22895,9 @@
       "source_file": "services/correlation/engine.py",
       "source_location": "L77",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_correlation_engine_py",
-      "target": "correlation_engine_process_frame",
-      "confidence_score": 1.0
+      "target": "correlation_engine_process_frame"
     },
     {
       "relation": "contains",
@@ -23424,9 +23293,9 @@
       "source_file": "services/frame_extractor/server.py",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_frame_extractor_server_py",
-      "target": "frame_extractor_server_trim_to_shortest_camera",
-      "confidence_score": 1.0
+      "target": "frame_extractor_server_trim_to_shortest_camera"
     },
     {
       "relation": "contains",
@@ -35651,6 +35520,156 @@
       "target": "models_readme_yolo_model_files"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_report_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_generated_at"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_uploads_reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_json",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_coaches"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_id"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_session_code"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_train_number"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_station_code"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_started_at"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_completed_at"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_coaches"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_total_frames"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_critical_defects"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_missing_components_count"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/uploads/reports/report_0b959235-b16d-4c09-b71a-60c022d7616a.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session",
+      "target": "reports_report_0b959235_b16d_4c09_b71a_60c022d7616a_session_health_score"
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -35826,5 +35845,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d1ab8eda6652fb512ba3b74bc9094526c4f923f3"
+  "built_at_commit": "4513270db886160a49084f6efe711c2eda92b911"
 }
