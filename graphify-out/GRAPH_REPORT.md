@@ -1,16 +1,16 @@
-# Graph Report - Main  (2026-05-24)
+# Graph Report - Main  (2026-05-25)
 
 ## Corpus Check
 - 129 files · ~305,935 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1758 nodes · 1941 edges · 222 communities (139 shown, 83 thin omitted)
+- 1774 nodes · 1959 edges · 222 communities (139 shown, 83 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e1ba6bac`
+- Built from commit: `d1ab8eda`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -238,23 +238,23 @@
 3. `VandeInspect AI — Backend Build Progress` - 16 edges
 4. `run_sync()` - 15 edges
 5. `Vande Inspect AI — Complete System Design` - 15 edges
-6. `correlate_coach()` - 11 edges
-7. `DEFECT ACTIONS` - 11 edges
-8. `services` - 9 edges
-9. `scripts` - 9 edges
-10. `useSessionSocket()` - 9 edges
+6. `session` - 12 edges
+7. `correlate_coach()` - 11 edges
+8. `DEFECT ACTIONS` - 11 edges
+9. `services` - 9 edges
+10. `scripts` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `cn()` --calls--> `clsx`  [INFERRED]
+  frontend/src/lib/utils.js → frontend/package.json
 - `Run defect + component correlation for one coach.     Returns summary dict.` --rationale_for--> `correlate_coach()`  [EXTRACTED]
-  correlation/engine.py → engine.py
-- `Run defect + component correlation for one coach.     Returns summary dict.` --rationale_for--> `correlate_coach()`  [EXTRACTED]
-  services/correlation/engine.py → engine.py
-- `correlate()` --calls--> `correlate_coach()`  [INFERRED]
-  services/correlation/server.py → engine.py
-- `True when every session_camera for this session has frame_count > 0.` --rationale_for--> `_all_cameras_done()`  [EXTRACTED]
-  services/frame_extractor/server.py → frame_extractor/server.py
-- `Insert a batch of frame rows and update the live counters in the DB.` --rationale_for--> `_flush_rows()`  [EXTRACTED]
-  services/frame_extractor/server.py → frame_extractor/server.py
+  correlation/engine.py → services/correlation/engine.py
+- `LiveTrainCard()` --calls--> `cn()`  [INFERRED]
+  frontend/src/components/dashboard/LiveTrainCard.jsx → frontend/src/lib/utils.js
+- `Shell()` --calls--> `cn()`  [INFERRED]
+  frontend/src/components/layout/Shell.jsx → frontend/src/lib/utils.js
+- `Accordion()` --calls--> `cn()`  [INFERRED]
+  frontend/src/components/ui/accordion.jsx → frontend/src/lib/utils.js
 
 ## Communities (222 total, 83 thin omitted)
 
@@ -291,12 +291,12 @@ Cohesion: 0.22
 Nodes (8): decode_bytes(), predict(), predict_train_number(), YOLO Service — port 5002 Two models loaded at startup on GPU:   best.pt, Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Defect detection — uses best.pt. Called by Phase 3 correlation pipeline., Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2, Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2
 
 ### Community 11 - "Community 11"
-Cohesion: 0.18
-Nodes (15): correlate_coach(), _fetch_frame_bytes(), load_manifest(), _norm(), _process_frame(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to that, Run defect + component correlation for one coach.     Returns summary dict., Download one frame and run YOLO. Returns (frame, detections). (+7 more)
+Cohesion: 0.32
+Nodes (11): correlate_coach(), _fetch_frame_bytes(), load_manifest(), _norm(), _process_frame(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to th, Run defect + component correlation for one coach.     Returns summary dict., Download one frame and run YOLO. Returns (frame, detections). (+3 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.12
-Nodes (22): BaseModel, _all_cameras_done(), extract(), ExtractRequest, _flush_rows(), get_conn(), health(), _load_root_config() (+14 more)
+Cohesion: 0.09
+Nodes (26): BaseModel, correlate(), CorrelateRequest, get_conn(), Correlation Service — port 5005 POST /correlate { session_id, coach_id }   → run, _all_cameras_done(), extract(), ExtractRequest (+18 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.20
@@ -395,8 +395,8 @@ Cohesion: 0.07
 Nodes (26): 1.1 Ingestion & Session Management, 1.2 Inspection Intelligence, 1. REST API Interface Specification, 2.1 Client Subscriptions, 2.2 Server Broadcasts, 2. WebSocket Protocol Schema, Coach Maps Completed (`coaches_mapped`), code:json ({) (+18 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.10
-Nodes (20): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 25. SCALABILITY STRATEGY, 26. SECURITY ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT, 7. OCR PIPELINE (+12 more)
+Cohesion: 0.08
+Nodes (23): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 23. REAL-TIME MONITORING, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 27. INDUSTRIAL UI/UX PRINCIPLES, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+15 more)
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
@@ -679,12 +679,12 @@ Cohesion: 0.67
 Nodes (3): 17. GPU SERVER ARCHITECTURE, code:text (Frontend Dashboard VPS), Recommended Production Architecture
 
 ### Community 118 - "Community 118"
-Cohesion: 0.67
-Nodes (3): 23. REAL-TIME MONITORING, Monitoring Stack, Monitoring System
+Cohesion: 0.12
+Nodes (15): coaches, generated_at, report_version, session, completed_at, critical_defects, health_score, id (+7 more)
 
 ### Community 119 - "Community 119"
 Cohesion: 0.67
-Nodes (3): 27. INDUSTRIAL UI/UX PRINCIPLES, code:text (Which train?), Core UX Principle
+Nodes (3): 25. SCALABILITY STRATEGY, Future Scale, Horizontal Scaling
 
 ### Community 121 - "Community 121"
 Cohesion: 0.67
@@ -791,21 +791,21 @@ Cohesion: 0.67
 Nodes (3): code:text (Report generated successfully.), code:text (Synchronization completed.), TOASTS (MANDATORY)
 
 ## Knowledge Gaps
-- **922 isolated node(s):** `Database Entities`, `code:block1 (Step 1  SIMULTANEOUS CAPTURE)`, `code:block2 (Session VB-2025-001   Train VB-22901)`, `code:block3 (Create a professional technical presentation titled:)`, `code:block4 (Design a single-page technical infographic titled:)` (+917 more)
+- **936 isolated node(s):** `{ execSync }`, `fs`, `path`, `C`, `VENV_DIRS` (+931 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **83 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `run_sync()` connect `Community 3` to `Community 12`?**
-  _High betweenness centrality (0.003) - this node is a cross-community bridge._
 - **Why does `cn()` connect `Community 42` to `Community 29`, `Community 6`?**
-  _High betweenness centrality (0.003) - this node is a cross-community bridge._
-- **Are the 21 inferred relationships involving `cn()` (e.g. with `clsx` and `LiveTrainCard()`) actually correct?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+- **Why does `clsx` connect `Community 29` to `Community 42`?**
+  _High betweenness centrality (0.004) - this node is a cross-community bridge._
+- **Are the 21 inferred relationships involving `cn()` (e.g. with `LiveTrainCard()` and `Shell()`) actually correct?**
   _`cn()` has 21 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `Database Entities`, `code:block1 (Step 1  SIMULTANEOUS CAPTURE)`, `code:block2 (Session VB-2025-001   Train VB-22901)` to the rest of the system?**
-  _971 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `{ execSync }`, `fs`, `path` to the rest of the system?**
+  _985 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**

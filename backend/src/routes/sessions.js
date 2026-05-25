@@ -170,6 +170,7 @@ async function sessions(fastify) {
       include: {
         pipeline_stages: { select: { stage: true, status: true } },
         _count: { select: { coaches: true, defects: true, frames: true } },
+        station: { select: { station_name: true } },
       },
     });
 
@@ -178,6 +179,7 @@ async function sessions(fastify) {
         id: s.id,
         session_code: s.session_code,
         train_number: s.train_number,
+        station_name: s.station?.station_name || null,
         status: s.status,
         progress_pct: s.progress_pct,
         health_score: s.health_score ? Number(s.health_score) : null,
