@@ -1,16 +1,16 @@
 # Graph Report - Main  (2026-05-25)
 
 ## Corpus Check
-- 129 files · ~305,935 words
+- 128 files · ~306,378 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1774 nodes · 1959 edges · 222 communities (139 shown, 83 thin omitted)
+- 1775 nodes · 1960 edges · 220 communities (137 shown, 83 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d1ab8eda`
+- Built from commit: `4513270d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -115,7 +115,6 @@
 - [[_COMMUNITY_Community 100|Community 100]]
 - [[_COMMUNITY_Community 101|Community 101]]
 - [[_COMMUNITY_Community 102|Community 102]]
-- [[_COMMUNITY_Community 103|Community 103]]
 - [[_COMMUNITY_Community 104|Community 104]]
 - [[_COMMUNITY_Community 105|Community 105]]
 - [[_COMMUNITY_Community 106|Community 106]]
@@ -130,7 +129,6 @@
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
 - [[_COMMUNITY_Community 118|Community 118]]
-- [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
 - [[_COMMUNITY_Community 124|Community 124]]
@@ -256,7 +254,7 @@
 - `Accordion()` --calls--> `cn()`  [INFERRED]
   frontend/src/components/ui/accordion.jsx → frontend/src/lib/utils.js
 
-## Communities (222 total, 83 thin omitted)
+## Communities (220 total, 83 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.13
@@ -271,8 +269,8 @@ Cohesion: 0.08
 Nodes (26): code:block1 (Frontend (React + Vite) ── port 5173), code:block2 (Main/), code:bash (cd Main/services/frame_extractor), code:bash (# Terminal 1 — YOLO service), code:bash (# Terminal 4 — Correlation service), code:bash (cd Main/services/report_generator), code:bash (# 1. GPU Services (need CUDA + GPU)), Correct Service Architecture (+18 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.07
-Nodes (39): assign_frames(), assign_frames_to_coaches(), build_bogie_ranges(), _close(), cluster_gaps(), create_coaches(), create_coaches_from_ranges(), create_timeline_events() (+31 more)
+Cohesion: 0.06
+Nodes (43): assign_frames(), assign_frames_to_coaches(), build_bogie_ranges(), _close(), cluster_gaps(), create_coaches(), create_coaches_from_ranges(), create_timeline_events() (+35 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.14
@@ -295,12 +293,12 @@ Cohesion: 0.32
 Nodes (11): correlate_coach(), _fetch_frame_bytes(), load_manifest(), _norm(), _process_frame(), Correlation Engine — Phase 3 For each coach:   1. Sample frames assigned to th, Run defect + component correlation for one coach.     Returns summary dict., Download one frame and run YOLO. Returns (frame, detections). (+3 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.09
-Nodes (26): BaseModel, correlate(), CorrelateRequest, get_conn(), Correlation Service — port 5005 POST /correlate { session_id, coach_id }   → run, _all_cameras_done(), extract(), ExtractRequest (+18 more)
+Cohesion: 0.08
+Nodes (36): BaseModel, correlate(), CorrelateRequest, get_conn(), Correlation Service — port 5005 POST /correlate { session_id, coach_id }   → run, FPDF, _all_cameras_done(), extract() (+28 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.20
-Nodes (14): FPDF, build_json_report(), build_pdf_report(), generate_report(), _health_color(), load_session_data(), _PDF, Report builder — Phase 4 Reads full session from DB → builds PDF (fpdf2) + JSON (+6 more)
+Cohesion: 0.67
+Nodes (3): 23. REAL-TIME MONITORING, Monitoring Stack, Monitoring System
 
 ### Community 14 - "Community 14"
 Cohesion: 0.22
@@ -395,8 +393,8 @@ Cohesion: 0.07
 Nodes (26): 1.1 Ingestion & Session Management, 1.2 Inspection Intelligence, 1. REST API Interface Specification, 2.1 Client Subscriptions, 2.2 Server Broadcasts, 2. WebSocket Protocol Schema, Coach Maps Completed (`coaches_mapped`), code:json ({) (+18 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.08
-Nodes (23): 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 23. REAL-TIME MONITORING, 24. FAILURE HANDLING, 26. SECURITY ARCHITECTURE, 27. INDUSTRIAL UI/UX PRINCIPLES, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+15 more)
+Cohesion: 0.07
+Nodes (26): 14. AI INTELLIGENCE LAYER, 16. GPU INFRASTRUCTURE, 1. SYSTEM OBJECTIVE, 24. FAILURE HANDLING, 25. SCALABILITY STRATEGY, 26. SECURITY ARCHITECTURE, 29. FINAL PRODUCTION BACKEND FLOW, 30. FINAL CORE CONCEPT (+18 more)
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
@@ -508,7 +506,7 @@ Nodes (11): code:text (Train Number), code:text (Coach B1), code:text (Defect), 
 
 ### Community 72 - "Community 72"
 Cohesion: 0.67
-Nodes (3): 14. AI INTELLIGENCE LAYER, Intelligence Features, Purpose
+Nodes (3): 27. INDUSTRIAL UI/UX PRINCIPLES, code:text (Which train?), Core UX Principle
 
 ### Community 73 - "Community 73"
 Cohesion: 0.20
@@ -626,10 +624,6 @@ Nodes (6): 3.1 Core Tables, 3.2 Critical Indexes, 3.3 What Goes in Postgres vs O
 Cohesion: 0.33
 Nodes (5): code:js (export default defineConfig([), code:js (// eslint.config.js), Expanding the ESLint configuration, React Compiler, React + TypeScript + Vite
 
-### Community 103 - "Community 103"
-Cohesion: 0.67
-Nodes (3): 5. VIDEO INGESTION PIPELINE, Ingestion Services, Raw Feed Ingestion
-
 ### Community 104 - "Community 104"
 Cohesion: 0.40
 Nodes (5): 18. GPU WORKERS, code:text (Inference Queue), Purpose, Worker Architecture, Worker Types
@@ -681,10 +675,6 @@ Nodes (3): 17. GPU SERVER ARCHITECTURE, code:text (Frontend Dashboard VPS), Reco
 ### Community 118 - "Community 118"
 Cohesion: 0.12
 Nodes (15): coaches, generated_at, report_version, session, completed_at, critical_defects, health_score, id (+7 more)
-
-### Community 119 - "Community 119"
-Cohesion: 0.67
-Nodes (3): 25. SCALABILITY STRATEGY, Future Scale, Horizontal Scaling
 
 ### Community 121 - "Community 121"
 Cohesion: 0.67
