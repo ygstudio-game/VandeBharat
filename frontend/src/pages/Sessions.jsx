@@ -656,7 +656,6 @@ export const Sessions = () => {
                 <th className="p-4">Start Time</th>
                 <th className="p-4">Processing Status</th>
                 <th className="p-4">Coaches</th>
-                <th className="p-4">OCR Conf.</th>
                 <th className="p-4">Defects</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
@@ -664,7 +663,7 @@ export const Sessions = () => {
             <tbody className="divide-y divide-border text-sm">
               {filteredSessions.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="p-8 text-center text-muted-foreground font-medium">
+                  <td colSpan="8" className="p-8 text-center text-muted-foreground font-medium">
                     No sessions match the selected search and filter criteria.
                   </td>
                 </tr>
@@ -702,19 +701,6 @@ export const Sessions = () => {
                           session.coachesCount
                         )}
                       </td>
-                      <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-slate-700">
-                            {(session.ocrConfidence * 100).toFixed(1)}%
-                          </span>
-                          <div className="w-12 h-1.5 bg-slate-100 rounded-full overflow-hidden shrink-0 hidden sm:block">
-                            <div 
-                              className={`h-full ${session.ocrConfidence > 0.9 ? 'bg-blue-600' : 'bg-amber-500'}`} 
-                              style={{ width: `${session.ocrConfidence * 100}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      </td>
                       <td className="p-4">{getSeverityBadge(session.severity, session.defectsText)}</td>
                       <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-2">
@@ -746,7 +732,7 @@ export const Sessions = () => {
                     {/* Expandable Details Row */}
                     {expandedRows[session.id] && (
                       <tr className="bg-slate-50/20">
-                        <td className="p-0" colSpan="9">
+                        <td className="p-0" colSpan="8">
                           {session.status === 'PROCESSING' || session.status === 'SYNCHRONIZING' ? (
                             <div className="px-12 py-6 border-l-4 border-cyan-500 bg-slate-50/50 m-4 mt-0 rounded space-y-6">
                               {/* Header & Overall Progress */}

@@ -254,7 +254,7 @@ export const LiveQueue = () => {
           </div>
 
           {/* Console — static; no mock log simulation */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h2 className="text-md font-black text-foreground uppercase tracking-wider flex items-center gap-1.5">
               <Terminal className="w-4 h-4 text-primary" /> Live Console Stream
             </h2>
@@ -266,7 +266,7 @@ export const LiveQueue = () => {
                 <p className="text-slate-600 text-[8px]">Backend event streaming to be wired in next sprint.</p>
               </div>
             </Card>
-          </div>
+          </div> */}
 
         </div>
       ) : (

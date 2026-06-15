@@ -767,26 +767,26 @@ export const Reports = () => {
                 </div>
               </div>
               {/* Sync Confidence */}
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">Sync Confidence</span>
                 <span className="text-xs font-bold text-slate-700">
                   {((selectedReport.syncStability || 0) * 100).toFixed(1)}%
                 </span>
-              </div>
+              </div> */}
               {/* OCR Accuracy */}
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">OCR Accuracy</span>
                 <span className="text-xs font-bold text-slate-700">
                   {((selectedReport.ocrConf || 0) * 100).toFixed(1)}%
                 </span>
-              </div>
-              <button
+              </div> */}
+              {/* <button
                 onClick={() => alert("Workspace settings configuration.")}
                 className="w-full flex items-center justify-center gap-2 p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded text-xs font-bold text-slate-700 transition-all shadow-sm mt-1"
               >
                 <Settings className="w-4 h-4 text-slate-500" />
                 Workspace Settings
-              </button>
+              </button> */}
             </div>
           </aside>
 

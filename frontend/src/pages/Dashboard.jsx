@@ -102,7 +102,7 @@ export const Dashboard = () => {
 
         {/* Right Column: Health & Alerts */}
         <div className="space-y-6">
-          <section className="space-y-3">
+          {/* <section className="space-y-3">
             <h2 className="text-lg font-black text-foreground uppercase tracking-tight">Pipeline Infrastructure</h2>
             <Card className="border border-border bg-card shadow-sm">
               <CardHeader className="pb-3">
@@ -113,7 +113,7 @@ export const Dashboard = () => {
               </CardHeader>
               <CardContent className="space-y-4 font-mono text-xs">
                 {/* GPU Inference Workers */}
-                <div className="space-y-1.5">
+                {/* <div className="space-y-1.5">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground font-bold flex items-center gap-1">
                       <Cpu className="w-3.5 h-3.5 text-success" />
@@ -122,10 +122,10 @@ export const Dashboard = () => {
                     <span className="text-success font-extrabold">8/8 OK</span>
                   </div>
                   <Progress value={100} className="h-1.5 bg-slate-100" />
-                </div>
+                </div> */}
                 
                 {/* Synchronization Engine */}
-                <div className="space-y-1.5">
+                {/* <div className="space-y-1.5">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground font-bold flex items-center gap-1">
                       <Activity className="w-3.5 h-3.5 text-processing animate-pulse" />
@@ -134,10 +134,10 @@ export const Dashboard = () => {
                     <span className="text-processing font-extrabold">65% CAP</span>
                   </div>
                   <Progress value={65} className="h-1.5 bg-slate-100" />
-                </div>
+                </div> */}
                 
                 {/* Storage Capacity */}
-                <div className="space-y-1.5">
+                {/* <div className="space-y-1.5">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground font-bold flex items-center gap-1">
                       <HardDrive className="w-3.5 h-3.5 text-warning" />
@@ -148,10 +148,10 @@ export const Dashboard = () => {
                   <Progress value={82} className="h-1.5 bg-slate-100" />
                 </div>
               </CardContent>
-            </Card>
-          </section>
+            </Card> 
+          </section> */}
 
-          <section className="space-y-3">
+          {/* <section className="space-y-3">
             <h2 className="text-lg font-black text-foreground uppercase tracking-tight">Active Operations Feed</h2>
             <Card className="border border-border bg-card shadow-sm overflow-hidden">
               <CardHeader className="pb-3 border-b border-border bg-slate-50/50">
@@ -162,7 +162,7 @@ export const Dashboard = () => {
               </CardHeader>
               
               <div className="divide-y divide-border">
-                {/* Alert 1 */}
+                
                 <div className="p-4 bg-destructive/5 flex gap-3">
                   <ShieldAlert className="w-5 h-5 text-destructive shrink-0" />
                   <div className="space-y-0.5">
@@ -177,7 +177,7 @@ export const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* Alert 2 */}
+                
                 <div className="p-4 flex gap-3">
                   <AlertTriangle className="w-5 h-5 text-warning shrink-0" />
                   <div className="space-y-0.5">
@@ -197,7 +197,7 @@ export const Dashboard = () => {
                 Acknowledge All Alerts
               </button>
             </Card>
-          </section>
+          </section> */}
         </div>
       </div>
     </div>
