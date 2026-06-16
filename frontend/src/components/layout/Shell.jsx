@@ -30,15 +30,26 @@ const navItems = [
 
 export const Shell = () => {
   const location = useLocation();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Auto-collapse on small screens (≤1366px / 14" laptops) and in train workspace
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.innerWidth < 1440);
 
-  // Auto-collapse when entering a train workspace, restore when leaving
   useEffect(() => {
+    const isSmall = window.innerWidth < 1440;
     if (location.pathname.startsWith('/train/')) {
       setSidebarCollapsed(true);
     } else {
-      setSidebarCollapsed(false);
+      setSidebarCollapsed(isSmall);
     }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!location.pathname.startsWith('/train/')) {
+        setSidebarCollapsed(window.innerWidth < 1440);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [location.pathname]);
 
   return (
@@ -57,8 +68,8 @@ export const Shell = () => {
             <Train className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-md font-bold tracking-tight text-foreground leading-none">VANDE_INSPECT_AI</h1>
-            <p className="text-[10px] text-muted-foreground font-semibold mt-1 uppercase tracking-wider">Operations Control</p>
+            <h1 className="text-md font-bold tracking-tight text-foreground leading-none">RDSO_MVIS</h1>
+            <p className="text-[10px] text-muted-foreground font-semibold mt-1 uppercase tracking-wider">RDSO_MVIS Operations Control</p>
           </div>
         </div>
         
@@ -112,7 +123,7 @@ export const Shell = () => {
             </button>
             <ShieldCheck className="w-4 h-4 text-primary" />
             <span className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground">
-              INDIAN RAILWAYS • SECURE AI PIPELINE
+              Indian Railways • Machine Vision-based Inspection System
             </span>
           </div>
 

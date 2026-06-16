@@ -139,6 +139,9 @@ export const Reports = () => {
   useEffect(() => { activeCoachRef.current = activeCoach; }, [activeCoach]);
   useEffect(() => { realCoachesRef.current = realCoaches; }, [realCoaches]);
 
+  // Inspection hierarchy sidebar — manually collapsible
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
   // Operator review actions
   const [pendingReviews, setPendingReviews] = useState(0);
   const [showReviewCard, setShowReviewCard] = useState(false);
@@ -733,9 +736,16 @@ export const Reports = () => {
         <main className="flex-1 flex overflow-hidden relative">
           
           {/* Left Panel: Inspection Hierarchy */}
-          <aside className="w-72 bg-slate-50/50 border-r border-slate-200 flex flex-col shrink-0">
-            <div className="p-4 border-b border-slate-200 bg-slate-100/50">
+          <aside className={`border-r border-slate-200 flex flex-col shrink-0 bg-slate-50/50 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'w-0 overflow-hidden opacity-0 border-r-0' : 'w-72'}`}>
+            <div className="p-4 border-b border-slate-200 bg-slate-100/50 flex items-center justify-between">
               <p className="text-[10px] font-black text-slate-400 tracking-wider uppercase">Inspection Hierarchy</p>
+              <button
+                onClick={() => setSidebarCollapsed(true)}
+                className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+                title="Collapse Sidebar"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
             </div>
             
             <div className="flex-1 overflow-y-auto p-3 space-y-1">
@@ -818,6 +828,17 @@ export const Reports = () => {
             </div>
           </aside>
 
+          {/* Floating Expand Button when sidebar collapsed */}
+          {sidebarCollapsed && (
+            <button
+              onClick={() => setSidebarCollapsed(false)}
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-white hover:bg-slate-50 border border-l-0 border-slate-200 text-slate-500 hover:text-slate-800 p-1.5 py-3 rounded-r-md shadow-md z-30 transition-all cursor-pointer flex items-center justify-center"
+              title="Expand Sidebar"
+            >
+              <ChevronRight className="w-4 h-4 animate-pulse" />
+            </button>
+          )}
+
           {/* Center Panel: Report Workspace */}
           <section className="flex-1 overflow-y-auto bg-slate-50/20 flex flex-col p-6 gap-6">
             
@@ -831,8 +852,8 @@ export const Reports = () => {
 
           </section>
 
-          {/* Right Panel: Operator Review & System Load */}
-          <aside className={`${reviewCollapsed ? 'w-10' : 'w-80'} border-l border-slate-200 bg-white flex flex-col shrink-0 transition-all duration-200 overflow-hidden`}>
+          {/* Right Panel: Operator Review & System Load — temporarily hidden */}
+          {/* <aside className={`${reviewCollapsed ? 'w-10' : 'w-80'} border-l border-slate-200 bg-white flex flex-col shrink-0 transition-all duration-200 overflow-hidden`}>
             <div className="p-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
               {!reviewCollapsed && (
                 <span className="text-[10px] font-black text-slate-700 uppercase">Operator Review</span>
@@ -865,7 +886,7 @@ export const Reports = () => {
                     AI flagged possible scuffing on inner tread of B2. Manual validation required for final report inclusion.
                   </p>
                   <div className="flex gap-2 pt-1">
-                    <button 
+                    <button
                       onClick={() => {
                         setShowReviewCard(false);
                         setPendingReviews(prev => prev - 1);
@@ -874,7 +895,7 @@ export const Reports = () => {
                     >
                       DISMISS
                     </button>
-                    <button 
+                    <button
                       onClick={() => {
                         setShowReviewCard(false);
                         setPendingReviews(prev => prev - 1);
@@ -892,7 +913,6 @@ export const Reports = () => {
                 </div>
               )}
 
-              {/* Compliance Health */}
               <div className="space-y-3 pt-4 border-t border-slate-100">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">System Health Monitor</span>
                 <div className="flex justify-between items-center text-xs text-slate-600">
@@ -910,7 +930,6 @@ export const Reports = () => {
               </div>
             </div>
 
-            {/* Profile Sign-off badge */}
             <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center gap-3">
               <div className="w-9 h-9 bg-primary text-white flex items-center justify-center font-bold text-xs rounded">
                 RV
@@ -920,7 +939,7 @@ export const Reports = () => {
                 <span className="text-[9px] text-slate-400 uppercase font-black tracking-wider">Senior Inspector L3</span>
               </div>
             </div>
-          </aside>
+          </aside> */}
 
         </main>
 
