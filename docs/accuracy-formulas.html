@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RDSO_MVIS — Accuracy & Formula Reference</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 11pt;
+      color: #1a1a2e;
+      background: #fff;
+      line-height: 1.6;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 72px 80px;
+      background: #003d9b;
+      color: #fff;
+      page-break-after: always;
+    }
+    .cover .org { font-size: 10pt; letter-spacing: 4px; text-transform: uppercase; color: #a0b4e8; margin-bottom: 12px; }
+    .cover h1 { font-size: 32pt; font-weight: 900; line-height: 1.15; margin-bottom: 8px; }
+    .cover .sub { font-size: 14pt; color: #c8d8f8; margin-bottom: 48px; font-weight: 300; }
+    .cover .meta { font-size: 9pt; color: #7a9fd4; letter-spacing: 1px; }
+    .cover .meta span { display: block; margin-top: 4px; }
+    .cover .divider { width: 64px; height: 4px; background: #4fa3ff; margin-bottom: 32px; border-radius: 2px; }
+
+    /* ── TOC ── */
+    .toc-page { padding: 60px 80px; page-break-after: always; }
+    .toc-page h2 { font-size: 14pt; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: #003d9b; margin-bottom: 24px; padding-bottom: 8px; border-bottom: 2px solid #003d9b; }
+    .toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-bottom: 1px dotted #c8d0e0; font-size: 10.5pt; }
+    .toc-item .title { color: #1a1a2e; font-weight: 600; }
+    .toc-item .page { color: #003d9b; font-weight: 700; font-family: monospace; }
+    .toc-section { font-size: 9pt; color: #7a8aaa; margin-left: 16px; }
+
+    /* ── Content pages ── */
+    .page { padding: 52px 80px; page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+
+    .section-label {
+      display: inline-block;
+      font-size: 8pt;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #003d9b;
+      background: #e8eeff;
+      padding: 3px 10px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+
+    h2.page-title {
+      font-size: 18pt;
+      font-weight: 900;
+      color: #003d9b;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 10pt;
+      color: #6b7aaa;
+      margin-bottom: 28px;
+    }
+
+    /* ── Formula card ── */
+    .formula-card {
+      border: 1px solid #d0d8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 28px;
+      box-shadow: 0 1px 4px rgba(0,61,155,0.07);
+    }
+    .formula-card .card-header {
+      background: #f3f6ff;
+      padding: 12px 18px;
+      border-bottom: 1px solid #d0d8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .formula-card .card-header h3 {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #003d9b;
+    }
+    .formula-card .card-header .badge {
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .badge.frontend { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
+    .badge.backend  { background: #fff3e0; color: #e65100; border-color: #ffcc80; }
+    .badge.hybrid   { background: #e3f2fd; color: #0d47a1; border-color: #90caf9; }
+
+    .formula-card .card-body { padding: 16px 18px; }
+
+    .field-row { display: flex; gap: 8px; margin-bottom: 10px; font-size: 10pt; }
+    .field-label { font-weight: 700; color: #444; min-width: 110px; shrink: 0; }
+    .field-value { color: #1a1a2e; flex: 1; }
+
+    .formula-box {
+      background: #0d1b3e;
+      color: #a0c4ff;
+      font-family: 'Courier New', monospace;
+      font-size: 10pt;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 10px 0;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+    .formula-box .kw { color: #ff79c6; }
+    .formula-box .num { color: #f1fa8c; }
+    .formula-box .comment { color: #6272a4; }
+    .formula-box .var { color: #50fa7b; }
+
+    .example-box {
+      background: #f8f9ff;
+      border-left: 3px solid #003d9b;
+      padding: 10px 14px;
+      border-radius: 0 6px 6px 0;
+      margin-top: 12px;
+      font-size: 10pt;
+    }
+    .example-box .ex-label {
+      font-size: 8pt;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #003d9b;
+      margin-bottom: 5px;
+    }
+    .example-box .ex-step { color: #444; margin-bottom: 3px; }
+    .example-box .ex-result { font-weight: 800; color: #003d9b; margin-top: 6px; }
+
+    .source-file {
+      font-size: 8.5pt;
+      color: #7a8aaa;
+      font-family: monospace;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .source-file::before { content: "📄"; font-size: 9pt; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 10pt; }
+    th { background: #003d9b; color: #fff; font-weight: 700; padding: 8px 12px; text-align: left; font-size: 9pt; letter-spacing: 0.5px; }
+    td { padding: 8px 12px; border-bottom: 1px solid #e8ecf5; vertical-align: top; }
+    tr:nth-child(even) td { background: #f8f9ff; }
+
+    /* ── Footer ── */
+    .footer {
+      position: fixed;
+      bottom: 24px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      color: #b0b8d0;
+      border-top: 1px solid #e0e4f0;
+      padding-top: 8px;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      background: #e8f0ff;
+      border: 1px solid #b0c4ee;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      font-size: 10pt;
+      color: #2a3a6e;
+    }
+    .info-box strong { color: #003d9b; }
+
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .cover { min-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="org">Indian Railways &nbsp;·&nbsp; Research Designs and Standards Organisation</div>
+  <h1>RDSO_MVIS<br>Accuracy &amp; Formula<br>Reference Guide</h1>
+  <div class="sub">Machine Vision-based Inspection System</div>
+  <div class="divider"></div>
+  <div class="meta">
+    <span><strong>Document Type:</strong> &nbsp; Technical Formula Reference</span>
+    <span><strong>Scope:</strong> &nbsp; All frontend accuracy metrics, scoring logic, and confidence calculations</span>
+    <span><strong>Version:</strong> &nbsp; v2.1.4-rc</span>
+    <span><strong>Date:</strong> &nbsp; June 2026</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+══════════════════════════════════════════════════════════════ -->
+<div class="toc-page">
+  <h2>Table of Contents</h2>
+
+  <div class="toc-item">
+    <span class="title">1. &nbsp; Health Score</span>
+    <span class="page">3</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Per-coach health derived from defect count &amp; backend score</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">2. &nbsp; Compliance Score</span>
+    <span class="page">4</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Structural checklist pass rate based on missing components</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">3. &nbsp; Stress Score</span>
+    <span class="page">4</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Risk-tier indicator from defect severity levels</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">4. &nbsp; OCR Confidence</span>
+    <span class="page">5</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Coach placard recognition confidence from PaddleOCR / YOLO-OCR-ROI</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">5. &nbsp; Synchronisation Confidence</span>
+    <span class="page">5</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Multi-camera timeline alignment quality score</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">6. &nbsp; Detection Confidence (Frame-level)</span>
+    <span class="page">6</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Max confidence across all component and defect detections on a single frame</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">7. &nbsp; Frame Extraction Progress</span>
+    <span class="page">7</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Live progress bar during video-to-frame extraction stage</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">8. &nbsp; Pipeline Overall Progress</span>
+    <span class="page">7</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Session-level completion percentage across all pipeline stages</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">9. &nbsp; Playhead Position</span>
+    <span class="page">8</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>Video-style timeline scrubber position calculated from coach &amp; frame indices</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">10. Report Status Derivation</span>
+    <span class="page">8</span>
+  </div>
+  <div class="toc-item toc-section">
+    <span>APPROVED vs. PENDING_SIGNATURE logic from defect count</span>
+  </div>
+
+  <div class="toc-item">
+    <span class="title">11. Summary Table — All Metrics at a Glance</span>
+    <span class="page">9</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 3 — HEALTH SCORE
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-label">Metric 1</div>
+  <h2 class="page-title">Health Score</h2>
+  <p class="page-subtitle">Per-coach structural health as a percentage — shown in the Inspection Hierarchy panel and Report workspace.</p>
+
+  <div class="info-box">
+    <strong>Where it appears:</strong> Left sidebar of the Report workspace ("Health Score" progress bar),
+    TrainWorkspace AI Intelligence Feed, and the Sessions list card.
+  </div>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Health Score Formula</h3>
+      <span class="badge hybrid">Backend primary · Frontend fallback</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Inputs</span><span class="field-value">
+        <code>health_score</code> (from backend coach record), or<br>
+        <code>defects.length</code> — total number of defects detected for the coach
+      </span></div>
+      <div class="field-row"><span class="field-label">Output</span><span class="field-value">Integer percentage, 0 – 100 (clamped)</span></div>
+
+      <div class="formula-box"><span class="comment">// Backend provides score when available</span>
+<span class="var">healthScore</span> = <span class="var">coachData</span>.health_score
+
+<span class="comment">// Frontend fallback when backend score is absent</span>
+<span class="kw">if</span> (<span class="var">healthScore</span> == null) {
+  <span class="var">healthScore</span> = <span class="var">defects</span>.length === <span class="num">0</span>
+    ? <span class="num">100</span>
+    : Math.max(<span class="num">0</span>, <span class="num">100</span> - <span class="var">defects</span>.length × <span class="num">15</span>)
+}
+
+<span class="var">displayed</span> = Math.round(<span class="var">healthScore</span>)</div>
+
+      <div class="example-box">
+        <div class="ex-label">Example A — Backend score available</div>
+        <div class="ex-step">Backend returns: <code>health_score = 78.4</code></div>
+        <div class="ex-result">Displayed: <strong>78%</strong></div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Example B — Frontend fallback (3 defects)</div>
+        <div class="ex-step">Backend health_score: null</div>
+        <div class="ex-step">defects.length = 3</div>
+        <div class="ex-step">100 − (3 × 15) = 100 − 45 = 55</div>
+        <div class="ex-result">Displayed: <strong>55%</strong></div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Example C — 8 defects (floor applied)</div>
+        <div class="ex-step">100 − (8 × 15) = 100 − 120 = −20 → clamped to 0</div>
+        <div class="ex-result">Displayed: <strong>0%</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/pages/Reports.jsx &nbsp;·&nbsp; frontend/src/pages/TrainWorkspace.jsx</div>
+    </div>
+  </div>
+
+<!-- ── COMPLIANCE SCORE ── -->
+  <div class="section-label">Metric 2</div>
+  <h2 class="page-title" style="font-size:15pt; margin-top:6px;">Compliance Score</h2>
+  <p class="page-subtitle">Structural checklist pass rate — how many required components are present.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Compliance Score Formula</h3>
+      <span class="badge frontend">Frontend computed</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Input</span><span class="field-value">
+        <code>missing.length</code> — count of components flagged as missing / not detected for the active coach
+      </span></div>
+      <div class="field-row"><span class="field-label">Output</span><span class="field-value">Integer percentage, 0 – 100 (clamped)</span></div>
+
+      <div class="formula-box"><span class="var">complianceScore</span> = <span class="var">missing</span>.length === <span class="num">0</span>
+  ? <span class="num">100</span>
+  : Math.max(<span class="num">0</span>, <span class="num">100</span> - <span class="var">missing</span>.length × <span class="num">10</span>)</div>
+
+      <div class="example-box">
+        <div class="ex-label">Example — 4 missing components</div>
+        <div class="ex-step">missing.length = 4</div>
+        <div class="ex-step">100 − (4 × 10) = 100 − 40 = 60</div>
+        <div class="ex-result">Displayed: <strong>60%</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/pages/Reports.jsx</div>
+    </div>
+  </div>
+
+<!-- ── STRESS SCORE ── -->
+  <div class="section-label">Metric 3</div>
+  <h2 class="page-title" style="font-size:15pt; margin-top:6px;">Stress Score</h2>
+  <p class="page-subtitle">Risk-tier indicator derived from the highest severity defect present on the coach.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Stress Score Formula</h3>
+      <span class="badge frontend">Frontend computed</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Inputs</span><span class="field-value">
+        <code>summary.critical</code> — count of CRITICAL severity defects<br>
+        <code>summary.high</code> — count of HIGH severity defects
+      </span></div>
+      <div class="field-row"><span class="field-label">Output</span><span class="field-value">Fixed score: 70, 50, or 25</span></div>
+
+      <div class="formula-box"><span class="var">stressScore</span> = <span class="var">summary</span>.critical > <span class="num">0</span> ? <span class="num">70</span>
+             : <span class="var">summary</span>.high    > <span class="num">0</span> ? <span class="num">50</span>
+             : <span class="num">25</span>
+
+<span class="comment">// Score tiers:
+// 70 — Critical defects present (immediate attention required)
+// 50 — High severity defects only
+// 25 — No critical or high defects (nominal)</span></div>
+
+      <div class="example-box">
+        <div class="ex-label">Example A — 1 critical defect</div>
+        <div class="ex-step">summary.critical = 1 → condition true</div>
+        <div class="ex-result">Stress Score: <strong>70</strong></div>
+      </div>
+      <div class="example-box">
+        <div class="ex-label">Example B — No critical, 2 high severity</div>
+        <div class="ex-step">summary.critical = 0, summary.high = 2</div>
+        <div class="ex-result">Stress Score: <strong>50</strong></div>
+      </div>
+      <div class="example-box">
+        <div class="ex-label">Example C — All clear</div>
+        <div class="ex-step">summary.critical = 0, summary.high = 0</div>
+        <div class="ex-result">Stress Score: <strong>25</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/pages/Reports.jsx</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 5 — OCR & SYNC CONFIDENCE
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-label">Metric 4</div>
+  <h2 class="page-title">OCR Confidence</h2>
+  <p class="page-subtitle">Measures how reliably the system read coach placard numbers from video frames.
+  Shown in the Live Queue card, header stats, and TrainWorkspace.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>OCR Confidence Display</h3>
+      <span class="badge hybrid">Backend computed · Frontend displays</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Source</span><span class="field-value">
+        Backend field: <code>session.ocr_confidence</code> (decimal 0.0 – 1.0).<br>
+        Computed by the OCR stage using PaddleOCR + YOLO-OCR-ROI agreement scores.
+      </span></div>
+      <div class="field-row"><span class="field-label">Frontend formula</span><span class="field-value">
+        Multiply by 100 and truncate to integer
+      </span></div>
+
+      <div class="formula-box"><span class="comment">// Normalisation (api.js)</span>
+<span class="var">ocrConfidence</span> = Number(<span class="var">s</span>.ocr_confidence) <span class="comment">// stored as-is (0–1)</span>
+
+<span class="comment">// Display (LiveTrainCard.jsx)</span>
+<span class="var">displayed</span> = (<span class="var">session</span>.stats.ocrConfidence × <span class="num">100</span>).toFixed(<span class="num">0</span>) + <span class="num">'%'</span>
+
+<span class="comment">// Header (TrainWorkspace.jsx)</span>
+<span class="var">displayed</span> = (<span class="var">session</span>.ocrConfidence × <span class="num">100</span>).toFixed(<span class="num">1</span>) + <span class="num">'%'</span></div>
+
+      <div class="example-box">
+        <div class="ex-label">Example</div>
+        <div class="ex-step">Backend: <code>ocr_confidence = 0.873</code></div>
+        <div class="ex-step">Live Queue card: 0.873 × 100 = 87.3 → <strong>87%</strong></div>
+        <div class="ex-step">Workspace header: 0.873 × 100 = 87.3 → <strong>87.3%</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/lib/api.js · frontend/src/components/dashboard/LiveTrainCard.jsx · frontend/src/pages/TrainWorkspace.jsx</div>
+    </div>
+  </div>
+
+<!-- ── SYNC CONFIDENCE ── -->
+  <div class="section-label">Metric 5</div>
+  <h2 class="page-title" style="font-size:15pt; margin-top:6px;">Synchronisation Confidence</h2>
+  <p class="page-subtitle">Quality of multi-camera timeline alignment — how well trigger IDs from all cameras were matched.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Sync Confidence Display</h3>
+      <span class="badge hybrid">Backend computed · Frontend displays</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Source</span><span class="field-value">
+        Backend field: <code>session.sync_confidence</code> (decimal 0.0 – 1.0).<br>
+        Computed during the Synchronisation pipeline stage using gap-detection heuristics.
+      </span></div>
+      <div class="field-row"><span class="field-label">Alias</span><span class="field-value">Also exposed as <code>syncHealth</code> in the normalised session object</span></div>
+
+      <div class="formula-box"><span class="comment">// Normalisation (api.js)</span>
+<span class="var">syncHealth</span> = Number(<span class="var">s</span>.sync_confidence)  <span class="comment">// stored as-is (0–1)</span>
+<span class="var">synchronizationConfidence</span> = Number(<span class="var">s</span>.sync_confidence)
+
+<span class="comment">// Display (LiveTrainCard.jsx)</span>
+<span class="var">displayed</span> = (<span class="var">session</span>.stats.synchronizationConfidence × <span class="num">100</span>).toFixed(<span class="num">0</span>) + <span class="num">'%'</span></div>
+
+      <div class="example-box">
+        <div class="ex-label">Example</div>
+        <div class="ex-step">Backend: <code>sync_confidence = 0.956</code></div>
+        <div class="ex-step">0.956 × 100 = 95.6 → toFixed(0) = <strong>96%</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/lib/api.js · frontend/src/components/dashboard/LiveTrainCard.jsx</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 6 — DETECTION CONFIDENCE
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-label">Metric 6</div>
+  <h2 class="page-title">Detection Confidence (Frame-level)</h2>
+  <p class="page-subtitle">The highest model confidence score across all detections (components + defects) found in a single frame.
+  Shown in the Detection Log Table on the Reports page.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Frame Confidence Formula</h3>
+      <span class="badge frontend">Frontend computed</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Inputs</span><span class="field-value">
+        <code>frameComponents[]</code> — components detected on this frame, each with <code>c.confidence</code> (0–1)<br>
+        <code>frameDefects[]</code> — defects detected on this frame, each with <code>d.confidence</code> (0–1)
+      </span></div>
+      <div class="field-row"><span class="field-label">Output</span><span class="field-value">String percentage <code>"87%"</code>, or <code>"—"</code> if no detections</span></div>
+
+      <div class="formula-box"><span class="comment">// Collect all confidence values on this frame</span>
+<span class="var">allConfs</span> = [
+  ...<span class="var">frameComponents</span>.map(<span class="var">c</span> => <span class="var">c</span>.confidence || <span class="num">0</span>),
+  ...<span class="var">frameDefects</span>.map(<span class="var">d</span>  => <span class="var">d</span>.confidence || <span class="num">0</span>),
+]
+
+<span class="comment">// Take the maximum</span>
+<span class="var">maxConf</span> = <span class="var">allConfs</span>.length > <span class="num">0</span> ? Math.max(...<span class="var">allConfs</span>) : <span class="num">0</span>
+
+<span class="comment">// Convert to display string</span>
+<span class="var">displayed</span> = <span class="var">maxConf</span> > <span class="num">0</span>
+  ? Math.round(<span class="var">maxConf</span> × <span class="num">100</span>) + <span class="num">'%'</span>
+  : <span class="num">'—'</span></div>
+
+      <div class="example-box">
+        <div class="ex-label">Example — mixed detections on Frame #142</div>
+        <div class="ex-step">Components detected: <code>[0.87, 0.91, 0.63]</code></div>
+        <div class="ex-step">Defects detected: <code>[0.76]</code></div>
+        <div class="ex-step">allConfs = [0.87, 0.91, 0.63, 0.76]</div>
+        <div class="ex-step">maxConf = Math.max(...) = 0.91</div>
+        <div class="ex-step">Math.round(0.91 × 100) = 91</div>
+        <div class="ex-result">Displayed in CONF column: <strong>91%</strong></div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Example — no detections on Frame #143</div>
+        <div class="ex-step">frameComponents = [], frameDefects = []</div>
+        <div class="ex-step">allConfs = [], maxConf = 0</div>
+        <div class="ex-result">Displayed in CONF column: <strong>—</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/components/DetectionLogTable.jsx</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 7 — PROGRESS FORMULAS
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-label">Metric 7</div>
+  <h2 class="page-title">Frame Extraction Progress</h2>
+  <p class="page-subtitle">Live progress bar shown on the Pipeline Progress view during the Frame Extraction stage.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Extraction Progress %</h3>
+      <span class="badge frontend">Frontend computed</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Inputs</span><span class="field-value">
+        <code>totalFrames</code> — frames confirmed saved to DB so far<br>
+        <code>statsUploaded</code> — <code>pipeline_stages.stats.frames_uploaded</code> from the extractor flush<br>
+        <code>statsVideoTotal</code> — raw total frames in the original video
+      </span></div>
+
+      <div class="formula-box"><span class="comment">// Use the larger of uploaded or DB count as the expected total</span>
+<span class="var">expectedFrames</span> = Math.max(<span class="var">statsUploaded</span>, <span class="var">totalFrames</span>)
+
+<span class="comment">// Calculate percentage, clamped to 100</span>
+<span class="var">extractionPct</span> = <span class="var">expectedFrames</span> > <span class="num">0</span>
+  ? Math.min(<span class="num">100</span>, Math.round((<span class="var">totalFrames</span> / <span class="var">expectedFrames</span>) × <span class="num">100</span>))
+  : <span class="num">0</span></div>
+
+      <div class="example-box">
+        <div class="ex-label">Example — mid-extraction</div>
+        <div class="ex-step">totalFrames (in DB) = 150</div>
+        <div class="ex-step">statsUploaded = 200, statsVideoTotal = 840</div>
+        <div class="ex-step">expectedFrames = max(200, 150) = 200</div>
+        <div class="ex-step">extractionPct = min(100, round(150 / 200 × 100)) = min(100, 75) = <strong>75</strong></div>
+        <div class="ex-result">Progress bar: <strong>75%</strong> — "75% — raw video has 840 frames"</div>
+      </div>
+
+      <div class="source-file">frontend/src/pages/TrainWorkspace.jsx → PipelineProgressView</div>
+    </div>
+  </div>
+
+<!-- ── PIPELINE PROGRESS ── -->
+  <div class="section-label">Metric 8</div>
+  <h2 class="page-title" style="font-size:15pt; margin-top:6px;">Pipeline Overall Progress</h2>
+  <p class="page-subtitle">Session-level completion shown in the pipeline header bar and Live Queue card.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Session Progress %</h3>
+      <span class="badge backend">Backend computed</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Source</span><span class="field-value">
+        Comes directly from <code>session.progress_pct</code> on the backend.
+        The backend increments this as each pipeline stage completes.
+        Frontend reads it verbatim.
+      </span></div>
+      <div class="field-row"><span class="field-label">Frontend</span><span class="field-value">
+        <code>progressPercent = s.progress_pct || 0</code>
+      </span></div>
+
+      <div class="formula-box"><span class="comment">// api.js — normalisation</span>
+<span class="var">progressPercent</span> = <span class="var">s</span>.progress_pct || <span class="num">0</span>
+
+<span class="comment">// Displayed as-is in:</span>
+<span class="comment">//   LiveTrainCard — "87% Telemetry Sync"</span>
+<span class="comment">//   PipelineBar    — "PIPELINE: 87%"</span>
+<span class="comment">//   PipelineProgressView — Overall progress bar</span></div>
+
+      <div class="example-box">
+        <div class="ex-label">Example — 3 of 6 stages complete</div>
+        <div class="ex-step">Backend sets progress_pct = 50 when Frame Extraction, OCR, Sync are done</div>
+        <div class="ex-result">Displayed: <strong>50%</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/lib/api.js · frontend/src/components/dashboard/LiveTrainCard.jsx</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 8 — PLAYHEAD & REPORT STATUS
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-label">Metric 9</div>
+  <h2 class="page-title">Playhead Position</h2>
+  <p class="page-subtitle">Video-style scrubber position in the Report workspace — maps the current (coach, frame) position onto a 0–100% timeline.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Playhead % Formula</h3>
+      <span class="badge frontend">Frontend computed</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Inputs</span><span class="field-value">
+        <code>activeCoachIdx</code> — 0-based index of the currently viewed coach<br>
+        <code>totalCoaches</code> — total number of coaches in the session<br>
+        <code>currentFrameIdx</code> — 0-based index of selected frame within this coach<br>
+        <code>coachFramesCount</code> — total frames for this coach
+      </span></div>
+
+      <div class="formula-box"><span class="comment">// Share of timeline consumed by completed coaches</span>
+<span class="var">coachContribution</span>  = <span class="var">activeCoachIdx</span> / <span class="var">totalCoaches</span>
+
+<span class="comment">// Share consumed by frames within the current coach</span>
+<span class="var">frameContribution</span>  = (<span class="var">currentFrameIdx</span> / <span class="var">coachFramesCount</span>) / <span class="var">totalCoaches</span>
+
+<span class="comment">// Final playhead position</span>
+<span class="var">playheadPercent</span>    = (<span class="var">coachContribution</span> + <span class="var">frameContribution</span>) × <span class="num">100</span>
+
+<span class="comment">// Playback time (derived from session duration)</span>
+<span class="var">playbackTime</span> = formatTime(Math.floor(<span class="var">playheadPercent</span> / <span class="num">100</span> × <span class="var">durationSeconds</span>))</div>
+
+      <div class="example-box">
+        <div class="ex-label">Example — 5 coaches, viewing coach 2 (index 2), frame 15 of 30</div>
+        <div class="ex-step">coachContribution  = 2 / 5 = 0.40</div>
+        <div class="ex-step">frameContribution  = (15 / 30) / 5 = 0.5 / 5 = 0.10</div>
+        <div class="ex-step">playheadPercent    = (0.40 + 0.10) × 100 = 50%</div>
+        <div class="ex-step">If session duration = 300 s: playbackTime = floor(0.50 × 300) = 150 s = <strong>00:02:30</strong></div>
+        <div class="ex-result">Playhead at <strong>50%</strong>, timer shows <strong>00:02:30 / 00:05:00</strong></div>
+      </div>
+
+      <div class="source-file">frontend/src/pages/Reports.jsx</div>
+    </div>
+  </div>
+
+<!-- ── REPORT STATUS ── -->
+  <div class="section-label">Metric 10</div>
+  <h2 class="page-title" style="font-size:15pt; margin-top:6px;">Report Status Derivation</h2>
+  <p class="page-subtitle">Determines whether a completed session report requires supervisor sign-off or is already approved.</p>
+
+  <div class="formula-card">
+    <div class="card-header">
+      <h3>Status Logic</h3>
+      <span class="badge frontend">Frontend computed</span>
+    </div>
+    <div class="card-body">
+      <div class="field-row"><span class="field-label">Input</span><span class="field-value">
+        <code>criticalDefects</code> — count of CRITICAL severity defects across all coaches in the session
+      </span></div>
+      <div class="field-row"><span class="field-label">Output</span><span class="field-value"><code>"PENDING_SIGNATURE"</code> or <code>"APPROVED"</code></span></div>
+
+      <div class="formula-box"><span class="comment">// Reports.jsx — sessionToReport()</span>
+<span class="var">status</span> = <span class="var">s</span>.criticalDefects > <span class="num">0</span>
+  ? <span class="num">'PENDING_SIGNATURE'</span>
+  : <span class="num">'APPROVED'</span></div>
+
+      <div class="example-box">
+        <div class="ex-label">Example A — 2 critical defects found</div>
+        <div class="ex-step">criticalDefects = 2 → condition true</div>
+        <div class="ex-result">Status: <strong>PENDING_SIGNATURE</strong> (amber badge, requires supervisor PIN)</div>
+      </div>
+      <div class="example-box">
+        <div class="ex-label">Example B — no critical defects</div>
+        <div class="ex-step">criticalDefects = 0 → condition false</div>
+        <div class="ex-result">Status: <strong>APPROVED</strong> (green badge, no signature needed)</div>
+      </div>
+
+      <div class="source-file">frontend/src/pages/Reports.jsx → sessionToReport()</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE 9 — SUMMARY TABLE
+══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="section-label">Summary</div>
+  <h2 class="page-title">All Metrics at a Glance</h2>
+  <p class="page-subtitle">Quick reference for every accuracy and scoring metric used across the RDSO_MVIS dashboard.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Metric</th>
+        <th>Formula / Source</th>
+        <th>Range</th>
+        <th>Where Shown</th>
+        <th>Computed by</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>Health Score</strong></td>
+        <td><code>backend.health_score</code> or <code>max(0, 100 − defects × 15)</code></td>
+        <td>0 – 100 %</td>
+        <td>Reports sidebar, TrainWorkspace panel</td>
+        <td>Backend (primary) / Frontend (fallback)</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Compliance Score</strong></td>
+        <td><code>max(0, 100 − missing × 10)</code></td>
+        <td>0 – 100 %</td>
+        <td>Reports sidebar</td>
+        <td>Frontend</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>Stress Score</strong></td>
+        <td><code>critical&gt;0 → 70, high&gt;0 → 50, else 25</code></td>
+        <td>25 / 50 / 70</td>
+        <td>Reports sidebar</td>
+        <td>Frontend</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>OCR Confidence</strong></td>
+        <td><code>ocr_confidence × 100</code></td>
+        <td>0 – 100 %</td>
+        <td>Live Queue card, Workspace header</td>
+        <td>Backend (PaddleOCR + YOLO-OCR-ROI)</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Sync Confidence</strong></td>
+        <td><code>sync_confidence × 100</code></td>
+        <td>0 – 100 %</td>
+        <td>Live Queue card</td>
+        <td>Backend (Synchronisation stage)</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Frame Detection Confidence</strong></td>
+        <td><code>max(component.conf[], defect.conf[]) × 100</code></td>
+        <td>0 – 100 % or —</td>
+        <td>Detection Log Table (CONF column)</td>
+        <td>Frontend</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Frame Extraction Progress</strong></td>
+        <td><code>min(100, round(totalFrames / max(uploaded, total) × 100))</code></td>
+        <td>0 – 100 %</td>
+        <td>Pipeline Progress view</td>
+        <td>Frontend</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Pipeline Progress</strong></td>
+        <td><code>session.progress_pct</code> (from backend)</td>
+        <td>0 – 100 %</td>
+        <td>Live Queue card, Pipeline bar</td>
+        <td>Backend</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>Playhead Position</strong></td>
+        <td><code>(coachIdx/total + frameIdx/frameCount/total) × 100</code></td>
+        <td>0 – 100 %</td>
+        <td>Report workspace timeline</td>
+        <td>Frontend</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><strong>Report Status</strong></td>
+        <td><code>criticalDefects &gt; 0 → PENDING else APPROVED</code></td>
+        <td>Binary flag</td>
+        <td>Reports list, workspace header</td>
+        <td>Frontend</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box" style="margin-top: 28px;">
+    <strong>Note on backend-computed metrics:</strong> OCR Confidence, Sync Confidence, and Pipeline Progress are
+    authored entirely by the Python backend pipeline and passed to the frontend as-is. The frontend only converts the
+    decimal values to percentage strings for display. Any recalibration of these scores must be done in the backend
+    OCR / Sync / Stage-completion workers, not in the frontend code.
+  </div>
+
+  <div class="info-box">
+    <strong>Confidence scale convention:</strong> All model confidence values from YOLO and PaddleOCR are stored
+    internally as <strong>decimals (0.0 – 1.0)</strong>. The frontend always multiplies by 100 before display.
+    Never store or pass these as percentages to the backend.
+  </div>
+</div>
+
+</body>
+</html>

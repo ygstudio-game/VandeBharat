@@ -23,7 +23,7 @@ const LOG_FILE = path.join(LOG_DIR, 'combined.log');
 
 // Clear log file on every startup
 fs.mkdirSync(LOG_DIR, { recursive: true });
-fs.writeFileSync(LOG_FILE, `=== VandeInspect AI — started ${new Date().toISOString()} ===\n`);
+fs.writeFileSync(LOG_FILE, `=== RDSO_MVIS — started ${new Date().toISOString()} ===\n`);
 const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
 
 // ── Colours ────────────────────────────────────────────────────────────────
@@ -300,7 +300,7 @@ async function main() {
   console.log(
     `\n${C.bold}${C.cyan}` +
     `┌──────────────────────────────────────────┐\n` +
-    `│  VandeInspect AI  —  Startup             │\n` +
+    `│  RDSO_MVIS  —  Startup                   │\n` +
     `│  ${SERVICES.length} services, sequential health-gated  │\n` +
     `└──────────────────────────────────────────┘` +
     `${C.reset}\n`

@@ -1,6 +1,7 @@
 @echo off
 REM ============================================================
-REM  VandeInspect AI - One-shot setup launcher
+REM  RDSO_MVIS - One-shot setup launcher
+REM  Machine Vision-based Inspection System
 REM  Forwards to setup.ps1 (the real installer).
 REM
 REM  Usage:
