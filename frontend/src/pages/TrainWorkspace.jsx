@@ -725,41 +725,41 @@ export const TrainWorkspace = () => {
   // ── Shared header ────────────────────────────────────────────────────────
   const header = (
     <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between z-10 shrink-0 shadow-sm">
-      <div className="flex items-center gap-4">
-        <button onClick={() => navigate('/sessions')} className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-500 hover:text-slate-900 border border-slate-200 bg-white">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        <button onClick={() => navigate('/sessions')} className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-500 hover:text-slate-900 border border-slate-200 bg-white shrink-0">
           <ArrowLeft className="w-4 h-4" />
         </button>
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-3">
-            <h2 className="text-md font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5">
+        <div className="space-y-0.5 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h2 className="text-md font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5 shrink-0">
               <Train className="w-5 h-5 text-primary" />
               {session?.trainNumber || 'Loading...'}
             </h2>
-            <Badge className="font-extrabold text-[9px] uppercase px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+            <Badge className="font-extrabold text-[9px] uppercase px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
               {session?.status || '…'}
             </Badge>
-            <span className="text-[10px] font-mono text-slate-400 font-bold bg-slate-50 border border-slate-200 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono text-slate-400 font-bold bg-slate-50 border border-slate-200 px-2 py-0.5 rounded shrink-0">
               {sessionId.slice(0, 8)}…
             </span>
-            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${connected ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
+            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0 ${connected ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-400 border border-slate-200'}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
               {connected ? 'LIVE' : 'POLLING'}
             </span>
           </div>
-          <p className="text-[10px] text-slate-500 font-bold font-mono">
-            {session?.totalFrames ?? '—'} FRAMES | {session?.totalCoaches ?? '—'} COACHES | {session?.criticalDefects ?? 0} CRITICAL DEFECTS
+          <p className="text-[10px] text-slate-500 font-bold font-mono truncate">
+            {session?.totalFrames ?? '—'} FRAMES | {session?.totalCoaches ?? '—'} COACHES | {session?.criticalDefects ?? 0} CRITICAL
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 font-sans">
-        <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center min-w-[100px]">
+      <div className="flex items-center gap-2 font-sans shrink-0">
+        <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center shrink-0">
           <span className="text-[8px] font-black text-slate-400 uppercase tracking-wider leading-none mb-1">HEALTH SCORE</span>
           <span className="text-sm font-black text-[#003d9b] leading-none">
             {session?.healthScore != null ? `${session.healthScore}%` : '—'}
           </span>
         </div>
-        <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center min-w-[110px]">
+        <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center shrink-0">
           <span className="text-[8px] font-black text-slate-400 uppercase tracking-wider leading-none mb-1">OCR CONFIDENCE</span>
           <span className="text-sm font-black text-[#003d9b] leading-none">
             {session?.ocrConfidence ? `${(session.ocrConfidence * 100).toFixed(1)}%` : '—'}
@@ -784,7 +784,7 @@ export const TrainWorkspace = () => {
     <div className="bg-slate-50 border-b border-slate-200 px-6 py-2 shrink-0 flex flex-wrap items-center justify-between text-[10px] font-bold text-slate-500 shadow-inner gap-2">
       <div className="flex items-center gap-2 w-full md:w-auto">
         <span className="font-mono text-slate-400">PIPELINE:</span>
-        <Progress value={session?.progressPercent ?? 0} className="h-2 bg-slate-200 w-40 rounded-full" />
+        <Progress value={session?.progressPercent ?? 0} className="h-2 bg-slate-200 w-28 rounded-full" />
         <span className="font-mono text-slate-900">{session?.progressPercent ?? 0}%</span>
       </div>
       <div className="flex gap-1.5 items-center flex-wrap">
@@ -898,11 +898,11 @@ export const TrainWorkspace = () => {
         {/* Center — Frame Viewer */}
         <div className="flex-1 flex flex-col min-w-0 p-4 bg-slate-50">
           {/* Controls */}
-          <div className="flex justify-between items-center mb-3 shrink-0">
+          <div className="flex flex-wrap justify-between items-center mb-2 shrink-0 gap-y-1.5">
             <p className="text-[10px] font-bold text-slate-500 uppercase">
               {frames.length > 0 ? `${frames.length} frames loaded` : 'No frames loaded'}
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap justify-end">
               {/* Overlay toggles — only useful in single-frame mode */}
               {layoutMode === 'single' && (
                 <div className="flex items-center gap-1 bg-white border border-slate-200 rounded p-0.5 shadow-sm">
@@ -1041,7 +1041,7 @@ export const TrainWorkspace = () => {
         </div>
 
         {/* Right — Intelligence Panel */}
-        <div className="w-96 border-l border-slate-200 p-4 shrink-0 flex flex-col h-full bg-white overflow-y-auto">
+        <div className="w-72 border-l border-slate-200 p-3 shrink-0 flex flex-col h-full bg-white overflow-y-auto">
           <div className="mb-4">
             <h3 className="text-xs font-black text-slate-900 uppercase tracking-wider">AI Intelligence Feed</h3>
             <p className="text-[10px] text-slate-400 font-bold uppercase">Select a coach from the tree to load</p>

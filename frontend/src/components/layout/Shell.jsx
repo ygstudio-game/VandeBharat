@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { ToastContainer } from '../ui/ToastContainer';
 import { 
   LayoutDashboard, 
@@ -29,7 +29,17 @@ const navItems = [
 ];
 
 export const Shell = () => {
+  const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Auto-collapse when entering a train workspace, restore when leaving
+  useEffect(() => {
+    if (location.pathname.startsWith('/train/')) {
+      setSidebarCollapsed(true);
+    } else {
+      setSidebarCollapsed(false);
+    }
+  }, [location.pathname]);
 
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans">

@@ -1,7 +1,7 @@
 const http = require('http');
 
 const SERVICES = [
-  { name: 'YOLO',       port: 5002, label: 'YOLO Defect Detector' },
+  { name: 'YOLO',       port: 5002, label: 'Defect Detector' },
   { name: 'OCR',        port: 5000, label: 'PaddleOCR Engine' },
   { name: 'FRAME-EXT',  port: 5003, label: 'Frame Extractor' },
   { name: 'SYNC-ENG',   port: 5004, label: 'Sync Engine' },

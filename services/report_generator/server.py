@@ -13,7 +13,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from builder import generate_report, build_json_report, build_pdf_report, load_session_data
+from builder import generate_report, build_json_report, build_pdf_report, load_session_data, build_evidence_bundle
 
 # Load backend .env first (shared credentials), then service .env as override
 _root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend"))
@@ -151,6 +151,18 @@ def generate(req: GenerateRequest):
                 (str(exc), req.session_id),
             )
             conn.commit()
+        raise HTTPException(status_code=500, detail=str(exc))
+    finally:
+        conn.close()
+
+
+@app.post("/evidence")
+def evidence(req: GenerateRequest):
+    conn = get_conn()
+    try:
+        return build_evidence_bundle(conn, req.session_id)
+    except Exception as exc:
+        logger.exception("Evidence bundle failed for session %s", req.session_id)
         raise HTTPException(status_code=500, detail=str(exc))
     finally:
         conn.close()

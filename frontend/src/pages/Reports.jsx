@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePolling } from '../hooks/usePolling';
-import { getSessions, getReport, generateReport, getHierarchy, getIntelligence, signReport, normalizeSession, getCoachFrames, getFrames } from '../lib/api';
+import { getSessions, getReport, generateReport, getHierarchy, getIntelligence, signReport, exportEvidence, normalizeSession, getCoachFrames, getFrames } from '../lib/api';
 import { 
   FileText, 
   Search, 
@@ -148,6 +148,28 @@ export const Reports = () => {
   const [pinInput, setPinInput] = useState('');
   const [isSigningLoading, setIsSigningLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(null); // report ID
+  const [isExportingEvidence, setIsExportingEvidence] = useState(null); // report ID
+
+  const handleEvidence = async (report) => {
+    if (!report) return;
+    const reportId = typeof report === 'string' ? report : report.id;
+
+    setIsExportingEvidence(reportId);
+    try {
+      const data = await exportEvidence(reportId);
+      if (data && data.zip_url) {
+        const fullUrl = data.zip_url.startsWith('http') ? data.zip_url : `http://localhost:8001${data.zip_url}`;
+        window.open(fullUrl, '_blank');
+      } else {
+        alert('Evidence bundle could not be generated. Please verify the session has completed analysis.');
+      }
+    } catch (err) {
+      console.error('Evidence bundle export failed:', err);
+      alert('Failed to export evidence bundle: ' + (err.message || 'Server error'));
+    } finally {
+      setIsExportingEvidence(null);
+    }
+  };
 
   const handleDownload = async (report) => {
     if (!report) return;
@@ -680,11 +702,17 @@ export const Reports = () => {
               )}
               EXPORT PDF
             </button>
-            <button 
-              onClick={() => alert("Evidence bundle created for VB-22901.")}
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:bg-slate-50 text-primary text-xs font-bold uppercase tracking-wider transition-all rounded shadow-sm"
+            <button
+              onClick={() => handleEvidence(selectedReport)}
+              disabled={isExportingEvidence === selectedReport.id}
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:bg-slate-50 text-primary text-xs font-bold uppercase tracking-wider transition-all rounded shadow-sm disabled:opacity-60"
             >
-              <Download className="w-3.5 h-3.5" /> EXPORT EVIDENCE BUNDLE
+              {isExportingEvidence === selectedReport.id ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Download className="w-3.5 h-3.5" />
+              )}
+              {isExportingEvidence === selectedReport.id ? 'Bundling...' : 'EXPORT EVIDENCE BUNDLE'}
             </button>
             {selectedReport.status === 'PENDING_SIGNATURE' ? (
               <button 

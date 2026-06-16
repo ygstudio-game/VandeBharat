@@ -148,6 +148,53 @@ async function reports(fastify) {
     return { success: true, message: `Report signed off successfully` };
   });
 
+  // GET /api/sessions/:id/evidence — build evidence bundle, return zip download URL
+  fastify.get('/:id/evidence', async (req, reply) => {
+    const session = await prisma.inspectionSession.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, status: true },
+    });
+    if (!session) {
+      reply.status(404);
+      return { error: 'Session not found' };
+    }
+    if (!['analysing', 'completed'].includes(session.status)) {
+      reply.status(409);
+      return { error: `Session status is '${session.status}' — pipeline must reach 'analysing' or 'completed' before exporting an evidence bundle` };
+    }
+
+    try {
+      const resp = await axios.post(
+        `${config.services.reportGenerator}/evidence`,
+        { session_id: req.params.id },
+        { timeout: 300_000 },  // bundling downloads annotated frames — allow time
+      );
+      fastify.log.info({ msg: 'Evidence bundle built', session_id: req.params.id, frames: resp.data.frames_included });
+      return resp.data;  // { zip_url, frames_included, frames_failed, size_bytes }
+    } catch (err) {
+      fastify.log.error({ msg: 'Evidence bundle failed', session_id: req.params.id, error: err.message });
+      reply.status(500);
+      return { error: 'Evidence bundle generation failed: ' + err.message };
+    }
+  });
+
+  // GET /api/sessions/:id/evidence/zip — serve local evidence bundle
+  fastify.get('/:id/evidence/zip', async (req, reply) => {
+    const fs = require('fs');
+    const path = require('path');
+    const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
+    const zipPath = path.join(UPLOAD_DIR, 'reports', `evidence_${req.params.id}.zip`);
+
+    if (!fs.existsSync(zipPath)) {
+      reply.status(404);
+      return { error: 'Evidence bundle not found. Please trigger generation first.' };
+    }
+
+    reply.type('application/zip');
+    reply.header('Content-Disposition', `attachment; filename="evidence_${req.params.id}.zip"`);
+    return fs.createReadStream(zipPath);
+  });
+
   // GET /api/sessions/:id/report/pdf — serve local generated PDF report
   fastify.get('/:id/report/pdf', async (req, reply) => {
     const fs = require('fs');

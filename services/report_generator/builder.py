@@ -5,8 +5,10 @@ Reads full session from DB → builds PDF (fpdf2) + JSON → uploads to Cloudina
 import io
 import os
 import json
+import zipfile
 import logging
 import datetime
+import requests
 from fpdf import FPDF
 import cloudinary
 import cloudinary.uploader
@@ -339,10 +341,28 @@ def _upload(data: bytes, public_id: str, resource_type: str, raw_convert=None) -
     return {"url": result["secure_url"], "public_id": result["public_id"]}
 
 
+def _configure_cloudinary():
+    """Configure Cloudinary from the current environment at call time.
+
+    The module-level cloudinary.config() runs at import, which (depending on
+    import order) can happen before .env is loaded — capturing empty credentials.
+    Re-reading env here guarantees the live values are used for the upload.
+    """
+    cloudinary.config(
+        cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.environ.get("CLOUDINARY_API_KEY"),
+        api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    )
+
+
 def upload_report(pdf_bytes: bytes, json_str: str, session_id: str) -> dict:
+    _configure_cloudinary()
     base = f"vande/{session_id}/reports"
-    pdf_result = _upload(pdf_bytes, f"{base}/inspection_report", "raw")
-    json_result = _upload(json_str.encode(), f"{base}/inspection_report_data", "raw")
+    # Keep the .pdf/.json extension in the public_id so the delivered raw URL ends
+    # in the right extension — otherwise the browser downloads an extension-less,
+    # octet-stream file that is not recognised as a PDF.
+    pdf_result = _upload(pdf_bytes, f"{base}/inspection_report.pdf", "raw")
+    json_result = _upload(json_str.encode(), f"{base}/inspection_report_data.json", "raw")
     return {
         "pdf_url": pdf_result["url"],
         "pdf_public_id": pdf_result["public_id"],
@@ -383,23 +403,15 @@ def generate_report(conn, session_id: str) -> dict:
     except Exception as local_err:
         logger.warning("Could not write local report backup files: %s", str(local_err))
 
-    has_cloudinary = all([
-        os.environ.get("CLOUDINARY_CLOUD_NAME"),
-        os.environ.get("CLOUDINARY_API_KEY"),
-        os.environ.get("CLOUDINARY_API_SECRET"),
-    ])
-
-    if has_cloudinary:
-        logger.info("Uploading report to Cloudinary")
-        urls = upload_report(pdf_bytes, json_str, session_id)
-    else:
-        logger.warning("Cloudinary not configured — using local Fastify fallback endpoints")
-        urls = {
-            "pdf_url": f"/api/sessions/{session_id}/report/pdf",
-            "pdf_public_id": f"local_{session_id}_pdf",
-            "json_url": f"/api/sessions/{session_id}/report/json",
-            "json_public_id": f"local_{session_id}_json",
-        }
+    # Serve the report from the backend's local file routes. Cloudinary blocks
+    # delivery of raw/PDF files by default (401 "deny or ACL failure"), so the
+    # browser-facing URLs always point at the local backup written just above.
+    urls = {
+        "pdf_url": f"/api/sessions/{session_id}/report/pdf",
+        "pdf_public_id": f"local_{session_id}_pdf",
+        "json_url": f"/api/sessions/{session_id}/report/json",
+        "json_public_id": f"local_{session_id}_json",
+    }
 
     s = data["session"]
     result = {
@@ -417,3 +429,95 @@ def generate_report(conn, session_id: str) -> dict:
         s["total_coaches"] or 0, data["total_defects"], len(pdf_bytes) / 1024,
     )
     return result
+
+
+# ─── 6. Evidence bundle (zip of PDF + JSON + annotated defect frames) ──────────
+
+def _download_bytes(url: str, timeout: int = 15) -> bytes:
+    resp = requests.get(url, timeout=timeout)
+    resp.raise_for_status()
+    return resp.content
+
+
+def _safe_name(value) -> str:
+    """Filesystem-safe fragment for zip entry paths."""
+    s = str(value or "").strip()
+    keep = []
+    for ch in s:
+        keep.append(ch if (ch.isalnum() or ch in ("-", "_")) else "_")
+    return ("".join(keep) or "item")[:60]
+
+
+def build_evidence_bundle(conn, session_id: str) -> dict:
+    """Build a forensic evidence zip: the PDF report, the JSON report, and every
+    annotated defect frame (downloaded from its stored URL), grouped per coach.
+    Saved locally as a backup and uploaded to Cloudinary when configured.
+    """
+    logger.info("Building evidence bundle for session %s", session_id)
+    data = load_session_data(conn, session_id)
+    if not data["session"]:
+        raise ValueError(f"Session {session_id} not found")
+
+    json_str = build_json_report(data)
+    pdf_bytes = build_pdf_report(data)
+
+    coach_by_id = {c["id"]: c for c in data["coaches"]}
+    frames_included = 0
+    frames_failed = 0
+    seen_urls = set()
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("inspection_report.pdf", pdf_bytes)
+        zf.writestr("inspection_report.json", json_str)
+
+        for coach_id, defects in data["coach_defects"].items():
+            coach = coach_by_id.get(coach_id)
+            coach_dir = (
+                f"frames/coach_{coach['coach_index']}_{_safe_name(coach['coach_number'])}"
+                if coach else f"frames/coach_{_safe_name(coach_id)}"
+            )
+            for d in defects:
+                url = d.get("annotated_frame_url")
+                if not url or url in seen_urls:
+                    continue
+                seen_urls.add(url)
+                try:
+                    img = _download_bytes(url)
+                    fname = f"{coach_dir}/{_safe_name(d['severity'])}_{_safe_name(d['defect_type'])}_{_safe_name(str(d['id'])[:8])}.jpg"
+                    zf.writestr(fname, img)
+                    frames_included += 1
+                except Exception as exc:
+                    frames_failed += 1
+                    logger.warning("Evidence: could not fetch annotated frame %s: %s", url, exc)
+
+    zip_bytes = buf.getvalue()
+
+    # Local backup (mirrors the report local backup), for robust offline operation
+    try:
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        uploads_reports_dir = os.path.join(root_dir, "backend", "uploads", "reports")
+        os.makedirs(uploads_reports_dir, exist_ok=True)
+        local_zip_path = os.path.join(uploads_reports_dir, f"evidence_{session_id}.zip")
+        with open(local_zip_path, "wb") as f:
+            f.write(zip_bytes)
+        logger.info("Saved local evidence bundle to %s", local_zip_path)
+    except Exception as local_err:
+        logger.warning("Could not write local evidence bundle: %s", local_err)
+
+    # Served from the backend's local file route — Cloudinary blocks raw/ZIP
+    # delivery by default (401), so the browser-facing URL is always local.
+    zip_url = f"/api/sessions/{session_id}/evidence/zip"
+    zip_public_id = f"local_{session_id}_zip"
+
+    logger.info(
+        "Evidence bundle built: %d frames included, %d failed, %.0f KB zip",
+        frames_included, frames_failed, len(zip_bytes) / 1024,
+    )
+    return {
+        "zip_url": zip_url,
+        "zip_public_id": zip_public_id,
+        "frames_included": frames_included,
+        "frames_failed": frames_failed,
+        "size_bytes": len(zip_bytes),
+    }
