@@ -189,7 +189,7 @@ function Repair-Venv($svc, $PY, $HasGPU) {
         if ($LASTEXITCODE -ne 0) { throw "pip upgrade failed" }
 
         Print-Info "Installing requirements.txt..."
-        & $vPy -m pip install -r requirements.txt --quiet
+        & $vPy -m pip install -r requirements.txt --quiet --prefer-binary --no-cache-dir
         if ($LASTEXITCODE -ne 0) { throw "pip install requirements failed" }
 
         if ($svc -eq "GPU\yolo") {

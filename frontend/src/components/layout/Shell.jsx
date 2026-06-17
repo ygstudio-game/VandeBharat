@@ -123,7 +123,7 @@ export const Shell = () => {
             </button>
             <ShieldCheck className="w-4 h-4 text-primary" />
             <span className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground">
-              Indian Railways • Machine Vision-based Inspection System
+              Machine Vision-based Inspection System
             </span>
           </div>
 
