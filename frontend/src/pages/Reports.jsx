@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePolling } from '../hooks/usePolling';
 import { getSessions, getReport, generateReport, getHierarchy, getIntelligence, signReport, exportEvidence, normalizeSession, getCoachFrames, getFrames } from '../lib/api';
 import { 
@@ -34,7 +34,8 @@ import {
   MoreVertical,
   SlidersHorizontal,
   ChevronLeft,
-  LayoutGrid
+  LayoutGrid,
+  MapPin
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -95,8 +96,21 @@ export const Reports = () => {
     status: localStatusOverrides[r.id] || r.status
   }));
   
+  // Deep-link support: /reports?session=<id> auto-opens that report once loaded
+  const [searchParams, setSearchParams] = useSearchParams();
+  const deepLinkSessionId = searchParams.get('session');
+
   // Navigation & detailed report workspace state
   const [selectedReport, setSelectedReport] = useState(null);
+
+  useEffect(() => {
+    if (!deepLinkSessionId || selectedReport) return;
+    const match = displayReports.find(r => r.id === deepLinkSessionId);
+    if (match) {
+      setSelectedReport(match);
+      setSearchParams({}, { replace: true });
+    }
+  }, [deepLinkSessionId, selectedReport, displayReports, setSearchParams]);
   const [activeCoach, setActiveCoach] = useState(null); // real coach object or label
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -848,6 +862,9 @@ export const Reports = () => {
               components={components}
               stationName={selectedReport?.stationName}
               activeCoach={activeCoach}
+              trainNumber={sessionObj?.train_number}
+              sessionStartedAt={sessionObj?.started_at}
+              onViewFrame={(frame) => { setSelectedFrame(frame); setIsFrameModalOpen(true); }}
             />
 
           </section>
@@ -1029,9 +1046,9 @@ export const Reports = () => {
 
                 {/* Frame info badge — top left */}
                 <div className="absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur-sm px-3 py-1.5 rounded border border-slate-700 text-[10px] font-mono text-white flex items-center gap-2 pointer-events-none">
-                  <span className="font-extrabold text-primary">FRAME #{selectedFrame.sequence_number}</span>
+                  <span className="font-extrabold text-primary">IMG-{selectedFrame.sequence_number}</span>
                   <span className="text-slate-600">·</span>
-                  <span className="text-slate-400">T:{selectedFrame.trigger_id}</span>
+                  <span className="text-slate-400">{selectedFrame.camera_name || selectedFrame.camera_type || '—'}</span>
                   <span className="text-slate-600">·</span>
                   <span className="text-slate-400">
                     {coachFrames.findIndex(f => f.id === selectedFrame.id) + 1} / {coachFrames.length}
@@ -1093,6 +1110,30 @@ export const Reports = () => {
               {/* Right — Detail panel */}
               <div className="w-72 bg-white border-l border-slate-200 flex flex-col shrink-0">
                 <div className="flex-1 overflow-y-auto">
+                  {/* Frame info */}
+                  <div className="p-5 pb-0 flex flex-col gap-1.5">
+                    <p className="text-[9px] font-black uppercase text-slate-400 mb-1">Frame Info</p>
+                    {[
+                      ['IMAGE ID', `IMG-${selectedFrame.sequence_number}`],
+                      ['DATE & TIME', started
+                        ? new Date(started.getTime() + selectedFrame.captured_at_ms).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'medium' })
+                        : '—'],
+                      ['TRAIN NO', sessionObj?.train_number || '—'],
+                      ['BOGIE NO', activeCoach || '—'],
+                      ['CAMERA', selectedFrame.camera_name || selectedFrame.camera_type || '—'],
+                    ].map(([label, value]) => (
+                      <div key={label} className="flex justify-between text-xs">
+                        <span className="text-slate-400">{label}</span>
+                        <span className="font-mono font-bold text-slate-700">{value}</span>
+                      </div>
+                    ))}
+                    <div className="flex items-center gap-1.5 mt-1 p-2 bg-slate-50 border border-slate-100 rounded">
+                      <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
+                      <span className="text-[9px] font-black uppercase text-slate-400">Location</span>
+                      <span className="font-mono text-[11px] text-slate-700 ml-auto">{selectedReport?.stationName || '—'}</span>
+                    </div>
+                  </div>
+                  <hr className="mx-5 my-3 border-slate-100" />
                   {selectedFrame.defects?.length > 0 ? (
                     <div className="p-5 flex flex-col gap-4">
                       {/* Anomaly header */}

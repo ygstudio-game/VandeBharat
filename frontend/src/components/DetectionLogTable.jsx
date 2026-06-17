@@ -1,151 +1,24 @@
-import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import { Search, Filter, Eye, ArrowUpDown, ArrowUp, ArrowDown, AlertTriangle, X, MapPin, Train } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, Filter, Eye, ArrowUpDown, ArrowUp, ArrowDown, AlertTriangle, MapPin, Train, Camera, ExternalLink } from 'lucide-react';
 
-// Renders the expanded inline preview for a single row
-const ExpandedRow = ({ row, frameComponents, colCount }) => {
-  const imgRef = useRef(null);
-  const canvasRef = useRef(null);
-
-  const draw = useCallback(() => {
-    const img = imgRef.current;
-    const canvas = canvasRef.current;
-    if (!img || !canvas || !img.naturalWidth) return;
-    const sw = img.offsetWidth / img.naturalWidth;
-    const sh = img.offsetHeight / img.naturalHeight;
-    canvas.width = img.offsetWidth;
-    canvas.height = img.offsetHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Defect boxes — flat bbox_x/y/w/h from frame.defects
-    (row.frame.defects || []).forEach(d => {
-      if (d.bbox_x == null) return;
-      const x = d.bbox_x * sw, y = d.bbox_y * sh;
-      const w = d.bbox_w * sw, h = d.bbox_h * sh;
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x, y, w, h);
-      ctx.fillStyle = 'rgba(239,68,68,0.12)';
-      ctx.fillRect(x, y, w, h);
-      ctx.fillStyle = '#ef4444';
-      ctx.font = 'bold 10px monospace';
-      ctx.fillText(d.defect_type || 'defect', x + 3, y > 14 ? y - 3 : y + 14);
-    });
-
-    // Component boxes — nested bbox.x/y/w/h from coachIntel components
-    frameComponents.forEach(c => {
-      const b = c.bbox;
-      if (!b || b.x == null) return;
-      const x = b.x * sw, y = b.y * sh;
-      const w = b.w * sw, h = b.h * sh;
-      ctx.strokeStyle = '#3b82f6';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(x, y, w, h);
-      ctx.fillStyle = 'rgba(59,130,246,0.07)';
-      ctx.fillRect(x, y, w, h);
-    });
-  }, [row, frameComponents]);
-
-  // Redraw when image loads or row changes
-  useEffect(() => { draw(); }, [draw]);
-
-  const url = row.frame.cloudinary_url || row.frame.thumbnail_url;
-
-  return (
-    <tr className="bg-slate-950">
-      <td colSpan={colCount} className="p-0 border-b-2 border-primary/30">
-        <div className="flex" style={{ maxHeight: 300 }}>
-          {/* Left — image with bbox overlay */}
-          <div className="flex-1 bg-slate-900 flex items-center justify-center overflow-hidden p-3">
-            {url ? (
-              <div className="relative inline-block">
-                <img
-                  ref={imgRef}
-                  src={url}
-                  alt={`Frame #${row.frameNum}`}
-                  className="block rounded"
-                  style={{ maxHeight: 270, maxWidth: '100%', width: 'auto' }}
-                  onLoad={draw}
-                />
-                <canvas
-                  ref={canvasRef}
-                  className="absolute top-0 left-0 pointer-events-none rounded"
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-            ) : (
-              <span className="text-slate-500 text-xs font-mono">No image available</span>
-            )}
-          </div>
-
-          {/* Right — detail panel */}
-          <div className="w-60 bg-white border-l border-slate-200 flex flex-col overflow-y-auto shrink-0 p-4 gap-3 text-xs">
-            {/* Frame meta */}
-            <div className="text-[10px] font-mono text-slate-400 flex flex-wrap gap-2">
-              <span>#{row.frameNum}</span>
-              <span>·</span>
-              <span>{row.timestamp}</span>
-              <span>·</span>
-              <span>T:{row.triggerId}</span>
-            </div>
-
-            {row.hasDefect ? (
-              <>
-                <div>
-                  <div className="text-[9px] font-black uppercase text-red-500 tracking-wider flex items-center gap-1 mb-1">
-                    <AlertTriangle className="w-3 h-3" /> Anomaly Detected
-                  </div>
-                  <div className="font-bold text-slate-800 text-sm">{row.defect}</div>
-                  {row.severity && (
-                    <span className={`inline-block mt-1 text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${
-                      row.severity === 'CRITICAL' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
-                    }`}>
-                      {row.severity}
-                    </span>
-                  )}
-                </div>
-                <div>
-                  <div className="text-[9px] font-black uppercase text-slate-400 mb-1">Confidence</div>
-                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-red-500 rounded-full"
-                      style={{ width: row.confidence !== '—' ? row.confidence : '0%' }}
-                    />
-                  </div>
-                  <div className="text-[10px] font-mono text-slate-500 mt-0.5">{row.confidence}</div>
-                </div>
-              </>
-            ) : (
-              <div>
-                <div className="text-[9px] font-black uppercase text-green-600 tracking-wider mb-1">Nominal Status</div>
-                {row.detectionCount > 0 ? (
-                  <div className="flex flex-wrap gap-1">
-                    {row.component.split(', ').map((c, i) => (
-                      <span key={i} className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <span className="text-slate-400 text-[10px]">No components detected</span>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </td>
-    </tr>
-  );
-};
-
-const DetectionLogTable = ({ frames = [], components = [], stationName = '—', activeCoach = '—', onViewFrame }) => {
+const DetectionLogTable = ({
+  frames = [],
+  components = [],
+  stationName = '—',
+  activeCoach = '—',
+  trainNumber = '—',
+  sessionStartedAt = null,
+  onViewFrame = () => {},
+  onGoToReport = null,
+  rows: rowsOverride = null,
+  showActions = true,
+}) => {
   const [query, setQuery] = useState('');
   const [filterDefects, setFilterDefects] = useState(false);
   const [sortField, setSortField] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
-  const [expandedRowId, setExpandedRowId] = useState(null);
 
-  const rows = useMemo(() => frames.map(f => {
+  const derivedRows = useMemo(() => frames.map(f => {
     const frameComponents = components.filter(
       c => c.trigger_id === f.trigger_id || c.frame_id === f.id
     );
@@ -165,17 +38,25 @@ const DetectionLogTable = ({ frames = [], components = [], stationName = '—', 
     const maxConf = allConfs.length > 0 ? Math.max(...allConfs) : 0;
 
     const ms = f.captured_at_ms;
-    const timestamp = ms != null
-      ? `${String(Math.floor(ms / 60000)).padStart(2, '0')}m ${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}s`
-      : '—';
+    const timestamp = sessionStartedAt && ms != null
+      ? new Date(new Date(sessionStartedAt).getTime() + ms).toLocaleString(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'medium',
+        })
+      : ms != null
+        ? `${String(Math.floor(ms / 60000)).padStart(2, '0')}m ${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}s`
+        : '—';
 
     return {
       id: f.id,
+      imageId: `IMG-${f.sequence_number}`,
       frameNum: f.sequence_number,
       triggerId: f.trigger_id,
       timestamp,
       location: stationName,
       bogieNo: activeCoach || '—',
+      trainNo: trainNumber || '—',
+      cameraId: f.camera_name || f.camera_type || '—',
       component: componentStr,
       defect: defectStr,
       hasDefect: frameDefects.length > 0,
@@ -185,7 +66,9 @@ const DetectionLogTable = ({ frames = [], components = [], stationName = '—', 
       frameComponents,
       frame: f,
     };
-  }), [frames, components, stationName, activeCoach]);
+  }), [frames, components, stationName, activeCoach, trainNumber, sessionStartedAt]);
+
+  const rows = rowsOverride ?? derivedRows;
 
   const filtered = useMemo(() => {
     let r = rows;
@@ -193,8 +76,10 @@ const DetectionLogTable = ({ frames = [], components = [], stationName = '—', 
     if (q) r = r.filter(row =>
       row.component.toLowerCase().includes(q) ||
       row.defect.toLowerCase().includes(q) ||
-      String(row.frameNum).includes(q) ||
+      row.imageId.toLowerCase().includes(q) ||
       row.bogieNo.toLowerCase().includes(q) ||
+      row.trainNo.toLowerCase().includes(q) ||
+      row.cameraId.toLowerCase().includes(q) ||
       row.location.toLowerCase().includes(q)
     );
     if (filterDefects) r = r.filter(row => row.hasDefect);
@@ -221,17 +106,16 @@ const DetectionLogTable = ({ frames = [], components = [], stationName = '—', 
   };
 
   const COLS = [
-    { key: 'frameNum',  label: 'FRAME' },
-    { key: 'timestamp', label: 'VIDEO TIME' },
+    { key: 'imageId',   label: 'IMAGE ID' },
+    { key: 'timestamp', label: 'DATE & TIME' },
     { key: 'location',  label: 'LOCATION' },
+    { key: 'trainNo',   label: 'TRAIN NO' },
     { key: 'bogieNo',   label: 'BOGIE NO' },
-    { key: 'component', label: 'COMPONENT DETECTED' },
+    { key: 'cameraId',  label: 'CAMERA' },
+    { key: 'component', label: 'COMPONENT' },
     { key: 'defect',    label: 'DEFECT' },
-    { key: 'confidence',label: 'CONF' },
-    { key: null,        label: '' },
+    ...(showActions ? [{ key: null, label: '' }] : []),
   ];
-
-  const toggleExpand = (rowId) => setExpandedRowId(id => id === rowId ? null : rowId);
 
   return (
     <div className="bg-white border border-slate-200 rounded shadow-sm flex flex-col overflow-hidden flex-1 min-h-0">
@@ -297,27 +181,25 @@ const DetectionLogTable = ({ frames = [], components = [], stationName = '—', 
           <tbody className="text-xs divide-y divide-slate-100">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-3 py-8 text-center text-slate-400 font-medium italic">
+                <td colSpan={COLS.length} className="px-3 py-8 text-center text-slate-400 font-medium italic">
                   {rows.length === 0 ? 'No frames loaded.' : 'No frames match the current filter.'}
                 </td>
               </tr>
             ) : filtered.map(row => (
-              <React.Fragment key={row.id}>
-                <tr
-                  className={`transition-colors ${
-                    expandedRowId === row.id
-                      ? 'bg-slate-100'
-                      : row.hasDefect
-                        ? 'bg-red-50 hover:bg-red-100 border-red-100'
-                        : 'hover:bg-slate-50'
-                  }`}
-                >
-                  {/* Frame # */}
+              <tr
+                key={row.id}
+                className={`transition-colors ${
+                  row.hasDefect
+                    ? 'bg-red-50 hover:bg-red-100 border-red-200'
+                    : 'hover:bg-slate-50'
+                }`}
+              >
+                  {/* Image ID */}
                   <td className="px-3 py-2 font-mono font-bold text-slate-700 whitespace-nowrap">
-                    #{row.frameNum}
+                    {row.imageId}
                   </td>
 
-                  {/* Video timestamp */}
+                  {/* Date & Time */}
                   <td className="px-3 py-2 font-mono text-slate-500 whitespace-nowrap">
                     {row.timestamp}
                   </td>
@@ -330,11 +212,24 @@ const DetectionLogTable = ({ frames = [], components = [], stationName = '—', 
                     </span>
                   </td>
 
-                  {/* Bogie No */}
+                  {/* Train No */}
                   <td className="px-3 py-2 whitespace-nowrap">
                     <span className="inline-flex items-center gap-1 text-slate-600">
                       <Train className="w-3 h-3 text-slate-400 shrink-0" />
-                      <span className="font-mono font-bold">{row.bogieNo}</span>
+                      <span className="font-mono font-bold">{row.trainNo}</span>
+                    </span>
+                  </td>
+
+                  {/* Bogie No */}
+                  <td className="px-3 py-2 whitespace-nowrap">
+                    <span className="font-mono font-bold text-slate-600">{row.bogieNo}</span>
+                  </td>
+
+                  {/* Camera */}
+                  <td className="px-3 py-2 max-w-[80px]">
+                    <span className="flex items-center gap-1 text-slate-600 min-w-0">
+                      <Camera className="w-3 h-3 text-slate-400 shrink-0" />
+                      <span className="font-mono truncate min-w-0" title={row.cameraId}>{row.cameraId}</span>
                     </span>
                   </td>
 
@@ -371,37 +266,29 @@ const DetectionLogTable = ({ frames = [], components = [], stationName = '—', 
                     )}
                   </td>
 
-                  {/* Confidence */}
-                  <td className="px-3 py-2 font-mono text-slate-500 whitespace-nowrap">
-                    {row.confidence}
-                  </td>
-
-                  {/* View / Close toggle */}
-                  <td className="px-3 py-2">
-                    <button
-                      onClick={() => toggleExpand(row.id)}
-                      className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors ${
-                        expandedRowId === row.id
-                          ? 'bg-slate-700 text-white border-slate-700'
-                          : 'border-slate-200 hover:bg-primary hover:text-white hover:border-primary'
-                      }`}
-                    >
-                      {expandedRowId === row.id
-                        ? <><X className="w-3 h-3" /> CLOSE</>
-                        : <><Eye className="w-3 h-3" /> VIEW</>
-                      }
-                    </button>
-                  </td>
-                </tr>
-
-                {expandedRowId === row.id && (
-                  <ExpandedRow
-                    row={row}
-                    frameComponents={row.frameComponents}
-                    colCount={COLS.length}
-                  />
-                )}
-              </React.Fragment>
+                  {/* Actions */}
+                  {showActions && (
+                    <td className="px-3 py-2">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => onViewFrame(row.frame ?? row)}
+                          className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-slate-200 hover:bg-primary hover:text-white hover:border-primary"
+                        >
+                          <Eye className="w-3 h-3" /> VIEW
+                        </button>
+                        {onGoToReport && (
+                          <button
+                            onClick={() => onGoToReport(row)}
+                            className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-slate-200 hover:bg-slate-700 hover:text-white hover:border-slate-700"
+                            title="Open full report"
+                          >
+                            <ExternalLink className="w-3 h-3" /> REPORT
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  )}
+              </tr>
             ))}
           </tbody>
         </table>

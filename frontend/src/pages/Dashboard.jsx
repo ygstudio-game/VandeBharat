@@ -1,34 +1,140 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KPICard } from '../components/dashboard/KPICard';
 import { LiveTrainCard } from '../components/dashboard/LiveTrainCard';
 import { usePolling } from '../hooks/usePolling';
 import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
-import { getDashboardKpis, getLiveQueue, normalizeSession } from '../lib/api';
+import { getDashboardKpis, getLiveQueue, getRecentDefects, normalizeSession } from '../lib/api';
+import DetectionLogTable from '../components/DetectionLogTable';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Train, 
-  FileCheck, 
-  Loader2, 
-  AlertTriangle, 
-  ShieldAlert, 
-  Activity, 
-  Server, 
-  Cpu, 
+import {
+  Train,
+  FileCheck,
+  Loader2,
+  AlertTriangle,
+  ShieldAlert,
+  Activity,
+  Server,
+  Cpu,
   HardDrive,
-  Clock
+  Clock,
+  X
 } from 'lucide-react';
+
+// Lightweight image preview with a single bbox overlay — used for the dashboard's
+// cross-session defect feed, which has no coachFrames/coachIntel context to drive
+// the full Reports.jsx frame modal.
+function DefectPreviewModal({ defect, onClose }) {
+  const imgRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  const draw = useCallback(() => {
+    const img = imgRef.current;
+    const canvas = canvasRef.current;
+    if (!img || !canvas || !img.naturalWidth || !defect.bbox) return;
+    const scaleX = img.offsetWidth / img.naturalWidth;
+    const scaleY = img.offsetHeight / img.naturalHeight;
+    canvas.width = img.offsetWidth;
+    canvas.height = img.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const { x, y, w, h } = defect.bbox;
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x * scaleX, y * scaleY, w * scaleX, h * scaleY);
+    ctx.fillStyle = 'rgba(239,68,68,0.12)';
+    ctx.fillRect(x * scaleX, y * scaleY, w * scaleX, h * scaleY);
+  }, [defect]);
+
+  useEffect(() => { draw(); }, [draw]);
+
+  const url = defect.cloudinary_url || defect.thumbnail_url;
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center p-6"
+      style={{ background: 'rgba(5,26,62,0.82)', backdropFilter: 'blur(5px)' }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-3xl rounded overflow-hidden shadow-2xl border border-slate-700 bg-slate-900 relative"
+        style={{ maxHeight: '88vh' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 z-10 p-1.5 bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white rounded border border-slate-700 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+        <div className="absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur-sm px-3 py-1.5 rounded border border-slate-700 text-[10px] font-mono text-white">
+          <span className="font-extrabold text-red-400">{defect.defect_type}</span>
+          {defect.severity && <span className="ml-2 text-slate-400">{defect.severity}</span>}
+        </div>
+        <div className="flex items-center justify-center min-h-[300px] p-8">
+          {url ? (
+            <div className="relative inline-block">
+              <img
+                ref={imgRef}
+                src={url}
+                alt={defect.defect_type}
+                className="max-w-full max-h-[70vh] object-contain rounded block"
+                onLoad={draw}
+              />
+              <canvas ref={canvasRef} className="absolute top-0 left-0 pointer-events-none" />
+            </div>
+          ) : (
+            <span className="text-slate-500 text-xs font-mono">No image available</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { data: kpis,      refresh: refreshKpis }  = usePolling(getDashboardKpis, 10000);
-  const { data: queueData, refresh: refreshQueue }  = usePolling(getLiveQueue, 5000);
+  const { data: kpis,      refresh: refreshKpis }    = usePolling(getDashboardKpis, 10000);
+  const { data: queueData, refresh: refreshQueue }   = usePolling(getLiveQueue, 5000);
+  const { data: defectsData, refresh: refreshDefects } = usePolling(getRecentDefects, 15000);
 
   const liveSessions = (queueData?.sessions || []).map(normalizeSession);
   const kv = (key, fallback) => kpis?.[key] ?? fallback;
+  const [previewDefect, setPreviewDefect] = useState(null);
+
+  const defectRows = (defectsData?.defects || []).map((d) => {
+    const timestamp = d.session_started_at && d.captured_at_ms != null
+      ? new Date(new Date(d.session_started_at).getTime() + d.captured_at_ms).toLocaleString(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'medium',
+        })
+      : '—';
+    return {
+      id: d.id,
+      imageId: d.sequence_number != null ? `IMG-${d.sequence_number}` : '—',
+      timestamp,
+      location: d.station_name || '—',
+      trainNo: d.train_number || '—',
+      bogieNo: d.coach_number || '—',
+      cameraId: d.camera_name || d.camera_type || '—',
+      component: '—',
+      defect: d.defect_type,
+      hasDefect: true,
+      severity: d.severity,
+      detectionCount: 0,
+      sessionId: d.session_id,
+      frame: {
+        defect_type: d.defect_type,
+        severity: d.severity,
+        bbox: d.bbox,
+        cloudinary_url: d.cloudinary_url,
+        thumbnail_url: d.thumbnail_url,
+      },
+    };
+  });
 
   // Live WS events — immediate refresh on pipeline events
   const { lastEvent, connected } = useSessionSocket(null);
@@ -37,6 +143,7 @@ export const Dashboard = () => {
     if (lastEvent.type === 'session_completed') {
       refreshKpis();
       refreshQueue();
+      refreshDefects();
       toast.success('Train inspection pipeline finished.', 'New Report Ready');
     } else if (lastEvent.type === 'coaches_mapped') {
       refreshQueue();
@@ -45,7 +152,7 @@ export const Dashboard = () => {
       refreshQueue();
       toast.error('A pipeline session failed.', 'Pipeline Error');
     }
-  }, [lastEvent, refreshKpis, refreshQueue]);
+  }, [lastEvent, refreshKpis, refreshQueue, refreshDefects]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 font-sans">
@@ -63,7 +170,7 @@ export const Dashboard = () => {
 
       {/* KPI Overview Strip */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <KPICard label="Trains Today"    value={String(kv('total_sessions', '—'))}     icon={<Train className="w-4 h-4 text-primary" />} highlightColor="slate" />
+        <KPICard label="Trains Today"    value={String(kv('sessions_today', '—'))}     icon={<Train className="w-4 h-4 text-primary" />} highlightColor="slate" />
         <KPICard label="Reports Ready"   value={String(kv('completed_sessions', '—'))}  icon={<FileCheck className="w-4 h-4 text-success" />} highlightColor="emerald" />
         <KPICard label="Processing"      value={String(kv('active_sessions', '—'))}     icon={<Loader2 className="w-4 h-4 text-processing animate-spin" />} highlightColor="cyan" />
         <KPICard label="Queued"          value={String(kv('queued_sessions', '—'))}     icon={<Activity className="w-4 h-4 text-muted-foreground" />} highlightColor="slate" />
@@ -200,6 +307,25 @@ export const Dashboard = () => {
           </section> */}
         </div>
       </div>
+
+      {/* Recent Defects Across All Sessions */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-black text-foreground">RECENT DEFECTS</h2>
+          <p className="text-xs text-muted-foreground font-semibold mt-0.5">Latest flagged anomalies across all inspections</p>
+        </div>
+        <div className="h-[420px]">
+          <DetectionLogTable
+            rows={defectRows}
+            onViewFrame={(frame) => setPreviewDefect(frame)}
+            onGoToReport={(row) => row.sessionId && navigate(`/reports?session=${row.sessionId}`)}
+          />
+        </div>
+      </div>
+
+      {previewDefect && (
+        <DefectPreviewModal defect={previewDefect} onClose={() => setPreviewDefect(null)} />
+      )}
     </div>
   );
 };

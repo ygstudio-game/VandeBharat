@@ -28,6 +28,18 @@ function generateSessionCode() {
   return `INS-${year}-${rand}`;
 }
 
+// Synthetic train number for sessions where OCR auto-detect found nothing —
+// 5 digits, always leading with '5' (Indian Railways "passenger train" category)
+// to look like a real train number without colliding with real mail/express/superfast ranges.
+async function generateTrainNumber() {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const candidate = `5${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
+    const exists = await prisma.inspectionSession.findFirst({ where: { train_number: candidate } });
+    if (!exists) return candidate;
+  }
+  throw new Error('Could not generate a unique train number');
+}
+
 async function sessions(fastify) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
@@ -61,11 +73,7 @@ async function sessions(fastify) {
       }
     }
 
-    const trainNumber = fields.train_number?.trim();
-    if (!trainNumber) {
-      reply.status(400);
-      return { error: 'train_number field is required' };
-    }
+    const trainNumber = fields.train_number?.trim() || await generateTrainNumber();
     if (ocrFiles.length === 0) {
       reply.status(400);
       return { error: 'ocr_video is required — upload the placard/OCR camera feed' };

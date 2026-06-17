@@ -137,7 +137,7 @@ export const Sessions = () => {
     setUploading(true);
     try {
       const fd = new FormData();
-      fd.append('train_number', autoDetect ? `TRAIN-${Date.now()}` : newTrainNumber);
+      if (!autoDetect) fd.append('train_number', newTrainNumber);
       fd.append('frames_per_second', String(framesPerSecond));
       fd.append('ocr_video', ocrFile, ocrFile.name);
       for (const f of componentFiles) fd.append('component_video', f, f.name);
