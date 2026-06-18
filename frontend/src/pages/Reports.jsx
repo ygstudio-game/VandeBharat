@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePolling } from '../hooks/usePolling';
 import { getSessions, getReport, generateReport, getHierarchy, getIntelligence, signReport, exportEvidence, normalizeSession, getCoachFrames, getFrames } from '../lib/api';
+import { PeriodicReportsPanel } from '../components/reports/PeriodicReportsPanel';
 import { 
   FileText, 
   Search, 
@@ -1469,6 +1470,9 @@ export const Reports = () => {
           </table>
         </div>
       </div>
+
+      {/* Periodic auto-generated reports + FP/FN review log */}
+      <PeriodicReportsPanel />
 
       {/* Digital Signature Dialog */}
       {signingReport && (

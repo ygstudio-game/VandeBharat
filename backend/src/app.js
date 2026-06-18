@@ -40,6 +40,9 @@ fastify.register(require('./routes/coaches'),      { prefix: '/api/coaches' });
 fastify.register(require('./routes/ocrResults'),   { prefix: '/api/ocr-results' });
 fastify.register(require('./routes/analytics'),    { prefix: '/api/analytics' });
 fastify.register(require('./routes/cameraHealth'), { prefix: '/api/cameras' });
+fastify.register(require('./routes/reviewLog'),       { prefix: '/api/sessions' });
+fastify.register(require('./routes/reviewLogGlobal'), { prefix: '/api/review-log' });
+fastify.register(require('./routes/periodicReports'), { prefix: '/api/periodic-reports' });
 
 // WebSocket endpoint — clients connect here for live pipeline events
 fastify.register(async function wsRoutes(app) {

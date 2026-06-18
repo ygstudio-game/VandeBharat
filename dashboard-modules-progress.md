@@ -123,12 +123,18 @@ Source: `CHANGES.pdf` (2026-06-18) — official module naming convention. Pure r
 
 ---
 
-## Phase 5 — Historical Reports completion
+## Phase 5 — Historical Reports completion ✅
 
-- [ ] Backend: scheduled job for auto-report generation (shift / day / week cadence)
-- [ ] Backend: FP/FN (false positive/negative) log — data model + capture mechanism
-- [ ] Backend: include FP/FN log + system uptime aggregate in generated report content
-- [ ] Frontend: `Reports.jsx` — surface FP/FN log and uptime stats in report view/download
+**Scope note:** "Auto-generated PDF reports per shift/day/week. Includes FP/FN log, system uptime" (original spec) is a separate aggregate report, distinct from the existing per-session PDF report (which stays untouched). Built as a JSON aggregate (`PeriodicReport` model), **not a PDF** — real PDF rendering for this aggregate would need the Python `report_generator` service extended, which is a follow-up, not done here.
+
+- [x] Backend: Prisma schema — added `DefectReviewLog` (FP/FN/confirmed capture) and `PeriodicReport` (shift/day/week aggregate) models; pushed via `prisma db push` (additive, no migration conflicts)
+- [x] Backend: capture mechanism — `POST/GET /api/sessions/:id/review-log` (`backend/src/routes/reviewLog.js`); syncs `Defect.review_status` when a `defect_id` is provided
+- [x] Backend: `GET /api/review-log` (`reviewLogGlobal.js`) — flat cross-session list for the Historical Reports UI
+- [x] Backend: scheduler — `backend/src/services/periodicReportScheduler.js`, checks every 15 min on server start (`run.js`), auto-generates the previous shift/day/week's aggregate once its boundary has passed (shift = 8h blocks, day = midnight, week = Monday)
+- [x] Backend: aggregate includes total/completed/failed sessions, total + critical defects, FP/FN counts, and `system_uptime_pct` — defined as `completed / (completed + failed)` sessions in the period (a real-data proxy; no continuous service-uptime monitor exists yet, see System Health Dashboard which is simulated)
+- [x] Backend: `GET /api/periodic-reports` + `POST /api/periodic-reports/generate` (manual trigger, useful since a "week" boundary only rolls over naturally once a week)
+- [x] Frontend: `components/reports/PeriodicReportsPanel.jsx` — shows latest shift/day/week cards (sessions, uptime, defects, FP/FN) with "Generate Now" buttons, plus a Defect Review Log table + manual log-entry form, embedded into `Reports.jsx` below the existing reports table
+- [x] Verified: smoke-tested all new endpoints against the live DB (create + list review-log entries, manual periodic report generation, listing); lint + build clean
 
 ---
 

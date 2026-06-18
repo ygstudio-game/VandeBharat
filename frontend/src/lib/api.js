@@ -53,6 +53,33 @@ export const getDefectsByType      = (range = '7d') => _fetch(`/api/analytics/de
 export const getDefectsByCoachClass = (range = '7d') => _fetch(`/api/analytics/defects-by-coach-class?range=${range}`);
 export const getInferenceLatency   = (range = '7d') => _fetch(`/api/analytics/inference-latency?range=${range}`);
 
+// ── FP/FN Review Log ────────────────────────────────────────────────────────
+export const addReviewLogEntry  = (sessionId, payload) => _fetch(`/api/sessions/${sessionId}/review-log`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+export const getSessionReviewLog = (sessionId) => _fetch(`/api/sessions/${sessionId}/review-log`);
+export const getReviewLog = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/review-log${qs ? `?${qs}` : ''}`);
+};
+
+// ── Periodic (Historical) Reports ───────────────────────────────────────────
+export const getPeriodicReports = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/periodic-reports${qs ? `?${qs}` : ''}`);
+};
+export const generatePeriodicReport = (periodType) => _fetch('/api/periodic-reports/generate', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ periodType }),
+});
+
 // ── Normalisation ────────────────────────────────────────────────────────────
 const STATUS_MAP = {
   extracting:  'PROCESSING',
