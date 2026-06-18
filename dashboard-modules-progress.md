@@ -102,16 +102,23 @@ Source: `CHANGES.pdf` (2026-06-18) — official module naming convention. Pure r
 
 ---
 
-## Phase 4 — User Management (RBAC + 2FA)
+## Phase 4 — User Management (RBAC + 2FA) — Frontend preview only ✅
 
+**Decision (2026-06-18): backend auth/RBAC/2FA explicitly NOT implemented this phase.** Only the UI was built so stakeholders can review the look/flow. A visible dev-mode banner was added to `Settings.jsx` stating authentication, RBAC enforcement, and 2FA are disabled and this is a frontend preview with no backend enforcement. Revisit backend items below in a future phase if/when real auth is greenlit.
+
+- [x] Frontend: `Settings.jsx` — dev-mode disclosure banner ("authentication... disabled in this build") added above the tabs
+- [x] Frontend: "User Management" tab rebuilt — role legend (4 cards using `lib/roles.js` `ROLES`/`ROLE_LABELS`), live user table with inline role-reassignment `<select>`, add/remove user (local state only, no persistence)
+- [x] Frontend: 2FA setup/verification UI — `TwoFactorSetupModal` component: mock QR placeholder + 6-digit code input + "Verify & Enable" (purely visual, no real TOTP secret generated, no backend call)
+- [x] Frontend: per-user 2FA badge toggle (ON/OFF) in the user table
+- [x] Verified: lint + build clean
+
+**Explicitly deferred (not started — needs a real go-ahead before touching backend):**
 - [ ] Backend: update `User.role` enum to `admin | rdso_inspector | zr_officer | field_staff`
 - [ ] Backend: migration for existing users to new role values
 - [ ] Backend: auth middleware — enforce role-based access control on protected routes
 - [ ] Backend: add 2FA enrollment + verification flow (TOTP-based, e.g. `otplib`)
 - [ ] Backend: populate `AuditLog` model on real actions (currently mock-only in UI)
-- [ ] Frontend: `Settings.jsx` "Users & Role Authority" tab — replace static demo table with real user list/CRUD
-- [ ] Frontend: role assignment UI restricted to Admin role
-- [ ] Frontend: 2FA setup/verification UI (login flow + settings)
+- [ ] Frontend: wire the mock user list/role-select/2FA UI to real backend endpoints once they exist
 - [ ] Frontend: Audit Log tab reads from real backend data instead of mock entries
 
 ---
