@@ -16,7 +16,7 @@ set "FAILED=0"
 
 echo.
 echo  +========================================================+
-echo  |   RDSO_MVIS  --  Update                                |
+echo  ^|   RDSO_MVIS  --  Update                                ^|
 echo  +========================================================+
 echo.
 
@@ -24,7 +24,7 @@ REM ── Step 1: Git pull ─────────────────�
 echo  [1/4] Pulling latest code from GitHub...
 echo.
 
-git -C "%ROOT%" pull
+git -C "%ROOT%." pull
 set "GIT_RC=%ERRORLEVEL%"
 
 if "%GIT_RC%"=="0" (
@@ -131,9 +131,9 @@ goto :eof
 echo.
 echo  +========================================================+
 if "%FAILED%"=="1" (
-    echo  |   UPDATE FINISHED WITH ERRORS -- see messages above   |
+    echo  ^|   UPDATE FINISHED WITH ERRORS -- see messages above   ^|
 ) else (
-    echo  |   UPDATE COMPLETE                                     |
+    echo  ^|   UPDATE COMPLETE                                     ^|
 )
 echo  +========================================================+
 echo.
