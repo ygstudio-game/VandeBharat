@@ -81,22 +81,24 @@ Source: `CHANGES.pdf` (2026-06-18) — official module naming convention. Pure r
 
 ---
 
-## Phase 3 — Camera Health Monitor & System Health Dashboard
+## Phase 3 — Camera Health Monitor & System Health Dashboard ✅
 
-### 3A. Camera Health Monitor
-- [ ] Backend: define "uptime" calculation logic per camera (based on `Camera`/`SessionCamera` heartbeat or frame-capture success rate)
-- [ ] Backend: `GET /api/cameras/health` endpoint — live status for all 8 cameras per site
-- [ ] Backend: auto-alert rule — flag/notify when a camera's uptime drops below 90%
-- [ ] Frontend: new standalone `CameraHealthMonitor.jsx` page (moved out of the `Infrastructure.jsx` "Camera Feeds & Triggers" tab per CHANGES.pdf — Camera Health Monitor and System Health Dashboard are distinct modules)
-- [ ] Frontend: route + nav entry for Camera Health Monitor
-- [ ] Frontend: visual alert indicator for cameras below threshold
+### 3A. Camera Health Monitor ✅
+- [x] Backend: uptime calculation per camera — `backend/src/routes/cameraHealth.js`, derived from the last 20 `SessionCamera` rows per `Camera` (`frame_count` vs `dropped_frames`), real DB data (not simulated — this is genuinely tracked pipeline data)
+- [x] Backend: `GET /api/cameras/health` — returns all registered cameras with uptime %, status, last-seen, grouped by station
+- [x] Backend: auto-alert flag — `alert: true` when uptime < 90% (threshold returned in response, not hardcoded on frontend)
+- [x] Frontend: new standalone `frontend/src/pages/CameraHealthMonitor.jsx` page (moved out of the `Infrastructure.jsx` "Camera Feeds & Triggers" tab per CHANGES.pdf — Camera Health Monitor and System Health Dashboard are distinct modules)
+- [x] Frontend: route `/camera-health` + nav entry in `Shell.jsx`
+- [x] Frontend: per-camera card with status dot, uptime %, destructive-bordered card + alert banner when below threshold
+- [x] Verified: smoke-tested against live DB, returns real camera/uptime data
 
-### 3B. System Health Dashboard
-- [ ] Backend: wire actual GPU/CPU/Memory utilisation (nvidia-smi or equivalent) — replace placeholder
-- [ ] Backend: add SSD health metric
-- [ ] Backend: add UPS battery level metric
-- [ ] Backend: expose `PipelineStage.stats` (model inference times) via health/system endpoint
-- [ ] Frontend: extend `Infrastructure.jsx` GPU/Memory tabs with the above real metrics
+### 3B. System Health Dashboard ✅
+- [x] Backend: `GET /api/health/system` — GPU/CPU/Memory/SSD/UPS telemetry, **simulated** per the Phase 0 decision (no physical Jetson available yet); response includes `simulated: true` flag so the frontend can show a disclosure banner
+- [x] Backend: SSD health % + storage used/total included
+- [x] Backend: UPS battery % + mains/battery source included
+- [x] Frontend: model inference times surfaced by reusing the Phase 2 `/api/analytics/inference-latency` endpoint (no duplicate logic) in a new "Model Inference Times" table on the GPU tab
+- [x] Frontend: `Infrastructure.jsx` — removed the "Camera Feeds & Triggers" tab (moved to 3A); GPU/Memory tab renamed "Node Telemetry" and wired to real (simulated) metrics via `MetricBar` components, with a "SIMULATED" disclosure banner
+- [x] Verified: smoke-tested `/api/health/system` against running server, returns plausible values; lint + build clean
 
 ---
 

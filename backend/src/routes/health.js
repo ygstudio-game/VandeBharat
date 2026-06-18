@@ -23,6 +23,12 @@ function pingService(port) {
   });
 }
 
+// No physical Jetson device available yet — return plausible simulated values
+// until real nvidia-smi / sensor reads can be wired in (decision: 2026-06-18).
+function simulate(min, max) {
+  return Math.round((min + Math.random() * (max - min)) * 10) / 10;
+}
+
 async function healthRoutes(fastify) {
   // GET /api/health/services
   fastify.get('/services', async () => {
@@ -35,6 +41,37 @@ async function healthRoutes(fastify) {
       }))
     );
     return { services: results };
+  });
+
+  // GET /api/health/system — GPU/CPU/Memory/SSD/UPS telemetry (simulated)
+  fastify.get('/system', async () => {
+    return {
+      simulated: true,
+      timestamp: new Date().toISOString(),
+      gpu: {
+        utilization_pct: simulate(35, 85),
+        temperature_c: simulate(48, 68),
+        vram_used_gb: simulate(3.5, 7.2),
+        vram_total_gb: 8,
+      },
+      cpu: {
+        utilization_pct: simulate(15, 60),
+        temperature_c: simulate(40, 55),
+      },
+      memory: {
+        used_gb: simulate(4, 10),
+        total_gb: 16,
+      },
+      ssd: {
+        used_gb: simulate(120, 380),
+        total_gb: 512,
+        health_pct: simulate(92, 99),
+      },
+      ups: {
+        battery_pct: simulate(75, 100),
+        on_mains: true,
+      },
+    };
   });
 }
 

@@ -15,7 +15,8 @@ import {
   Menu,
   Search,
   ScanText,
-  ShieldAlert
+  ShieldAlert,
+  Camera
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -30,6 +31,7 @@ const navItems = [
   { name: 'OCR Results Log', path: '/ocr-log', icon: ScanText },
   { name: 'Historical Reports', path: '/reports', icon: FileText },
   { name: 'Defect Analytics', path: '/analytics', icon: Activity },
+  { name: 'Camera Health Monitor', path: '/camera-health', icon: Camera },
   { name: 'System Health Dashboard', path: '/infrastructure', icon: Server },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];

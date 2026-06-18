@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Camera,
   Cpu,
   Activity,
   RefreshCw,
   CheckCircle2,
   AlertTriangle,
-  Network,
   Server,
-  Terminal,
   Zap,
+  HardDrive,
   XCircle,
-  Inbox
+  Clock,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { getServicesHealth } from '../lib/api';
+import { Progress } from '@/components/ui/progress';
+import { getServicesHealth, getSystemHealth, getInferenceLatency } from '../lib/api';
 
 const STATUS_CONFIG = {
   healthy: { label: 'HEALTHY', dot: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
@@ -23,11 +21,30 @@ const STATUS_CONFIG = {
   offline:  { label: 'OFFLINE',  dot: 'bg-red-500',    badge: 'bg-red-50    text-red-700    border-red-200',    icon: XCircle },
 };
 
+function MetricBar({ label, value, max, unit = '%', warnAt = 80 }) {
+  const pct = max ? Math.min(100, Math.round((value / max) * 100)) : value;
+  const color = pct >= warnAt ? 'text-amber-600' : 'text-foreground';
+  return (
+    <div className="space-y-1">
+      <div className="flex justify-between text-xs">
+        <span className="font-bold text-muted-foreground">{label}</span>
+        <span className={`font-mono font-black ${color}`}>
+          {max ? `${value}${unit === '%' ? '' : unit} / ${max}${unit === '%' ? '' : unit}` : `${value}${unit}`}
+        </span>
+      </div>
+      <Progress value={pct} className="h-1.5 bg-slate-100" />
+    </div>
+  );
+}
+
 export const Infrastructure = () => {
   const [activeTab, setActiveTab]         = useState('services');
   const [services, setServices]           = useState([]);
   const [healthLoading, setHealthLoading] = useState(true);
   const [lastChecked, setLastChecked]     = useState(null);
+
+  const [systemHealth, setSystemHealth]   = useState(null);
+  const [latency, setLatency]             = useState([]);
 
   const loadHealth = useCallback(async () => {
     try {
@@ -38,11 +55,28 @@ export const Infrastructure = () => {
     setHealthLoading(false);
   }, []);
 
+  const loadSystem = useCallback(async () => {
+    try {
+      const data = await getSystemHealth();
+      setSystemHealth(data);
+    } catch (_) {}
+    try {
+      const lat = await getInferenceLatency('24h');
+      setLatency(lat.series || []);
+    } catch (_) {}
+  }, []);
+
   useEffect(() => {
     loadHealth();
     const t = setInterval(loadHealth, 15000);
     return () => clearInterval(t);
   }, [loadHealth]);
+
+  useEffect(() => {
+    loadSystem();
+    const t = setInterval(loadSystem, 15000);
+    return () => clearInterval(t);
+  }, [loadSystem]);
 
   const healthyCount = services.filter(s => s.status === 'healthy').length;
 
@@ -51,7 +85,7 @@ export const Infrastructure = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black tracking-tight text-foreground">SYSTEM HEALTH DASHBOARD</h1>
-        <p className="text-sm text-muted-foreground mt-1">Real-time status of pipeline services, GPU cluster, and camera alignment metrics.</p>
+        <p className="text-sm text-muted-foreground mt-1">Real-time status of pipeline services, GPU/CPU/memory utilisation, SSD health, UPS battery, and model inference times.</p>
       </div>
 
       {/* Tabs */}
@@ -63,16 +97,10 @@ export const Infrastructure = () => {
           <Activity className="w-4 h-4" /> Core Pipeline Services
         </button>
         <button
-          onClick={() => setActiveTab('cameras')}
-          className={`pb-3 flex items-center gap-1.5 transition-all relative ${activeTab === 'cameras' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
-        >
-          <Camera className="w-4 h-4" /> Camera Feeds & Triggers
-        </button>
-        <button
           onClick={() => setActiveTab('gpu')}
           className={`pb-3 flex items-center gap-1.5 transition-all relative ${activeTab === 'gpu' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
         >
-          <Cpu className="w-4 h-4" /> GPU Inference Cluster
+          <Cpu className="w-4 h-4" /> Node Telemetry
         </button>
       </div>
 
@@ -131,42 +159,15 @@ export const Infrastructure = () => {
         </div>
       )}
 
-      {/* Cameras — placeholder until camera registry DB table exists */}
-      {activeTab === 'cameras' && (
-        <div className="space-y-6">
-          <Card className="border border-border shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-              <div>
-                <CardTitle className="text-sm font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-amber-500" /> HW Trigger Sensor Alignment Test
-                </CardTitle>
-                <CardDescription className="text-xs">Hardware trigger pin testing — available once physical sensors are connected.</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center justify-center h-24 gap-2 text-muted-foreground">
-                <Inbox className="w-7 h-7 text-slate-300" />
-                <p className="text-xs font-semibold">No physical cameras registered.</p>
-                <p className="text-[10px]">Camera registry populates when hardware sensor units are connected and configured.</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="bg-card border border-border rounded shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-border bg-slate-50/50">
-              <h3 className="text-xs font-black uppercase text-slate-700 tracking-wider">Synchronized Camera Feed Registry</h3>
-            </div>
-            <div className="flex flex-col items-center justify-center h-40 gap-2 text-muted-foreground">
-              <Inbox className="w-8 h-8 text-slate-300" />
-              <p className="text-xs font-semibold">No cameras registered yet.</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* GPU — placeholder until GPU monitoring API is wired */}
+      {/* Node telemetry — simulated until a physical Jetson is wired in */}
       {activeTab === 'gpu' && (
         <div className="space-y-6">
+          {systemHealth?.simulated && (
+            <p className="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded inline-block">
+              SIMULATED — no physical Jetson device connected yet. Values are illustrative.
+            </p>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border border-border shadow-sm">
               <CardHeader>
@@ -175,30 +176,116 @@ export const Infrastructure = () => {
                 </CardTitle>
                 <CardDescription className="text-xs">CUDA device telemetry (temperature, VRAM, workload).</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-col items-center justify-center h-36 gap-2 text-muted-foreground">
-                  <Inbox className="w-8 h-8 text-slate-300" />
-                  <p className="text-xs font-semibold">GPU monitoring not connected.</p>
-                  <p className="text-[10px]">Wire <code className="text-[10px] bg-slate-100 px-1 rounded">nvidia-smi</code> output to a monitoring endpoint to see live stats here.</p>
-                </div>
+              <CardContent className="space-y-3">
+                {systemHealth ? (
+                  <>
+                    <MetricBar label="GPU Utilisation" value={systemHealth.gpu.utilization_pct} max={100} />
+                    <MetricBar label="GPU Temperature" value={systemHealth.gpu.temperature_c} max={100} unit="°C" warnAt={70} />
+                    <MetricBar label="VRAM Used" value={systemHealth.gpu.vram_used_gb} max={systemHealth.gpu.vram_total_gb} unit="GB" />
+                  </>
+                ) : (
+                  <div className="h-24 flex items-center justify-center text-muted-foreground text-xs">Loading…</div>
+                )}
               </CardContent>
             </Card>
 
             <Card className="border border-border shadow-sm">
               <CardHeader>
                 <CardTitle className="text-sm font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
-                  <Server className="w-4 h-4 text-primary" /> System Memory
+                  <Server className="w-4 h-4 text-primary" /> CPU & Memory
                 </CardTitle>
-                <CardDescription className="text-xs">Host RAM and disk I/O utilization.</CardDescription>
+                <CardDescription className="text-xs">Host CPU load and RAM utilization.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-col items-center justify-center h-36 gap-2 text-muted-foreground">
-                  <Inbox className="w-8 h-8 text-slate-300" />
-                  <p className="text-xs font-semibold">System metrics not connected.</p>
-                </div>
+              <CardContent className="space-y-3">
+                {systemHealth ? (
+                  <>
+                    <MetricBar label="CPU Utilisation" value={systemHealth.cpu.utilization_pct} max={100} />
+                    <MetricBar label="CPU Temperature" value={systemHealth.cpu.temperature_c} max={100} unit="°C" warnAt={65} />
+                    <MetricBar label="Memory Used" value={systemHealth.memory.used_gb} max={systemHealth.memory.total_gb} unit="GB" />
+                  </>
+                ) : (
+                  <div className="h-24 flex items-center justify-center text-muted-foreground text-xs">Loading…</div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border border-border shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-sm font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
+                  <HardDrive className="w-4 h-4 text-primary" /> SSD Health
+                </CardTitle>
+                <CardDescription className="text-xs">Storage utilisation and drive health.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {systemHealth ? (
+                  <>
+                    <MetricBar label="Storage Used" value={systemHealth.ssd.used_gb} max={systemHealth.ssd.total_gb} unit="GB" />
+                    <MetricBar label="Drive Health" value={systemHealth.ssd.health_pct} max={100} warnAt={95} />
+                  </>
+                ) : (
+                  <div className="h-24 flex items-center justify-center text-muted-foreground text-xs">Loading…</div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border border-border shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-sm font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-primary" /> UPS Battery
+                </CardTitle>
+                <CardDescription className="text-xs">Uninterruptible power supply status.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {systemHealth ? (
+                  <>
+                    <MetricBar label="Battery Level" value={systemHealth.ups.battery_pct} max={100} warnAt={30} />
+                    <div className="text-[10px] font-bold text-muted-foreground">
+                      Power source: <span className={systemHealth.ups.on_mains ? 'text-emerald-600' : 'text-amber-600'}>
+                        {systemHealth.ups.on_mains ? 'MAINS' : 'BATTERY'}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-24 flex items-center justify-center text-muted-foreground text-xs">Loading…</div>
+                )}
               </CardContent>
             </Card>
           </div>
+
+          <Card className="border border-border shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-sm font-black text-slate-800 uppercase tracking-tight flex items-center gap-2">
+                <Clock className="w-4 h-4 text-primary" /> Model Inference Times (24h)
+              </CardTitle>
+              <CardDescription className="text-xs">Average pipeline stage duration — see Defect Analytics for full trend charts.</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              {latency.length === 0 ? (
+                <div className="h-20 flex items-center justify-center text-muted-foreground text-xs">No inference data yet.</div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-border text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                        <th className="p-3">Stage</th>
+                        <th className="p-3 text-right">Avg Duration</th>
+                        <th className="p-3 text-right">Samples</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {latency.map((l) => (
+                        <tr key={l.stage} className="hover:bg-slate-50/50">
+                          <td className="p-3 font-mono font-bold">{l.stage}</td>
+                          <td className="p-3 text-right font-mono">{l.avg_duration_ms} ms</td>
+                          <td className="p-3 text-right font-mono text-muted-foreground">{l.samples}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

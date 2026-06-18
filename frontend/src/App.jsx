@@ -11,6 +11,7 @@ import { TrainWorkspace } from './pages/TrainWorkspace';
 import { CoachSearch } from './pages/CoachSearch';
 import { OcrResultsLog } from './pages/OcrResultsLog';
 import { DefectAlertConsole } from './pages/DefectAlertConsole';
+import { CameraHealthMonitor } from './pages/CameraHealthMonitor';
 
 
 // Placeholder components for routing
@@ -38,6 +39,7 @@ function App() {
           <Route path="coach-search" element={<CoachSearch />} />
           <Route path="ocr-log" element={<OcrResultsLog />} />
           <Route path="defect-console" element={<DefectAlertConsole />} />
+          <Route path="camera-health" element={<CameraHealthMonitor />} />
           <Route path="reports" element={<Reports />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="infrastructure" element={<Infrastructure />} />
