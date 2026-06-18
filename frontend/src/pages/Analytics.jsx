@@ -32,7 +32,7 @@ export const Analytics = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">ANALYTICS & METRICS</h1>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">DEFECT ANALYTICS</h1>
           <p className="text-sm text-muted-foreground mt-1">Real-time telemetry, model latency distribution, and defect statistics.</p>
         </div>
         <div className="flex items-center bg-slate-100 border border-border rounded p-1 text-xs font-bold">

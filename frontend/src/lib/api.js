@@ -34,6 +34,17 @@ export const getServicesHealth  = () => _fetch('/api/health/services');
 export const getFrames          = (id, limit = 100, offset = 0) => _fetch(`/api/sessions/${id}/frames?limit=${limit}&offset=${offset}`);
 export const getCoachFrames     = (id, coachId, limit = 200)   => _fetch(`/api/sessions/${id}/coaches/${coachId}/frames?limit=${limit}`);
 
+// ── Coach Search ────────────────────────────────────────────────────────────
+export const searchCoaches = (q) => _fetch(`/api/coaches/search?q=${encodeURIComponent(q)}`);
+
+// ── OCR Results Log ────────────────────────────────────────────────────────
+export const getOcrResults = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/ocr-results${qs ? `?${qs}` : ''}`);
+};
+
 // ── Normalisation ────────────────────────────────────────────────────────────
 const STATUS_MAP = {
   extracting:  'PROCESSING',

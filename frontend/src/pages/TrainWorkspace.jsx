@@ -730,6 +730,9 @@ export const TrainWorkspace = () => {
           <ArrowLeft className="w-4 h-4" />
         </button>
         <div className="space-y-0.5 min-w-0">
+          <p className="text-[9px] font-black uppercase tracking-wider text-primary/70 leading-none">
+            Virtual Train Inspection Portal
+          </p>
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-md font-black text-slate-900 uppercase tracking-tight flex items-center gap-1.5 shrink-0">
               <Train className="w-5 h-5 text-primary" />

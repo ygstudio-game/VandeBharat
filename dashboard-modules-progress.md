@@ -16,27 +16,55 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
 
-## Phase 1 — Low-risk, data-already-exists (new pages/endpoints only)
+## Phase 1 — Low-risk, data-already-exists (new pages/endpoints only) ✅
 
-### 1A. Coach Search
-- [ ] Backend: add `GET /api/coaches/search?q=` endpoint (matches coach_number or train_number)
-- [ ] Backend: response includes full inspection history for matched coach (sessions, defects, frames summary)
-- [ ] Frontend: new `CoachSearch.jsx` page with search bar
-- [ ] Frontend: route + nav entry for Coach Search
-- [ ] Frontend: results list → click-through to existing coach detail view (reuse TrainWorkspace coach view)
+### 1A. Coach Search ✅
+- [x] Backend: `GET /api/coaches/search?q=` — `backend/src/routes/coaches.js`, matches `coach_number` or `session.train_number` (case-insensitive)
+- [x] Backend: response includes per-coach summary (health score, critical defects, missing components, defect/OCR counts, session info) — full drill-down reuses existing `/api/sessions/:id/coaches/:coachId/intelligence` + `/frames` via click-through
+- [x] Frontend: `frontend/src/pages/CoachSearch.jsx` — search bar + result cards
+- [x] Frontend: route `/coach-search` + nav entry in `Shell.jsx`
+- [x] Frontend: clicking a result navigates to `/train/:sessionId` (existing TrainWorkspace coach view)
 
-### 1B. OCR Results Log
-- [ ] Backend: add `GET /api/ocr-results` endpoint (all OcrResult rows, paginated, filterable by date/confidence/coach)
-- [ ] Frontend: new `OcrResultsLog.jsx` page with table (coach number, confidence, raw image thumbnail, timestamp)
-- [ ] Frontend: route + nav entry for OCR Results Log
-- [ ] Frontend: basic filter (date range, min confidence)
-- [ ] Frontend: hook into Phase 0 export utility (CSV/JSON export of filtered rows)
+### 1B. OCR Results Log ✅
+- [x] Backend: `GET /api/ocr-results` — `backend/src/routes/ocrResults.js`, paginated (`limit`/`offset`), filterable by `coachNumber`/`minConfidence`/`validOnly`
+- [x] Frontend: `frontend/src/pages/OcrResultsLog.jsx` — table with thumbnail, coach number, detected text, confidence, valid flag, train, timestamp
+- [x] Frontend: route `/ocr-log` + nav entry in `Shell.jsx`
+- [x] Frontend: filter bar (coach number, min confidence, valid-only toggle) + pagination controls
+- [x] Frontend: CSV/JSON export buttons wired to Phase 0 `lib/export.js`
 
-### 1C. Defect Alert Console (promote from embedded section to standalone)
-- [ ] Frontend: extract "Recent Defects" logic out of `Dashboard.jsx` into standalone `DefectAlertConsole.jsx` page
-- [ ] Frontend: route + nav entry for Defect Alert Console
-- [ ] Backend: switch polling → WebSocket push for new defect events (reuse existing `/ws` session socket pattern)
-- [ ] Frontend: keep condensed/recent version embedded on Dashboard (link "View all" → full console)
+### 1C. Defect Alert Console (promoted from embedded section to standalone) ✅
+- [x] Frontend: extracted "Recent Defects" logic out of `Dashboard.jsx` into standalone `frontend/src/pages/DefectAlertConsole.jsx`
+- [x] Frontend: route `/defect-console` + nav entry in `Shell.jsx`
+- [x] Backend: added `defects_found` WS event — `pipelineOrchestrator.js` now broadcasts per-coach after correlation when defects are found (supplements polling, doesn't replace it — `getRecentDefects` polling kept as fallback for `POLLING MODE`)
+- [x] Frontend: condensed version still embedded on Dashboard; "View All" button links to `/defect-console`; shared `DefectPreviewModal` extracted to `components/dashboard/DefectPreviewModal.jsx` for reuse
+
+---
+
+## Phase 1.5 — Module Renaming & Navigation Alignment ✅
+
+Source: `CHANGES.pdf` (2026-06-18) — official module naming convention. Pure relabeling, no new data/logic. Route paths kept unchanged to avoid breaking existing links; only display labels/headers renamed.
+
+| PDF name | Change made |
+|---|---|
+| Live Train Monitor | `Dashboard.jsx` nav label + h1 "OPERATIONS DASHBOARD" → "LIVE TRAIN MONITOR"; `Shell.jsx` sidebar subtitle "RDSO_MVIS Operations Control" → "Live Train Monitor" |
+| Defect Alert Console | `Shell.jsx` nav label "Defect Console" → "Defect Alert Console" |
+| Virtual Train Inspection Portal | `TrainWorkspace.jsx` header now carries a "Virtual Train Inspection Portal" label (Inspection Timeline / Frame Timeline remain nested here per spec — no structural change needed, already correct) |
+| Coach Search | Already matched — no change |
+| OCR Results Log | `Shell.jsx` nav label "OCR Log" → "OCR Results Log" |
+| Defect Analytics | `Analytics.jsx` nav label + h1 "ANALYTICS & METRICS" → "DEFECT ANALYTICS" |
+| System Health Dashboard | `Infrastructure.jsx` nav label + h1 "SYSTEM & INFRASTRUCTURE" → "SYSTEM HEALTH DASHBOARD" |
+| Historical Reports | `Reports.jsx` nav label + h1 "AUDIT & COMPLIANCE REPORTS" → "HISTORICAL REPORTS" |
+| User Management | `Settings.jsx` tab label "Users & Role Authority" → "User Management" |
+
+- [x] `Shell.jsx` — nav labels + sidebar subtitle renamed
+- [x] `Dashboard.jsx` — h1 renamed to "LIVE TRAIN MONITOR"
+- [x] `Analytics.jsx` — h1 renamed to "DEFECT ANALYTICS"
+- [x] `Reports.jsx` — h1 renamed to "HISTORICAL REPORTS"
+- [x] `Infrastructure.jsx` — h1 renamed to "SYSTEM HEALTH DASHBOARD"
+- [x] `TrainWorkspace.jsx` — header labeled "Virtual Train Inspection Portal"
+- [x] `Settings.jsx` — "Users & Role Authority" tab renamed to "User Management"
+
+**Structural note carried into Phase 3:** Camera Health Monitor currently lives as a tab inside `Infrastructure.jsx` ("Camera Feeds & Triggers"). Per the original spec table these are two distinct modules — Phase 3 will split Camera Health Monitor out into its own route + nav item rather than keeping it as a System Health Dashboard tab.
 
 ---
 
@@ -60,7 +88,8 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` done
 - [ ] Backend: define "uptime" calculation logic per camera (based on `Camera`/`SessionCamera` heartbeat or frame-capture success rate)
 - [ ] Backend: `GET /api/cameras/health` endpoint — live status for all 8 cameras per site
 - [ ] Backend: auto-alert rule — flag/notify when a camera's uptime drops below 90%
-- [ ] Frontend: replace `Infrastructure.jsx` placeholder "Synchronized Camera Feed Registry" with live camera health grid
+- [ ] Frontend: new standalone `CameraHealthMonitor.jsx` page (moved out of the `Infrastructure.jsx` "Camera Feeds & Triggers" tab per CHANGES.pdf — Camera Health Monitor and System Health Dashboard are distinct modules)
+- [ ] Frontend: route + nav entry for Camera Health Monitor
 - [ ] Frontend: visual alert indicator for cameras below threshold
 
 ### 3B. System Health Dashboard

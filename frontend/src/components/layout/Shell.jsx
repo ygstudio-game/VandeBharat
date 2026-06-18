@@ -1,30 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { ToastContainer } from '../ui/ToastContainer';
-import { 
-  LayoutDashboard, 
-  Train, 
-  ListVideo, 
-  FileText, 
-  Activity, 
-  Server, 
+import {
+  LayoutDashboard,
+  Train,
+  ListVideo,
+  FileText,
+  Activity,
+  Server,
   Settings,
   Bell,
   User,
   ShieldCheck,
-  Menu
+  Menu,
+  Search,
+  ScanText,
+  ShieldAlert
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Live Train Monitor', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Live Queue', path: '/live-queue', icon: ListVideo },
   { name: 'Inspections', path: '/sessions', icon: Train },
-  { name: 'Reports', path: '/reports', icon: FileText },
-  { name: 'Analytics', path: '/analytics', icon: Activity },
-  { name: 'Infrastructure', path: '/infrastructure', icon: Server },
+  { name: 'Defect Alert Console', path: '/defect-console', icon: ShieldAlert },
+  { name: 'Coach Search', path: '/coach-search', icon: Search },
+  { name: 'OCR Results Log', path: '/ocr-log', icon: ScanText },
+  { name: 'Historical Reports', path: '/reports', icon: FileText },
+  { name: 'Defect Analytics', path: '/analytics', icon: Activity },
+  { name: 'System Health Dashboard', path: '/infrastructure', icon: Server },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 
@@ -69,7 +75,7 @@ export const Shell = () => {
           </div>
           <div>
             <h1 className="text-md font-bold tracking-tight text-foreground leading-none">RDSO_MVIS</h1>
-            <p className="text-[10px] text-muted-foreground font-semibold mt-1 uppercase tracking-wider">RDSO_MVIS Operations Control</p>
+            <p className="text-[10px] text-muted-foreground font-semibold mt-1 uppercase tracking-wider">Live Train Monitor</p>
           </div>
         </div>
         

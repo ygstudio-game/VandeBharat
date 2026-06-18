@@ -187,6 +187,16 @@ async function runOcrPipeline(sessionId, fastify) {
         totalCritical += cr.sev_counts?.CRITICAL || 0;
         totalMissing += cr.missing_components || 0;
         healthSum += cr.health_score || 0;
+
+        if (cr.defects_found > 0) {
+          broadcast(sessionId, {
+            type: 'defects_found',
+            sessionId,
+            coachId: coach.id,
+            count: cr.defects_found,
+            critical: cr.sev_counts?.CRITICAL || 0,
+          });
+        }
       } catch (corrErr) {
         log.warn({
           msg: 'Correlation failed for coach, continuing',

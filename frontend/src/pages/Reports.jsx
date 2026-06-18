@@ -1309,7 +1309,7 @@ export const Reports = () => {
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-foreground">AUDIT & COMPLIANCE REPORTS</h1>
+        <h1 className="text-2xl font-black tracking-tight text-foreground">HISTORICAL REPORTS</h1>
         <p className="text-sm text-muted-foreground mt-1">Review, certify, and download official inspection safety records.</p>
       </div>
 

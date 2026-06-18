@@ -50,7 +50,7 @@ export const Infrastructure = () => {
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black tracking-tight text-foreground">SYSTEM & INFRASTRUCTURE</h1>
+        <h1 className="text-2xl font-black tracking-tight text-foreground">SYSTEM HEALTH DASHBOARD</h1>
         <p className="text-sm text-muted-foreground mt-1">Real-time status of pipeline services, GPU cluster, and camera alignment metrics.</p>
       </div>
 

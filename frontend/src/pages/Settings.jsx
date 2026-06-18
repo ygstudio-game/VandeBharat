@@ -54,7 +54,7 @@ export const Settings = () => {
           onClick={() => setActiveTab('users')}
           className={`pb-3 flex items-center gap-1.5 transition-all relative ${activeTab === 'users' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
         >
-          <Users className="w-4 h-4" /> Users & Role Authority
+          <Users className="w-4 h-4" /> User Management
         </button>
         <button
           onClick={() => setActiveTab('audit')}

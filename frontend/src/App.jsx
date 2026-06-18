@@ -8,6 +8,9 @@ import { Analytics } from './pages/Analytics';
 import { Infrastructure } from './pages/Infrastructure';
 import { Settings } from './pages/Settings';
 import { TrainWorkspace } from './pages/TrainWorkspace';
+import { CoachSearch } from './pages/CoachSearch';
+import { OcrResultsLog } from './pages/OcrResultsLog';
+import { DefectAlertConsole } from './pages/DefectAlertConsole';
 
 
 // Placeholder components for routing
@@ -32,6 +35,9 @@ function App() {
           <Route path="live-queue" element={<LiveQueue />} />
           <Route path="sessions" element={<Sessions />} />
           <Route path="train/:sessionId" element={<TrainWorkspace />} />
+          <Route path="coach-search" element={<CoachSearch />} />
+          <Route path="ocr-log" element={<OcrResultsLog />} />
+          <Route path="defect-console" element={<DefectAlertConsole />} />
           <Route path="reports" element={<Reports />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="infrastructure" element={<Infrastructure />} />
