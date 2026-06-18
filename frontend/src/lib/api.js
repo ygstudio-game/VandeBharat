@@ -45,6 +45,12 @@ export const getOcrResults = (params = {}) => {
   return _fetch(`/api/ocr-results${qs ? `?${qs}` : ''}`);
 };
 
+// ── Defect Analytics ────────────────────────────────────────────────────────
+export const getDefectsOverTime    = (range = '7d') => _fetch(`/api/analytics/defects-over-time?range=${range}`);
+export const getDefectsByType      = (range = '7d') => _fetch(`/api/analytics/defects-by-type?range=${range}`);
+export const getDefectsByCoachClass = (range = '7d') => _fetch(`/api/analytics/defects-by-coach-class?range=${range}`);
+export const getInferenceLatency   = (range = '7d') => _fetch(`/api/analytics/inference-latency?range=${range}`);
+
 // ── Normalisation ────────────────────────────────────────────────────────────
 const STATUS_MAP = {
   extracting:  'PROCESSING',

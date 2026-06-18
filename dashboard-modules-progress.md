@@ -68,17 +68,16 @@ Source: `CHANGES.pdf` (2026-06-18) — official module naming convention. Pure r
 
 ---
 
-## Phase 2 — Defect Analytics
+## Phase 2 — Defect Analytics ✅
 
-- [ ] Backend: aggregation endpoint — defect counts over time (daily/weekly/monthly buckets)
-- [ ] Backend: aggregation endpoint — defect counts per defect type
-- [ ] Backend: aggregation endpoint — defect counts per coach class
-- [ ] Frontend: wire chart library (Phase 0) into `Analytics.jsx` empty containers
-- [ ] Frontend: "Defect Distribution per Component Group" chart — connect to real data
-- [ ] Frontend: "Model Inference Latency Trend" chart — connect to `PipelineStage.stats` data (already in DB, unused)
-- [ ] Frontend: defect-trends-over-time chart (new)
-- [ ] Frontend: per-coach-class breakdown chart (new)
-- [ ] Frontend: Export to Excel/CSV/JSON button using Phase 0 export utility
+- [x] Backend: `GET /api/analytics/defects-over-time?range=` — `backend/src/routes/analytics.js`, buckets by hour (24h) or day (7d/30d)
+- [x] Backend: `GET /api/analytics/defects-by-type?range=` — Prisma `groupBy` on `defect_type`
+- [x] Backend: `GET /api/analytics/defects-by-coach-class?range=` — grouped by `Coach.coach_type` (currently mostly "Unclassified" — pipeline doesn't populate `coach_type` yet; data-population gap, not an endpoint bug)
+- [x] Backend: `GET /api/analytics/inference-latency?range=` — avg `completed_at - started_at` per `PipelineStage.stage`, not the unused `stats` JSON field (more reliable signal)
+- [x] Frontend: wired `recharts` into `Analytics.jsx` — replaced empty placeholders with 4 live charts (defect trend line, defect-by-type bar, defect-by-coach-class bar, inference latency bar) via shared `ChartCard` wrapper
+- [x] Frontend: existing 24h/7d/30d time-range toggle now drives all 4 chart queries
+- [x] Frontend: Export to CSV/JSON/Excel buttons wired to Phase 0 `lib/export.js`, exporting all 4 chart series at once
+- [x] Verified: all 4 endpoints smoke-tested against live DB via fastify inject, return real data; frontend build/lint clean
 
 ---
 

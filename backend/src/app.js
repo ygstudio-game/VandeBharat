@@ -38,6 +38,7 @@ fastify.register(require('./routes/health'),       { prefix: '/api/health' });
 fastify.register(require('./routes/config'),       { prefix: '/api/config' });
 fastify.register(require('./routes/coaches'),      { prefix: '/api/coaches' });
 fastify.register(require('./routes/ocrResults'),   { prefix: '/api/ocr-results' });
+fastify.register(require('./routes/analytics'),    { prefix: '/api/analytics' });
 
 // WebSocket endpoint — clients connect here for live pipeline events
 fastify.register(async function wsRoutes(app) {
