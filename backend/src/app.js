@@ -30,6 +30,11 @@ fastify.get('/health', async (request, reply) => {
   }
 });
 
+fastify.register(require('./routes/auth'),         { prefix: '/api/auth' });
+fastify.register(require('./routes/users'),        { prefix: '/api/users' });
+fastify.register(require('./routes/auditLogRoutes'), { prefix: '/api/audit-log' });
+fastify.register(require('./routes/trainingExport'), { prefix: '/api/training' });
+fastify.register(require('./routes/modelVersions'),  { prefix: '/api/models' });
 fastify.register(require('./routes/sessions'),     { prefix: '/api/sessions' });
 fastify.register(require('./routes/intelligence'), { prefix: '/api/sessions' });
 fastify.register(require('./routes/reports'),      { prefix: '/api/sessions' });

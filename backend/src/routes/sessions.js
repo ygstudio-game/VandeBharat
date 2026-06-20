@@ -6,7 +6,7 @@ const axios = require('axios');
 const prisma = require('../db/client');
 const config = require('../config');
 const rootConfig = require(path.join(__dirname, '..', '..', '..', 'config.json'));
-const { runOcrPipeline } = require('../services/pipelineOrchestrator');
+const { publishJob } = require('../queue/queue');
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
 
@@ -21,6 +21,12 @@ const PIPELINE_STAGES = [
 
 // camera_type values for component feeds (index 0 = first component video uploaded)
 const COMPONENT_CAM_TYPES = ['component_left', 'component_right', 'bottom', 'suspension', 'wheel', 'overview'];
+
+// Must match component_manifests.coach_type values (see prisma/seed.js) — this is
+// what the correlation engine uses to look up the expected-component manifest,
+// and what gets stamped onto every Coach row so "Defects by Coach Class"
+// analytics stop showing everything as Unclassified.
+const VALID_TRAIN_TYPES = ['VANDE_BHARAT', 'LHB_SLEEPER'];
 
 function generateSessionCode() {
   const year = new Date().getFullYear();
@@ -74,6 +80,7 @@ async function sessions(fastify) {
     }
 
     const trainNumber = fields.train_number?.trim() || await generateTrainNumber();
+    const trainType = VALID_TRAIN_TYPES.includes(fields.train_type) ? fields.train_type : 'VANDE_BHARAT';
     if (ocrFiles.length === 0) {
       reply.status(400);
       return { error: 'ocr_video is required — upload the placard/OCR camera feed' };
@@ -99,6 +106,7 @@ async function sessions(fastify) {
         id: sessionId,
         session_code: generateSessionCode(),
         train_number: trainNumber,
+        train_type: trainType,
         station_code: 'TEST01',
         camera_setup_id: setup.id,
         status: 'extracting',
@@ -341,16 +349,22 @@ async function sessions(fastify) {
       data: { status: 'ocr_running' },
     });
 
-    // Fire-and-forget
-    runOcrPipeline(req.params.id, fastify).catch((err) =>
-      fastify.log.error({ msg: 'Unhandled pipeline error', session_id: req.params.id, error: err.message })
-    );
+    // Publish to the durable queue instead of calling the pipeline inline —
+    // a worker process (npm run worker) claims and runs it. If the API
+    // process restarts after this point, the job is not lost.
+    try {
+      await publishJob('ocr_detection', { session_id: req.params.id });
+    } catch (err) {
+      fastify.log.error({ msg: 'Failed to publish pipeline job to queue', session_id: req.params.id, error: err.message });
+      reply.status(503);
+      return { error: 'Pipeline queue unavailable — is Redis running?' };
+    }
 
     reply.status(202);
     return {
       session_id: req.params.id,
       status: 'ocr_running',
-      message: 'OCR pipeline started. Poll GET /api/sessions/:id for progress.',
+      message: 'OCR pipeline job queued. Poll GET /api/sessions/:id for progress.',
     };
   });
 

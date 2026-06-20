@@ -8,7 +8,9 @@
  * System Health Dashboard, which is simulated). This is the most honest signal
  * available from real data today.
  */
+const axios = require('axios');
 const prisma = require('../db/client');
+const config = require('../config');
 
 const SHIFT_HOURS = 8;
 const PERIOD_TYPES = ['shift', 'day', 'week'];
@@ -74,7 +76,7 @@ async function generatePeriodicReport(periodType, { start, end }) {
   const denom = completedSessions + failedSessions;
   const systemUptimePct = denom > 0 ? Math.round((completedSessions / denom) * 1000) / 10 : null;
 
-  return prisma.periodicReport.upsert({
+  const row = await prisma.periodicReport.upsert({
     where: { period_type_period_start: { period_type: periodType, period_start: start } },
     update: {
       period_end: end,
@@ -102,6 +104,33 @@ async function generatePeriodicReport(periodType, { start, end }) {
       system_uptime_pct: systemUptimePct,
     },
   });
+
+  // Render the PDF via the Python report_generator service — Node owns the
+  // aggregate math + DB row, the PDF is just a rendering of it.
+  try {
+    const resp = await axios.post(
+      `${config.services.reportGenerator}/generate_periodic`,
+      {
+        id: row.id,
+        period_type: row.period_type,
+        period_start: row.period_start,
+        period_end: row.period_end,
+        total_sessions: row.total_sessions,
+        completed_sessions: row.completed_sessions,
+        failed_sessions: row.failed_sessions,
+        total_defects: row.total_defects,
+        critical_defects: row.critical_defects,
+        false_positive_count: row.false_positive_count,
+        false_negative_count: row.false_negative_count,
+        system_uptime_pct: systemUptimePct,
+      },
+      { timeout: 30_000 },
+    );
+    return prisma.periodicReport.update({ where: { id: row.id }, data: { pdf_url: resp.data.pdf_url } });
+  } catch (err) {
+    console.error({ msg: 'Periodic PDF generation failed — report row saved without pdf_url', period_type: periodType, error: err.message });
+    return row;
+  }
 }
 
 async function checkAndGenerateAll(log = console) {

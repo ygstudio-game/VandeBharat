@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node run.js",
     "dev": "node run.js",
+    "worker": "node src/queue/worker.js",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
@@ -17,9 +18,14 @@
     "@fastify/websocket": "^8.3.1",
     "@prisma/client": "^5.22.0",
     "axios": "^1.7.7",
+    "bcryptjs": "^3.0.3",
     "cloudinary": "^2.5.1",
     "dotenv": "^16.4.5",
-    "fastify": "^4.28.1"
+    "fastify": "^4.28.1",
+    "ioredis": "^5.11.1",
+    "jsonwebtoken": "^9.0.3",
+    "otplib": "^13.4.1",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "prisma": "^5.22.0"

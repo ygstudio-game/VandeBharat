@@ -1,8 +1,23 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
 async function main() {
+  // Default admin account for local testing — change DEV_ADMIN_PASSWORD in
+  // a real environment, never rely on this default outside dev.
+  const adminPassword = process.env.DEV_ADMIN_PASSWORD || 'ChangeMe123!';
+  await prisma.user.upsert({
+    where: { email: 'admin@vande.local' },
+    update: {},
+    create: {
+      email: 'admin@vande.local',
+      name: 'Default Admin',
+      role: 'admin',
+      password_hash: await bcrypt.hash(adminPassword, 10),
+      is_active: true,
+    },
+  });
   // Default camera setup for MVP / testing
   await prisma.cameraSetup.upsert({
     where: { station_code: 'TEST01' },
@@ -39,7 +54,7 @@ async function main() {
     });
   }
 
-  console.log('Seed complete: camera_setup TEST01 + 14 component manifests');
+  console.log('Seed complete: admin@vande.local + camera_setup TEST01 + 14 component manifests');
 }
 
 main()

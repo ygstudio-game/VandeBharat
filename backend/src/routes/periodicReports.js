@@ -1,5 +1,9 @@
+const fs = require('fs');
+const path = require('path');
 const prisma = require('../db/client');
 const { generatePeriodicReport, getPreviousPeriod } = require('../services/periodicReportScheduler');
+
+const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
 
 const PERIOD_TYPES = new Set(['shift', 'day', 'week']);
 
@@ -35,6 +39,19 @@ async function periodicReports(fastify) {
     const period = getPreviousPeriod(periodType);
     const report = await generatePeriodicReport(periodType, period);
     return { report: serialize(report) };
+  });
+
+  // GET /api/periodic-reports/:id/pdf — serve the locally-rendered PDF
+  // (Cloudinary blocks raw PDF delivery by default, same as per-session reports)
+  fastify.get('/:id/pdf', async (req, reply) => {
+    const pdfPath = path.join(UPLOAD_DIR, 'reports', `periodic_${req.params.id}.pdf`);
+    if (!fs.existsSync(pdfPath)) {
+      reply.status(404);
+      return { error: 'Periodic report PDF not found. Generate it first via POST /api/periodic-reports/generate.' };
+    }
+    reply.type('application/pdf');
+    reply.header('Content-Disposition', `inline; filename="periodic_report_${req.params.id}.pdf"`);
+    return fs.createReadStream(pdfPath);
   });
 }
 

@@ -6,6 +6,10 @@
 const axios = require('axios');
 const prisma = require('../db/client');
 const config = require('../config');
+const { publishJob } = require('../queue/queue');
+const { authenticate, requireRole } = require('../middleware/auth');
+const { logAction } = require('../services/auditLog');
+const { ROLES } = require('../constants/roles');
 
 async function reports(fastify) {
   // POST /api/sessions/:id/report
@@ -27,30 +31,20 @@ async function reports(fastify) {
       };
     }
 
-    // Mark report_generation stage running
-    await prisma.pipelineStage.updateMany({
-      where: { session_id: req.params.id, stage: 'report_generation' },
-      data: { status: 'running', started_at: new Date(), detail_message: 'Generating report...' },
-    });
-
-    // Fire-and-forget to report generator service
-    axios
-      .post(`${config.services.reportGenerator}/generate`, { session_id: req.params.id }, { timeout: 120_000 })
-      .then(async (resp) => {
-        fastify.log.info({ msg: 'Report generated', session_id: req.params.id, pdf_url: resp.data.pdf_url });
-      })
-      .catch(async (err) => {
-        fastify.log.error({ msg: 'Report generation failed', session_id: req.params.id, error: err.message });
-        await prisma.pipelineStage.updateMany({
-          where: { session_id: req.params.id, stage: 'report_generation' },
-          data: { status: 'failed', error_message: err.message },
-        });
-      });
+    // Publish to the queue instead of calling the report generator inline —
+    // the worker process (npm run worker) claims and runs it, durably.
+    try {
+      await publishJob('report_generation', { session_id: req.params.id });
+    } catch (err) {
+      fastify.log.error({ msg: 'Failed to publish report job to queue', session_id: req.params.id, error: err.message });
+      reply.status(503);
+      return { error: 'Pipeline queue unavailable — is Redis running?' };
+    }
 
     reply.status(202);
     return {
       session_id: req.params.id,
-      message: 'Report generation started. Poll GET /api/sessions/:id/report for the download URL.',
+      message: 'Report generation job queued. Poll GET /api/sessions/:id/report for the download URL.',
     };
   });
 
@@ -103,8 +97,11 @@ async function reports(fastify) {
     };
   });
 
-  // PUT /api/sessions/:id/report/sign
-  fastify.put('/:id/report/sign', async (req, reply) => {
+  // PUT /api/sessions/:id/report/sign — sign-off is a certification act,
+  // restricted to roles with sign-off authority (not field staff / ZR view-only).
+  fastify.put('/:id/report/sign', {
+    preHandler: [authenticate, requireRole(ROLES.ADMIN, ROLES.RDSO_INSPECTOR)],
+  }, async (req, reply) => {
     const sessionId = req.params.id;
     const session = await prisma.inspectionSession.findUnique({
       where: { id: sessionId },
@@ -144,6 +141,12 @@ async function reports(fastify) {
         }
       });
     }
+
+    await logAction({
+      userId: req.user.id, sessionId, action: 'REPORT_SIGNED_OFF',
+      resourceType: 'Report', resourceId: sessionId, ip: req.ip,
+      metadata: { notes: req.body?.notes || null },
+    });
 
     return { success: true, message: `Report signed off successfully` };
   });

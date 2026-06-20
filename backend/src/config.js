@@ -4,6 +4,8 @@ module.exports = {
   port: parseInt(process.env.PORT, 10) || 8001,
   nodeEnv: process.env.NODE_ENV || 'development',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+  redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
+  jwtSecret: process.env.JWT_SECRET || 'dev-only-insecure-secret-change-in-env',
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     apiKey: process.env.CLOUDINARY_API_KEY,
