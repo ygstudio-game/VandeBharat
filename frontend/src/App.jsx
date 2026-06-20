@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { Shell } from './components/layout/Shell';
+import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { LiveQueue } from './pages/LiveQueue';
 import { Sessions } from './pages/Sessions';
@@ -12,9 +15,8 @@ import { CoachSearch } from './pages/CoachSearch';
 import { OcrResultsLog } from './pages/OcrResultsLog';
 import { DefectAlertConsole } from './pages/DefectAlertConsole';
 import { CameraHealthMonitor } from './pages/CameraHealthMonitor';
+import { AiInferenceManagement } from './pages/AiInferenceManagement';
 
-
-// Placeholder components for routing
 const Placeholder = ({ title }) => (
   <div className="flex h-full items-center justify-center p-8">
     <div className="text-center">
@@ -26,29 +28,37 @@ const Placeholder = ({ title }) => (
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Shell />}>
-          {/* Redirect root to dashboard */}
-          <Route index element={<Navigate to="/dashboard" replace />} />
-          
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="live-queue" element={<LiveQueue />} />
-          <Route path="sessions" element={<Sessions />} />
-          <Route path="train/:sessionId" element={<TrainWorkspace />} />
-          <Route path="coach-search" element={<CoachSearch />} />
-          <Route path="ocr-log" element={<OcrResultsLog />} />
-          <Route path="defect-console" element={<DefectAlertConsole />} />
-          <Route path="camera-health" element={<CameraHealthMonitor />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="infrastructure" element={<Infrastructure />} />
-          <Route path="settings" element={<Settings />} />
-          
-          <Route path="*" element={<Placeholder title="404 Not Found" />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Protected — all app routes inside Shell */}
+          <Route path="/" element={
+            <ProtectedRoute>
+              <Shell />
+            </ProtectedRoute>
+          }>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard"      element={<Dashboard />} />
+            <Route path="live-queue"     element={<LiveQueue />} />
+            <Route path="sessions"       element={<Sessions />} />
+            <Route path="train/:sessionId" element={<TrainWorkspace />} />
+            <Route path="coach-search"   element={<CoachSearch />} />
+            <Route path="ocr-log"        element={<OcrResultsLog />} />
+            <Route path="defect-console" element={<DefectAlertConsole />} />
+            <Route path="camera-health"  element={<CameraHealthMonitor />} />
+            <Route path="reports"        element={<Reports />} />
+            <Route path="analytics"      element={<Analytics />} />
+            <Route path="infrastructure" element={<Infrastructure />} />
+            <Route path="ai-inference"   element={<AiInferenceManagement />} />
+            <Route path="settings"       element={<Settings />} />
+            <Route path="*"              element={<Placeholder title="404 Not Found" />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

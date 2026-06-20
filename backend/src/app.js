@@ -30,24 +30,33 @@ fastify.get('/health', async (request, reply) => {
   }
 });
 
-fastify.register(require('./routes/auth'),         { prefix: '/api/auth' });
-fastify.register(require('./routes/users'),        { prefix: '/api/users' });
-fastify.register(require('./routes/auditLogRoutes'), { prefix: '/api/audit-log' });
-fastify.register(require('./routes/trainingExport'), { prefix: '/api/training' });
-fastify.register(require('./routes/modelVersions'),  { prefix: '/api/models' });
-fastify.register(require('./routes/sessions'),     { prefix: '/api/sessions' });
-fastify.register(require('./routes/intelligence'), { prefix: '/api/sessions' });
-fastify.register(require('./routes/reports'),      { prefix: '/api/sessions' });
-fastify.register(require('./routes/dashboard'),    { prefix: '/api/dashboard' });
-fastify.register(require('./routes/health'),       { prefix: '/api/health' });
-fastify.register(require('./routes/config'),       { prefix: '/api/config' });
-fastify.register(require('./routes/coaches'),      { prefix: '/api/coaches' });
-fastify.register(require('./routes/ocrResults'),   { prefix: '/api/ocr-results' });
-fastify.register(require('./routes/analytics'),    { prefix: '/api/analytics' });
-fastify.register(require('./routes/cameraHealth'), { prefix: '/api/cameras' });
-fastify.register(require('./routes/reviewLog'),       { prefix: '/api/sessions' });
-fastify.register(require('./routes/reviewLogGlobal'), { prefix: '/api/review-log' });
-fastify.register(require('./routes/periodicReports'), { prefix: '/api/periodic-reports' });
+const { authenticate } = require('./middleware/auth');
+
+// Public — auth not required
+fastify.register(require('./routes/auth'), { prefix: '/api/auth' });
+
+// Protected — all routes inside require a valid JWT (or dev bypass when AUTH_ENABLED != 'true')
+fastify.register(async function protectedApi(api) {
+  api.addHook('preHandler', authenticate);
+
+  api.register(require('./routes/users'),          { prefix: '/api/users' });
+  api.register(require('./routes/auditLogRoutes'), { prefix: '/api/audit-log' });
+  api.register(require('./routes/trainingExport'), { prefix: '/api/training' });
+  api.register(require('./routes/modelVersions'),  { prefix: '/api/models' });
+  api.register(require('./routes/sessions'),       { prefix: '/api/sessions' });
+  api.register(require('./routes/intelligence'),   { prefix: '/api/sessions' });
+  api.register(require('./routes/reports'),        { prefix: '/api/sessions' });
+  api.register(require('./routes/dashboard'),      { prefix: '/api/dashboard' });
+  api.register(require('./routes/health'),         { prefix: '/api/health' });
+  api.register(require('./routes/config'),         { prefix: '/api/config' });
+  api.register(require('./routes/coaches'),        { prefix: '/api/coaches' });
+  api.register(require('./routes/ocrResults'),     { prefix: '/api/ocr-results' });
+  api.register(require('./routes/analytics'),      { prefix: '/api/analytics' });
+  api.register(require('./routes/cameraHealth'),   { prefix: '/api/cameras' });
+  api.register(require('./routes/reviewLog'),          { prefix: '/api/sessions' });
+  api.register(require('./routes/reviewLogGlobal'),    { prefix: '/api/review-log' });
+  api.register(require('./routes/periodicReports'),    { prefix: '/api/periodic-reports' });
+});
 
 // WebSocket endpoint — clients connect here for live pipeline events
 fastify.register(async function wsRoutes(app) {
