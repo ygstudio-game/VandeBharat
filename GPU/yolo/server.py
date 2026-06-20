@@ -45,6 +45,13 @@ SEVERITY_MAP = {
 defect_model = None
 ocr_detector_model = None
 
+# Rolling metrics — updated on every predict call
+import time
+import collections
+_latency_window = collections.deque(maxlen=100)  # last 100 inference times (ms)
+_requests_total = 0
+_service_start = time.time()
+
 app = FastAPI(title="VandeInspect YOLO Service", version="1.0.0")
 
 
@@ -109,14 +116,51 @@ def health():
     }
 
 
+@app.get("/metrics")
+def metrics():
+    global _requests_total, _latency_window, _service_start
+
+    avg_latency = (sum(_latency_window) / len(_latency_window)) if _latency_window else 0.0
+    uptime_s = time.time() - _service_start
+    fps = _requests_total / uptime_s if uptime_s > 0 else 0.0
+
+    gpu_memory_mb = None
+    gpu_utilization_pct = None
+    try:
+        import torch
+        if torch.cuda.is_available():
+            gpu_memory_mb = round(torch.cuda.memory_allocated() / 1024 / 1024, 1)
+            gpu_memory_total_mb = round(torch.cuda.get_device_properties(0).total_memory / 1024 / 1024, 1)
+            gpu_utilization_pct = round(gpu_memory_mb / gpu_memory_total_mb * 100, 1) if gpu_memory_total_mb else 0
+    except Exception:
+        pass
+
+    return {
+        "service": "yolo",
+        "port": 5002,
+        "requests_total": _requests_total,
+        "avg_latency_ms": round(avg_latency, 2),
+        "fps": round(fps, 2),
+        "gpu_memory_mb": gpu_memory_mb,
+        "gpu_utilization_pct": gpu_utilization_pct,
+        "defect_model_loaded": defect_model is not None,
+        "ocr_model_loaded": ocr_detector_model is not None,
+        "uptime_seconds": round(uptime_s, 1),
+    }
+
+
 @app.post("/api/yolo/predict")
 async def predict(file: UploadFile = File(...)):
     """Defect detection — uses best.pt. Called by Phase 3 correlation pipeline."""
+    global _requests_total
     if defect_model is None:
         raise HTTPException(status_code=503, detail="Defect model not loaded. Check models/best.pt.")
 
     frame = decode_bytes(await file.read())
+    t0 = time.time()
     results = defect_model(frame, conf=CONF_THRESHOLD, verbose=False)[0]
+    _latency_window.append((time.time() - t0) * 1000)
+    _requests_total += 1
     h, w = frame.shape[:2]
 
     detections = []
@@ -140,13 +184,17 @@ async def predict(file: UploadFile = File(...)):
 @app.post("/api/yolo/predict_train_number")
 async def predict_train_number(file: UploadFile = File(...)):
     """Bogie ROI detection — uses train_num_detector.pt. Called by OCR service (Phase 2)."""
+    global _requests_total
     if ocr_detector_model is None:
         # Graceful: return empty so OCR service falls back to full-frame PaddleOCR
         logger.debug("OCR detector model not loaded — returning empty boxes")
         return {"boxes": [], "frame_size": [0, 0], "model_loaded": False}
 
     frame = decode_bytes(await file.read())
+    t0 = time.time()
     results = ocr_detector_model(frame, conf=0.25, verbose=False)[0]
+    _latency_window.append((time.time() - t0) * 1000)
+    _requests_total += 1
     h, w = frame.shape[:2]
 
     boxes = []

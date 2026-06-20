@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { ToastContainer } from '../ui/ToastContainer';
 import {
   LayoutDashboard,
@@ -16,7 +17,9 @@ import {
   Search,
   ScanText,
   ShieldAlert,
-  Camera
+  Camera,
+  LogOut,
+  Cpu,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -33,11 +36,19 @@ const navItems = [
   { name: 'Defect Analytics', path: '/analytics', icon: Activity },
   { name: 'Camera Health Monitor', path: '/camera-health', icon: Camera },
   { name: 'System Health Dashboard', path: '/infrastructure', icon: Server },
+  { name: 'AI Inference', path: '/ai-inference', icon: Cpu },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 
 export const Shell = () => {
   const location = useLocation();
+  const navigate  = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
   // Auto-collapse on small screens (≤1366px / 14" laptops) and in train workspace
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.innerWidth < 1440);
 
@@ -147,12 +158,19 @@ export const Shell = () => {
             {/* User Profile */}
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <p className="text-xs font-bold leading-none text-foreground">OPERATOR_319</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5 font-medium">Duty Desk: Mumbai Cent.</p>
+                <p className="text-xs font-bold leading-none text-foreground">{user?.name || 'Operator'}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5 font-medium uppercase">{user?.role || '—'}</p>
               </div>
               <div className="w-9 h-9 bg-secondary rounded-full flex items-center justify-center border border-border">
                 <User className="w-4 h-4 text-muted-foreground" />
               </div>
+              <button
+                onClick={handleLogout}
+                title="Sign out"
+                className="p-2 text-muted-foreground hover:text-destructive hover:bg-red-50 rounded transition-all"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </header>

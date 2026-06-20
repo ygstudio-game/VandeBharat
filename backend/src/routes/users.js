@@ -10,9 +10,8 @@ const SAFE_SELECT = {
 };
 
 async function usersRoutes(fastify) {
-  // All routes here require ADMIN — this is the backend enforcement that
-  // was previously missing behind Settings.jsx's "frontend preview only" UI.
-  fastify.addHook('preHandler', authenticate);
+  // authenticate runs at the parent plugin level (app.js protectedApi scope).
+  // This hook adds the additional ADMIN role guard on top.
   fastify.addHook('preHandler', requireRole(ROLES.ADMIN));
 
   // GET /api/users

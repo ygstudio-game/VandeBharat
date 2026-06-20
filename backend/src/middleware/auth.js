@@ -2,11 +2,20 @@
  * Real backend auth enforcement — previously RBAC/2FA existed only as a
  * frontend preview (Settings.jsx had an explicit "no backend enforcement"
  * disclosure banner). These two preHandlers are what close that gap.
+ *
+ * Set AUTH_ENABLED=true in .env to enforce JWT checks on all protected routes.
+ * When unset (default in dev), a mock admin user is attached so routes still
+ * function without a login flow — emergency rollback: set AUTH_ENABLED=false.
  */
 const { verifyToken } = require('../auth/jwt');
 const prisma = require('../db/client');
 
 async function authenticate(request, reply) {
+  if (process.env.AUTH_ENABLED !== 'true') {
+    request.user = { id: 'dev-admin', email: 'admin@vande.local', name: 'Dev Admin', role: 'admin' };
+    return;
+  }
+
   const header = request.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
 

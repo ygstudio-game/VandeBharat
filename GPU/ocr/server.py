@@ -16,6 +16,8 @@ import sys
 import uuid
 import json
 import logging
+import time
+import collections
 import requests
 import cv2
 import numpy as np
@@ -37,6 +39,12 @@ logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 YOLO_URL = os.environ.get("YOLO_SERVICE_URL", "http://127.0.0.1:5002/api/yolo/predict_train_number")
+
+# Rolling metrics
+_ocr_latency_window = collections.deque(maxlen=100)
+_ocr_requests_total = 0
+_ocr_valid_total = 0
+_ocr_service_start = time.time()
 
 app = FastAPI(title="VandeInspect OCR Service", version="1.0.0")
 
@@ -163,8 +171,30 @@ def health():
     return {"status": "ok", "service": "ocr", "port": 5000}
 
 
+@app.get("/metrics")
+def metrics():
+    avg_latency = (sum(_ocr_latency_window) / len(_ocr_latency_window)) if _ocr_latency_window else 0.0
+    uptime_s = time.time() - _ocr_service_start
+    fps = _ocr_requests_total / uptime_s if uptime_s > 0 else 0.0
+    valid_pct = (_ocr_valid_total / _ocr_requests_total * 100) if _ocr_requests_total > 0 else 0.0
+    return {
+        "service": "ocr",
+        "port": 5000,
+        "requests_total": _ocr_requests_total,
+        "valid_detections": _ocr_valid_total,
+        "valid_pct": round(valid_pct, 1),
+        "avg_latency_ms": round(avg_latency, 2),
+        "fps": round(fps, 4),
+        "uptime_seconds": round(uptime_s, 1),
+    }
+
+
 @app.post("/ocr")
 def ocr(req: OcrRequest):
+    global _ocr_requests_total, _ocr_valid_total
+    _ocr_requests_total += 1
+    t0 = time.time()
+
     # Download frame
     try:
         frame = download_frame(req.frame_url)
@@ -173,6 +203,9 @@ def ocr(req: OcrRequest):
         return {"coach_number": None, "confidence": 0.0, "is_valid": False, "error": str(exc)}
 
     coach_number, confidence, pass_used, roi_used, bbox, raw_ocr, all_yolo_boxes = run_pipeline(frame)
+    _ocr_latency_window.append((time.time() - t0) * 1000)
+    if coach_number:
+        _ocr_valid_total += 1
     is_valid = coach_number is not None
 
     # Normalise YOLO boxes for the response: xyxy → xywh, keep label + confidence

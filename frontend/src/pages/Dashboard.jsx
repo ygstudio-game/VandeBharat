@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KPICard } from '../components/dashboard/KPICard';
 import { LiveTrainCard } from '../components/dashboard/LiveTrainCard';
 import { DefectPreviewModal } from '../components/dashboard/DefectPreviewModal';
+import { RakeVisualization } from '../components/dashboard/RakeVisualization';
 import { usePolling } from '../hooks/usePolling';
 import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
-import { getDashboardKpis, getLiveQueue, getRecentDefects, normalizeSession } from '../lib/api';
+import { getDashboardKpis, getLiveQueue, getRecentDefects, getHierarchy, normalizeSession } from '../lib/api';
 import DetectionLogTable from '../components/DetectionLogTable';
 import {
   Train,
@@ -26,6 +27,36 @@ export const Dashboard = () => {
   const liveSessions = (queueData?.sessions || []).map(normalizeSession);
   const kv = (key, fallback) => kpis?.[key] ?? fallback;
   const [previewDefect, setPreviewDefect] = useState(null);
+
+  // Rake visualization — fetch hierarchy for the first active (non-completed) session
+  const [rakeCoaches, setRakeCoaches]         = useState([]);
+  const [rakeSessionId, setRakeSessionId]     = useState(null);
+
+  const activeSession = liveSessions.find(s => s.status === 'PROCESSING')
+    || liveSessions.find(s => s.status === 'QUEUED')
+    || liveSessions[0];
+
+  const fetchRakeHierarchy = useCallback((sid) => {
+    if (!sid) return;
+    getHierarchy(sid)
+      .then(data => {
+        setRakeCoaches(data?.coaches || []);
+        setRakeSessionId(sid);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch when active session changes
+  useEffect(() => {
+    const sid = activeSession?.id;
+    if (sid && sid !== rakeSessionId) {
+      fetchRakeHierarchy(sid);
+    }
+    if (!sid) {
+      setRakeCoaches([]);
+      setRakeSessionId(null);
+    }
+  }, [activeSession?.id, rakeSessionId, fetchRakeHierarchy]);
 
   const defectRows = (defectsData?.defects || []).map((d) => {
     const timestamp = d.session_started_at && d.captured_at_ms != null
@@ -66,20 +97,23 @@ export const Dashboard = () => {
       refreshKpis();
       refreshQueue();
       refreshDefects();
+      if (activeSession?.id) fetchRakeHierarchy(activeSession.id);
       toast.success('Train inspection pipeline finished.', 'New Report Ready');
     } else if (lastEvent.type === 'coaches_mapped') {
       refreshQueue();
+      if (activeSession?.id) fetchRakeHierarchy(activeSession.id);
     } else if (lastEvent.type === 'session_failed') {
       refreshKpis();
       refreshQueue();
       toast.error('A pipeline session failed.', 'Pipeline Error');
     } else if (lastEvent.type === 'defects_found') {
       refreshDefects();
+      if (activeSession?.id) fetchRakeHierarchy(activeSession.id);
       if (lastEvent.critical > 0) {
         toast.warning(`${lastEvent.count} new defect(s), ${lastEvent.critical} critical.`, 'Defect Alert');
       }
     }
-  }, [lastEvent, refreshKpis, refreshQueue, refreshDefects]);
+  }, [lastEvent, refreshKpis, refreshQueue, refreshDefects, activeSession?.id, fetchRakeHierarchy]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 font-sans">
@@ -104,6 +138,22 @@ export const Dashboard = () => {
         <KPICard label="Critical Alerts" value={String(kv('critical_defects', '—'))}   icon={<ShieldAlert className="w-4 h-4 text-destructive" />} highlightColor="red" />
         <KPICard label="Failed Sessions" value={String(kv('failed_sessions', '—'))}    icon={<AlertTriangle className="w-4 h-4 text-warning" />} highlightColor="amber" />
       </div>
+
+      {/* Active Train Rake Visualization */}
+      {(activeSession || liveSessions.length > 0) && (
+        <div className="bg-card border border-border rounded-lg p-5 shadow-sm space-y-1">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h2 className="text-lg font-black text-foreground">ACTIVE TRAIN RAKE</h2>
+              <p className="text-xs text-muted-foreground font-semibold mt-0.5">Real-time coach inspection status</p>
+            </div>
+          </div>
+          <RakeVisualization
+            session={activeSession || null}
+            coaches={activeSession?.id === rakeSessionId ? rakeCoaches : []}
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Live Queue */}

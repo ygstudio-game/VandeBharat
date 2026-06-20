@@ -1,13 +1,63 @@
 const BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
+const TOKEN_KEY = 'vi_auth_token';
+
+function authHeader() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 async function _fetch(path, opts = {}) {
-  const resp = await fetch(`${BASE}${path}`, opts);
+  const headers = { ...authHeader(), ...(opts.headers || {}) };
+  const resp = await fetch(`${BASE}${path}`, { ...opts, headers });
   if (!resp.ok) {
     const text = await resp.text().catch(() => '');
     throw new Error(`API ${resp.status} ${path}: ${text}`);
   }
   return resp.json();
 }
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+export const getMe = () => _fetch('/api/auth/me');
+
+// ── AI / Model Versions ───────────────────────────────────────────────────────
+export const getModelVersions    = (model_name) => _fetch(`/api/models${model_name ? `?model_name=${model_name}` : ''}`);
+export const getModelMetrics     = () => _fetch('/api/models/metrics');
+export const activateModelVersion = (id) => _fetch(`/api/models/${id}/activate`, { method: 'PATCH' });
+
+// ── Users (admin only) ────────────────────────────────────────────────────────
+export const getUsers = () => _fetch('/api/users');
+export const createUser = (payload) => _fetch('/api/users', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+export const patchUserRole = (id, role) => _fetch(`/api/users/${id}/role`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ role }),
+});
+export const patchUserActive = (id, is_active) => _fetch(`/api/users/${id}/active`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ is_active }),
+});
+
+// ── 2FA ───────────────────────────────────────────────────────────────────────
+export const setup2fa   = () => _fetch('/api/auth/2fa/setup', { method: 'POST' });
+export const verify2fa  = (code) => _fetch('/api/auth/2fa/verify', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ code }),
+});
+export const disable2fa = () => _fetch('/api/auth/2fa/disable', { method: 'POST' });
+
+// ── Audit Log ─────────────────────────────────────────────────────────────────
+export const getAuditLog = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/audit-log${qs ? `?${qs}` : ''}`);
+};
 
 // ── Sessions ────────────────────────────────────────────────────────────────
 export const getSessions    = ()        => _fetch('/api/sessions');

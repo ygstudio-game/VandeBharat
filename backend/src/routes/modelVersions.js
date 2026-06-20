@@ -8,10 +8,30 @@ const prisma = require('../db/client');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { logAction } = require('../services/auditLog');
 const { ROLES } = require('../constants/roles');
+const config = require('../config');
+
+async function fetchServiceMetrics(url) {
+  try {
+    const resp = await fetch(`${url}/metrics`, { signal: AbortSignal.timeout(3000) });
+    if (!resp.ok) return null;
+    return resp.json();
+  } catch {
+    return null;
+  }
+}
 
 async function modelVersionRoutes(fastify) {
-  fastify.addHook('preHandler', authenticate);
+  // authenticate runs at parent plugin scope; only ADMIN role needed here
   fastify.addHook('preHandler', requireRole(ROLES.ADMIN));
+
+  // GET /api/models/metrics — live inference metrics from YOLO + OCR services
+  fastify.get('/metrics', async () => {
+    const [yolo, ocr] = await Promise.all([
+      fetchServiceMetrics(config.services.yolo),
+      fetchServiceMetrics(config.services.ocr),
+    ]);
+    return { yolo: yolo || null, ocr: ocr || null };
+  });
 
   // GET /api/models?model_name=defect_detector
   fastify.get('/', async (req) => {
