@@ -284,7 +284,7 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
                 </p>
               )}
               {!component.message && !defect.message && (
-                <p className="text-[10px] text-slate-400 font-semibold">YOLO runs per-coach after synchronization completes.</p>
+                <p className="text-[10px] text-slate-400 font-semibold">Custom Model runs per-coach after synchronization completes.</p>
               )}
             </CardContent>
           </Card>

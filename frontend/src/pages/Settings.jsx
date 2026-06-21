@@ -292,7 +292,7 @@ export const Settings = () => {
                   <span className="font-mono text-primary font-bold">{brakeThresh}%</span>
                 </div>
                 <input type="range" min="50" max="95" value={brakeThresh} onChange={(e) => setBrakeThresh(Number(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-primary" />
-                <p className="text-[10px] text-muted-foreground">Alerts are generated if YOLO confidence matches or exceeds this limit.</p>
+                <p className="text-[10px] text-muted-foreground">Alerts are generated if Custom Model confidence matches or exceeds this limit.</p>
               </div>
 
               <div className="space-y-2">

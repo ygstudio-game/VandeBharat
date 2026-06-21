@@ -117,6 +117,33 @@ export const getReviewLog = (params = {}) => {
   return _fetch(`/api/review-log${qs ? `?${qs}` : ''}`);
 };
 
+// ── Defect Verification Console ──────────────────────────────────────────────
+export const getPendingReviewDefects = (limit = 50, offset = 0) =>
+  _fetch(`/api/defects/pending-review?limit=${limit}&offset=${offset}`);
+export const reviewDefect = (id, status, notes) => _fetch(`/api/defects/${id}/review`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ status, notes }),
+});
+// Binary response (zip) — _fetch's json() parser would break on this, so this
+// triggers a real browser download instead of returning parsed data.
+export const downloadYoloDataset = async () => {
+  const resp = await fetch(`${BASE}/api/training/export-yolo-dataset`, { headers: authHeader() });
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '');
+    throw new Error(`API ${resp.status} /api/training/export-yolo-dataset: ${text}`);
+  }
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'yolo_dataset.zip';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+};
+
 // ── Periodic (Historical) Reports ───────────────────────────────────────────
 export const getPeriodicReports = (params = {}) => {
   const qs = new URLSearchParams(

@@ -156,7 +156,7 @@ export function AiInferenceManagement() {
       setLatencyHistory((prev) => {
         const next = [...prev, {
           t: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-          yolo: data.yolo.avg_latency_ms,
+          customModel: data.yolo.avg_latency_ms,
           ocr:  data.ocr?.avg_latency_ms ?? null,
         }];
         return next.slice(-20); // keep last 20 points
@@ -169,7 +169,7 @@ export function AiInferenceManagement() {
   const { data: metricsData, refresh: refreshMetrics }   = usePolling(fetchMetrics,  5000);
 
   const versions = versionsData?.versions || [];
-  const yolo     = metricsData?.yolo  || null;
+  const customModel = metricsData?.yolo || null;
   const ocr      = metricsData?.ocr   || null;
 
   const handleActivate = async (id) => {
@@ -198,7 +198,7 @@ export function AiInferenceManagement() {
           <p className="text-sm text-muted-foreground mt-1">Live model metrics, version registry, and activation control</p>
         </div>
         <div className="flex items-center gap-2">
-          <ServiceStatus label="YOLO :5002" data={yolo} online={yolo !== null} />
+          <ServiceStatus label="Custom Model :5002" data={customModel} online={customModel !== null} />
           <ServiceStatus label="OCR :5000"  data={ocr}  online={ocr  !== null} />
           <button
             onClick={() => { refreshVersions(); refreshMetrics(); }}
@@ -211,39 +211,39 @@ export function AiInferenceManagement() {
 
       {/* Live metrics gauges */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* YOLO metrics */}
+        {/* Custom Model metrics */}
         <div className="bg-card border border-border rounded-lg p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Cpu className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-black text-foreground uppercase tracking-tight">YOLO Service Metrics</h2>
-            {yolo === null && <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">OFFLINE</span>}
+            <h2 className="text-sm font-black text-foreground uppercase tracking-tight">Custom Model Service Metrics</h2>
+            {customModel === null && <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">OFFLINE</span>}
           </div>
-          {yolo ? (
+          {customModel ? (
             <div className="flex flex-wrap items-center justify-around gap-4">
-              <Gauge value={yolo.avg_latency_ms} max={500} label="Avg Latency" unit="ms" color="stroke-blue-500" />
-              <Gauge value={yolo.fps} max={30} label="Throughput" unit="FPS" color="stroke-violet-500" />
-              <Gauge value={yolo.gpu_utilization_pct} max={100} label="GPU Mem Used" unit="%" color="stroke-amber-500" />
+              <Gauge value={customModel.avg_latency_ms} max={500} label="Avg Latency" unit="ms" color="stroke-blue-500" />
+              <Gauge value={customModel.fps} max={30} label="Throughput" unit="FPS" color="stroke-violet-500" />
+              <Gauge value={customModel.gpu_utilization_pct} max={100} label="GPU Mem Used" unit="%" color="stroke-amber-500" />
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2">
-                  {yolo.defect_model_loaded ? <PackageCheck className="w-4 h-4 text-emerald-500" /> : <PackageX className="w-4 h-4 text-red-400" />}
-                  <span className={yolo.defect_model_loaded ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}>
-                    {yolo.defect_model_loaded ? 'Defect model loaded' : 'Defect model missing'}
+                  {customModel.defect_model_loaded ? <PackageCheck className="w-4 h-4 text-emerald-500" /> : <PackageX className="w-4 h-4 text-red-400" />}
+                  <span className={customModel.defect_model_loaded ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}>
+                    {customModel.defect_model_loaded ? 'Defect model loaded' : 'Defect model missing'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {yolo.ocr_model_loaded ? <PackageCheck className="w-4 h-4 text-emerald-500" /> : <PackageX className="w-4 h-4 text-red-400" />}
-                  <span className={yolo.ocr_model_loaded ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}>
-                    {yolo.ocr_model_loaded ? 'OCR detector loaded' : 'OCR detector missing'}
+                  {customModel.ocr_model_loaded ? <PackageCheck className="w-4 h-4 text-emerald-500" /> : <PackageX className="w-4 h-4 text-red-400" />}
+                  <span className={customModel.ocr_model_loaded ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}>
+                    {customModel.ocr_model_loaded ? 'OCR detector loaded' : 'OCR detector missing'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Timer className="w-3.5 h-3.5" />
-                  <span>Uptime {Math.round((yolo.uptime_seconds || 0) / 60)}m</span>
+                  <span>Uptime {Math.round((customModel.uptime_seconds || 0) / 60)}m</span>
                 </div>
-                {yolo.gpu_memory_mb != null && (
+                {customModel.gpu_memory_mb != null && (
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <MemoryStick className="w-3.5 h-3.5" />
-                    <span>{yolo.gpu_memory_mb} MB GPU allocated</span>
+                    <span>{customModel.gpu_memory_mb} MB GPU allocated</span>
                   </div>
                 )}
               </div>
@@ -251,7 +251,7 @@ export function AiInferenceManagement() {
           ) : (
             <div className="flex items-center gap-2 text-sm text-muted-foreground py-8 justify-center">
               <AlertTriangle className="w-4 h-4 text-amber-400" />
-              YOLO service unreachable — start GPU/yolo/server.py on port 5002
+              Custom Model service unreachable — start GPU/custom-model/server.py on port 5002
             </div>
           )}
         </div>
@@ -302,9 +302,9 @@ export function AiInferenceManagement() {
               <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} unit="ms" width={45} />
               <Tooltip
                 contentStyle={{ fontSize: 11, border: '1px solid #e2e8f0', borderRadius: 6 }}
-                formatter={(v, name) => [`${v?.toFixed(1)} ms`, name === 'yolo' ? 'YOLO' : 'OCR']}
+                formatter={(v, name) => [`${v?.toFixed(1)} ms`, name === 'customModel' ? 'Custom Model' : 'OCR']}
               />
-              <Line type="monotone" dataKey="yolo" stroke="#6366f1" strokeWidth={2} dot={false} name="yolo" />
+              <Line type="monotone" dataKey="customModel" stroke="#6366f1" strokeWidth={2} dot={false} name="customModel" />
               <Line type="monotone" dataKey="ocr"  stroke="#06b6d4" strokeWidth={2} dot={false} name="ocr" />
             </LineChart>
           </ResponsiveContainer>

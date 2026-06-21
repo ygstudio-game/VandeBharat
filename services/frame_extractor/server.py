@@ -18,12 +18,16 @@ from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "GPU", "shared"))
+from logging_utils import configure_logging, set_trace_id  # noqa: E402
+
 # Load backend .env first (shared credentials), then service .env as override
 _root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend"))
 load_dotenv(dotenv_path=os.path.join(_root, ".env"))
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"), override=False)
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+configure_logging("frame_extractor")
 logger = logging.getLogger(__name__)
 
 cloudinary.config(
@@ -187,6 +191,7 @@ def _flush_rows(conn, rows: list, session_id: str, session_camera_id: str, total
 
 
 def run_extraction(req: ExtractRequest):
+    set_trace_id(req.session_id)  # BackgroundTasks may run outside the request's contextvar scope
     conn = get_conn()
     try:
         # ── Mark extraction stage running ──────────────────────────────────────

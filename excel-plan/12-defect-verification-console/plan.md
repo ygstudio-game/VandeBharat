@@ -66,9 +66,26 @@ No standalone Verification Console page exists. No retraining dataset export.
 - `review_status` field is already in schema — additive change
 
 ## 12. Completion Checklist
-- [ ] Code reviewed
-- [ ] Feature implemented
-- [ ] Tests passed
-- [ ] No breaking changes
-- [ ] Documentation updated
-- [ ] Excel status updated
+- [x] Code reviewed
+- [x] Feature implemented
+- [x] Tests passed — live-tested against real Neon DB with 70 real pending defects, not synthetic data
+- [x] No breaking changes
+- [x] Documentation updated
+- [x] Excel status updated
+
+## 13. Implementation Notes (added post-build, 2026-06-21)
+
+**Plan bug caught before coding:** Section 5 said to query `review_status = 'unreviewed'`. That value never existed in the schema — the real default (and the value `reviewLog.js` already uses) is `'pending'`. Implemented against `'pending'` instead; querying `'unreviewed'` as written would have returned an empty queue forever.
+
+**Built:**
+- `GET /api/defects/pending-review` — `backend/src/routes/defects.js` (new file, not `intelligence.js` as the plan suggested — kept defect-review concerns out of the session-scoped intelligence routes)
+- `PATCH /api/defects/:id/review` — same file. Also writes a `DefectReviewLog` row (same table Day 4's JSON manifest export reads) and an `AuditLog` row, so this queue and the existing FP/FN log share one audit trail instead of two.
+- `GET /api/training/export-yolo-dataset` — `backend/src/routes/trainingExport.js`. Streams a zip (`archiver`) of `images/<id>.jpg` + `labels/<id>.txt` (normalized YOLO format) + `classes.txt`, built from `review_status='confirmed'` defects only. Admin-gated like the rest of that file.
+- `frontend/src/pages/DefectVerificationConsole.jsx` — one-at-a-time review card, bbox overlay (CSS-positioned over the frame image using `bbox/frame_width/frame_height`), C/R/N keyboard shortcuts (disabled while typing in the notes field), admin-only export button.
+- Nav entry + route registered.
+
+**Two real bugs found and fixed during live testing (not caught by static checks):**
+1. `archiver@8.0.0`'s factory-function API was removed in favor of class constructors — `archiver('zip', opts)` threw `archiver is not a function`. Pinned to `archiver@7.0.1`, last major with the classic API.
+2. `AUTH_ENABLED=false` dev-bypass mock user had `id: 'dev-admin'` (a string, not a UUID) — broke on the very first write to any UUID FK column (`reviewed_by`, `logged_by`, audit log `user_id`, etc.), not just this feature. This was a latent bug affecting every mutating route built since Day 3 whenever auth enforcement is off. Fixed in `backend/src/middleware/auth.js`: the dev bypass now looks up the real seeded `admin@vande.local` row and uses its actual UUID, cached after first lookup.
+
+**Verified live:** 70 real pending defects existed in the DB already. Confirmed one (dropped pending count 70→69, audit log row appeared with correct actor), confirmed a second, rejected a third, downloaded the YOLO zip (370KB, 2 images + 2 labels — correctly excluded the rejected one), manually recomputed the normalized bbox math for one label and it matched exactly (`cx=0.777344, cy=0.484722, w=0.348438, h=0.215741`).

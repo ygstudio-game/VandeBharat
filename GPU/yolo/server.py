@@ -7,15 +7,20 @@ Two models loaded at startup on GPU:
 Ported from POC/backend/YOLO/server.py (Flask → FastAPI).
 """
 import os
+import sys
 import logging
 import numpy as np
 import cv2
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from dotenv import load_dotenv
+from model_manager import resolve_weights_path
+
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "shared"))
+from logging_utils import configure_logging, set_trace_id  # noqa: E402
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+configure_logging("yolo")
 logger = logging.getLogger(__name__)
 
 DEFECT_MODEL_PATH = os.environ.get(
@@ -57,13 +62,18 @@ app = FastAPI(title="VandeInspect YOLO Service", version="1.0.0")
 
 @app.on_event("startup")
 def load_models():
-    global defect_model, ocr_detector_model
+    global defect_model, ocr_detector_model, DEFECT_MODEL_PATH, OCR_MODEL_PATH
     try:
         from ultralytics import YOLO
         import torch
     except ImportError:
         logger.error("ultralytics not installed. Run: pip install ultralytics")
         return
+
+    # Model registry takes priority over the static env-configured path —
+    # a promoted/rolled-back model_versions row wins if one exists.
+    DEFECT_MODEL_PATH = resolve_weights_path("defect_detector", DEFECT_MODEL_PATH)
+    OCR_MODEL_PATH = resolve_weights_path("train_num_detector", OCR_MODEL_PATH)
 
     requested_device = os.environ.get("YOLO_DEVICE", "cuda:0" if torch.cuda.is_available() else "cpu")
     if requested_device.startswith("cuda") and not torch.cuda.is_available():

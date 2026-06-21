@@ -19,7 +19,7 @@
 | 09 | Historical Reports | Medium | QA Engineer | 2026-06-21 | excel-plan/09-historical-reports/plan.md | Done |
 | 10 | User Management | High | Backend Developer + Security | 2026-06-21 | excel-plan/10-user-management/plan.md | Done |
 | 11 | AI Inference Management | High | AI/ML Engineer + Backend | 2026-06-22 | excel-plan/11-ai-inference-management/plan.md | Done |
-| 12 | Defect Verification Console | High | Full Stack Developer | 2026-06-22 | excel-plan/12-defect-verification-console/plan.md | Planned |
+| 12 | Defect Verification Console | High | Full Stack Developer | 2026-06-22 | excel-plan/12-defect-verification-console/plan.md | Done |
 | 13 | Train Movement Timeline | High | Frontend Developer | 2026-06-23 | excel-plan/13-train-movement-timeline/plan.md | Planned |
 | 14 | Image Archive Management | High | Backend Developer + DevOps | 2026-06-23 | excel-plan/14-image-archive-management/plan.md | Planned |
 | 15 | Train Passage History | High | Full Stack Developer | 2026-06-24 | excel-plan/15-train-passage-history/plan.md | Planned |
@@ -50,7 +50,7 @@
 ## Summary
 
 - **Total Modules:** 24
-- **Done:** 11 (modules 1–11)
+- **Done:** 12 (modules 1–12)
 - **In Progress:** 0
-- **Planned:** 13 (modules 12–24)
+- **Planned:** 12 (modules 13–24)
 - **Blocked:** 0

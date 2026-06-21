@@ -235,7 +235,7 @@ export const Analytics = () => {
         <ChartCard
           icon={Activity}
           title="Model Inference Latency Trend"
-          description="Average execution speed across pipeline stages (YOLO, OCR, Sync, etc.)."
+          description="Average execution speed across pipeline stages (Custom Model, OCR, Sync, etc.)."
           data={latency}
           emptyLabel="No latency data yet. Populates after the first pipeline runs."
         >
@@ -271,17 +271,17 @@ export const Analytics = () => {
               </thead>
               <tbody className="divide-y divide-border font-medium">
                 <tr className="hover:bg-slate-50/50">
-                  <td className="p-3 font-bold text-primary font-mono">yolo-defect</td>
-                  <td className="p-3">PyTorch + Ultralytics YOLO</td>
+                  <td className="p-3 font-bold text-primary font-mono">custom-model-defect</td>
+                  <td className="p-3">PyTorch + Custom Model</td>
                   <td className="p-3 font-semibold text-slate-600">CUDA 0 (RTX series)</td>
-                  <td className="p-3 font-mono text-slate-500">GPU/yolo/models/best.pt</td>
+                  <td className="p-3 font-mono text-slate-500">GPU/custom-model/models/best.pt</td>
                   <td className="p-3 text-right font-mono font-bold">5002</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">
-                  <td className="p-3 font-bold text-primary font-mono">yolo-ocr-roi</td>
-                  <td className="p-3">PyTorch + Ultralytics YOLO</td>
+                  <td className="p-3 font-bold text-primary font-mono">custom-model-ocr-roi</td>
+                  <td className="p-3">PyTorch + Custom Model</td>
                   <td className="p-3 font-semibold text-slate-600">CUDA 0 (RTX series)</td>
-                  <td className="p-3 font-mono text-slate-500">GPU/yolo/models/train_num_detector.pt</td>
+                  <td className="p-3 font-mono text-slate-500">GPU/custom-model/models/train_num_detector.pt</td>
                   <td className="p-3 text-right font-mono font-bold">5002</td>
                 </tr>
                 <tr className="hover:bg-slate-50/50">

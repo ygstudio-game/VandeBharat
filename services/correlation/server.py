@@ -6,6 +6,7 @@ POST /correlate { session_id, coach_id }
   → updates coaches.health_score
 """
 import os
+import sys
 import logging
 import psycopg2
 import psycopg2.extras
@@ -14,9 +15,12 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from engine import correlate_coach
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "GPU", "shared"))
+from logging_utils import configure_logging, set_trace_id  # noqa: E402
+
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+configure_logging("correlation")
 logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
@@ -39,6 +43,7 @@ def health():
 
 @app.post("/correlate")
 def correlate(req: CorrelateRequest):
+    set_trace_id(req.session_id)
     conn = get_conn()
     try:
         with conn.cursor() as cur:

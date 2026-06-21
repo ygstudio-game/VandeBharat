@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSessions, uploadSession, normalizeSession, getConfig, deleteSession } from '../lib/api';
+import { getSessions, uploadSession, normalizeSession, getConfig, deleteSession, searchCoaches } from '../lib/api';
 import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
 import { 
@@ -28,7 +28,10 @@ import {
   Play,
   Check,
   Terminal,
-  FileText
+  FileText,
+  Loader2,
+  ShieldAlert,
+  ArrowRight,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -41,6 +44,26 @@ export const Sessions = () => {
   const [uploadError, setUploadError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [deletingIds, setDeletingIds] = useState(new Set());
+
+  // Coach search — moved here from the standalone Coach Search page
+  const [coachQuery, setCoachQuery] = useState('');
+  const [coachResults, setCoachResults] = useState(null);
+  const [coachSearching, setCoachSearching] = useState(false);
+  const [coachSearched, setCoachSearched] = useState(false);
+
+  const runCoachSearch = useCallback(async (q) => {
+    if (!q.trim()) return;
+    setCoachSearching(true);
+    setCoachSearched(true);
+    try {
+      const data = await searchCoaches(q.trim());
+      setCoachResults(data.coaches || []);
+    } catch {
+      setCoachResults([]);
+    } finally {
+      setCoachSearching(false);
+    }
+  }, []);
 
   const loadSessions = useCallback(async () => {
     try {
@@ -297,6 +320,95 @@ export const Sessions = () => {
         >
           <Plus className="w-4 h-4" /> Add Inspection
         </button>
+      </div>
+
+      {/* Coach Search — centre top */}
+      <div className="max-w-xl mx-auto w-full space-y-3">
+        <form
+          onSubmit={(e) => { e.preventDefault(); runCoachSearch(coachQuery); }}
+          className="relative"
+        >
+          <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            value={coachQuery}
+            onChange={(e) => setCoachQuery(e.target.value)}
+            placeholder="Search coach or train number… e.g. C3, VB-22804"
+            className="w-full pl-11 pr-28 py-3 bg-card border border-border rounded text-sm focus:outline-none focus:border-primary"
+          />
+          <button
+            type="submit"
+            disabled={coachSearching || !coachQuery.trim()}
+            className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider rounded disabled:opacity-40"
+          >
+            {coachSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Search'}
+          </button>
+        </form>
+
+        {coachSearched && !coachSearching && (
+          <div className="space-y-2">
+            {(!coachResults || coachResults.length === 0) ? (
+              <div className="text-center py-6 text-muted-foreground text-sm font-medium">
+                No coaches matched "{coachQuery}".
+              </div>
+            ) : (
+              coachResults.map((c) => (
+                <Card
+                  key={c.id}
+                  className="border border-border shadow-sm hover:border-primary transition-colors cursor-pointer"
+                  onClick={() => navigate(`/train/${c.session_id}`)}
+                >
+                  <div className="p-3 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded bg-secondary flex items-center justify-center shrink-0">
+                        <Train className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-black text-foreground text-sm">
+                            Coach {c.coach_number}
+                          </span>
+                          {c.coach_type && (
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase">
+                              {c.coach_type}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground font-semibold mt-0.5">
+                          Train {c.train_number} · Session {c.session_code || c.session_id.slice(0, 8)} ·{' '}
+                          {c.started_at ? new Date(c.started_at).toLocaleDateString() : '—'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 text-xs font-bold shrink-0">
+                      <div className="text-center">
+                        <div className="flex items-center gap-1 text-destructive">
+                          <ShieldAlert className="w-3.5 h-3.5" />
+                          {c.critical_defects}
+                        </div>
+                        <div className="text-[9px] text-muted-foreground uppercase">Critical</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="flex items-center gap-1 text-warning">
+                          <AlertTriangle className="w-3.5 h-3.5" />
+                          {c.missing_components}
+                        </div>
+                        <div className="text-[9px] text-muted-foreground uppercase">Missing</div>
+                      </div>
+                      <div className="text-center">
+                        <div className={c.health_score >= 80 ? 'text-success' : c.health_score >= 50 ? 'text-warning' : 'text-destructive'}>
+                          {c.health_score != null ? `${c.health_score}%` : '—'}
+                        </div>
+                        <div className="text-[9px] text-muted-foreground uppercase">Health</div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {/* NEW INSPECTION DIALOG */}
@@ -772,7 +884,7 @@ export const Sessions = () => {
                                   <span>{((session.progressPercent || 0) >= 70) ? '✓' : '•'}</span> Sync Cameras
                                 </div>
                                 <div className={`p-2 border rounded-md flex items-center justify-center gap-1.5 ${(session.stages?.component === 'COMPLETED' || (session.progressPercent || 0) >= 85) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : (session.progressPercent || 0) >= 70 ? 'bg-cyan-55 border-cyan-200 text-cyan-700 animate-pulse' : 'bg-white border-border'}`}>
-                                  <span>{((session.progressPercent || 0) >= 90) ? '✓' : '•'}</span> YOLO Assembly
+                                  <span>{((session.progressPercent || 0) >= 90) ? '✓' : '•'}</span> Custom Model Assembly
                                 </div>
                                 <div className={`p-2 border rounded-md flex items-center justify-center gap-1.5 ${(session.stages?.defect === 'COMPLETED' || (session.progressPercent || 0) >= 99) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : (session.progressPercent || 0) >= 90 ? 'bg-cyan-55 border-cyan-200 text-cyan-700 animate-pulse' : 'bg-white border-border'}`}>
                                   <span>{((session.progressPercent || 0) >= 100) ? '✓' : '•'}</span> Defect Analysis

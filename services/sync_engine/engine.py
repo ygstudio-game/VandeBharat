@@ -152,11 +152,22 @@ def find_coach_label(conn, session_id: str, start_t: int, end_t: int) -> tuple[s
 
 # ─── Create coaches rows ──────────────────────────────────────────────────────
 
+def get_session_train_type(conn, session_id: str) -> str:
+    """Train type drives which component_manifests.coach_type rows the correlation
+    engine checks against — stamped onto every Coach row created below so
+    'Defects by Coach Class' analytics resolve to a real class, not Unclassified."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT train_type FROM inspection_sessions WHERE id = %s", (session_id,))
+        row = cur.fetchone()
+        return (row["train_type"] if row and row.get("train_type") else "VANDE_BHARAT")
+
+
 def create_coaches_from_ranges(conn, session_id: str, bogie_ranges: list[tuple[int, int]]) -> list[dict]:
     """
     One coach row per bogie range.
     Returns enriched list with coach_id, coach_number, start/end trigger_id.
     """
+    train_type = get_session_train_type(conn, session_id)
     segments = []
     with conn.cursor() as cur:
         for i, (start_t, end_t) in enumerate(bogie_ranges):
@@ -166,11 +177,11 @@ def create_coaches_from_ranges(conn, session_id: str, bogie_ranges: list[tuple[i
             cur.execute(
                 """
                 INSERT INTO coaches
-                  (id, session_id, coach_number, coach_index,
+                  (id, session_id, coach_number, coach_type, coach_index,
                    ocr_confidence, start_trigger_id, end_trigger_id, total_frames)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, 0)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0)
                 """,
-                (coach_id, session_id, label, i + 1,
+                (coach_id, session_id, label, train_type, i + 1,
                  round(ocr_conf, 4) if ocr_conf else None,
                  start_t, end_t),
             )
@@ -399,6 +410,7 @@ def _ocr_voting_fallback(conn, session_id: str) -> dict:
                 "frames_assigned_interpolated": 0, "method": "ocr_voting"}
 
     # Create coaches
+    train_type = get_session_train_type(conn, session_id)
     enriched = []
     with conn.cursor() as cur:
         for i, seg in enumerate(segments):
@@ -406,11 +418,11 @@ def _ocr_voting_fallback(conn, session_id: str) -> dict:
             cur.execute(
                 """
                 INSERT INTO coaches
-                  (id, session_id, coach_number, coach_index,
+                  (id, session_id, coach_number, coach_type, coach_index,
                    ocr_confidence, start_trigger_id, end_trigger_id, total_frames)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, 0)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0)
                 """,
-                (cid, session_id, seg["coach_number"], i + 1,
+                (cid, session_id, seg["coach_number"], train_type, i + 1,
                  round(seg["avg_confidence"], 4),
                  seg["start_trigger_id"], seg["end_trigger_id"]),
             )

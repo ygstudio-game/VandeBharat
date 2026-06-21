@@ -28,13 +28,15 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 sys.path.insert(0, os.path.dirname(__file__))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "shared"))
 from ocr_engine import run_ocr
 from preprocess import preprocess_frame
 from train_number_filter import filter_train_numbers
+from logging_utils import configure_logging, set_trace_id  # noqa: E402
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+configure_logging("ocr")
 logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
@@ -191,6 +193,7 @@ def metrics():
 
 @app.post("/ocr")
 def ocr(req: OcrRequest):
+    set_trace_id(req.session_id)
     global _ocr_requests_total, _ocr_valid_total
     _ocr_requests_total += 1
     t0 = time.time()

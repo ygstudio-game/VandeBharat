@@ -431,7 +431,91 @@ def generate_report(conn, session_id: str) -> dict:
     return result
 
 
-# ─── 6. Evidence bundle (zip of PDF + JSON + annotated defect frames) ──────────
+# ─── 6. Periodic (shift/day/week) aggregate report — PDF ──────────────────────
+# Distinct from the per-session PDF above: this is a one-page roll-up of the
+# JSON aggregate already computed by Node's periodicReportScheduler.js. Closes
+# the "Periodic Reports: JSON-only" gap — same local-backup-then-serve pattern
+# as the per-session report, since Cloudinary blocks raw PDF delivery by default.
+
+def build_periodic_pdf(periodic: dict) -> bytes:
+    pdf = _PDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+
+    pdf.set_font("Helvetica", "B", 20)
+    pdf.set_text_color(15, 23, 42)
+    period_label = periodic["period_type"].upper()
+    pdf.cell(0, 12, f"Periodic Inspection Report — {period_label}", ln=True, align="C")
+
+    pdf.set_font("Helvetica", "", 11)
+    pdf.set_text_color(71, 85, 105)
+    start = periodic["period_start"]
+    end = periodic["period_end"]
+    start_str = start.strftime("%d %b %Y, %H:%M") if hasattr(start, "strftime") else str(start)
+    end_str = end.strftime("%d %b %Y, %H:%M") if hasattr(end, "strftime") else str(end)
+    pdf.cell(0, 8, f"Period: {start_str}  to  {end_str}", ln=True, align="C")
+    pdf.ln(6)
+
+    uptime = periodic.get("system_uptime_pct")
+    r, g, b = _health_color(uptime)
+    pdf.set_fill_color(r, g, b)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Helvetica", "B", 15)
+    uptime_str = f"{float(uptime):.1f}%" if uptime is not None else "N/A"
+    pdf.cell(0, 13, f"Pipeline Completion Rate: {uptime_str}", ln=True, align="C", fill=True)
+    pdf.ln(6)
+
+    pdf.set_text_color(15, 23, 42)
+    pdf.set_font("Helvetica", "B", 11)
+    pdf.cell(0, 8, "Summary", ln=True)
+    pdf.set_draw_color(226, 232, 240)
+
+    rows = [
+        ("Total Sessions", periodic.get("total_sessions", 0)),
+        ("Completed Sessions", periodic.get("completed_sessions", 0)),
+        ("Failed Sessions", periodic.get("failed_sessions", 0)),
+        ("Total Defects Detected", periodic.get("total_defects", 0)),
+        ("Critical Defects", periodic.get("critical_defects", 0)),
+        ("Reviewer False Positives", periodic.get("false_positive_count", 0)),
+        ("Reviewer False Negatives", periodic.get("false_negative_count", 0)),
+    ]
+    pdf.set_font("Helvetica", "", 10)
+    col_w = 95
+    for i, (label, val) in enumerate(rows):
+        fill = i % 2 == 0
+        pdf.set_fill_color(241, 245, 249) if fill else pdf.set_fill_color(255, 255, 255)
+        pdf.cell(col_w, 8, f"  {label}", border=1, fill=fill)
+        pdf.cell(col_w, 8, f"  {val}", border=1, fill=fill, ln=True)
+
+    pdf.ln(8)
+    pdf.set_font("Helvetica", "I", 9)
+    pdf.set_text_color(100, 100, 100)
+    pdf.cell(0, 6, "Pipeline completion rate is a proxy for system uptime: completed / (completed + failed) sessions", ln=True)
+    pdf.cell(0, 6, "in this period. No continuous service-uptime monitor is wired in yet (System Health Dashboard is", ln=True)
+    pdf.cell(0, 6, "still simulated for CPU/memory/SSD/UPS — GPU utilization is real via nvidia-smi).", ln=True)
+
+    return bytes(pdf.output())
+
+
+def generate_periodic_pdf(periodic: dict) -> dict:
+    pdf_bytes = build_periodic_pdf(periodic)
+
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend"))
+    uploads_reports_dir = os.path.join(root_dir, "uploads", "reports")
+    os.makedirs(uploads_reports_dir, exist_ok=True)
+
+    report_id = periodic["id"]
+    local_pdf_path = os.path.join(uploads_reports_dir, f"periodic_{report_id}.pdf")
+    with open(local_pdf_path, "wb") as f:
+        f.write(pdf_bytes)
+
+    return {
+        "pdf_url": f"/api/periodic-reports/{report_id}/pdf",
+        "pdf_size_bytes": len(pdf_bytes),
+    }
+
+
+# ─── 7. Evidence bundle (zip of PDF + JSON + annotated defect frames) ──────────
 
 def _download_bytes(url: str, timeout: int = 15) -> bytes:
     resp = requests.get(url, timeout=timeout)

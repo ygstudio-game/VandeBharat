@@ -11,11 +11,11 @@ import { Analytics } from './pages/Analytics';
 import { Infrastructure } from './pages/Infrastructure';
 import { Settings } from './pages/Settings';
 import { TrainWorkspace } from './pages/TrainWorkspace';
-import { CoachSearch } from './pages/CoachSearch';
 import { OcrResultsLog } from './pages/OcrResultsLog';
 import { DefectAlertConsole } from './pages/DefectAlertConsole';
 import { CameraHealthMonitor } from './pages/CameraHealthMonitor';
 import { AiInferenceManagement } from './pages/AiInferenceManagement';
+import { DefectVerificationConsole } from './pages/DefectVerificationConsole';
 
 const Placeholder = ({ title }) => (
   <div className="flex h-full items-center justify-center p-8">
@@ -45,7 +45,6 @@ function App() {
             <Route path="live-queue"     element={<LiveQueue />} />
             <Route path="sessions"       element={<Sessions />} />
             <Route path="train/:sessionId" element={<TrainWorkspace />} />
-            <Route path="coach-search"   element={<CoachSearch />} />
             <Route path="ocr-log"        element={<OcrResultsLog />} />
             <Route path="defect-console" element={<DefectAlertConsole />} />
             <Route path="camera-health"  element={<CameraHealthMonitor />} />
@@ -53,6 +52,7 @@ function App() {
             <Route path="analytics"      element={<Analytics />} />
             <Route path="infrastructure" element={<Infrastructure />} />
             <Route path="ai-inference"   element={<AiInferenceManagement />} />
+            <Route path="defect-verification" element={<DefectVerificationConsole />} />
             <Route path="settings"       element={<Settings />} />
             <Route path="*"              element={<Placeholder title="404 Not Found" />} />
           </Route>

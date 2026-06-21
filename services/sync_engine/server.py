@@ -3,6 +3,7 @@ Sync Engine Service — port 5004
 Receives { session_id } → runs trigger_id gap detection → creates coaches → assigns frames.
 """
 import os
+import sys
 import json
 import logging
 import psycopg2
@@ -12,9 +13,12 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from engine import run_sync
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "GPU", "shared"))
+from logging_utils import configure_logging, set_trace_id  # noqa: E402
+
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+configure_logging("sync_engine")
 logger = logging.getLogger(__name__)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
@@ -36,6 +40,7 @@ def health():
 
 @app.post("/sync")
 def sync(req: SyncRequest):
+    set_trace_id(req.session_id)
     conn = get_conn()
     try:
         # Update pipeline stage
