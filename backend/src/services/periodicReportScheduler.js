@@ -145,7 +145,10 @@ async function checkAndGenerateAll(log = console) {
         log.info?.(`Auto-generated ${periodType} periodic report for ${period.start.toISOString()}`);
       }
     } catch (err) {
-      (log.error || log)({ msg: `Periodic report generation failed for ${periodType}`, error: err.message });
+      // log.error must be called bound to `log` (pino relies on `this`) —
+      // a detached call like `(log.error || log)(...)` crashes the process.
+      if (typeof log.error === 'function') log.error({ msg: `Periodic report generation failed for ${periodType}`, error: err.message });
+      else log(`Periodic report generation failed for ${periodType}: ${err.message}`);
     }
   }
 }

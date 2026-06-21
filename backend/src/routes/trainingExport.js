@@ -4,6 +4,8 @@
  * other than a write-only audit trail: every reviewer correction becomes a
  * traceable input to the next model retrain (Phase 9).
  */
+const axios = require('axios');
+const archiver = require('archiver');
 const cloudinary = require('../services/cloudinaryService');
 const prisma = require('../db/client');
 const { authenticate, requireRole } = require('../middleware/auth');
@@ -77,6 +79,61 @@ async function trainingExportRoutes(fastify) {
     });
 
     return { export_id: manifest.export_id, manifest_url: upload.secure_url, sample_count: samples.length, counts_by_label: manifest.counts_by_label };
+  });
+
+  // GET /api/training/export-yolo-dataset — confirmed defects only, streamed as a
+  // YOLO-format zip (images/ + labels/ + classes.txt). Module 12's reviewer queue
+  // is what populates this — a defect only gets here after a human clicks Confirm.
+  fastify.get('/export-yolo-dataset', async (req, reply) => {
+    const defects = await prisma.defect.findMany({
+      where: { review_status: 'confirmed' },
+      include: { frame: { select: { cloudinary_url: true, width_px: true, height_px: true } } },
+    });
+
+    const usable = defects.filter((d) => d.bbox_x != null && d.frame?.width_px && d.frame?.height_px);
+    if (usable.length === 0) {
+      reply.status(404);
+      return { error: 'No confirmed defects with bbox + known frame dimensions to export yet' };
+    }
+
+    const classNames = [...new Set(usable.map((d) => d.defect_type))].sort();
+    const classIndex = new Map(classNames.map((name, i) => [name, i]));
+
+    reply.header('Content-Type', 'application/zip');
+    reply.header('Content-Disposition', 'attachment; filename="yolo_dataset.zip"');
+
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    reply.send(archive);
+
+    archive.append(classNames.join('\n'), { name: 'classes.txt' });
+
+    let included = 0;
+    for (const d of usable) {
+      try {
+        const resp = await axios.get(d.frame.cloudinary_url, { responseType: 'arraybuffer', timeout: 15000 });
+        archive.append(Buffer.from(resp.data), { name: `images/${d.id}.jpg` });
+
+        // Pixel bbox -> YOLO normalized cx,cy,w,h (0-1), origin top-left, per frame dims.
+        const fw = d.frame.width_px, fh = d.frame.height_px;
+        const cx = (d.bbox_x + d.bbox_w / 2) / fw;
+        const cy = (d.bbox_y + d.bbox_h / 2) / fh;
+        const w = d.bbox_w / fw;
+        const h = d.bbox_h / fh;
+        archive.append(`${classIndex.get(d.defect_type)} ${cx.toFixed(6)} ${cy.toFixed(6)} ${w.toFixed(6)} ${h.toFixed(6)}\n`, {
+          name: `labels/${d.id}.txt`,
+        });
+        included++;
+      } catch (err) {
+        req.log.warn({ msg: 'Skipping defect in YOLO export — frame download failed', defect_id: d.id, error: err.message });
+      }
+    }
+
+    await archive.finalize();
+
+    await logAction({
+      userId: req.user.id, action: 'YOLO_DATASET_EXPORTED', resourceType: 'TrainingExport',
+      ip: req.ip, metadata: { sample_count: included, class_count: classNames.length },
+    });
   });
 }
 

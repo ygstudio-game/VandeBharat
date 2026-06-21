@@ -43,6 +43,7 @@ fastify.register(async function protectedApi(api) {
   api.register(require('./routes/auditLogRoutes'), { prefix: '/api/audit-log' });
   api.register(require('./routes/trainingExport'), { prefix: '/api/training' });
   api.register(require('./routes/modelVersions'),  { prefix: '/api/models' });
+  api.register(require('./routes/defects'),        { prefix: '/api/defects' });
   api.register(require('./routes/sessions'),       { prefix: '/api/sessions' });
   api.register(require('./routes/intelligence'),   { prefix: '/api/sessions' });
   api.register(require('./routes/reports'),        { prefix: '/api/sessions' });

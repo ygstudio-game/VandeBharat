@@ -10,9 +10,25 @@
 const { verifyToken } = require('../auth/jwt');
 const prisma = require('../db/client');
 
+// Real DB row, not a fabricated id — every route that writes req.user.id into a
+// UUID FK column (review_status, audit_logs, reports.signed_by, ...) needs a row
+// that actually exists. A literal string like 'dev-admin' passes auth but throws
+// P2023 (invalid UUID) the moment any handler tries to persist it.
+let _devUserCache = null;
+
+async function getDevUser() {
+  if (_devUserCache) return _devUserCache;
+  const user = await prisma.user.findFirst({ where: { email: 'admin@vande.local' } });
+  if (!user) {
+    throw new Error("AUTH_ENABLED=false dev bypass needs a seeded 'admin@vande.local' user — run npm run db:seed");
+  }
+  _devUserCache = { id: user.id, email: user.email, name: user.name, role: user.role };
+  return _devUserCache;
+}
+
 async function authenticate(request, reply) {
   if (process.env.AUTH_ENABLED !== 'true') {
-    request.user = { id: 'dev-admin', email: 'admin@vande.local', name: 'Dev Admin', role: 'admin' };
+    request.user = await getDevUser();
     return;
   }
 
