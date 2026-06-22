@@ -58,6 +58,23 @@ export const getAuditLog = (params = {}) => {
   ).toString();
   return _fetch(`/api/audit-log${qs ? `?${qs}` : ''}`);
 };
+export const getAuditLogActions = () => _fetch('/api/audit-log/actions');
+export const exportAuditLog = async (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  const resp = await fetch(`${BASE}/api/audit-log/export${qs ? `?${qs}` : ''}`, { headers: authHeader() });
+  if (!resp.ok) throw new Error(`Export failed: ${resp.status}`);
+  const blob = await resp.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `audit_log_${Date.now()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+};
 
 // ── Sessions ────────────────────────────────────────────────────────────────
 export const getSessions    = ()        => _fetch('/api/sessions');
@@ -144,6 +161,32 @@ export const downloadYoloDataset = async () => {
   URL.revokeObjectURL(url);
 };
 
+// ── AI Performance Analytics ──────────────────────────────────────────────────
+export const getAiPerformance        = () => _fetch('/api/ai/performance');
+export const getAiPerformanceHistory = (range = '30d') => _fetch(`/api/ai/performance/history?range=${range}`);
+export const getModelComparison      = () => _fetch('/api/ai/performance/model-comparison');
+
+// ── Train Passage History ─────────────────────────────────────────────────────
+export const getPassages = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/history/passages${qs ? `?${qs}` : ''}`);
+};
+export const getTrainTrend   = (trainNumber) => _fetch(`/api/history/train/${encodeURIComponent(trainNumber)}/trend`);
+export const comparePassages = (sessionA, sessionB) => _fetch(`/api/history/compare?session_a=${sessionA}&session_b=${sessionB}`);
+
+// ── Image Archive ────────────────────────────────────────────────────────────
+export const getArchiveStats  = () => _fetch('/api/archive/stats');
+export const getArchiveFrames = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/archive/frames${qs ? `?${qs}` : ''}`);
+};
+export const runArchivePass   = () => _fetch('/api/archive/run', { method: 'POST' });
+export const restoreFrame     = (frameId) => _fetch(`/api/archive/restore/${frameId}`, { method: 'POST' });
+
 // ── Periodic (Historical) Reports ───────────────────────────────────────────
 export const getPeriodicReports = (params = {}) => {
   const qs = new URLSearchParams(
@@ -156,6 +199,69 @@ export const generatePeriodicReport = (periodType) => _fetch('/api/periodic-repo
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ periodType }),
 });
+
+// ── Data Sync Hub ────────────────────────────────────────────────────────────
+export const getSync = () => _fetch('/api/sync/status');
+export const getSyncHistory = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/sync/history${qs ? `?${qs}` : ''}`);
+};
+export const retrySyncDlq = (stage) => _fetch(`/api/sync/retry-dlq/${stage}`, { method: 'POST' });
+
+// ── Incidents ────────────────────────────────────────────────────────────────
+export const getIncidents = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/incidents${qs ? `?${qs}` : ''}`);
+};
+export const getIncidentSummary = () => _fetch('/api/incidents/summary');
+export const createIncident = (payload) => _fetch('/api/incidents', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+export const updateIncident = (id, payload) => _fetch(`/api/incidents/${id}`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+export const deleteIncident = (id) => _fetch(`/api/incidents/${id}`, { method: 'DELETE' });
+
+// ── Assets ────────────────────────────────────────────────────────────────────
+export const getAssets = (params = {}) => {
+  const qs = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
+  ).toString();
+  return _fetch(`/api/assets${qs ? `?${qs}` : ''}`);
+};
+export const getOverdueAssets   = () => _fetch('/api/assets/overdue');
+export const getAssetTypes      = () => _fetch('/api/assets/types');
+export const getAsset           = (id) => _fetch(`/api/assets/${id}`);
+export const createAsset        = (payload) => _fetch('/api/assets', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+export const updateAsset        = (id, payload) => _fetch(`/api/assets/${id}`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+export const deleteAsset        = (id) => _fetch(`/api/assets/${id}`, { method: 'DELETE' });
+export const addMaintenanceLog  = (id, payload) => _fetch(`/api/assets/${id}/maintenance-log`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+export const getMaintenanceLogs = (id) => _fetch(`/api/assets/${id}/maintenance-log`);
+
+// ── Stations ──────────────────────────────────────────────────────────────────
+export const getStations         = ()     => _fetch('/api/stations');
+export const getStationsOverview = ()     => _fetch('/api/stations/overview');
+export const getStationDetail    = (code) => _fetch(`/api/stations/${code}`);
 
 // ── Normalisation ────────────────────────────────────────────────────────────
 const STATUS_MAP = {

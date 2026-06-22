@@ -104,12 +104,17 @@ export function TrainMovementTimeline() {
   const EVENT_ROW_Y = COACH_ROW_Y + COACH_H + 14;
   const PADDING_X = 48;
 
-  const allTriggerIds = [
+  // Use frame.trigger_id if available, fall back to timestamp_ms for x-axis positioning
+  function eventX(ev) {
+    return ev.frame?.trigger_id ?? ev.timestamp_ms ?? null;
+  }
+
+  const allXValues = [
     ...coaches.flatMap(c => [c.start_trigger_id, c.end_trigger_id]).filter(v => v != null),
-    ...events.map(e => e.frame?.trigger_id).filter(v => v != null),
+    ...events.map(eventX).filter(v => v != null),
   ];
-  const minTrig = allTriggerIds.length ? Math.min(...allTriggerIds) : 0;
-  const maxTrig = allTriggerIds.length ? Math.max(...allTriggerIds) : 100;
+  const minTrig = allXValues.length ? Math.min(...allXValues) : 0;
+  const maxTrig = allXValues.length ? Math.max(...allXValues) : 100;
   const trigRange = maxTrig - minTrig || 1;
 
   const SVG_CONTENT_WIDTH = Math.max(800, coaches.length * 110);
@@ -120,7 +125,7 @@ export function TrainMovementTimeline() {
   }
 
   const currentEvent = playbackIndex >= 0 && playbackIndex < events.length ? events[playbackIndex] : null;
-  const currentTrig = currentEvent?.frame?.trigger_id ?? null;
+  const currentTrig = currentEvent ? eventX(currentEvent) : null;
 
   const hasData = coaches.length > 0 || events.length > 0;
 
@@ -296,11 +301,11 @@ export function TrainMovementTimeline() {
 
                     {/* Event markers */}
                     {events.map((ev, idx) => {
-                      const trig = ev.frame?.trigger_id;
+                      const trig = eventX(ev);
                       if (trig == null) return null;
                       const x = trigToX(trig);
                       const isSelected = selectedEvent?.id === ev.id;
-                      const isGap = ev.event_type === 'COACH_GAP';
+                      const isGap = ev.event_type === 'COACH_GAP' || ev.event_type === 'GAP_BOUNDARY';
                       const isOcr = ev.event_type === 'OCR_ANCHOR';
 
                       if (isGap) {

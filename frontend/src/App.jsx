@@ -17,6 +17,17 @@ import { CameraHealthMonitor } from './pages/CameraHealthMonitor';
 import { AiInferenceManagement } from './pages/AiInferenceManagement';
 import { DefectVerificationConsole } from './pages/DefectVerificationConsole';
 import { TrainMovementTimeline } from './pages/TrainMovementTimeline';
+import { ImageArchiveManagement } from './pages/ImageArchiveManagement';
+import { TrainPassageHistory } from './pages/TrainPassageHistory';
+import { AiPerformanceAnalytics } from './pages/AiPerformanceAnalytics';
+import { OperationsCommandCenter } from './pages/OperationsCommandCenter';
+import { DataSyncHub } from './pages/DataSyncHub';
+import { AuditCompliance } from './pages/AuditCompliance';
+import { RailwayAssetManagement } from './pages/RailwayAssetManagement';
+import { StationMonitoringDashboard } from './pages/StationMonitoringDashboard';
+import { DatasetManagementPortal } from './pages/DatasetManagementPortal';
+import { RootCauseAnalysis } from './pages/RootCauseAnalysis';
+import { AiTrainingWorkbench } from './pages/AiTrainingWorkbench';
 
 const Placeholder = ({ title }) => (
   <div className="flex h-full items-center justify-center p-8">
@@ -55,6 +66,17 @@ function App() {
             <Route path="ai-inference"   element={<AiInferenceManagement />} />
             <Route path="defect-verification" element={<DefectVerificationConsole />} />
             <Route path="timeline/:sessionId" element={<TrainMovementTimeline />} />
+            <Route path="image-archive"  element={<ImageArchiveManagement />} />
+            <Route path="history"        element={<TrainPassageHistory />} />
+            <Route path="ai-performance" element={<AiPerformanceAnalytics />} />
+            <Route path="command-center" element={<OperationsCommandCenter />} />
+            <Route path="sync-hub"       element={<DataSyncHub />} />
+            <Route path="audit"          element={<AuditCompliance />} />
+            <Route path="assets"         element={<RailwayAssetManagement />} />
+            <Route path="stations"       element={<StationMonitoringDashboard />} />
+            <Route path="datasets"       element={<DatasetManagementPortal />} />
+            <Route path="rca"            element={<RootCauseAnalysis />} />
+            <Route path="training"       element={<AiTrainingWorkbench />} />
             <Route path="settings"       element={<Settings />} />
             <Route path="*"              element={<Placeholder title="404 Not Found" />} />
           </Route>

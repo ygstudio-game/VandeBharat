@@ -93,7 +93,7 @@ const SERVICES = [
     args:    ['-m', 'uvicorn', 'server:app', '--host', '0.0.0.0', '--port', '5005'],
     port:    5005,
     health:  '/health',
-    waitMs:  30_000,
+    waitMs:  60_000,
   },
   {
     name:    'REPORT-GEN',

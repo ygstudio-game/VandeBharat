@@ -19,6 +19,17 @@ import {
   Camera,
   LogOut,
   Cpu,
+  HardDrive,
+  History,
+  Brain,
+  MonitorDot,
+  GitMerge,
+  ClipboardList,
+  Wrench,
+  MapPin,
+  Database,
+  SearchCode,
+  FlaskConical,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -35,7 +46,18 @@ const navItems = [
   { name: 'Defect Analytics', path: '/analytics', icon: Activity },
   { name: 'Camera Health Monitor', path: '/camera-health', icon: Camera },
   { name: 'System Health Dashboard', path: '/infrastructure', icon: Server },
+  { name: 'Command Center', path: '/command-center', icon: MonitorDot },
+  { name: 'Sync Hub', path: '/sync-hub', icon: GitMerge },
   { name: 'AI Inference', path: '/ai-inference', icon: Cpu },
+  { name: 'AI Performance', path: '/ai-performance', icon: Brain },
+  { name: 'Passage History', path: '/history', icon: History },
+  { name: 'Image Archive', path: '/image-archive', icon: HardDrive },
+  { name: 'Audit & Compliance', path: '/audit', icon: ClipboardList },
+  { name: 'Asset Management', path: '/assets',   icon: Wrench  },
+  { name: 'Station Monitor',  path: '/stations', icon: MapPin   },
+  { name: 'Datasets',         path: '/datasets', icon: Database },
+  { name: 'Root Cause',       path: '/rca',      icon: SearchCode },
+  { name: 'AI Training',      path: '/training', icon: FlaskConical },
   { name: 'Settings', path: '/settings', icon: Settings },
 ];
 

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -197,6 +198,9 @@ model Frame {
   is_ocr_candidate  Boolean  @default(false)
   is_defect_flagged Boolean  @default(false)
   is_sharp          Boolean  @default(true)
+
+  storage_tier String    @default("active") @db.VarChar(20)
+  archived_at  DateTime? @db.Timestamptz(6)
 
   created_at DateTime @default(now()) @db.Timestamptz(6)
 
@@ -518,6 +522,118 @@ model DefectReviewLog {
   session InspectionSession @relation(fields: [session_id], references: [id], onDelete: Cascade)
 
   @@map("defect_review_logs")
+}
+
+model Asset {
+  id                  String    @id @default(uuid()) @db.Uuid
+  asset_type          String    @db.VarChar(50)
+  name                String    @db.VarChar(200)
+  serial_number       String?   @db.VarChar(100)
+  location            String?   @db.VarChar(200)
+  installation_date   DateTime? @db.Timestamptz(6)
+  last_maintenance_at DateTime? @db.Timestamptz(6)
+  next_maintenance_at DateTime? @db.Timestamptz(6)
+  status              String    @default("active") @db.VarChar(20) // 'active' | 'maintenance' | 'retired'
+  notes               String?
+  created_at          DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  maintenance_logs MaintenanceLog[]
+
+  @@map("assets")
+}
+
+model MaintenanceLog {
+  id           String    @id @default(uuid()) @db.Uuid
+  asset_id     String    @db.Uuid
+  performed_by String?   @db.VarChar(100)
+  performed_at DateTime  @db.Timestamptz(6)
+  description  String?
+  next_due_at  DateTime? @db.Timestamptz(6)
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+
+  asset Asset @relation(fields: [asset_id], references: [id], onDelete: Cascade)
+
+  @@map("maintenance_logs")
+}
+
+model Dataset {
+  id               String   @id @default(uuid()) @db.Uuid
+  name             String   @db.VarChar(200)
+  version          String   @db.VarChar(40)
+  description      String?
+  source           String   @default("manual") @db.VarChar(30) // 'manual' | 'auto_export'
+  class_list       Json?
+  image_count      Int      @default(0)
+  annotation_count Int      @default(0)
+  storage_url      String?
+  export_id        String?  @db.VarChar(100)
+  status           String   @default("active") @db.VarChar(20)
+  created_by       String?  @db.Uuid
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("datasets")
+}
+
+model TrainingJob {
+  id               String    @id @default(uuid()) @db.Uuid
+  name             String    @db.VarChar(200)
+  dataset_id       String?   @db.Uuid
+  dataset_name     String?   @db.VarChar(200)
+  base_model       String    @default("yolov8n.pt") @db.VarChar(60)
+  epochs           Int       @default(100)
+  batch_size       Int       @default(16)
+  learning_rate    Decimal   @default(0.01) @db.Decimal(8, 6)
+  img_size         Int       @default(640)
+
+  status           String    @default("queued") @db.VarChar(20) // queued | running | completed | failed | cancelled
+  current_epoch    Int       @default(0)
+  metrics_history  Json?     // [{epoch, box_loss, cls_loss, dfl_loss, precision, recall, map50, map95}]
+  best_map50       Decimal?  @db.Decimal(6, 4)
+  best_map95       Decimal?  @db.Decimal(6, 4)
+
+  model_url        String?
+  model_version_id String?   @db.Uuid
+  error_message    String?
+  gpu_job_id       String?   @db.VarChar(100)
+
+  started_at       DateTime? @db.Timestamptz(6)
+  completed_at     DateTime? @db.Timestamptz(6)
+  created_by       String?   @db.Uuid
+  created_at       DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@map("training_jobs")
+}
+
+model CorrectiveAction {
+  id            String   @id @default(uuid()) @db.Uuid
+  defect_type   String   @db.VarChar(80)
+  camera_id     String?  @db.Uuid
+  coach_number  String?  @db.VarChar(30)
+  root_cause    String?  @db.VarChar(200)
+  description   String
+  performed_by  String   @db.VarChar(100)
+  performed_at  DateTime @db.Timestamptz(6)
+  effectiveness String   @default("unknown") @db.VarChar(20) // 'effective' | 'partial' | 'ineffective' | 'unknown'
+  notes         String?
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("corrective_actions")
+}
+
+model Incident {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.VarChar(200)
+  severity    String    @db.VarChar(10)  // 'P1' | 'P2' | 'P3'
+  status      String    @default("open") @db.VarChar(20) // 'open' | 'in_progress' | 'resolved'
+  description String?
+  assigned_to String?   @db.VarChar(100)
+  created_by  String?   @db.Uuid
+  resolved_at DateTime? @db.Timestamptz(6)
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  @@map("incidents")
 }
 
 // Auto-generated aggregate report for a shift/day/week window — distinct from

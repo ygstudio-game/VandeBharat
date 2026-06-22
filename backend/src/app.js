@@ -57,6 +57,16 @@ fastify.register(async function protectedApi(api) {
   api.register(require('./routes/reviewLog'),          { prefix: '/api/sessions' });
   api.register(require('./routes/reviewLogGlobal'),    { prefix: '/api/review-log' });
   api.register(require('./routes/periodicReports'),    { prefix: '/api/periodic-reports' });
+  api.register(require('./routes/archive'),            { prefix: '/api/archive' });
+  api.register(require('./routes/history'),            { prefix: '/api/history' });
+  api.register(require('./routes/aiPerformance'),      { prefix: '/api/ai' });
+  api.register(require('./routes/incidents'),           { prefix: '/api/incidents' });
+  api.register(require('./routes/assets'),              { prefix: '/api/assets' });
+  api.register(require('./routes/stations'),            { prefix: '/api/stations' });
+  api.register(require('./routes/datasets'),            { prefix: '/api/datasets' });
+  api.register(require('./routes/syncHub'),             { prefix: '/api/sync' });
+  api.register(require('./routes/rca'),                 { prefix: '/api/rca' });
+  api.register(require('./routes/trainingJobs'),        { prefix: '/api/training' });
 });
 
 // WebSocket endpoint — clients connect here for live pipeline events
