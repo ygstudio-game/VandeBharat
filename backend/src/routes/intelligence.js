@@ -187,11 +187,41 @@ async function intelligence(fastify) {
 
   // GET /api/sessions/:id/timeline-events
   fastify.get('/:id/timeline-events', async (req, reply) => {
-    const events = await prisma.timelineEvent.findMany({
-      where: { session_id: req.params.id },
-      orderBy: { timestamp_ms: 'asc' },
-    });
-    return { events };
+    const [events, coaches] = await Promise.all([
+      prisma.timelineEvent.findMany({
+        where: { session_id: req.params.id },
+        orderBy: { timestamp_ms: 'asc' },
+        include: {
+          frame: { select: { cloudinary_url: true, thumbnail_url: true, trigger_id: true } },
+          coach: { select: { coach_number: true, coach_index: true, health_score: true } },
+        },
+      }),
+      prisma.coach.findMany({
+        where: { session_id: req.params.id },
+        orderBy: { coach_index: 'asc' },
+        select: {
+          id: true, coach_number: true, coach_index: true,
+          start_trigger_id: true, end_trigger_id: true,
+          health_score: true, ocr_confidence: true,
+        },
+      }),
+    ]);
+
+    return {
+      events: events.map(e => ({
+        ...e,
+        timestamp_ms: e.timestamp_ms ? Number(e.timestamp_ms) : null,
+        frame: e.frame ? { ...e.frame, trigger_id: e.frame.trigger_id ? Number(e.frame.trigger_id) : null } : null,
+        coach: e.coach ? { ...e.coach, health_score: e.coach.health_score ? Number(e.coach.health_score) : null } : null,
+      })),
+      coaches: coaches.map(c => ({
+        ...c,
+        start_trigger_id: c.start_trigger_id ? Number(c.start_trigger_id) : null,
+        end_trigger_id: c.end_trigger_id ? Number(c.end_trigger_id) : null,
+        health_score: c.health_score ? Number(c.health_score) : null,
+        ocr_confidence: c.ocr_confidence ? Number(c.ocr_confidence) : null,
+      })),
+    };
   });
 }
 

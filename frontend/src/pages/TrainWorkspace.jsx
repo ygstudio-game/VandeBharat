@@ -756,6 +756,13 @@ export const TrainWorkspace = () => {
       </div>
 
       <div className="flex items-center gap-2 font-sans shrink-0">
+        <button
+          onClick={() => navigate(`/timeline/${sessionId}`)}
+          className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm shrink-0"
+        >
+          <Clock className="w-3.5 h-3.5" />
+          Timeline
+        </button>
         <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center shrink-0">
           <span className="text-[8px] font-black text-slate-400 uppercase tracking-wider leading-none mb-1">HEALTH SCORE</span>
           <span className="text-sm font-black text-[#003d9b] leading-none">

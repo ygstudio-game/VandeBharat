@@ -16,6 +16,7 @@ import { DefectAlertConsole } from './pages/DefectAlertConsole';
 import { CameraHealthMonitor } from './pages/CameraHealthMonitor';
 import { AiInferenceManagement } from './pages/AiInferenceManagement';
 import { DefectVerificationConsole } from './pages/DefectVerificationConsole';
+import { TrainMovementTimeline } from './pages/TrainMovementTimeline';
 
 const Placeholder = ({ title }) => (
   <div className="flex h-full items-center justify-center p-8">
@@ -53,6 +54,7 @@ function App() {
             <Route path="infrastructure" element={<Infrastructure />} />
             <Route path="ai-inference"   element={<AiInferenceManagement />} />
             <Route path="defect-verification" element={<DefectVerificationConsole />} />
+            <Route path="timeline/:sessionId" element={<TrainMovementTimeline />} />
             <Route path="settings"       element={<Settings />} />
             <Route path="*"              element={<Placeholder title="404 Not Found" />} />
           </Route>

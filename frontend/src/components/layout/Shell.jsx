@@ -53,7 +53,7 @@ export const Shell = () => {
 
   useEffect(() => {
     const isSmall = window.innerWidth < 1440;
-    if (location.pathname.startsWith('/train/')) {
+    if (location.pathname.startsWith('/train/') || location.pathname.startsWith('/timeline/')) {
       setSidebarCollapsed(true);
     } else {
       setSidebarCollapsed(isSmall);
@@ -62,7 +62,7 @@ export const Shell = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (!location.pathname.startsWith('/train/')) {
+      if (!location.pathname.startsWith('/train/') && !location.pathname.startsWith('/timeline/')) {
         setSidebarCollapsed(window.innerWidth < 1440);
       }
     };
