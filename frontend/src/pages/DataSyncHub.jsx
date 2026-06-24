@@ -59,14 +59,14 @@ export function DataSyncHub() {
   const [history,  setHistory]  = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [lastAt,   setLastAt]   = useState(null);
-  const [histStage,setHistStage]= useState('');
+  const [histStage,setHistStage]= useState('all');
   const [retrying, setRetrying] = useState({});
 
   const load = useCallback(async () => {
     try {
       const [s, h] = await Promise.all([
         getSync(),
-        getSyncHistory({ limit: 30, stage: histStage || undefined }),
+        getSyncHistory({ limit: 30, stage: histStage === 'all' ? undefined : histStage }),
       ]);
       setStatus(s);
       setHistory(h.events || []);
@@ -301,7 +301,7 @@ export function DataSyncHub() {
                   <SelectValue placeholder="All stages" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All stages</SelectItem>
+                  <SelectItem value="all">All stages</SelectItem>
                   {Object.entries(STAGE_LABELS).map(([k, v]) => (
                     <SelectItem key={k} value={k}>{v}</SelectItem>
                   ))}

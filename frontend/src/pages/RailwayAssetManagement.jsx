@@ -247,14 +247,14 @@ export function RailwayAssetManagement() {
   const [overdue,   setOverdue]   = useState([]);
   const [loading,   setLoading]   = useState(true);
   const [typeFilter,setTypeFilter]= useState('');
-  const [statusFilt,setStatusFilt]= useState('');
+  const [statusFilt,setStatusFilt]= useState('all');
   const [modal,     setModal]     = useState(null); // null | { type: 'asset'|'edit'|'maint', data?: {} }
   const [expanded,  setExpanded]  = useState({});
 
   const load = useCallback(async () => {
     const params = {};
     if (typeFilter) params.asset_type = typeFilter;
-    if (statusFilt) params.status     = statusFilt;
+    if (statusFilt !== 'all') params.status = statusFilt;
     const [a, o] = await Promise.all([
       getAssets(params).catch(() => ({ assets: [] })),
       getOverdueAssets().catch(() => ({ overdue: [] })),
@@ -343,14 +343,14 @@ export function RailwayAssetManagement() {
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Statuses</SelectItem>
+            <SelectItem value="all">All Statuses</SelectItem>
             <SelectItem value="active">Active</SelectItem>
             <SelectItem value="maintenance">In Maintenance</SelectItem>
             <SelectItem value="retired">Retired</SelectItem>
           </SelectContent>
         </Select>
-        {(typeFilter || statusFilt) && (
-          <Button size="sm" variant="ghost" className="h-8 text-xs" onClick={() => { setTypeFilter(''); setStatusFilt(''); }}>
+        {(typeFilter || statusFilt !== 'all') && (
+          <Button size="sm" variant="ghost" className="h-8 text-xs" onClick={() => { setTypeFilter(''); setStatusFilt('all'); }}>
             Clear Filters
           </Button>
         )}

@@ -140,7 +140,7 @@ export function OperationsCommandCenter() {
   const [loading,  setLoading]  = useState(true);
   const [lastAt,   setLastAt]   = useState(null);
   const [showModal,setShowModal]= useState(false);
-  const [incFilter,setIncFilter]= useState('');
+  const [incFilter,setIncFilter]= useState('all');
 
   const load = useCallback(async () => {
     try {
@@ -183,7 +183,7 @@ export function OperationsCommandCenter() {
   };
 
   const filteredInc = incidents.filter((i) =>
-    !incFilter || i.status === incFilter
+    incFilter === 'all' || i.status === incFilter
   );
 
   if (loading) {
@@ -412,7 +412,7 @@ export function OperationsCommandCenter() {
                   <SelectValue placeholder="All statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="open">Open</SelectItem>
                   <SelectItem value="in_progress">In Progress</SelectItem>
                   <SelectItem value="resolved">Resolved</SelectItem>
@@ -427,7 +427,7 @@ export function OperationsCommandCenter() {
         <CardContent className="p-0">
           {filteredInc.length === 0 ? (
             <div className="py-8 text-center text-xs text-muted-foreground">
-              No incidents{incFilter ? ` with status "${incFilter}"` : ''} — system nominal
+              No incidents{incFilter !== 'all' ? ` with status "${incFilter}"` : ''} — system nominal
             </div>
           ) : (
             <div className="overflow-x-auto">
