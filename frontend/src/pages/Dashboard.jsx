@@ -9,6 +9,8 @@ import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
 import { getDashboardKpis, getLiveQueue, getRecentDefects, getHierarchy, normalizeSession } from '../lib/api';
 import DetectionLogTable from '../components/DetectionLogTable';
+import { useAuth } from '../contexts/AuthContext';
+import { ROLES } from '../lib/roles';
 import {
   Train,
   FileCheck,
@@ -16,10 +18,16 @@ import {
   AlertTriangle,
   ShieldAlert,
   Activity,
+  Plus,
+  Camera,
+  ChevronRight,
 } from 'lucide-react';
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const role = user?.role ?? ROLES.FIELD_STAFF;
+  const canSign = role === ROLES.ADMIN || role === ROLES.RDSO_INSPECTOR;
   const { data: kpis,      refresh: refreshKpis }    = usePolling(getDashboardKpis, 10000);
   const { data: queueData, refresh: refreshQueue }   = usePolling(getLiveQueue, 5000);
   const { data: defectsData, refresh: refreshDefects } = usePolling(getRecentDefects, 15000);
@@ -127,6 +135,62 @@ export const Dashboard = () => {
           <div className={`w-2 h-2 rounded-full ${connected ? 'bg-success animate-pulse' : 'bg-amber-400'}`}></div>
           {connected ? 'LIVE ENGINE SYNCED' : 'POLLING MODE'}
         </div>
+      </div>
+
+      {/* Quick Actions — task-first shortcuts */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          {
+            show: true,
+            primary: true,
+            label: 'Start New Inspection',
+            sub: 'Upload camera footage',
+            icon: <Plus className="w-5 h-5" />,
+            onClick: () => navigate('/sessions'),
+          },
+          {
+            show: true,
+            label: 'Review Defect Alerts',
+            sub: `${kv('critical_defects', 0)} critical`,
+            icon: <ShieldAlert className="w-5 h-5 text-destructive" />,
+            onClick: () => navigate('/defect-console'),
+          },
+          {
+            show: canSign,
+            label: 'Reports to Sign',
+            sub: `${kv('unsigned_reports', 0)} awaiting signature`,
+            icon: <FileCheck className="w-5 h-5 text-success" />,
+            onClick: () => navigate('/reports'),
+          },
+          {
+            show: canSign,
+            label: 'Camera Status',
+            sub: 'Check cameras online',
+            icon: <Camera className="w-5 h-5 text-primary" />,
+            onClick: () => navigate('/camera-health'),
+          },
+        ]
+          .filter((a) => a.show)
+          .map((a) => (
+            <button
+              key={a.label}
+              onClick={a.onClick}
+              className={
+                a.primary
+                  ? 'group flex items-center justify-between gap-3 rounded-lg p-4 text-left bg-primary text-primary-foreground shadow-sm hover:opacity-90 transition'
+                  : 'group flex items-center justify-between gap-3 rounded-lg p-4 text-left bg-card border border-border shadow-sm hover:border-primary/40 hover:shadow transition'
+              }
+            >
+              <div className="flex items-center gap-3">
+                <span className={a.primary ? 'shrink-0' : 'shrink-0'}>{a.icon}</span>
+                <div>
+                  <p className="text-sm font-bold leading-tight">{a.label}</p>
+                  <p className={`text-xs mt-0.5 ${a.primary ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>{a.sub}</p>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 opacity-50 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          ))}
       </div>
 
       {/* KPI Overview Strip */}

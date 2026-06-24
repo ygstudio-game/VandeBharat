@@ -5,6 +5,8 @@ export const ROLES = {
   FIELD_STAFF: 'field_staff',
 };
 
+export const ALL_ROLES = Object.values(ROLES);
+
 export const ROLE_LABELS = {
   [ROLES.ADMIN]: 'Admin',
   [ROLES.RDSO_INSPECTOR]: 'RDSO Inspector',

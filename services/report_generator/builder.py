@@ -445,7 +445,7 @@ def build_periodic_pdf(periodic: dict) -> bytes:
     pdf.set_font("Helvetica", "B", 20)
     pdf.set_text_color(15, 23, 42)
     period_label = periodic["period_type"].upper()
-    pdf.cell(0, 12, f"Periodic Inspection Report — {period_label}", ln=True, align="C")
+    pdf.cell(0, 12, f"Periodic Inspection Report - {period_label}", ln=True, align="C")
 
     pdf.set_font("Helvetica", "", 11)
     pdf.set_text_color(71, 85, 105)
@@ -492,7 +492,7 @@ def build_periodic_pdf(periodic: dict) -> bytes:
     pdf.set_text_color(100, 100, 100)
     pdf.cell(0, 6, "Pipeline completion rate is a proxy for system uptime: completed / (completed + failed) sessions", ln=True)
     pdf.cell(0, 6, "in this period. No continuous service-uptime monitor is wired in yet (System Health Dashboard is", ln=True)
-    pdf.cell(0, 6, "still simulated for CPU/memory/SSD/UPS — GPU utilization is real via nvidia-smi).", ln=True)
+    pdf.cell(0, 6, "still simulated for CPU/memory/SSD/UPS - GPU utilization is real via nvidia-smi).", ln=True)
 
     return bytes(pdf.output())
 

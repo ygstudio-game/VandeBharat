@@ -34,37 +34,93 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { ROLES, ALL_ROLES } from '@/lib/roles';
 
-const navItems = [
-  { name: 'Live Train Monitor', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Live Queue', path: '/live-queue', icon: ListVideo },
-  { name: 'Inspections', path: '/sessions', icon: Train },
-  { name: 'Defect Alert Console', path: '/defect-console', icon: ShieldAlert },
-  { name: 'Defect Verification', path: '/defect-verification', icon: ShieldCheck },
-  { name: 'OCR Results Log', path: '/ocr-log', icon: ScanText },
-  { name: 'Historical Reports', path: '/reports', icon: FileText },
-  { name: 'Defect Analytics', path: '/analytics', icon: Activity },
-  { name: 'Camera Health Monitor', path: '/camera-health', icon: Camera },
-  { name: 'System Health Dashboard', path: '/infrastructure', icon: Server },
-  { name: 'Command Center', path: '/command-center', icon: MonitorDot },
-  { name: 'Sync Hub', path: '/sync-hub', icon: GitMerge },
-  { name: 'AI Inference', path: '/ai-inference', icon: Cpu },
-  { name: 'AI Performance', path: '/ai-performance', icon: Brain },
-  { name: 'Passage History', path: '/history', icon: History },
-  { name: 'Image Archive', path: '/image-archive', icon: HardDrive },
-  { name: 'Audit & Compliance', path: '/audit', icon: ClipboardList },
-  { name: 'Asset Management', path: '/assets',   icon: Wrench  },
-  { name: 'Station Monitor',  path: '/stations', icon: MapPin   },
-  { name: 'Datasets',         path: '/datasets', icon: Database },
-  { name: 'Root Cause',       path: '/rca',      icon: SearchCode },
-  { name: 'AI Training',      path: '/training', icon: FlaskConical },
-  { name: 'Settings', path: '/settings', icon: Settings },
+const { ADMIN, RDSO_INSPECTOR, ZR_OFFICER } = ROLES;
+
+// Grouped, role-scoped navigation. Settings is rendered separately in the footer.
+const navGroups = [
+  {
+    label: 'Overview',
+    items: [
+      { name: 'Home',              path: '/dashboard',      icon: LayoutDashboard, roles: ALL_ROLES, tip: 'Live train monitor and what needs your attention' },
+      { name: 'Operations Center', path: '/command-center', icon: MonitorDot,      roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+      { name: 'Processing Queue',  path: '/live-queue',     icon: ListVideo,       roles: ALL_ROLES, tip: 'Videos currently being processed' },
+      { name: 'Stations',          path: '/stations',       icon: MapPin,          roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+    ],
+  },
+  {
+    label: 'Inspection',
+    items: [
+      { name: 'Inspections',      path: '/sessions',            icon: Train,       roles: ALL_ROLES },
+      { name: 'Defect Alerts',    path: '/defect-console',      icon: ShieldAlert, roles: ALL_ROLES },
+      { name: 'Verify Defects',   path: '/defect-verification', icon: ShieldCheck, roles: [ADMIN, RDSO_INSPECTOR] },
+      { name: 'Coach Number Log', path: '/ocr-log',             icon: ScanText,    roles: ALL_ROLES, tip: 'Every coach number the cameras read (OCR)' },
+    ],
+  },
+  {
+    label: 'Reports & Records',
+    items: [
+      { name: 'Reports',       path: '/reports',       icon: FileText,      roles: ALL_ROLES },
+      { name: 'Train History', path: '/history',       icon: History,       roles: ALL_ROLES },
+      { name: 'Image Archive', path: '/image-archive', icon: HardDrive,     roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+      { name: 'Audit Log',     path: '/audit',         icon: ClipboardList, roles: [ADMIN] },
+    ],
+  },
+  {
+    label: 'Analytics',
+    items: [
+      { name: 'Analytics',           path: '/analytics', icon: Activity,   roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+      { name: 'Root Cause Analysis', path: '/rca',       icon: SearchCode, roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+      { name: 'Fleet & Assets',      path: '/assets',    icon: Wrench,     roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+    ],
+  },
+  {
+    label: 'System Health',
+    items: [
+      { name: 'Cameras',       path: '/camera-health',  icon: Camera,   roles: [ADMIN, RDSO_INSPECTOR], tip: 'Camera online/offline status' },
+      { name: 'System Health', path: '/infrastructure', icon: Server,   roles: [ADMIN] },
+      { name: 'Data Sync',     path: '/sync-hub',       icon: GitMerge, roles: [ADMIN], tip: 'Background data synchronisation' },
+    ],
+  },
+  {
+    label: 'AI Lab',
+    items: [
+      { name: 'AI Engine',   path: '/ai-inference',   icon: Cpu,          roles: [ADMIN], tip: 'AI model processing engine' },
+      { name: 'AI Accuracy', path: '/ai-performance', icon: Brain,        roles: [ADMIN] },
+      { name: 'Datasets',    path: '/datasets',       icon: Database,     roles: [ADMIN] },
+      { name: 'AI Training', path: '/training',       icon: FlaskConical, roles: [ADMIN] },
+    ],
+  },
+  {
+    label: 'Account',
+    items: [
+      { name: 'Settings', path: '/settings', icon: Settings, roles: ALL_ROLES, tip: 'Account, security, users' },
+    ],
+  },
 ];
+
+// Single source of truth for route-level role guard — derived from navGroups so nav and guard never drift.
+// Routes not listed here (e.g. /settings, /train/:id, /timeline/:id) are open to any authenticated user.
+const ROUTE_ROLES = navGroups.reduce((map, g) => {
+  g.items.forEach((i) => { map[i.path] = i.roles; });
+  return map;
+}, {});
 
 export const Shell = () => {
   const location = useLocation();
   const navigate  = useNavigate();
   const { user, logout } = useAuth();
+
+  // Role-scoped navigation: unknown/missing role falls back to least-privilege Field Staff.
+  const role = user?.role ?? ROLES.FIELD_STAFF;
+  const visibleGroups = navGroups
+    .map((g) => ({ ...g, items: g.items.filter((i) => i.roles.includes(role)) }))
+    .filter((g) => g.items.length > 0);
+
+  // Route guard: hiding a nav link is not enough — block direct-URL access to restricted pages.
+  const requiredRoles = ROUTE_ROLES[location.pathname];
+  const accessDenied = requiredRoles && !requiredRoles.includes(role);
 
   const handleLogout = () => {
     logout();
@@ -114,39 +170,37 @@ export const Shell = () => {
         </div>
         
         {/* Nav Links */}
-        <ScrollArea className="flex-1 py-4 px-3">
-          <div className="space-y-1">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.path}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-md text-xs font-semibold tracking-wide uppercase transition-all duration-200',
-                    isActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                  )
-                }
-              >
-                <item.icon className="w-4 h-4" />
-                {item.name}
-              </NavLink>
+        <ScrollArea className="flex-1 min-h-0 py-4 px-3">
+          <div className="space-y-5">
+            {visibleGroups.map((group) => (
+              <div key={group.label}>
+                <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                  {group.label}
+                </p>
+                <div className="space-y-0.5">
+                  {group.items.map((item) => (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      title={item.tip || item.name}
+                      className={({ isActive }) =>
+                        cn(
+                          'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                          isActive
+                            ? 'bg-primary text-primary-foreground shadow-sm'
+                            : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                        )
+                      }
+                    >
+                      <item.icon className="w-4 h-4 shrink-0" />
+                      {item.name}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </ScrollArea>
-
-        {/* Footer info */}
-        <div className="p-4 border-t border-border bg-slate-50/50">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-xs font-bold text-muted-foreground">NODE_INFRA: ACTIVE</span>
-          </div>
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground/80 font-mono">
-            <span>VER: 2.1.4-rc</span>
-            <span>ZONE: WR_HQ</span>
-          </div>
-        </div>
       </aside>
 
       {/* Main Layout Area */}
@@ -198,7 +252,26 @@ export const Shell = () => {
 
         {/* Dynamic Route Outlet */}
         <main className="flex-1 overflow-y-auto bg-background">
-          <Outlet />
+          {accessDenied ? (
+            <div className="flex h-full items-center justify-center p-8">
+              <div className="text-center max-w-md">
+                <ShieldAlert className="w-12 h-12 text-destructive mx-auto mb-4" />
+                <h2 className="text-xl font-bold text-foreground">Access restricted</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Your role ({user?.role || 'unknown'}) does not have permission to view this page.
+                  Contact your Administrator if you need access.
+                </p>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition"
+                >
+                  <LayoutDashboard className="w-4 h-4" /> Back to Home
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Outlet />
+          )}
         </main>
       </div>
 

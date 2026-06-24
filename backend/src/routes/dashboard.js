@@ -3,7 +3,7 @@ const prisma = require('../db/client');
 async function dashboard(fastify) {
   // GET /api/dashboard/kpis
   fastify.get('/kpis', async () => {
-    const [total, today, completed, active, queued, failed, defectStats] = await Promise.all([
+    const [total, today, completed, active, queued, failed, unsignedReports, defectStats] = await Promise.all([
       prisma.inspectionSession.count(),
       prisma.inspectionSession.count({
         where: { started_at: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } },
@@ -20,6 +20,10 @@ async function dashboard(fastify) {
       prisma.inspectionSession.count({
         where: { status: 'failed' },
       }),
+      // Reports generated but awaiting signature — the "Reports to Sign" count.
+      prisma.report.count({
+        where: { is_signed: false, generated_at: { not: null } },
+      }),
       prisma.inspectionSession.aggregate({
         _sum: { critical_defects: true },
         _avg: { health_score: true },
@@ -33,6 +37,7 @@ async function dashboard(fastify) {
       active_sessions: active,
       queued_sessions: queued,
       failed_sessions: failed,
+      unsigned_reports: unsignedReports,
       critical_defects: defectStats._sum.critical_defects ?? 0,
       avg_health_score: defectStats._avg.health_score
         ? Number(defectStats._avg.health_score.toFixed(1))

@@ -1,0 +1,7 @@
+﻿fastapi==0.115.0
+uvicorn[standard]==0.30.6
+fpdf2==2.8.1
+cloudinary==1.40.0
+python-dotenv==1.0.1
+requests==2.32.3
+Pillow>=11
