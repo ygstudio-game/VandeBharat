@@ -40,8 +40,13 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\sessions.js": {
+<<<<<<< HEAD
     "mtime": 1779725916.404634,
     "ast_hash": "dc0dc00009a3886a22d9971eea807ce0",
+=======
+    "mtime": 1779618983.6459236,
+    "ast_hash": "d82d1ce6a4cb22d7e46812d426145e41",
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\services\\cloudinaryService.js": {
@@ -50,8 +55,13 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\services\\pipelineOrchestrator.js": {
+<<<<<<< HEAD
     "mtime": 1779725916.405651,
     "ast_hash": "39651551d17b8dad9b3e18159e9bfcfe",
+=======
+    "mtime": 1779618995.133739,
+    "ast_hash": "bcb4145f536432612f264d3b66f75b36",
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\services\\wsGateway.js": {
@@ -185,12 +195,21 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Reports.jsx": {
+<<<<<<< HEAD
     "mtime": 1779725916.408679,
     "ast_hash": "6ec53725ad4eef87ede14d66213a89b1",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Sessions.jsx": {
     "mtime": 1779725916.4096775,
+=======
+    "mtime": 1779630126.7818873,
+    "ast_hash": "6759eb355a89d10a7b2c3297ec9072a5",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\Sessions.jsx": {
+    "mtime": 1779619077.4406064,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "b67a8404341840c8ad506e478d93b861",
     "semantic_hash": ""
   },
@@ -200,7 +219,11 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\pages\\TrainWorkspace.jsx": {
+<<<<<<< HEAD
     "mtime": 1779725916.4096775,
+=======
+    "mtime": 1779623570.3988764,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "deb40b95fe44a6ac4dd5bea2cf74dfd1",
     "semantic_hash": ""
   },
@@ -230,12 +253,21 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\correlation\\manifests\\vande_bharat.json": {
+<<<<<<< HEAD
     "mtime": 1779725916.4311285,
     "ast_hash": "6ebedfcbad801840befdcc2668d6c0d2",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\frame_extractor\\server.py": {
     "mtime": 1779725916.4326434,
+=======
+    "mtime": 1779628067.1000938,
+    "ast_hash": "78ff7a5523b4e97eff2213a2a45f7ceb",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\services\\frame_extractor\\server.py": {
+    "mtime": 1779626223.945267,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "921c790267d396ad3ddea66f34b99a44",
     "semantic_hash": ""
   },
@@ -490,22 +522,39 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\intelligence.js": {
+<<<<<<< HEAD
     "mtime": 1779725916.4030957,
+=======
+    "mtime": 1779622426.3157213,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "32c4f120d908d2adf9f94a5626924ecc",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\correlation\\engine.py": {
+<<<<<<< HEAD
     "mtime": 1779725916.4311285,
     "ast_hash": "ee77af54d006cb15c86eed6b3274059a",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\reports.js": {
     "mtime": 1779725916.4030957,
+=======
+    "mtime": 1779629605.2518399,
+    "ast_hash": "2a5036e960dfd0c6dec127dc14f9b474",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\src\\routes\\reports.js": {
+    "mtime": 1779623570.3923347,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "45f7cfff27281f64b8b6ec11765a8b39",
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\services\\report_generator\\builder.py": {
+<<<<<<< HEAD
     "mtime": 1779725916.4346719,
+=======
+    "mtime": 1779624864.3898711,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "5cc5e89b00b746d049f19f8eb4546031",
     "semantic_hash": ""
   },
@@ -710,7 +759,11 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\graphify-out\\converted\\VandeBharat_TechDoc_fa6398c9.md": {
+<<<<<<< HEAD
     "mtime": 1779726498.3173118,
+=======
+    "mtime": 1779632210.6098719,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "aa682629ed23cebfaa812a4fbd5e5b46",
     "semantic_hash": ""
   },
@@ -775,7 +828,11 @@
     "semantic_hash": ""
   },
   "E:\\PROJECTS\\VandeBharat\\Main\\graphify-out\\converted\\VandeInspect_AI_Technical_Report_3ae7912f.md": {
+<<<<<<< HEAD
     "mtime": 1779726499.2161899,
+=======
+    "mtime": 1779632211.0786583,
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
     "ast_hash": "6ceffcc909af6d71e13bc95993ec9be0",
     "semantic_hash": ""
   },
@@ -854,6 +911,7 @@
     "ast_hash": "a1ed41f0e40716284ba0fed6f262c563",
     "semantic_hash": ""
   },
+<<<<<<< HEAD
   "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\7cac3e8c-73de-43de-9964-1bd282be5b67\\cam_component_1.mp4": {
     "mtime": 1779724475.7654731,
     "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
@@ -873,5 +931,96 @@
     "mtime": 1779724771.3737526,
     "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
     "semantic_hash": ""
+=======
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\f9905c04-496f-40a2-bce1-a7898460771d\\cam_component_1.mp4": {
+    "mtime": 1779620249.1053185,
+    "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\f9905c04-496f-40a2-bce1-a7898460771d\\cam_ocr.mp4": {
+    "mtime": 1779620248.618618,
+    "ast_hash": "a1ed41f0e40716284ba0fed6f262c563",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\1c5ca1b9-a9c2-4c96-b60f-8b9c64107999\\cam_component_1.mp4": {
+    "mtime": 1779627467.695431,
+    "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\1c5ca1b9-a9c2-4c96-b60f-8b9c64107999\\cam_ocr.mp4": {
+    "mtime": 1779627467.22885,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\53b2bd51-0dd4-4614-9a80-d9daa5f91da6\\cam_component_1.mp4": {
+    "mtime": 1779626381.242128,
+    "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\53b2bd51-0dd4-4614-9a80-d9daa5f91da6\\cam_ocr.mp4": {
+    "mtime": 1779626380.7312386,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\99acd5a3-6cc5-4b8d-96f2-ddacb247a0f3\\cam_component_1.mp4": {
+    "mtime": 1779628199.666545,
+    "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\99acd5a3-6cc5-4b8d-96f2-ddacb247a0f3\\cam_ocr.mp4": {
+    "mtime": 1779628199.1288323,
+    "ast_hash": "8e91ff1c5fda5738edc979cb00273752",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\0b959235-b16d-4c09-b71a-60c022d7616a\\cam_component_1.mp4": {
+    "mtime": 1779629699.9654,
+    "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\0b959235-b16d-4c09-b71a-60c022d7616a\\cam_ocr.mp4": {
+    "mtime": 1779629699.6903255,
+    "ast_hash": "a1ed41f0e40716284ba0fed6f262c563",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\9e8c354b-f80f-4570-89cb-dfdb5d034a41\\cam_component_1.mp4": {
+    "mtime": 1779628974.2373128,
+    "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\9e8c354b-f80f-4570-89cb-dfdb5d034a41\\cam_ocr.mp4": {
+    "mtime": 1779628973.778577,
+    "ast_hash": "a1ed41f0e40716284ba0fed6f262c563",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\reports\\report_0b959235-b16d-4c09-b71a-60c022d7616a.json": {
+    "mtime": 1779630167.9626598,
+    "ast_hash": "b36cc7aacaafdb2ddc59c36f1abc0ea9",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\frontend\\src\\components\\DetectionLogTable.jsx": {
+    "mtime": 1779630069.3543372,
+    "ast_hash": "ce3b6e63d8e0e100545f83e1173a2a33",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\DOC\\FRAME_SYNC_PRESENTATION_PROMPTS.md": {
+    "mtime": 1779632197.8458848,
+    "ast_hash": "68814c7bf89a18f835e7cde1ccbd23e4",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\reports\\report_0b959235-b16d-4c09-b71a-60c022d7616a.pdf": {
+    "mtime": 1779630167.9616573,
+    "ast_hash": "c4c936e920226c289369f3397553dd35",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\20f27903-eb0b-4f9c-9f29-b8fe16b25292\\cam_component_1.mp4": {
+    "mtime": 1779631674.3575623,
+    "ast_hash": "2ec6b39d0be75780f67052c6690c8800",
+    "semantic_hash": ""
+  },
+  "E:\\PROJECTS\\VandeBharat\\Main\\backend\\uploads\\20f27903-eb0b-4f9c-9f29-b8fe16b25292\\cam_ocr.mp4": {
+    "mtime": 1779631673.3618145,
+    "ast_hash": "a1ed41f0e40716284ba0fed6f262c563",
+    "semantic_hash": ""
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
   }
 }

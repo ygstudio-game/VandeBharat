@@ -857,15 +857,56 @@ export const Reports = () => {
           {/* Center Panel: Report Workspace */}
           <section className="flex-1 overflow-y-auto bg-slate-50/20 flex flex-col p-6 gap-6">
             
+<<<<<<< HEAD
+=======
+            {/* Inspection Summary Banner */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex flex-col justify-center gap-2">
+                <span className="text-[10px] font-black text-slate-400 uppercase">Health Score</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl font-black text-primary">{coachBreakdown.healthScore}%</span>
+                  <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full transition-all duration-500 ${coachBreakdown.healthScore > 80 ? 'bg-primary' : 'bg-red-500'}`} 
+                      style={{ width: `${coachBreakdown.healthScore}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
+                <div>
+                  <span className="text-[10px] font-black text-slate-400 uppercase block">Sync Confidence</span>
+                  <span className="text-lg font-black text-slate-800">{((selectedReport.syncStability || 0) * 100).toFixed(1)}%</span>
+                </div>
+                <Activity className="text-primary w-8 h-8 opacity-80" />
+              </div>
+
+              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
+                <div>
+                  <span className="text-[10px] font-black text-slate-400 uppercase block">OCR Accuracy</span>
+                  <span className="text-lg font-black text-slate-800">{((selectedReport.ocrConf || 0) * 100).toFixed(1)}%</span>
+                </div>
+                <Sparkles className="text-primary w-8 h-8 opacity-80" />
+              </div>
+            </div>
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
             {/* Detection Log Table */}
             <DetectionLogTable
               frames={coachFrames}
               components={components}
+<<<<<<< HEAD
               stationName={selectedReport?.stationName}
               activeCoach={activeCoach}
               trainNumber={sessionObj?.train_number}
               sessionStartedAt={sessionObj?.started_at}
               onViewFrame={(frame) => { setSelectedFrame(frame); setIsFrameModalOpen(true); }}
+=======
+              onViewFrame={(frame) => {
+                setSelectedFrame(frame);
+                setIsFrameModalOpen(true);
+              }}
+>>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
             />
 
           </section>
@@ -1135,6 +1176,193 @@ export const Reports = () => {
                     </div>
                   </div>
                   <hr className="mx-5 my-3 border-slate-100" />
+                  {selectedFrame.defects?.length > 0 ? (
+                    <div className="p-5 flex flex-col gap-4">
+                      {/* Anomaly header */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+                          <span className="text-[10px] font-black uppercase tracking-wider text-red-600">Anomaly Detected</span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 uppercase leading-snug">
+                          {selectedFrame.defects[0].defect_type}
+                        </h4>
+                        <p className="text-xs font-semibold font-mono mt-1">
+                          SEVERITY:{' '}
+                          <span className={selectedFrame.defects[0].severity === 'CRITICAL' ? 'text-red-600 font-extrabold' : 'text-amber-500'}>
+                            {selectedFrame.defects[0].severity}
+                          </span>
+                        </p>
+                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100 italic">
+                          "{selectedFrame.defects[0].ai_notes ||
+                            `Computer vision model flagged visual discrepancy with ${Math.round(selectedFrame.defects[0].confidence * 100)}% confidence.`}"
+                        </p>
+                      </div>
+
+                      {/* Confidence bar */}
+                      <div className="pt-3 border-t border-slate-100">
+                        <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase mb-1.5">
+                          <span>Model Confidence</span>
+                          <span>{Math.round(selectedFrame.defects[0].confidence * 100)}%</span>
+                        </div>
+                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full transition-all ${selectedFrame.defects[0].severity === 'CRITICAL' ? 'bg-red-500' : 'bg-amber-500'}`}
+                            style={{ width: `${Math.round(selectedFrame.defects[0].confidence * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* All defects on this frame */}
+                      {selectedFrame.defects.length > 1 && (
+                        <div className="pt-3 border-t border-slate-100">
+                          <p className="text-[9px] font-black text-slate-400 uppercase mb-2">
+                            All Defects ({selectedFrame.defects.length})
+                          </p>
+                          <div className="flex flex-col gap-1.5">
+                            {selectedFrame.defects.map((d, i) => (
+                              <div key={i} className="flex items-center justify-between text-xs bg-red-50 border border-red-100 rounded px-2 py-1.5">
+                                <span className="font-bold text-red-700">{d.defect_type}</span>
+                                <span className={`text-[9px] font-black uppercase ${d.severity === 'CRITICAL' ? 'text-red-600' : 'text-amber-500'}`}>
+                                  {d.severity}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-5 flex flex-col gap-4">
+                      {/* Nominal header */}
+                      <div>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="w-2 h-2 bg-emerald-500 rounded-full" />
+                          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">Nominal Status</span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 uppercase">Visual Diagnostics Clear</h4>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Coach {activeCoach} · Frame #{selectedFrame.sequence_number}
+                        </p>
+                        <p className="text-xs font-medium text-slate-600 leading-relaxed mt-4 bg-slate-50 p-3 rounded border border-slate-100">
+                          Machine vision inspection registers no structural deviation. Components conform to baseline standards.
+                        </p>
+                      </div>
+
+                      {/* Components detected at this frame */}
+                      {coachIntel?.components_detected?.filter(
+                        c => c.trigger_id === selectedFrame.trigger_id || c.frame_id === selectedFrame.id
+                      ).length > 0 && (
+                        <div className="pt-3 border-t border-slate-100">
+                          <p className="text-[9px] font-black text-slate-400 uppercase mb-2">Detected Components</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {coachIntel.components_detected
+                              .filter(c => c.trigger_id === selectedFrame.trigger_id || c.frame_id === selectedFrame.id)
+                              .map((c, i) => (
+                                <span key={i} className="text-[9px] font-bold px-2 py-0.5 rounded bg-lime-50 text-lime-700 border border-lime-200">
+                                  {c.component_name || c.component_code}
+                                </span>
+                              ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Keyboard hint footer */}
+                <div className="px-5 py-3 border-t border-slate-200 bg-slate-50 flex items-center gap-2 shrink-0">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase mr-1">Navigate</span>
+                  {['←', '→', 'ESC'].map(k => (
+                    <span key={k} className="text-[9px] font-mono bg-white border border-slate-300 text-slate-600 px-1.5 py-0.5 rounded shadow-sm">{k}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Frame Detail Modal */}
+        {isFrameModalOpen && selectedFrame && (
+          <div
+            className="fixed inset-0 z-[200] flex items-center justify-center p-6"
+            style={{ background: 'rgba(5,26,62,0.82)', backdropFilter: 'blur(5px)' }}
+            onClick={() => setIsFrameModalOpen(false)}
+          >
+            <div
+              className="w-full max-w-5xl flex rounded overflow-hidden shadow-2xl border border-slate-700"
+              style={{ maxHeight: '88vh' }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Left — Image + canvas overlay */}
+              <div className="flex-1 bg-slate-900 relative overflow-hidden flex items-center justify-center min-h-[400px]">
+
+                {/* Frame info badge — top left */}
+                <div className="absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur-sm px-3 py-1.5 rounded border border-slate-700 text-[10px] font-mono text-white flex items-center gap-2 pointer-events-none">
+                  <span className="font-extrabold text-primary">FRAME #{selectedFrame.sequence_number}</span>
+                  <span className="text-slate-600">·</span>
+                  <span className="text-slate-400">T:{selectedFrame.trigger_id}</span>
+                  <span className="text-slate-600">·</span>
+                  <span className="text-slate-400">
+                    {coachFrames.findIndex(f => f.id === selectedFrame.id) + 1} / {coachFrames.length}
+                  </span>
+                </div>
+
+                {/* Close button — top right */}
+                <button
+                  onClick={() => setIsFrameModalOpen(false)}
+                  className="absolute top-3 right-3 z-10 p-1.5 bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white rounded border border-slate-700 transition-colors"
+                  title="Close (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                {/* Prev arrow */}
+                {(() => {
+                  const idx = coachFrames.findIndex(f => f.id === selectedFrame.id);
+                  return (
+                    <button
+                      onClick={() => idx > 0 && setSelectedFrame(coachFrames[idx - 1])}
+                      disabled={idx <= 0}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-slate-800/70 hover:bg-primary text-white rounded-full border border-slate-700 disabled:opacity-20 transition-all"
+                      title="Previous frame (←)"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                  );
+                })()}
+
+                {/* Next arrow */}
+                {(() => {
+                  const idx = coachFrames.findIndex(f => f.id === selectedFrame.id);
+                  return (
+                    <button
+                      onClick={() => idx < coachFrames.length - 1 && setSelectedFrame(coachFrames[idx + 1])}
+                      disabled={idx >= coachFrames.length - 1}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-slate-800/70 hover:bg-primary text-white rounded-full border border-slate-700 disabled:opacity-20 transition-all"
+                      title="Next frame (→)"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  );
+                })()}
+
+                {/* Image + canvas */}
+                <div className="relative w-full h-full flex items-center justify-center p-8">
+                  <img
+                    ref={imgRef}
+                    src={selectedFrame.cloudinary_url}
+                    onLoad={drawOverlay}
+                    alt={`Frame ${selectedFrame.sequence_number}`}
+                    className="max-w-full max-h-full object-contain rounded shadow-2xl block"
+                  />
+                  <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Right — Detail panel */}
+              <div className="w-72 bg-white border-l border-slate-200 flex flex-col shrink-0">
+                <div className="flex-1 overflow-y-auto">
                   {selectedFrame.defects?.length > 0 ? (
                     <div className="p-5 flex flex-col gap-4">
                       {/* Anomaly header */}
