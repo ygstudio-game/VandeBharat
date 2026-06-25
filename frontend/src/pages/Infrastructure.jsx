@@ -14,6 +14,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { getServicesHealth, getSystemHealth, getInferenceLatency } from '../lib/api';
+import { Wrench } from 'lucide-react';
+import { RailwayAssetManagement } from './RailwayAssetManagement';
 
 const STATUS_CONFIG = {
   healthy: { label: 'HEALTHY', dot: 'bg-emerald-500', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
@@ -101,6 +103,12 @@ export const Infrastructure = () => {
           className={`pb-3 flex items-center gap-1.5 transition-all relative ${activeTab === 'gpu' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
         >
           <Cpu className="w-4 h-4" /> Node Telemetry
+        </button>
+        <button
+          onClick={() => setActiveTab('assets')}
+          className={`pb-3 flex items-center gap-1.5 transition-all relative ${activeTab === 'assets' ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
+        >
+          <Wrench className="w-4 h-4" /> Railway Asset Management
         </button>
       </div>
 
@@ -287,6 +295,11 @@ export const Infrastructure = () => {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* Railway Asset Management — embedded near Node Telemetry */}
+      {activeTab === 'assets' && (
+        <RailwayAssetManagement />
       )}
     </div>
   );

@@ -9,13 +9,19 @@ async function archive(fastify) {
 
   // GET /api/archive/frames?session_id=&coach_id=&date=&storage_tier=&limit=&offset=
   fastify.get('/frames', async (req, reply) => {
-    const { session_id, coach_id, date, storage_tier, limit = '50', offset = '0' } = req.query;
+    const { session_id, coach_id, date, storage_tier, train_number, station, limit = '50', offset = '0' } = req.query;
 
     const where = {};
     if (session_id)   where.session_id = session_id;
     if (coach_id)     where.coach_id   = coach_id;
     if (storage_tier) where.storage_tier = storage_tier;
     else              where.storage_tier = { in: ['archived', 'cold', 'deleted'] };
+
+    // Train number / station filters via the parent session relation
+    const sessionFilter = {};
+    if (train_number?.trim()) sessionFilter.train_number = { contains: train_number.trim(), mode: 'insensitive' };
+    if (station?.trim())      sessionFilter.station = { station_name: station.trim() };
+    if (Object.keys(sessionFilter).length) where.session = sessionFilter;
 
     if (date) {
       const d = new Date(date);
@@ -39,7 +45,7 @@ async function archive(fastify) {
           storage_tier: true,
           archived_at: true,
           created_at: true,
-          session: { select: { train_number: true, session_code: true } },
+          session: { select: { train_number: true, session_code: true, station: { select: { station_name: true } } } },
           coach:   { select: { coach_number: true } },
         },
         orderBy: { created_at: 'desc' },

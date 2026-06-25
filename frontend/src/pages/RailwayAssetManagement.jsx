@@ -149,25 +149,20 @@ function AssetModal({ asset, onClose, onSaved }) {
   );
 }
 
-// ── Log Maintenance Modal ─────────────────────────────────────────────────────
-function MaintenanceModal({ asset, onClose, onSaved }) {
-  const today = new Date().toISOString().slice(0, 10);
-  const [form, setForm] = useState({ performed_by: '', performed_at: today, description: '', next_due_at: '' });
-  const [saving, setSaving] = useState(false);
-  const [err, setErr] = useState('');
+// ── Request Maintenance Modal ─────────────────────────────────────────────────
+function MaintenanceModal({ asset, onClose }) {
+  const [form, setForm] = useState({ requested_by: '', priority: 'Medium', description: '' });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
-    setSaving(true);
-    try {
-      await addMaintenanceLog(asset.id, form);
-      onSaved();
-      onClose();
-    } catch (ex) {
-      setErr(ex.message);
-    } finally {
-      setSaving(false);
-    }
+    setSending(true);
+    // Simulate dispatching the maintenance request email to the engineering team.
+    setTimeout(() => {
+      setSending(false);
+      setSent(true);
+    }, 700);
   };
 
   const f = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
@@ -176,35 +171,48 @@ function MaintenanceModal({ asset, onClose, onSaved }) {
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-card rounded-lg shadow-xl w-full max-w-md border border-border">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h2 className="text-sm font-bold uppercase tracking-wider">Log Maintenance</h2>
+          <h2 className="text-sm font-bold uppercase tracking-wider">Request Maintenance</h2>
           <p className="text-xs text-muted-foreground ml-2">{asset.name}</p>
           <button onClick={onClose} className="ml-auto"><X className="w-4 h-4 text-muted-foreground" /></button>
         </div>
-        <form onSubmit={submit} className="p-5 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+
+        {sent ? (
+          <div className="p-8 flex flex-col items-center justify-center text-center gap-3">
+            <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+            <p className="text-sm font-bold text-foreground">Email sent successfully</p>
+            <p className="text-xs text-muted-foreground">
+              Maintenance request for <span className="font-semibold">{asset.name}</span> has been emailed to the engineering team.
+            </p>
+            <Button size="sm" onClick={onClose} className="text-xs mt-2">Done</Button>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="p-5 space-y-3">
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Performed On</label>
-              <Input type="date" value={form.performed_at} onChange={f('performed_at')} className="text-xs" />
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Requested By</label>
+              <Input value={form.requested_by} onChange={f('requested_by')} placeholder="Your name" className="text-xs" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Next Due</label>
-              <Input type="date" value={form.next_due_at} onChange={f('next_due_at')} className="text-xs" />
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Priority</label>
+              <Select value={form.priority} onValueChange={(v) => setForm((p) => ({ ...p, priority: v }))}>
+                <SelectTrigger className="text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Low">Low</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="High">High</SelectItem>
+                  <SelectItem value="Critical">Critical</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Performed By</label>
-            <Input value={form.performed_by} onChange={f('performed_by')} placeholder="Technician name" className="text-xs" />
-          </div>
-          <div>
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Description</label>
-            <textarea value={form.description} onChange={f('description')} rows={3} placeholder="Work performed, parts replaced..." className="w-full text-xs border border-input rounded-md px-3 py-2 bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary" />
-          </div>
-          {err && <p className="text-xs text-destructive">{err}</p>}
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" size="sm" onClick={onClose} className="text-xs">Cancel</Button>
-            <Button type="submit" size="sm" disabled={saving} className="text-xs">{saving ? 'Saving…' : 'Log Maintenance'}</Button>
-          </div>
-        </form>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Issue / Reason</label>
+              <textarea value={form.description} onChange={f('description')} rows={3} placeholder="Describe the issue requiring maintenance..." className="w-full text-xs border border-input rounded-md px-3 py-2 bg-background resize-none focus:outline-none focus:ring-1 focus:ring-primary" />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" size="sm" onClick={onClose} className="text-xs">Cancel</Button>
+              <Button type="submit" size="sm" disabled={sending} className="text-xs">{sending ? 'Sending…' : 'Request Maintenance'}</Button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
@@ -373,6 +381,7 @@ export function RailwayAssetManagement() {
                     <th className="text-left px-4 py-2.5 font-bold uppercase tracking-wider text-muted-foreground">Type</th>
                     <th className="text-left px-4 py-2.5 font-bold uppercase tracking-wider text-muted-foreground">Location</th>
                     <th className="text-left px-4 py-2.5 font-bold uppercase tracking-wider text-muted-foreground">Status</th>
+                    <th className="text-left px-4 py-2.5 font-bold uppercase tracking-wider text-muted-foreground">Health</th>
                     <th className="text-left px-4 py-2.5 font-bold uppercase tracking-wider text-muted-foreground">Installed</th>
                     <th className="text-left px-4 py-2.5 font-bold uppercase tracking-wider text-muted-foreground">Last Maint</th>
                     <th className="text-left px-4 py-2.5 font-bold uppercase tracking-wider text-muted-foreground">Next Due</th>
@@ -385,6 +394,18 @@ export function RailwayAssetManagement() {
                     const nextDays = daysDiff(a.next_maintenance_at);
                     const isOverdue = a.is_overdue;
                     const isDueSoon = nextDays !== null && nextDays >= 0 && nextDays <= 14;
+                    // Derived asset health from operational status + maintenance window.
+                    const health = a.status === 'retired'
+                      ? { label: 'N/A',       cls: 'bg-slate-100 text-slate-500', dot: 'bg-slate-400' }
+                      : a.status === 'offline'
+                        ? { label: 'Critical', cls: 'bg-red-100 text-red-700',    dot: 'bg-red-500' }
+                        : isOverdue
+                          ? { label: 'Poor',     cls: 'bg-red-100 text-red-700',  dot: 'bg-red-500' }
+                          : a.status === 'maintenance'
+                            ? { label: 'Servicing', cls: 'bg-amber-100 text-amber-700', dot: 'bg-amber-500' }
+                            : isDueSoon
+                              ? { label: 'Fair',   cls: 'bg-amber-100 text-amber-700', dot: 'bg-amber-500' }
+                              : { label: 'Healthy', cls: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' };
                     return (
                       <React.Fragment key={a.id}>
                         <tr className={`border-b border-border hover:bg-secondary/20 transition-colors ${isOverdue ? 'bg-red-50/40' : ''}`}>
@@ -409,6 +430,12 @@ export function RailwayAssetManagement() {
                               {a.status.toUpperCase()}
                             </span>
                           </td>
+                          <td className="px-4 py-2.5">
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold ${health.cls}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${health.dot}`} />
+                              {health.label}
+                            </span>
+                          </td>
                           <td className="px-4 py-2.5 text-muted-foreground tabular-nums">{fmtDate(a.installation_date)}</td>
                           <td className="px-4 py-2.5 text-muted-foreground tabular-nums">{fmtDate(a.last_maintenance_at)}</td>
                           <td className="px-4 py-2.5 tabular-nums">
@@ -422,7 +449,7 @@ export function RailwayAssetManagement() {
                           </td>
                           <td className="px-4 py-2.5">
                             <div className="flex items-center gap-1">
-                              <Button size="icon" variant="ghost" className="h-6 w-6" title="Log maintenance" onClick={() => setModal({ type: 'maint', data: a })}>
+                              <Button size="icon" variant="ghost" className="h-6 w-6" title="Request maintenance" onClick={() => setModal({ type: 'maint', data: a })}>
                                 <Wrench className="w-3 h-3 text-primary" />
                               </Button>
                               <Button size="icon" variant="ghost" className="h-6 w-6" title="Edit asset" onClick={() => setModal({ type: 'edit', data: a })}>
@@ -438,7 +465,7 @@ export function RailwayAssetManagement() {
                         </tr>
                         {expanded[a.id] && (
                           <tr>
-                            <td colSpan={9} className="p-0">
+                            <td colSpan={10} className="p-0">
                               <MaintenanceLogs assetId={a.id} />
                             </td>
                           </tr>

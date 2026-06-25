@@ -8,11 +8,32 @@ async function ocrResults(fastify) {
     const minConfidence = req.query.minConfidence != null ? parseFloat(req.query.minConfidence) : null;
     const coachNumber = req.query.coachNumber?.trim();
     const validOnly = req.query.validOnly === 'true';
+    const trainNumber = req.query.trainNumber?.trim();
+    const station = req.query.station?.trim();
+    const date = req.query.date?.trim();
+
+    // Session-relation filter (train number / station)
+    const sessionFilter = {
+      ...(trainNumber ? { train_number: { contains: trainNumber, mode: 'insensitive' } } : {}),
+      ...(station ? { station: { station_name: station } } : {}),
+    };
+
+    // Single-day date filter on created_at → [date, date + 1 day)
+    let dateRange = {};
+    if (date) {
+      const start = new Date(`${date}T00:00:00.000Z`);
+      if (!Number.isNaN(start.getTime())) {
+        const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+        dateRange = { created_at: { gte: start, lt: end } };
+      }
+    }
 
     const where = {
       ...(minConfidence != null && !Number.isNaN(minConfidence) ? { confidence: { gte: minConfidence } } : {}),
       ...(coachNumber ? { coach_number: { contains: coachNumber, mode: 'insensitive' } } : {}),
       ...(validOnly ? { is_valid: true } : {}),
+      ...(Object.keys(sessionFilter).length ? { session: sessionFilter } : {}),
+      ...dateRange,
     };
 
     const [total, results] = await Promise.all([
@@ -24,7 +45,7 @@ async function ocrResults(fastify) {
         skip: offset,
         include: {
           frame: { select: { cloudinary_url: true, thumbnail_url: true, sequence_number: true } },
-          session: { select: { train_number: true, session_code: true } },
+          session: { select: { train_number: true, session_code: true, station: { select: { station_name: true } } } },
         },
       }),
     ]);
@@ -45,6 +66,7 @@ async function ocrResults(fastify) {
         sequence_number: r.frame?.sequence_number ?? null,
         train_number: r.session?.train_number ?? null,
         session_code: r.session?.session_code ?? null,
+        station_name: r.session?.station?.station_name ?? null,
       })),
     };
   });

@@ -42,46 +42,56 @@ const { ADMIN, RDSO_INSPECTOR, ZR_OFFICER } = ROLES;
 // Grouped, role-scoped navigation. Settings is rendered separately in the footer.
 const navGroups = [
   {
-    label: 'Overview',
+    label: 'Home',
     items: [
-      { name: 'Home',              path: '/dashboard',      icon: LayoutDashboard, roles: ALL_ROLES, tip: 'Live train monitor and what needs your attention' },
-      { name: 'Operations Center', path: '/command-center', icon: MonitorDot,      roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
-      { name: 'Processing Queue',  path: '/live-queue',     icon: ListVideo,       roles: ALL_ROLES, tip: 'Videos currently being processed' },
-      { name: 'Stations',          path: '/stations',       icon: MapPin,          roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+      { name: 'Home', path: '/dashboard', icon: LayoutDashboard, roles: ALL_ROLES, tip: 'Live train monitor and what needs your attention' },
     ],
   },
   {
-    label: 'Inspection',
+    label: 'Stations',
     items: [
-      { name: 'Inspections',      path: '/sessions',            icon: Train,       roles: ALL_ROLES },
-      { name: 'Defect Alerts',    path: '/defect-console',      icon: ShieldAlert, roles: ALL_ROLES },
-      { name: 'Verify Defects',   path: '/defect-verification', icon: ShieldCheck, roles: [ADMIN, RDSO_INSPECTOR] },
-      { name: 'Coach Number Log', path: '/ocr-log',             icon: ScanText,    roles: ALL_ROLES, tip: 'Every coach number the cameras read' },
+      { name: 'Stations', path: '/stations', icon: MapPin, roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
     ],
   },
+  // Inspection group hidden — accessed via Station Workspace; routes kept
+  // {
+  //   label: 'Inspection',
+  //   items: [
+  //     { name: 'Inspections',      path: '/sessions',            icon: Train,       roles: ALL_ROLES },
+  //     { name: 'Defect Alerts',    path: '/defect-console',      icon: ShieldAlert, roles: ALL_ROLES },
+  //     { name: 'Verify Defects',   path: '/defect-verification', icon: ShieldCheck, roles: [ADMIN, RDSO_INSPECTOR] },
+  //     { name: 'Coach Number Log', path: '/ocr-log',             icon: ScanText,    roles: ALL_ROLES, tip: 'Every coach number the cameras read' },
+  //   ],
+  // },
   {
-    label: 'Reports & Records',
+    label: 'MVIS Command Center',
     items: [
-      { name: 'Reports',       path: '/reports',       icon: FileText,      roles: ALL_ROLES },
-      { name: 'Train History', path: '/history',       icon: History,       roles: ALL_ROLES },
-      { name: 'Image Archive', path: '/image-archive', icon: HardDrive,     roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
-      { name: 'Audit Log',     path: '/audit',         icon: ClipboardList, roles: [ADMIN] },
+      { name: 'MVIS Command Center', path: '/command-center', icon: MonitorDot, roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
     ],
   },
+  // Reports & Records group hidden — accessed via Station Workspace; routes kept
+  // {
+  //   label: 'Reports & Records',
+  //   items: [
+  //     { name: 'Reports',       path: '/reports',       icon: FileText,      roles: ALL_ROLES },
+  //     { name: 'Train History', path: '/history',       icon: History,       roles: ALL_ROLES },
+  //     { name: 'Image Archive', path: '/image-archive', icon: HardDrive,     roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
+  //     { name: 'Audit Log',     path: '/audit',         icon: ClipboardList, roles: [ADMIN] },
+  //   ],
+  // },
   {
     label: 'Analytics',
     items: [
       { name: 'Analytics',           path: '/analytics', icon: Activity,   roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
       { name: 'Root Cause Analysis', path: '/rca',       icon: SearchCode, roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
-      { name: 'Fleet & Assets',      path: '/assets',    icon: Wrench,     roles: [ADMIN, RDSO_INSPECTOR, ZR_OFFICER] },
     ],
   },
   {
     label: 'System Health',
     items: [
-      { name: 'Cameras',       path: '/camera-health',  icon: Camera,   roles: [ADMIN, RDSO_INSPECTOR], tip: 'Camera online/offline status' },
-      { name: 'System Health', path: '/infrastructure', icon: Server,   roles: [ADMIN] },
-      { name: 'Data Sync',     path: '/sync-hub',       icon: GitMerge, roles: [ADMIN], tip: 'Background data synchronisation' },
+      { name: 'Cameras',                  path: '/camera-health',  icon: Camera,   roles: [ADMIN, RDSO_INSPECTOR], tip: 'Camera online/offline status' },
+      { name: 'System Health',            path: '/infrastructure', icon: Server,   roles: [ADMIN], tip: 'Node telemetry + Railway Asset Management' },
+      { name: 'Data Sync',                path: '/sync-hub',       icon: GitMerge, roles: [ADMIN], tip: 'Background data synchronisation' },
     ],
   },
   {
@@ -194,6 +204,30 @@ export const Shell = () => {
             {visibleGroups.map((group) => {
               const isOpen = pinnedGroups.has(group.label);
               const groupHasActive = group.items.some((i) => i.path === location.pathname);
+
+              // Single-item group → render as a flat menu link, no dropdown.
+              if (group.items.length === 1) {
+                const item = group.items[0];
+                return (
+                  <NavLink
+                    key={group.label}
+                    to={item.path}
+                    title={item.tip || item.name}
+                    className={({ isActive }) =>
+                      cn(
+                        'w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                        isActive
+                          ? 'bg-primary text-primary-foreground shadow-sm'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      )
+                    }
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {item.name}
+                  </NavLink>
+                );
+              }
+
               return (
                 <div key={group.label}>
                   <button

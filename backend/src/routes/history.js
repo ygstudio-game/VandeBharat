@@ -3,11 +3,12 @@ const prisma = require('../db/client');
 async function history(fastify) {
   // GET /api/history/passages?train_number=&date_from=&date_to=&status=&limit=50&offset=0
   fastify.get('/passages', async (req, reply) => {
-    const { train_number, date_from, date_to, status, limit = '50', offset = '0' } = req.query;
+    const { train_number, date_from, date_to, status, station, limit = '50', offset = '0' } = req.query;
 
     const where = {};
     if (train_number) where.train_number = { contains: train_number, mode: 'insensitive' };
     if (status)       where.status       = status;
+    if (station?.trim()) where.station = { station_name: station.trim() };
     if (date_from || date_to) {
       where.started_at = {};
       if (date_from) where.started_at.gte = new Date(date_from);

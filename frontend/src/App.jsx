@@ -25,6 +25,7 @@ import { DataSyncHub } from './pages/DataSyncHub';
 import { AuditCompliance } from './pages/AuditCompliance';
 import { RailwayAssetManagement } from './pages/RailwayAssetManagement';
 import { StationMonitoringDashboard } from './pages/StationMonitoringDashboard';
+import { StationWorkspace } from './pages/StationWorkspace';
 import { DatasetManagementPortal } from './pages/DatasetManagementPortal';
 import { RootCauseAnalysis } from './pages/RootCauseAnalysis';
 import { AiTrainingWorkbench } from './pages/AiTrainingWorkbench';
@@ -74,6 +75,7 @@ function App() {
             <Route path="audit"          element={<AuditCompliance />} />
             <Route path="assets"         element={<RailwayAssetManagement />} />
             <Route path="stations"       element={<StationMonitoringDashboard />} />
+            <Route path="stations/:code" element={<StationWorkspace />} />
             <Route path="datasets"       element={<DatasetManagementPortal />} />
             <Route path="rca"            element={<RootCauseAnalysis />} />
             <Route path="training"       element={<AiTrainingWorkbench />} />

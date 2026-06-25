@@ -114,18 +114,35 @@ async function sessions(fastify) {
       },
     });
 
-    // Create one camera + session_camera per uploaded video (OCR first, then component)
+    // Link each uploaded video to one of the station's FIXED physical cameras
+    // (do NOT create a new camera per upload — that bloats the registry).
+    // Cameras are matched by type and assigned round-robin within that type.
+    const fixedCameras = await prisma.camera.findMany({
+      where: { camera_setup_id: setup.id },
+      orderBy: { camera_code: 'asc' },
+    });
+    const ocrCameras = fixedCameras.filter((c) => c.camera_type === 'ocr');
+    const componentCameras = fixedCameras.filter((c) => c.camera_type === 'component');
+
     const sessionCameras = [];
+    let ocrIdx = 0;
+    let compIdx = 0;
     for (let i = 0; i < allFiles.length; i++) {
       const { savePath, originalName, cameraType } = allFiles[i];
-      const camera = await prisma.camera.create({
-        data: {
-          camera_setup_id: setup.id,
-          camera_code: `UPLOAD_${cameraType.toUpperCase()}_${sessionId.slice(0, 8)}`,
-          camera_type: cameraType,
-          position_label: cameraType === 'ocr' ? 'OCR / Placard Camera' : `Component Camera ${i}`,
-        },
-      });
+
+      // Pick a fixed camera of the matching type (round-robin); fall back to any camera.
+      let camera;
+      if (cameraType === 'ocr' && ocrCameras.length) {
+        camera = ocrCameras[ocrIdx++ % ocrCameras.length];
+      } else if (componentCameras.length) {
+        camera = componentCameras[compIdx++ % componentCameras.length];
+      } else {
+        camera = fixedCameras[i % fixedCameras.length];
+      }
+      if (!camera) {
+        reply.status(500);
+        return { error: 'No cameras registered for this station. Run: node prisma/seed.js' };
+      }
 
       const sc = await prisma.sessionCamera.create({
         data: {

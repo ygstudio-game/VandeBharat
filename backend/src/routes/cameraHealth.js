@@ -7,6 +7,8 @@ async function cameraHealth(fastify) {
   // GET /api/cameras/health — live status for every registered camera
   fastify.get('/health', async () => {
     const cameras = await prisma.camera.findMany({
+      // Exclude legacy per-upload cameras (created before the fixed-registry fix).
+      where: { NOT: { camera_code: { startsWith: 'UPLOAD_' } } },
       include: {
         camera_setup: { select: { station_name: true, station_code: true } },
         session_cameras: {

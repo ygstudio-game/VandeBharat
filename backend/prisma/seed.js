@@ -19,7 +19,7 @@ async function main() {
     },
   });
   // Default camera setup for MVP / testing
-  await prisma.cameraSetup.upsert({
+  const setup = await prisma.cameraSetup.upsert({
     where: { station_code: 'TEST01' },
     update: {},
     create: {
@@ -28,6 +28,29 @@ async function main() {
       is_active: true,
     },
   });
+
+  // Fixed physical camera registry — 10 cameras per station.
+  // 2 OCR + 2 each of Left-Bottom / Left-Top / Right-Bottom / Right-Top.
+  const FIXED_CAMERAS = [
+    { camera_code: 'OCR-1',  camera_type: 'ocr',       position_label: 'OCR / Placard Camera 1' },
+    { camera_code: 'OCR-2',  camera_type: 'ocr',       position_label: 'OCR / Placard Camera 2' },
+    { camera_code: 'CL-B-1', camera_type: 'component', position_label: 'Component Left Bottom 1' },
+    { camera_code: 'CL-B-2', camera_type: 'component', position_label: 'Component Left Bottom 2' },
+    { camera_code: 'CL-T-1', camera_type: 'component', position_label: 'Component Left Top 1' },
+    { camera_code: 'CL-T-2', camera_type: 'component', position_label: 'Component Left Top 2' },
+    { camera_code: 'CR-B-1', camera_type: 'component', position_label: 'Component Right Bottom 1' },
+    { camera_code: 'CR-B-2', camera_type: 'component', position_label: 'Component Right Bottom 2' },
+    { camera_code: 'CR-T-1', camera_type: 'component', position_label: 'Component Right Top 1' },
+    { camera_code: 'CR-T-2', camera_type: 'component', position_label: 'Component Right Top 2' },
+  ];
+  for (const c of FIXED_CAMERAS) {
+    const exists = await prisma.camera.findFirst({
+      where: { camera_setup_id: setup.id, camera_code: c.camera_code },
+    });
+    if (!exists) {
+      await prisma.camera.create({ data: { ...c, camera_setup_id: setup.id, is_active: true } });
+    }
+  }
 
   const manifests = [
     { coach_type: 'VANDE_BHARAT', component_name: 'Brake Pad',       component_code: 'BRAKE_PAD',   quantity: 2, is_critical: true },
@@ -54,7 +77,7 @@ async function main() {
     });
   }
 
-  console.log('Seed complete: admin@vande.local + camera_setup TEST01 + 14 component manifests');
+  console.log('Seed complete: admin@vande.local + camera_setup TEST01 + 10 fixed cameras + 14 component manifests');
 }
 
 main()

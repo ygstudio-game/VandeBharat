@@ -9,9 +9,12 @@ import DetectionLogTable from '../components/DetectionLogTable';
 import { exportToCSV, exportToJSON } from '../lib/export';
 import { Download } from 'lucide-react';
 
-export const DefectAlertConsole = () => {
+export const DefectAlertConsole = ({ lockedStation = null }) => {
   const navigate = useNavigate();
-  const { data: defectsData, refresh: refreshDefects } = usePolling(getRecentDefects, 15000);
+  const { data: defectsData, refresh: refreshDefects } = usePolling(
+    () => getRecentDefects(30, lockedStation || ''),
+    15000
+  );
   const [previewDefect, setPreviewDefect] = useState(null);
 
   const defectRows = (defectsData?.defects || []).map((d) => {

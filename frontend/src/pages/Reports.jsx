@@ -76,10 +76,13 @@ function sessionToReport(s) {
   };
 }
 
-export const Reports = () => {
+export const Reports = ({ lockedStation = null }) => {
   const navigate = useNavigate();
+  const embedded = !!lockedStation;
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
+  const [stationFilter, setStationFilter] = useState('ALL');
+  const [dateFilter, setDateFilter] = useState('');
 
   // Load sessions from API, derive reports from completed ones
   const { data: sessionsData } = usePolling(getSessions, 15000);
@@ -627,11 +630,16 @@ export const Reports = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [drawOverlay, drawFullscreenOverlay, isFullscreen, selectedFrame]);
 
+  const stationOptions = [...new Set(displayReports.map(r => r.stationName).filter(n => n && n !== '—'))].sort();
+
   const filteredReports = displayReports.filter(rep => {
-    const matchesSearch = rep.trainNumber.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = rep.trainNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           rep.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'ALL' || rep.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesStation = stationFilter === 'ALL' || rep.stationName === stationFilter;
+    const matchesLocked = !lockedStation || rep.stationName === lockedStation;
+    const matchesDate = !dateFilter || rep.date === dateFilter;
+    return matchesSearch && matchesStatus && matchesStation && matchesLocked && matchesDate;
   });
 
   // Derive coach labels for the sidebar + timeline
@@ -856,57 +864,16 @@ export const Reports = () => {
 
           {/* Center Panel: Report Workspace */}
           <section className="flex-1 overflow-y-auto bg-slate-50/20 flex flex-col p-6 gap-6">
-            
-<<<<<<< HEAD
-=======
-            {/* Inspection Summary Banner */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex flex-col justify-center gap-2">
-                <span className="text-[10px] font-black text-slate-400 uppercase">Health Score</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-xl font-black text-primary">{coachBreakdown.healthScore}%</span>
-                  <div className="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full transition-all duration-500 ${coachBreakdown.healthScore > 80 ? 'bg-primary' : 'bg-red-500'}`} 
-                      style={{ width: `${coachBreakdown.healthScore}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase block">Sync Confidence</span>
-                  <span className="text-lg font-black text-slate-800">{((selectedReport.syncStability || 0) * 100).toFixed(1)}%</span>
-                </div>
-                <Activity className="text-primary w-8 h-8 opacity-80" />
-              </div>
-
-              <div className="bg-white border border-slate-200 p-4 rounded shadow-sm flex justify-between items-center">
-                <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase block">OCR Accuracy</span>
-                  <span className="text-lg font-black text-slate-800">{((selectedReport.ocrConf || 0) * 100).toFixed(1)}%</span>
-                </div>
-                <Sparkles className="text-primary w-8 h-8 opacity-80" />
-              </div>
-            </div>
->>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
             {/* Detection Log Table */}
             <DetectionLogTable
               frames={coachFrames}
               components={components}
-<<<<<<< HEAD
               stationName={selectedReport?.stationName}
               activeCoach={activeCoach}
               trainNumber={sessionObj?.train_number}
               sessionStartedAt={sessionObj?.started_at}
               onViewFrame={(frame) => { setSelectedFrame(frame); setIsFrameModalOpen(true); }}
-=======
-              onViewFrame={(frame) => {
-                setSelectedFrame(frame);
-                setIsFrameModalOpen(true);
-              }}
->>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
             />
 
           </section>
@@ -1605,6 +1572,37 @@ export const Reports = () => {
               <option value="PENDING_SIGNATURE">Pending Signature</option>
             </select>
           </div>
+
+          {/* Station filter — hidden when locked to a station via the workspace */}
+          {!embedded && (
+            <div className="flex items-center bg-slate-50 border border-border rounded p-1 text-xs font-bold">
+              <span className="px-2 text-muted-foreground">Station:</span>
+              <select
+                value={stationFilter}
+                onChange={(e) => setStationFilter(e.target.value)}
+                className="bg-transparent border-none focus:ring-0 cursor-pointer font-bold text-primary"
+              >
+                <option value="ALL">All Stations</option>
+                {stationOptions.map(st => <option key={st} value={st}>{st}</option>)}
+              </select>
+            </div>
+          )}
+
+          {/* Date filter */}
+          <div className="flex items-center bg-slate-50 border border-border rounded p-1 text-xs font-bold">
+            <span className="px-2 text-muted-foreground">Date:</span>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              className="bg-transparent border-none focus:ring-0 cursor-pointer font-bold text-primary"
+            />
+            {dateFilter && (
+              <button onClick={() => setDateFilter('')} className="px-1.5 text-muted-foreground hover:text-foreground" title="Clear date">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -1616,6 +1614,7 @@ export const Reports = () => {
               <tr className="bg-slate-50 border-b border-border text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 <th className="p-4">Report ID</th>
                 <th className="p-4">Train ID</th>
+                <th className="p-4">Station</th>
                 <th className="p-4">Date Generated</th>
                 <th className="p-4">Assigned Supervisor</th>
                 <th className="p-4 text-center">Defects (Crit/Min)</th>
@@ -1626,7 +1625,7 @@ export const Reports = () => {
             <tbody className="divide-y divide-border text-sm">
               {filteredReports.length === 0 && (
                 <tr>
-                  <td colSpan="7" className="p-8 text-center text-muted-foreground font-medium text-sm">
+                  <td colSpan="8" className="p-8 text-center text-muted-foreground font-medium text-sm">
                     No completed sessions with reports found. Run a pipeline inspection first.
                   </td>
                 </tr>
@@ -1635,6 +1634,7 @@ export const Reports = () => {
                 <tr key={rep.id} className="hover:bg-slate-50/50 transition-colors">
                   <td className="p-4 font-mono font-bold text-slate-800">{rep.id}</td>
                   <td className="p-4 font-mono font-bold text-primary">{rep.trainNumber}</td>
+                  <td className="p-4 text-slate-600 font-semibold">{rep.stationName || '—'}</td>
                   <td className="p-4 text-slate-600 font-medium">{rep.date}</td>
                   <td className="p-4 text-xs font-semibold text-slate-500">{rep.supervisor}</td>
                   <td className="p-4 text-center">

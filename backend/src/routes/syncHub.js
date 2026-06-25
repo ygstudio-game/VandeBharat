@@ -32,8 +32,9 @@ async function getStageStats(redis, stage) {
 }
 
 async function syncHub(fastify) {
-  // GET /api/sync/status — queue depths + recent pipeline health
-  fastify.get('/status', async () => {
+  // GET /api/sync/status?station=<name> — queue depths + recent pipeline health
+  fastify.get('/status', async (req) => {
+    const station = req.query.station?.trim();
     let redisOnline = false;
     let stages = {};
 
@@ -54,6 +55,7 @@ async function syncHub(fastify) {
 
     // Recent session pipeline summary from DB
     const recentSessions = await prisma.inspectionSession.findMany({
+      where: station ? { station: { station_name: station } } : {},
       orderBy: { started_at: 'desc' },
       take: 10,
       select: {
@@ -62,6 +64,7 @@ async function syncHub(fastify) {
         status: true,
         started_at: true,
         completed_at: true,
+        station: { select: { station_name: true } },
         pipeline_stages: {
           select: { stage: true, status: true, progress_pct: true, started_at: true, completed_at: true, worker_id: true, attempts: true },
         },
@@ -92,6 +95,7 @@ async function syncHub(fastify) {
       recent_sessions: recentSessions.map((s) => ({
         id: s.id,
         train_number: s.train_number,
+        station_name: s.station?.station_name || null,
         status: s.status,
         started_at: s.started_at,
         completed_at: s.completed_at,
@@ -104,10 +108,15 @@ async function syncHub(fastify) {
   fastify.get('/history', async (req) => {
     const limit = Math.min(parseInt(req.query.limit, 10) || 50, 200);
     const stage = req.query.stage;
+    const station = req.query.station?.trim();
 
     const where = stage ? { stage } : {};
     const events = await prisma.pipelineStage.findMany({
-      where: { ...where, started_at: { not: null } },
+      where: {
+        ...where,
+        started_at: { not: null },
+        ...(station ? { session: { station: { station_name: station } } } : {}),
+      },
       orderBy: { started_at: 'desc' },
       take: limit,
       select: {
@@ -122,7 +131,7 @@ async function syncHub(fastify) {
         started_at: true,
         completed_at: true,
         session: {
-          select: { id: true, train_number: true },
+          select: { id: true, train_number: true, station: { select: { station_name: true } } },
         },
       },
     });

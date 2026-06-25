@@ -3,6 +3,7 @@ import {
   getDashboardKpis, getLiveQueue, getRecentDefects,
   getServicesHealth, getSystemHealth, getCameraHealth,
   getIncidents, createIncident, updateIncident, deleteIncident,
+  getStations,
 } from '../lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -141,13 +142,23 @@ export function OperationsCommandCenter() {
   const [lastAt,   setLastAt]   = useState(null);
   const [showModal,setShowModal]= useState(false);
   const [incFilter,setIncFilter]= useState('all');
+  const [station,  setStation]  = useState('');           // '' = all stations
+  const [stationOptions, setStationOptions] = useState([]);
+
+  useEffect(() => {
+    getStations()
+      .then((list) => setStationOptions((list || []).map((s) => s.station_name).filter(Boolean)))
+      .catch(() => setStationOptions([]));
+  }, []);
 
   const load = useCallback(async () => {
+    // A station must be selected — no global view.
+    if (!station) { setLoading(false); return; }
     try {
       const [k, q, d, svc, sys, cam, inc] = await Promise.all([
-        getDashboardKpis(),
-        getLiveQueue(),
-        getRecentDefects(8),
+        getDashboardKpis(station),
+        getLiveQueue(station),
+        getRecentDefects(8, station),
         getServicesHealth(),
         getSystemHealth(),
         getCameraHealth(),
@@ -163,7 +174,7 @@ export function OperationsCommandCenter() {
       setLastAt(new Date());
     } catch (_) {}
     setLoading(false);
-  }, []);
+  }, [station]);
 
   useEffect(() => { load(); }, [load]);
   useEffect(() => { const t = setInterval(load, POLL_MS); return () => clearInterval(t); }, [load]);
@@ -195,9 +206,13 @@ export function OperationsCommandCenter() {
     );
   }
 
-  const offlineCams   = cameras.cameras?.filter((c) => c.status === 'offline').length ?? 0;
-  const degradedCams  = cameras.cameras?.filter((c) => c.status === 'degraded').length ?? 0;
-  const healthyCams   = cameras.cameras?.filter((c) => c.status === 'healthy').length ?? 0;
+  // Camera health comes back for all stations — filter client-side to the selected station.
+  const visibleCameras = station
+    ? (cameras.cameras ?? []).filter((c) => c.station_name === station)
+    : (cameras.cameras ?? []);
+  const offlineCams   = visibleCameras.filter((c) => c.status === 'offline').length;
+  const degradedCams  = visibleCameras.filter((c) => c.status === 'degraded').length;
+  const healthyCams   = visibleCameras.filter((c) => c.status === 'healthy').length;
   const offlineServices = services.filter((s) => s.status === 'offline').length;
 
   const openInc = incidents.filter((i) => i.status !== 'resolved').length;
@@ -208,12 +223,23 @@ export function OperationsCommandCenter() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-base font-extrabold uppercase tracking-wider">Operations Command Center</h1>
+          <h1 className="text-base font-extrabold uppercase tracking-wider">MVIS Command Center</h1>
           <p className="text-xs text-muted-foreground mt-0.5">
             Last refresh: {lastAt ? lastAt.toLocaleTimeString() : '—'} · Auto-refreshes every 30s
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {/* Station filter — one station at a time, no global view */}
+          <Select value={station} onValueChange={setStation}>
+            <SelectTrigger className="text-xs h-8 w-48">
+              <SelectValue placeholder="Select station" />
+            </SelectTrigger>
+            <SelectContent>
+              {stationOptions.map((s) => (
+                <SelectItem key={s} value={s}>{s}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {p1Open > 0 && (
             <Badge variant="destructive" className="text-xs">
               <AlertTriangle className="w-3 h-3 mr-1" />
@@ -231,6 +257,14 @@ export function OperationsCommandCenter() {
         </div>
       </div>
 
+      {!station ? (
+        <div className="flex flex-col items-center justify-center py-24 text-center gap-3">
+          <Train className="w-10 h-10 text-slate-300" />
+          <p className="text-sm font-bold text-muted-foreground">Please select a station</p>
+          <p className="text-xs text-muted-foreground">Choose a station from the dropdown above to view its command center.</p>
+        </div>
+      ) : (
+      <>
       {/* 4-quadrant grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -295,13 +329,13 @@ export function OperationsCommandCenter() {
               <KpiChip label="Healthy"  value={healthyCams}  />
               <KpiChip label="Degraded" value={degradedCams} />
               <KpiChip label="Offline"  value={offlineCams}  />
-              <KpiChip label="Total"    value={cameras.cameras?.length ?? 0} />
+              <KpiChip label="Total"    value={visibleCameras.length} />
             </div>
             <div className="space-y-1 max-h-44 overflow-y-auto">
-              {cameras.cameras?.length === 0 && (
+              {visibleCameras.length === 0 && (
                 <p className="text-xs text-muted-foreground">No cameras registered</p>
               )}
-              {cameras.cameras?.map((cam) => (
+              {visibleCameras.map((cam) => (
                 <div key={cam.id} className="flex items-center justify-between text-xs bg-secondary/40 rounded px-2.5 py-1">
                   <div className="flex items-center gap-2">
                     <SvcDot status={cam.status} />
@@ -310,7 +344,7 @@ export function OperationsCommandCenter() {
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <span>{cam.uptime_pct != null ? `${cam.uptime_pct}%` : '—'}</span>
-                    <span>{cam.station_code || '—'}</span>
+                    <span title={cam.station_code || ''}>{cam.station_name || cam.station_code || '—'}</span>
                   </div>
                 </div>
               ))}
@@ -394,8 +428,11 @@ export function OperationsCommandCenter() {
           </CardContent>
         </Card>
       </div>
+      </>
+      )}
 
-      {/* Incident Tracker — full width */}
+      {/* Incident Tracker — full width — hidden */}
+      {false && (
       <Card className="border-border">
         <CardHeader className="py-3 px-4 border-b border-border">
           <div className="flex items-center justify-between">
@@ -525,6 +562,7 @@ export function OperationsCommandCenter() {
           )}
         </CardContent>
       </Card>
+      )}
 
       {showModal && (
         <IncidentModal

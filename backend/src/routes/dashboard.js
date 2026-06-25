@@ -1,30 +1,34 @@
 const prisma = require('../db/client');
 
 async function dashboard(fastify) {
-  // GET /api/dashboard/kpis
-  fastify.get('/kpis', async () => {
+  // GET /api/dashboard/kpis?station=<station_name>
+  fastify.get('/kpis', async (req) => {
+    const station = req.query.station?.trim();
+    const sw = station ? { station: { station_name: station } } : {};
+
     const [total, today, completed, active, queued, failed, unsignedReports, defectStats] = await Promise.all([
-      prisma.inspectionSession.count(),
+      prisma.inspectionSession.count({ where: { ...sw } }),
       prisma.inspectionSession.count({
-        where: { started_at: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } },
+        where: { ...sw, started_at: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } },
       }),
       prisma.inspectionSession.count({
-        where: { status: 'completed' },
+        where: { ...sw, status: 'completed' },
       }),
       prisma.inspectionSession.count({
-        where: { status: { notIn: ['completed', 'failed', 'queued'] } },
+        where: { ...sw, status: { notIn: ['completed', 'failed', 'queued'] } },
       }),
       prisma.inspectionSession.count({
-        where: { status: 'queued' },
+        where: { ...sw, status: 'queued' },
       }),
       prisma.inspectionSession.count({
-        where: { status: 'failed' },
+        where: { ...sw, status: 'failed' },
       }),
       // Reports generated but awaiting signature — the "Reports to Sign" count.
       prisma.report.count({
-        where: { is_signed: false, generated_at: { not: null } },
+        where: { is_signed: false, generated_at: { not: null }, ...(station ? { session: sw } : {}) },
       }),
       prisma.inspectionSession.aggregate({
+        where: { ...sw },
         _sum: { critical_defects: true },
         _avg: { health_score: true },
       }),
@@ -48,8 +52,10 @@ async function dashboard(fastify) {
   // GET /api/dashboard/recent-defects
   fastify.get('/recent-defects', async (req) => {
     const limit = Math.min(parseInt(req.query.limit, 10) || 30, 100);
+    const station = req.query.station?.trim();
 
     const defects = await prisma.defect.findMany({
+      where: station ? { session: { station: { station_name: station } } } : {},
       orderBy: { created_at: 'desc' },
       take: limit,
       select: {
@@ -104,13 +110,18 @@ async function dashboard(fastify) {
     };
   });
 
-  // GET /api/dashboard/live-queue
-  fastify.get('/live-queue', async () => {
+  // GET /api/dashboard/live-queue?station=<station_name>
+  fastify.get('/live-queue', async (req) => {
+    const station = req.query.station?.trim();
     const queue = await prisma.inspectionSession.findMany({
-      where: { status: { notIn: ['completed', 'failed'] } },
+      where: {
+        status: { notIn: ['completed', 'failed'] },
+        ...(station ? { station: { station_name: station } } : {}),
+      },
       orderBy: { started_at: 'desc' },
       include: {
         pipeline_stages: { select: { stage: true, status: true, progress_pct: true } },
+        station: { select: { station_name: true } },
       },
     });
 
@@ -119,6 +130,7 @@ async function dashboard(fastify) {
         id: s.id,
         session_code: s.session_code,
         train_number: s.train_number,
+        station_name: s.station?.station_name ?? null,
         status: s.status,
         progress_pct: s.progress_pct,
         started_at: s.started_at,

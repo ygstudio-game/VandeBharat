@@ -36,8 +36,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-export const Sessions = () => {
+export const Sessions = ({ lockedStation = null }) => {
   const navigate = useNavigate();
+  const embedded = !!lockedStation;
   
   // CRUD state management
   const [sessions, setSessions] = useState([]);
@@ -97,7 +98,12 @@ export const Sessions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [severityFilter, setSeverityFilter] = useState('ALL');
+  const [stationFilter, setStationFilter] = useState('ALL');
+  const [dateFilter, setDateFilter] = useState('');
   const [expandedRows, setExpandedRows] = useState({});
+
+  // Unique station names present in loaded sessions — for the Station filter dropdown
+  const stationOptions = [...new Set(sessions.map(s => s.stationName).filter(n => n && n !== '—'))].sort();
 
   // Wizard state management
   const [showAddWizard, setShowAddWizard] = useState(false);
@@ -147,8 +153,12 @@ export const Sessions = () => {
     
     const matchesStatus = statusFilter === 'ALL' || session.status === statusFilter;
     const matchesSeverity = severityFilter === 'ALL' || session.severity === severityFilter;
+    const matchesStation = stationFilter === 'ALL' || session.stationName === stationFilter;
+    const matchesLocked = !lockedStation || session.stationName === lockedStation;
+    const matchesDate = !dateFilter || (session.startedAt &&
+      new Date(session.startedAt).toLocaleDateString('en-CA') === dateFilter);
 
-    return matchesSearch && matchesStatus && matchesSeverity;
+    return matchesSearch && matchesStatus && matchesSeverity && matchesStation && matchesLocked && matchesDate;
   });
 
 
@@ -320,95 +330,6 @@ export const Sessions = () => {
         >
           <Plus className="w-4 h-4" /> Add Inspection
         </button>
-      </div>
-
-      {/* Coach Search — centre top */}
-      <div className="max-w-xl mx-auto w-full space-y-3">
-        <form
-          onSubmit={(e) => { e.preventDefault(); runCoachSearch(coachQuery); }}
-          className="relative"
-        >
-          <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            value={coachQuery}
-            onChange={(e) => setCoachQuery(e.target.value)}
-            placeholder="Search coach or train number… e.g. C3, VB-22804"
-            className="w-full pl-11 pr-28 py-3 bg-card border border-border rounded text-sm focus:outline-none focus:border-primary"
-          />
-          <button
-            type="submit"
-            disabled={coachSearching || !coachQuery.trim()}
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider rounded disabled:opacity-40"
-          >
-            {coachSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Search'}
-          </button>
-        </form>
-
-        {coachSearched && !coachSearching && (
-          <div className="space-y-2">
-            {(!coachResults || coachResults.length === 0) ? (
-              <div className="text-center py-6 text-muted-foreground text-sm font-medium">
-                No coaches matched "{coachQuery}".
-              </div>
-            ) : (
-              coachResults.map((c) => (
-                <Card
-                  key={c.id}
-                  className="border border-border shadow-sm hover:border-primary transition-colors cursor-pointer"
-                  onClick={() => navigate(`/train/${c.session_id}`)}
-                >
-                  <div className="p-3 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded bg-secondary flex items-center justify-center shrink-0">
-                        <Train className="w-4 h-4 text-primary" />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-black text-foreground text-sm">
-                            Coach {c.coach_number}
-                          </span>
-                          {c.coach_type && (
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase">
-                              {c.coach_type}
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-xs text-muted-foreground font-semibold mt-0.5">
-                          Train {c.train_number} · Session {c.session_code || c.session_id.slice(0, 8)} ·{' '}
-                          {c.started_at ? new Date(c.started_at).toLocaleDateString() : '—'}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 text-xs font-bold shrink-0">
-                      <div className="text-center">
-                        <div className="flex items-center gap-1 text-destructive">
-                          <ShieldAlert className="w-3.5 h-3.5" />
-                          {c.critical_defects}
-                        </div>
-                        <div className="text-[9px] text-muted-foreground uppercase">Critical</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="flex items-center gap-1 text-warning">
-                          <AlertTriangle className="w-3.5 h-3.5" />
-                          {c.missing_components}
-                        </div>
-                        <div className="text-[9px] text-muted-foreground uppercase">Missing</div>
-                      </div>
-                      <div className="text-center">
-                        <div className={c.health_score >= 80 ? 'text-success' : c.health_score >= 50 ? 'text-warning' : 'text-destructive'}>
-                          {c.health_score != null ? `${c.health_score}%` : '—'}
-                        </div>
-                        <div className="text-[9px] text-muted-foreground uppercase">Health</div>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                  </div>
-                </Card>
-              ))
-            )}
-          </div>
-        )}
       </div>
 
       {/* NEW INSPECTION DIALOG */}
@@ -649,55 +570,6 @@ export const Sessions = () => {
         </Card>
       )}
 
-      {/* KPI Overview Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border p-4 rounded shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded bg-primary/10 text-primary">
-            <Activity className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Sessions</div>
-            <div className="text-2xl font-black text-foreground">{sessions.length}</div>
-          </div>
-        </div>
-
-        <div className="bg-card border border-border p-4 rounded shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded bg-blue-100 text-blue-700">
-            <RefreshCw className="w-5 h-5 animate-spin" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Sessions</div>
-            <div className="text-2xl font-black text-foreground">
-              {sessions.filter(s => s.status === 'PROCESSING' || s.status === 'SYNCHRONIZING').length}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-card border border-border p-4 rounded shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded bg-amber-100 text-amber-700">
-            <Clock className="w-5 h-5 animate-pulse" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Review Required</div>
-            <div className="text-2xl font-black text-foreground">
-              {sessions.filter(s => s.severity === 'REVIEW').length}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-card border border-border p-4 rounded shadow-sm flex items-center gap-4">
-          <div className="p-3 rounded bg-red-100 text-red-700">
-            <AlertTriangle className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Critical Defects</div>
-            <div className="text-2xl font-black text-foreground">
-              {sessions.filter(s => s.severity === 'CRITICAL').length}
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Filters Bar */}
       <div className="bg-card border border-border p-4 rounded shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -752,6 +624,37 @@ export const Sessions = () => {
                 <option value="NONE">None</option>
               </select>
             </div>
+
+            {/* Station filter — hidden when locked to a station via the workspace */}
+            {!embedded && (
+              <div className="flex items-center bg-slate-50 border border-border rounded p-1 text-xs font-bold">
+                <span className="px-2 text-muted-foreground">Station:</span>
+                <select
+                  value={stationFilter}
+                  onChange={(e) => setStationFilter(e.target.value)}
+                  className="bg-transparent border-none focus:ring-0 cursor-pointer font-bold text-primary"
+                >
+                  <option value="ALL">All Stations</option>
+                  {stationOptions.map(st => <option key={st} value={st}>{st}</option>)}
+                </select>
+              </div>
+            )}
+
+            {/* Date filter */}
+            <div className="flex items-center bg-slate-50 border border-border rounded p-1 text-xs font-bold">
+              <span className="px-2 text-muted-foreground">Date:</span>
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="bg-transparent border-none focus:ring-0 cursor-pointer font-bold text-primary"
+              />
+              {dateFilter && (
+                <button onClick={() => setDateFilter('')} className="px-1.5 text-muted-foreground hover:text-foreground" title="Clear date">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -764,6 +667,7 @@ export const Sessions = () => {
               <tr className="bg-slate-50 border-b border-border text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 <th className="p-4 w-10"></th>
                 <th className="p-4">Train ID</th>
+                <th className="p-4">Station</th>
                 <th className="p-4">Session ID</th>
                 <th className="p-4">Start Time</th>
                 <th className="p-4">Processing Status</th>
@@ -775,7 +679,7 @@ export const Sessions = () => {
             <tbody className="divide-y divide-border text-sm">
               {filteredSessions.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="p-8 text-center text-muted-foreground font-medium">
+                  <td colSpan="9" className="p-8 text-center text-muted-foreground font-medium">
                     No sessions match the selected search and filter criteria.
                   </td>
                 </tr>
@@ -801,6 +705,7 @@ export const Sessions = () => {
                           session.trainNumber
                         )}
                       </td>
+                      <td className="p-4 text-xs font-semibold text-slate-600">{session.stationName || '—'}</td>
                       <td className="p-4 font-mono text-xs text-muted-foreground">{session.id}</td>
                       <td className="p-4 text-xs font-medium text-slate-600">
                         {new Date(session.startedAt).toLocaleString()}
@@ -844,7 +749,7 @@ export const Sessions = () => {
                     {/* Expandable Details Row */}
                     {expandedRows[session.id] && (
                       <tr className="bg-slate-50/20">
-                        <td className="p-0" colSpan="8">
+                        <td className="p-0" colSpan="9">
                           {session.status === 'PROCESSING' || session.status === 'SYNCHRONIZING' ? (
                             <div className="px-12 py-6 border-l-4 border-cyan-500 bg-slate-50/50 m-4 mt-0 rounded space-y-6">
                               {/* Header & Overall Progress */}

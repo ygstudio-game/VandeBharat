@@ -249,7 +249,8 @@ export const Analytics = () => {
         </ChartCard>
       </div>
 
-      {/* Model registry — static config documentation */}
+      {/* Model registry — static config documentation — hidden */}
+      {false && (
       <Card className="border border-border shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm font-black text-slate-800 uppercase tracking-tight">
@@ -296,6 +297,7 @@ export const Analytics = () => {
           </div>
         </CardContent>
       </Card>
+      )}
     </div>
   );
 };

@@ -182,6 +182,24 @@ export function RootCauseAnalysis() {
   const [defectFilter, setDefectFilter] = useState('');
   const [showModal, setShowModal]     = useState(false);
   const [activeTab, setActiveTab]     = useState('camera');
+  const [fTrain, setFTrain]           = useState('');     // train number filter
+  const [fStation, setFStation]       = useState('ALL');  // station filter
+  const [stationOptions, setStationOptions] = useState([]);
+
+  useEffect(() => {
+    apiFetch('/api/stations')
+      .then((list) => setStationOptions((list || []).map((s) => s.station_name).filter(Boolean)))
+      .catch(() => setStationOptions([]));
+  }, []);
+
+  // Filter aggregated rows by train number (substring) + station (exact within the comma list).
+  const applyFilter = (rows = []) => rows.filter((r) => {
+    const trains = (r.train_numbers || '').toLowerCase();
+    const stations = (r.stations || '').split(',').map((x) => x.trim());
+    const matchTrain = !fTrain || trains.includes(fTrain.toLowerCase());
+    const matchStation = fStation === 'ALL' || stations.includes(fStation);
+    return matchTrain && matchStation;
+  });
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -305,6 +323,34 @@ export function RootCauseAnalysis() {
         ))}
       </div>
 
+      {/* Table filters — Train number + Station (apply to correlation + cluster tables) */}
+      <div className="flex flex-wrap items-center gap-2 bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+        <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Table Filters:</span>
+        <input
+          type="text"
+          placeholder="Train number…"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-xs w-40"
+          value={fTrain}
+          onChange={(e) => setFTrain(e.target.value)}
+        />
+        <select
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-xs font-semibold text-primary"
+          value={fStation}
+          onChange={(e) => setFStation(e.target.value)}
+        >
+          <option value="ALL">All Stations</option>
+          {stationOptions.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        {(fTrain || fStation !== 'ALL') && (
+          <button
+            onClick={() => { setFTrain(''); setFStation('ALL'); }}
+            className="text-xs font-bold px-3 py-1.5 border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
       {/* Failure Trends */}
       <SectionCard title="Failure Trends (30 days)" icon={TrendingUp}>
         {trendData.length === 0 ? (
@@ -349,20 +395,22 @@ export function RootCauseAnalysis() {
                   <tr className="border-b text-gray-500 uppercase text-left">
                     <th className="pb-2 pr-4">Camera</th>
                     <th className="pb-2 pr-4">Position</th>
+                    <th className="pb-2 pr-4">Train No.</th>
+                    <th className="pb-2 pr-4">Station</th>
                     <th className="pb-2 pr-4">Defect Type</th>
                     <th className="pb-2 pr-4">Count</th>
-                    <th className="pb-2 pr-4">Sessions</th>
                     <th className="pb-2">Correlation Strength</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {correlation.camera_correlations.map((r, i) => (
+                  {applyFilter(correlation.camera_correlations).map((r, i) => (
                     <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="py-2 pr-4 font-mono font-semibold">{r.camera_code}</td>
                       <td className="py-2 pr-4 text-gray-500">{r.position_label || '—'}</td>
+                      <td className="py-2 pr-4 font-mono">{r.train_numbers || '—'}</td>
+                      <td className="py-2 pr-4 text-gray-500">{r.stations || '—'}</td>
                       <td className="py-2 pr-4">{r.defect_type}</td>
                       <td className="py-2 pr-4 font-semibold">{r.defect_count}</td>
-                      <td className="py-2 pr-4">{r.session_count}</td>
                       <td className="py-2 w-40"><StrengthBar value={r.correlation_strength} /></td>
                     </tr>
                   ))}
@@ -380,20 +428,22 @@ export function RootCauseAnalysis() {
                   <tr className="border-b text-gray-500 uppercase text-left">
                     <th className="pb-2 pr-4">Coach No.</th>
                     <th className="pb-2 pr-4">Coach Type</th>
+                    <th className="pb-2 pr-4">Train No.</th>
+                    <th className="pb-2 pr-4">Station</th>
                     <th className="pb-2 pr-4">Defect Type</th>
                     <th className="pb-2 pr-4">Count</th>
-                    <th className="pb-2 pr-4">Sessions</th>
                     <th className="pb-2">Correlation Strength</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {correlation.coach_correlations.map((r, i) => (
+                  {applyFilter(correlation.coach_correlations).map((r, i) => (
                     <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="py-2 pr-4 font-mono font-semibold">{r.coach_number}</td>
                       <td className="py-2 pr-4 text-gray-500">{r.coach_type || '—'}</td>
+                      <td className="py-2 pr-4 font-mono">{r.train_numbers || '—'}</td>
+                      <td className="py-2 pr-4 text-gray-500">{r.stations || '—'}</td>
                       <td className="py-2 pr-4">{r.defect_type}</td>
                       <td className="py-2 pr-4 font-semibold">{r.defect_count}</td>
-                      <td className="py-2 pr-4">{r.session_count}</td>
                       <td className="py-2 w-40"><StrengthBar value={r.correlation_strength} /></td>
                     </tr>
                   ))}
@@ -432,22 +482,24 @@ export function RootCauseAnalysis() {
                   <th className="pb-2 pr-4">Defect Type</th>
                   <th className="pb-2 pr-4">Camera</th>
                   <th className="pb-2 pr-4">Coach Type</th>
+                  <th className="pb-2 pr-4">Train No.</th>
+                  <th className="pb-2 pr-4">Station</th>
                   <th className="pb-2 pr-4">Occurrences</th>
-                  <th className="pb-2 pr-4">Sessions</th>
                   <th className="pb-2 pr-4">First Seen</th>
                   <th className="pb-2">Last Seen</th>
                 </tr>
               </thead>
               <tbody>
-                {clusters.clusters.map((r, i) => (
+                {applyFilter(clusters.clusters).map((r, i) => (
                   <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
                     <td className="py-2 pr-4 font-semibold">{r.defect_type}</td>
                     <td className="py-2 pr-4 font-mono">{r.camera_code}</td>
                     <td className="py-2 pr-4 text-gray-500">{r.coach_type || '—'}</td>
+                    <td className="py-2 pr-4 font-mono">{r.train_numbers || '—'}</td>
+                    <td className="py-2 pr-4 text-gray-500">{r.stations || '—'}</td>
                     <td className="py-2 pr-4">
                       <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">{r.occurrence_count}</span>
                     </td>
-                    <td className="py-2 pr-4">{r.affected_sessions}</td>
                     <td className="py-2 pr-4 text-gray-400">{r.first_seen ? new Date(r.first_seen).toLocaleDateString() : '—'}</td>
                     <td className="py-2 text-gray-400">{r.last_seen ? new Date(r.last_seen).toLocaleDateString() : '—'}</td>
                   </tr>
@@ -466,6 +518,8 @@ export function RootCauseAnalysis() {
               <thead>
                 <tr className="border-b text-gray-500 uppercase text-left">
                   <th className="pb-2 pr-4">Defect Type</th>
+                  <th className="pb-2 pr-4">Train No.</th>
+                  <th className="pb-2 pr-4">Station</th>
                   <th className="pb-2 pr-4">Description</th>
                   <th className="pb-2 pr-4">Performed By</th>
                   <th className="pb-2 pr-4">Date</th>
@@ -479,6 +533,8 @@ export function RootCauseAnalysis() {
                   return (
                     <tr key={a.id} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="py-2 pr-4 font-semibold">{a.defect_type}</td>
+                      <td className="py-2 pr-4 font-mono">{a.train_number || '—'}</td>
+                      <td className="py-2 pr-4 text-gray-500">{a.station_name || '—'}</td>
                       <td className="py-2 pr-4 max-w-xs truncate text-gray-600">{a.description}</td>
                       <td className="py-2 pr-4">{a.performed_by}</td>
                       <td className="py-2 pr-4 text-gray-400">{new Date(a.performed_at).toLocaleDateString()}</td>

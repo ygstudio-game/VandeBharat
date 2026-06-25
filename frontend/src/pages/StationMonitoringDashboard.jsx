@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getStationsOverview, getStationDetail } from '../lib/api';
 import {
   MapPin, Wifi, WifiOff, AlertTriangle, Camera, Activity,
@@ -102,7 +103,7 @@ function StationCard({ station, onClick }) {
   );
 }
 
-function DetailPanel({ code, onBack }) {
+export function DetailPanel({ code, onBack, hideHeader = false }) {
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -123,28 +124,32 @@ function DetailPanel({ code, onBack }) {
 
   return (
     <div>
-      <button onClick={onBack} className="flex items-center gap-2 text-sm text-primary hover:underline mb-4">
-        <ChevronLeft className="w-4 h-4" /> All Stations
-      </button>
+      {!hideHeader && (
+        <>
+          <button onClick={onBack} className="flex items-center gap-2 text-sm text-primary hover:underline mb-4">
+            <ChevronLeft className="w-4 h-4" /> All Stations
+          </button>
 
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-          <MapPin className="w-5 h-5 text-primary" />
-        </div>
-        <div>
-          <p className="text-xs text-slate-400 uppercase">{detail.station_code}</p>
-          <h2 className="text-lg font-bold text-slate-800">{detail.station_name}</h2>
-        </div>
-        {detail.edge_machine && (
-          <div className="ml-auto flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
-            <Server className="w-4 h-4 text-slate-400" />
-            <div>
-              <p className="text-xs font-bold text-slate-700">{detail.edge_machine.hostname}</p>
-              <p className="text-[10px] text-slate-400">{detail.edge_machine.ip_address ?? '—'}</p>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+              <MapPin className="w-5 h-5 text-primary" />
             </div>
+            <div>
+              <p className="text-xs text-slate-400 uppercase">{detail.station_code}</p>
+              <h2 className="text-lg font-bold text-slate-800">{detail.station_name}</h2>
+            </div>
+            {detail.edge_machine && (
+              <div className="ml-auto flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                <Server className="w-4 h-4 text-slate-400" />
+                <div>
+                  <p className="text-xs font-bold text-slate-700">{detail.edge_machine.hostname}</p>
+                  <p className="text-[10px] text-slate-400">{detail.edge_machine.ip_address ?? '—'}</p>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       {/* Cameras */}
       <div className="mb-6">
@@ -222,6 +227,7 @@ function DetailPanel({ code, onBack }) {
 }
 
 export function StationMonitoringDashboard() {
+  const navigate = useNavigate();
   const [overview, setOverview] = useState([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
@@ -320,7 +326,7 @@ export function StationMonitoringDashboard() {
                 <StationCard
                   key={station.id}
                   station={station}
-                  onClick={() => setSelected(station.station_code)}
+                  onClick={() => navigate(`/stations/${station.station_code}`)}
                 />
               ))}
             </div>

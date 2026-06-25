@@ -25,6 +25,14 @@ export const CameraHealthMonitor = () => {
   const [threshold, setThreshold] = useState(90);
   const [loading, setLoading] = useState(true);
   const [lastChecked, setLastChecked] = useState(null);
+  const [station, setStation] = useState('ALL');
+
+  // Unique stations present in the camera registry — for the filter dropdown.
+  const stationOptions = [...new Set(cameras.map((c) => c.station_name).filter(Boolean))].sort();
+
+  // Cameras scoped to the selected station.
+  const visibleCameras = station === 'ALL' ? cameras : cameras.filter((c) => c.station_name === station);
+  const visibleAlertCount = visibleCameras.filter((c) => c.alert).length;
 
   const load = useCallback(async () => {
     try {
@@ -56,11 +64,23 @@ export const CameraHealthMonitor = () => {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {alertCount > 0 && (
+          {visibleAlertCount > 0 && (
             <div className="flex items-center gap-1.5 text-xs font-bold text-destructive bg-destructive/10 border border-destructive/30 px-3 py-1.5 rounded-full">
-              <ShieldAlert className="w-3.5 h-3.5" /> {alertCount} camera{alertCount !== 1 ? 's' : ''} below threshold
+              <ShieldAlert className="w-3.5 h-3.5" /> {visibleAlertCount} camera{visibleAlertCount !== 1 ? 's' : ''} below threshold
             </div>
           )}
+          {/* Station filter */}
+          <div className="flex items-center bg-slate-50 border border-border rounded p-1 text-xs font-bold">
+            <span className="px-2 text-muted-foreground">Station:</span>
+            <select
+              value={station}
+              onChange={(e) => setStation(e.target.value)}
+              className="bg-transparent border-none focus:ring-0 cursor-pointer font-bold text-primary"
+            >
+              <option value="ALL">All Stations</option>
+              {stationOptions.map((st) => <option key={st} value={st}>{st}</option>)}
+            </select>
+          </div>
           <button
             onClick={load}
             disabled={loading}
@@ -69,6 +89,21 @@ export const CameraHealthMonitor = () => {
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
           </button>
         </div>
+      </div>
+
+      {/* Per-station summary counts */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          { label: 'Total',    value: visibleCameras.length,                                          color: 'text-slate-700' },
+          { label: 'Healthy',  value: visibleCameras.filter((c) => c.status === 'healthy').length,    color: 'text-emerald-600' },
+          { label: 'Degraded', value: visibleCameras.filter((c) => c.status === 'degraded').length,   color: 'text-amber-600' },
+          { label: 'Offline',  value: visibleCameras.filter((c) => c.status === 'offline').length,    color: 'text-red-600' },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="bg-card border border-border rounded p-3 shadow-sm">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{label}</p>
+            <p className={`text-2xl font-black ${color}`}>{value}</p>
+          </div>
+        ))}
       </div>
 
       {lastChecked && (
@@ -81,17 +116,19 @@ export const CameraHealthMonitor = () => {
             <div key={i} className="bg-card border border-border p-4 rounded shadow-sm h-32 animate-pulse" />
           ))}
         </div>
-      ) : cameras.length === 0 ? (
+      ) : visibleCameras.length === 0 ? (
         <Card className="border border-border shadow-sm">
           <CardContent className="flex flex-col items-center justify-center h-40 gap-2 text-muted-foreground">
             <Inbox className="w-8 h-8 text-slate-300" />
-            <p className="text-xs font-semibold">No cameras registered yet.</p>
+            <p className="text-xs font-semibold">
+              {station === 'ALL' ? 'No cameras registered yet.' : `No cameras at ${station}.`}
+            </p>
             <p className="text-[10px]">Camera registry populates once a camera setup is configured.</p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {cameras.map((cam) => {
+          {visibleCameras.map((cam) => {
             const cfg = STATUS_CONFIG[cam.status] || STATUS_CONFIG.unknown;
             const Icon = cfg.icon;
             return (

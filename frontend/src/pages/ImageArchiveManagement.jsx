@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Database, Archive, Snowflake, Trash2, RotateCcw, Play, Search, RefreshCw, HardDrive } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getArchiveStats, getArchiveFrames, runArchivePass, restoreFrame } from '../lib/api';
+import { getArchiveStats, getArchiveFrames, runArchivePass, restoreFrame, getStations } from '../lib/api';
 
 function fmtBytes(b) {
   if (!b || b === 0) return '0 B';
@@ -48,9 +48,18 @@ export function ImageArchiveManagement() {
     storage_tier: '',
     date: '',
     session_id: '',
+    train_number: '',
+    station: '',
     limit: '50',
     offset: '0',
   });
+  const [stationOptions, setStationOptions] = useState([]);
+
+  useEffect(() => {
+    getStations()
+      .then((list) => setStationOptions((list || []).map((s) => s.station_name).filter(Boolean)))
+      .catch(() => setStationOptions([]));
+  }, []);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -73,6 +82,8 @@ export function ImageArchiveManagement() {
       if (f.storage_tier) params.storage_tier = f.storage_tier;
       if (f.date)         params.date = f.date;
       if (f.session_id)   params.session_id = f.session_id;
+      if (f.train_number) params.train_number = f.train_number;
+      if (f.station)      params.station = f.station;
       params.limit  = f.limit;
       params.offset = f.offset;
       const data = await getArchiveFrames(params);
@@ -251,6 +262,21 @@ export function ImageArchiveManagement() {
             />
             <input
               type="text"
+              placeholder="Train number…"
+              value={filters.train_number}
+              onChange={e => setFilters(f => ({ ...f, train_number: e.target.value }))}
+              className="text-sm bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-slate-200 w-44"
+            />
+            <select
+              value={filters.station}
+              onChange={e => setFilters(f => ({ ...f, station: e.target.value }))}
+              className="text-sm bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-slate-200"
+            >
+              <option value="">All stations</option>
+              {stationOptions.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <input
+              type="text"
               placeholder="Session ID…"
               value={filters.session_id}
               onChange={e => setFilters(f => ({ ...f, session_id: e.target.value }))}
@@ -280,6 +306,7 @@ export function ImageArchiveManagement() {
                       <th className="text-left py-2 px-2 font-semibold">Thumbnail</th>
                       <th className="text-left py-2 px-2 font-semibold">Frame #</th>
                       <th className="text-left py-2 px-2 font-semibold">Train</th>
+                      <th className="text-left py-2 px-2 font-semibold">Station</th>
                       <th className="text-left py-2 px-2 font-semibold">Coach</th>
                       <th className="text-left py-2 px-2 font-semibold">Tier</th>
                       <th className="text-left py-2 px-2 font-semibold">Size</th>
@@ -306,6 +333,7 @@ export function ImageArchiveManagement() {
                         </td>
                         <td className="py-2 px-2 font-mono text-slate-300">#{frame.sequence_number}</td>
                         <td className="py-2 px-2 text-slate-300">{frame.session?.train_number || '—'}</td>
+                        <td className="py-2 px-2 text-slate-400">{frame.session?.station?.station_name || '—'}</td>
                         <td className="py-2 px-2 text-slate-400">{frame.coach?.coach_number || '—'}</td>
                         <td className="py-2 px-2"><TierBadge tier={frame.storage_tier} /></td>
                         <td className="py-2 px-2 text-slate-400">{fmtBytes(frame.file_size_bytes)}</td>

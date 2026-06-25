@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CalendarClock, RefreshCw, ShieldQuestion, FlagOff, Flag, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getPeriodicReports, generatePeriodicReport, getReviewLog, addReviewLogEntry } from '../../lib/api';
+import { getPeriodicReports, generatePeriodicReport, getReviewLog, addReviewLogEntry, getStations } from '../../lib/api';
 
 const PERIOD_LABELS = { shift: 'Shift', day: 'Day', week: 'Week' };
 
@@ -56,6 +56,26 @@ export const PeriodicReportsPanel = () => {
   const [showLogForm, setShowLogForm] = useState(false);
   const [form, setForm] = useState({ session_id: '', log_type: 'false_positive', coach_number: '', defect_type: '', notes: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [reviewFilters, setReviewFilters] = useState({ trainNumber: '', station: '', date: '' });
+  const [stationOptions, setStationOptions] = useState([]);
+
+  useEffect(() => {
+    getStations()
+      .then((list) => setStationOptions((list || []).map((s) => s.station_name).filter(Boolean)))
+      .catch(() => setStationOptions([]));
+  }, []);
+
+  const loadReviewLog = useCallback(async (f = reviewFilters) => {
+    try {
+      const log = await getReviewLog({
+        limit: 20,
+        trainNumber: f.trainNumber,
+        station: f.station,
+        date: f.date,
+      });
+      setReviewEntries(log.entries || []);
+    } catch { /* ignore */ }
+  }, [reviewFilters]);
 
   const load = useCallback(async () => {
     for (const periodType of ['shift', 'day', 'week']) {
@@ -64,11 +84,8 @@ export const PeriodicReportsPanel = () => {
         setLatest((prev) => ({ ...prev, [periodType]: data.reports?.[0] || null }));
       } catch { /* ignore */ }
     }
-    try {
-      const log = await getReviewLog({ limit: 20 });
-      setReviewEntries(log.entries || []);
-    } catch { /* ignore */ }
-  }, []);
+    await loadReviewLog();
+  }, [loadReviewLog]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -95,8 +112,7 @@ export const PeriodicReportsPanel = () => {
       });
       setForm({ session_id: '', log_type: 'false_positive', coach_number: '', defect_type: '', notes: '' });
       setShowLogForm(false);
-      const log = await getReviewLog({ limit: 20 });
-      setReviewEntries(log.entries || []);
+      await loadReviewLog();
     } catch { /* ignore */ } finally {
       setSubmitting(false);
     }
@@ -195,12 +211,45 @@ export const PeriodicReportsPanel = () => {
         </form>
       )}
 
+      {/* Review log filters */}
+      <div className="flex flex-wrap items-center gap-2">
+        <input
+          value={reviewFilters.trainNumber}
+          onChange={(e) => setReviewFilters((f) => ({ ...f, trainNumber: e.target.value }))}
+          placeholder="Train number…"
+          className="px-3 py-1.5 border border-border rounded text-xs focus:outline-none focus:border-primary w-40"
+        />
+        <select
+          value={reviewFilters.station}
+          onChange={(e) => setReviewFilters((f) => ({ ...f, station: e.target.value }))}
+          className="px-3 py-1.5 border border-border rounded text-xs focus:outline-none focus:border-primary"
+        >
+          <option value="">All stations</option>
+          {stationOptions.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <input
+          type="date"
+          value={reviewFilters.date}
+          onChange={(e) => setReviewFilters((f) => ({ ...f, date: e.target.value }))}
+          className="px-3 py-1.5 border border-border rounded text-xs focus:outline-none focus:border-primary"
+        />
+        {(reviewFilters.trainNumber || reviewFilters.station || reviewFilters.date) && (
+          <button
+            onClick={() => setReviewFilters({ trainNumber: '', station: '', date: '' })}
+            className="text-xs font-bold px-3 py-1.5 border border-border rounded hover:bg-secondary"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
       <div className="bg-card border border-border rounded shadow-sm overflow-hidden">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="bg-slate-50 border-b border-border text-[10px] font-black uppercase tracking-wider text-muted-foreground">
               <th className="p-3">Type</th>
               <th className="p-3">Train</th>
+              <th className="p-3">Station</th>
               <th className="p-3">Coach</th>
               <th className="p-3">Defect Type</th>
               <th className="p-3">Notes</th>
@@ -209,7 +258,7 @@ export const PeriodicReportsPanel = () => {
           </thead>
           <tbody className="divide-y divide-border">
             {reviewEntries.length === 0 ? (
-              <tr><td colSpan={6} className="p-6 text-center text-muted-foreground italic">No FP/FN entries logged yet.</td></tr>
+              <tr><td colSpan={7} className="p-6 text-center text-muted-foreground italic">No FP/FN entries logged yet.</td></tr>
             ) : reviewEntries.map((e) => (
               <tr key={e.id} className="hover:bg-slate-50/50">
                 <td className="p-3">
@@ -228,6 +277,7 @@ export const PeriodicReportsPanel = () => {
                   )}
                 </td>
                 <td className="p-3 font-mono">{e.train_number || '—'}</td>
+                <td className="p-3 font-semibold text-muted-foreground">{e.station_name || '—'}</td>
                 <td className="p-3 font-mono">{e.coach_number || '—'}</td>
                 <td className="p-3 font-mono text-muted-foreground">{e.defect_type || '—'}</td>
                 <td className="p-3 max-w-[260px] truncate" title={e.notes}>{e.notes || '—'}</td>

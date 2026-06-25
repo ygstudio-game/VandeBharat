@@ -1,18 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Download, CheckCircle2, XCircle, ImageOff } from 'lucide-react';
-import { getOcrResults } from '../lib/api';
+import { getOcrResults, getStations } from '../lib/api';
 import { exportToCSV, exportToJSON } from '../lib/export';
 
 const PAGE_SIZE = 50;
 
-export const OcrResultsLog = () => {
+export const OcrResultsLog = ({ lockedStation = null }) => {
+  const embedded = !!lockedStation;
   const [rows, setRows] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [coachNumber, setCoachNumber] = useState('');
   const [minConfidence, setMinConfidence] = useState('');
   const [validOnly, setValidOnly] = useState(false);
+  const [trainNumber, setTrainNumber] = useState('');
+  const [station, setStation] = useState('');
+  const [date, setDate] = useState('');
+  const [stationOptions, setStationOptions] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getStations()
+      .then((list) => setStationOptions((list || []).map((s) => s.station_name).filter(Boolean)))
+      .catch(() => setStationOptions([]));
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -23,6 +34,9 @@ export const OcrResultsLog = () => {
         coachNumber,
         minConfidence,
         validOnly: validOnly ? 'true' : '',
+        trainNumber,
+        station: lockedStation || station,
+        date,
       });
       setRows(data.results || []);
       setTotal(data.total || 0);
@@ -32,7 +46,7 @@ export const OcrResultsLog = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, coachNumber, minConfidence, validOnly]);
+  }, [page, coachNumber, minConfidence, validOnly, trainNumber, station, date, lockedStation]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -48,6 +62,7 @@ export const OcrResultsLog = () => {
     confidence: r.confidence ?? '',
     is_valid: r.is_valid,
     train_number: r.train_number ?? '',
+    station_name: r.station_name ?? '',
     session_code: r.session_code ?? '',
     created_at: r.created_at,
   }));
@@ -92,6 +107,28 @@ export const OcrResultsLog = () => {
           />
         </div>
         <input
+          value={trainNumber}
+          onChange={(e) => setTrainNumber(e.target.value)}
+          placeholder="Train number…"
+          className="px-3 py-1.5 bg-white border border-border rounded text-xs w-40 focus:outline-none focus:border-primary"
+        />
+        {!embedded && (
+          <select
+            value={station}
+            onChange={(e) => { setStation(e.target.value); setPage(0); }}
+            className="px-3 py-1.5 bg-white border border-border rounded text-xs focus:outline-none focus:border-primary"
+          >
+            <option value="">All stations</option>
+            {stationOptions.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+        )}
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => { setDate(e.target.value); setPage(0); }}
+          className="px-3 py-1.5 bg-white border border-border rounded text-xs focus:outline-none focus:border-primary"
+        />
+        <input
           type="number"
           step="0.05"
           min="0"
@@ -121,14 +158,15 @@ export const OcrResultsLog = () => {
                 <th className="p-3">Confidence</th>
                 <th className="p-3">Valid</th>
                 <th className="p-3">Train</th>
+                <th className="p-3">Station</th>
                 <th className="p-3">Timestamp</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">Loading…</td></tr>
+                <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">Loading…</td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No coach number readings found.</td></tr>
+                <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">No coach number readings found.</td></tr>
               ) : rows.map((r) => (
                 <tr key={r.id} className="hover:bg-slate-50/50">
                   <td className="p-3">
@@ -151,6 +189,7 @@ export const OcrResultsLog = () => {
                       : <XCircle className="w-4 h-4 text-destructive" />}
                   </td>
                   <td className="p-3 font-mono">{r.train_number || '—'}</td>
+                  <td className="p-3 font-semibold text-muted-foreground">{r.station_name || '—'}</td>
                   <td className="p-3 font-mono text-muted-foreground">
                     {r.created_at ? new Date(r.created_at).toLocaleString() : '—'}
                   </td>

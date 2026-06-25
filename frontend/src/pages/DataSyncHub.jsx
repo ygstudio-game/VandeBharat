@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  getSync, getSyncHistory, retrySyncDlq,
+  getSync, getSyncHistory, retrySyncDlq, getStations,
 } from '../lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -61,19 +61,29 @@ export function DataSyncHub() {
   const [lastAt,   setLastAt]   = useState(null);
   const [histStage,setHistStage]= useState('all');
   const [retrying, setRetrying] = useState({});
+  const [station,  setStation]  = useState('');           // '' = all stations
+  const [stationOptions, setStationOptions] = useState([]);
+
+  useEffect(() => {
+    getStations()
+      .then((list) => setStationOptions((list || []).map((s) => s.station_name).filter(Boolean)))
+      .catch(() => setStationOptions([]));
+  }, []);
 
   const load = useCallback(async () => {
+    // A station must be selected — no global view.
+    if (!station) { setStatus(null); setHistory([]); setLoading(false); return; }
     try {
       const [s, h] = await Promise.all([
-        getSync(),
-        getSyncHistory({ limit: 30, stage: histStage === 'all' ? undefined : histStage }),
+        getSync(station),
+        getSyncHistory({ limit: 30, stage: histStage === 'all' ? undefined : histStage, station }),
       ]);
       setStatus(s);
       setHistory(h.events || []);
       setLastAt(new Date());
     } catch (_) {}
     setLoading(false);
-  }, [histStage]);
+  }, [histStage, station]);
 
   useEffect(() => { load(); }, [load]);
   useEffect(() => { const t = setInterval(load, POLL_MS); return () => clearInterval(t); }, [load]);
@@ -109,6 +119,15 @@ export function DataSyncHub() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {/* Station filter — one station at a time, no global view */}
+          <Select value={station} onValueChange={setStation}>
+            <SelectTrigger className="h-8 text-xs w-48">
+              <SelectValue placeholder="Select station" />
+            </SelectTrigger>
+            <SelectContent>
+              {stationOptions.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
           {status?.redis_online ? (
             <Badge variant="secondary" className="text-xs gap-1">
               <Wifi className="w-3 h-3 text-green-500" /> Redis Online
@@ -121,7 +140,7 @@ export function DataSyncHub() {
           {status?.total_dlq > 0 && (
             <Badge variant="destructive" className="text-xs">
               <AlertTriangle className="w-3 h-3 mr-1" />
-              {status.total_dlq} in DLQ
+              {status.total_dlq} in Dead Letter Queue
             </Badge>
           )}
           <Button size="sm" variant="outline" onClick={load} className="text-xs gap-1.5">
@@ -130,12 +149,20 @@ export function DataSyncHub() {
         </div>
       </div>
 
+      {!station ? (
+        <div className="flex flex-col items-center justify-center py-24 text-center gap-3">
+          <GitMerge className="w-10 h-10 text-slate-300" />
+          <p className="text-sm font-bold text-muted-foreground">Please select a station</p>
+          <p className="text-xs text-muted-foreground">Choose a station from the dropdown above to view its sync pipeline.</p>
+        </div>
+      ) : (
+      <>
       {/* Summary KPI row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: 'Active Workers', value: status?.active_workers ?? 0, icon: Cpu, color: 'text-blue-500' },
           { label: 'Total Pending', value: status?.total_pending ?? 0, icon: Clock, color: 'text-amber-500' },
-          { label: 'Total DLQ', value: status?.total_dlq ?? 0, icon: AlertTriangle, color: status?.total_dlq > 0 ? 'text-red-500' : 'text-muted-foreground' },
+          { label: 'Total Dead Letter Queue', value: status?.total_dlq ?? 0, icon: AlertTriangle, color: status?.total_dlq > 0 ? 'text-red-500' : 'text-muted-foreground' },
           { label: 'Pipeline Stages', value: 4, icon: GitMerge, color: 'text-primary' },
         ].map(({ label, value, icon: Icon, color }) => (
           <Card key={label} className="border-border">
@@ -152,7 +179,12 @@ export function DataSyncHub() {
 
       {/* Pipeline stage queue cards */}
       <div>
-        <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Pipeline Queues</h2>
+        <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+          Pipeline Queues
+          <span className="ml-2 normal-case text-primary font-extrabold tracking-normal">
+            · {station}
+          </span>
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {Object.entries(STAGE_LABELS).map(([stage, label]) => {
             const s = stages[stage] || {};
@@ -165,7 +197,7 @@ export function DataSyncHub() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-xs font-bold">{label}</CardTitle>
                     {hasDlq ? (
-                      <Badge variant="destructive" className="text-[10px]">DLQ</Badge>
+                      <Badge variant="destructive" className="text-[10px]">Dead Letter Queue</Badge>
                     ) : (
                       <Badge variant="secondary" className="text-[10px] text-green-600">OK</Badge>
                     )}
@@ -181,7 +213,7 @@ export function DataSyncHub() {
                           { label: 'Stream Depth',  value: s.stream_depth ?? 0 },
                           { label: 'Pending (unacked)', value: s.pending ?? 0 },
                           { label: 'Consumers',     value: s.consumers ?? 0 },
-                          { label: 'DLQ Depth',     value: s.dlq_depth ?? 0, alert: hasDlq },
+                          { label: 'Dead Letter Queue Depth', value: s.dlq_depth ?? 0, alert: hasDlq },
                         ].map(({ label: l, value, alert }) => (
                           <div key={l} className="flex items-center justify-between text-xs">
                             <span className="text-muted-foreground">{l}</span>
@@ -198,7 +230,7 @@ export function DataSyncHub() {
                           onClick={() => handleRetry(stage)}
                         >
                           <RotateCcw className={`w-3 h-3 ${retrying[stage] ? 'animate-spin' : ''}`} />
-                          {retrying[stage] ? 'Retrying…' : 'Retry DLQ'}
+                          {retrying[stage] ? 'Retrying…' : 'Retry Dead Letter Queue'}
                         </Button>
                       )}
                     </>
@@ -240,7 +272,7 @@ export function DataSyncHub() {
             ))}
           </div>
           <p className="text-[10px] text-muted-foreground mt-2">
-            Transport: Redis Streams · Retry: exponential backoff (1s → 2s → 4s, max 3 attempts) · DLQ: on exhaustion
+            Transport: Redis Streams · Retry: exponential backoff (1s → 2s → 4s, max 3 attempts) · Dead Letter Queue (DLQ): on exhaustion
           </p>
         </CardContent>
       </Card>
@@ -262,6 +294,7 @@ export function DataSyncHub() {
                   <thead>
                     <tr className="border-b border-border bg-secondary/30">
                       <th className="text-left px-4 py-2 font-bold uppercase tracking-wider text-muted-foreground">Train</th>
+                      <th className="text-left px-4 py-2 font-bold uppercase tracking-wider text-muted-foreground">Station</th>
                       <th className="text-left px-4 py-2 font-bold uppercase tracking-wider text-muted-foreground">Status</th>
                       <th className="text-left px-4 py-2 font-bold uppercase tracking-wider text-muted-foreground">Pipeline</th>
                       <th className="text-left px-4 py-2 font-bold uppercase tracking-wider text-muted-foreground">Started</th>
@@ -271,6 +304,7 @@ export function DataSyncHub() {
                     {status.recent_sessions.map((s) => (
                       <tr key={s.id} className="border-b border-border hover:bg-secondary/20">
                         <td className="px-4 py-2 font-mono font-bold">{s.train_number}</td>
+                        <td className="px-4 py-2 font-semibold text-muted-foreground">{s.station_name || '—'}</td>
                         <td className="px-4 py-2">
                           <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${STATUS_STYLE[s.status] || STATUS_STYLE.pending}`}>
                             {s.status}
@@ -344,6 +378,8 @@ export function DataSyncHub() {
           </CardContent>
         </Card>
       </div>
+      </>
+      )}
     </div>
   );
 }

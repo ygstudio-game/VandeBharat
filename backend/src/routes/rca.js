@@ -25,11 +25,15 @@ module.exports = async function rcaRoutes(fastify) {
           d.defect_type,
           COUNT(*)::int   AS defect_count,
           COUNT(DISTINCT d.session_id)::int AS session_count,
-          AVG(d.confidence::float) AS avg_confidence
+          AVG(d.confidence::float) AS avg_confidence,
+          string_agg(DISTINCT s.train_number, ', ') AS train_numbers,
+          string_agg(DISTINCT cs.station_name, ', ') AS stations
         FROM defects d
         JOIN frames f ON f.id = d.frame_id
         JOIN session_cameras sc ON sc.id = f.session_camera_id
         JOIN cameras c ON c.id = sc.camera_id
+        JOIN inspection_sessions s ON s.id = d.session_id
+        LEFT JOIN camera_setups cs ON cs.station_code = s.station_code
         ${defect_type ? `WHERE d.defect_type = $1` : ''}
         GROUP BY c.id, c.camera_code, c.camera_type, c.position_label, d.defect_type
         ORDER BY defect_count DESC
@@ -44,9 +48,13 @@ module.exports = async function rcaRoutes(fastify) {
           d.defect_type,
           COUNT(*)::int   AS defect_count,
           COUNT(DISTINCT d.session_id)::int AS session_count,
-          AVG(d.confidence::float) AS avg_confidence
+          AVG(d.confidence::float) AS avg_confidence,
+          string_agg(DISTINCT s.train_number, ', ') AS train_numbers,
+          string_agg(DISTINCT cs.station_name, ', ') AS stations
         FROM defects d
         JOIN coaches ch ON ch.id = d.coach_id
+        JOIN inspection_sessions s ON s.id = d.session_id
+        LEFT JOIN camera_setups cs ON cs.station_code = s.station_code
         ${defect_type ? `WHERE d.defect_type = $1` : ''}
         GROUP BY ch.coach_number, ch.coach_type, d.defect_type
         ORDER BY defect_count DESC
@@ -121,12 +129,16 @@ module.exports = async function rcaRoutes(fastify) {
         COUNT(*)::int                       AS occurrence_count,
         COUNT(DISTINCT d.session_id)::int   AS affected_sessions,
         MAX(d.created_at)                   AS last_seen,
-        MIN(d.created_at)                   AS first_seen
+        MIN(d.created_at)                   AS first_seen,
+        string_agg(DISTINCT s.train_number, ', ') AS train_numbers,
+        string_agg(DISTINCT cs.station_name, ', ') AS stations
       FROM defects d
       JOIN frames f ON f.id = d.frame_id
       JOIN session_cameras sc ON sc.id = f.session_camera_id
       JOIN cameras c ON c.id = sc.camera_id
       JOIN coaches ch ON ch.id = d.coach_id
+      JOIN inspection_sessions s ON s.id = d.session_id
+      LEFT JOIN camera_setups cs ON cs.station_code = s.station_code
       GROUP BY d.defect_type, d.severity, c.camera_code, c.position_label, ch.coach_type
       HAVING COUNT(*) >= ${minC}
       ORDER BY occurrence_count DESC

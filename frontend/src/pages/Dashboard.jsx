@@ -67,16 +67,17 @@ export const Dashboard = () => {
   }, [activeSession?.id, rakeSessionId, fetchRakeHierarchy]);
 
   const defectRows = (defectsData?.defects || []).map((d) => {
-    const timestamp = d.session_started_at && d.captured_at_ms != null
-      ? new Date(new Date(d.session_started_at).getTime() + d.captured_at_ms).toLocaleString(undefined, {
-          dateStyle: 'medium',
-          timeStyle: 'medium',
-        })
+    const eventDate = d.session_started_at && d.captured_at_ms != null
+      ? new Date(new Date(d.session_started_at).getTime() + d.captured_at_ms)
+      : (d.session_started_at ? new Date(d.session_started_at) : null);
+    const timestamp = eventDate
+      ? eventDate.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'medium' })
       : '—';
     return {
       id: d.id,
       imageId: d.sequence_number != null ? `IMG-${d.sequence_number}` : '—',
       timestamp,
+      dateKey: eventDate ? eventDate.toLocaleDateString('en-CA') : null, // YYYY-MM-DD
       location: d.station_name || '—',
       trainNo: d.train_number || '—',
       bogieNo: d.coach_number || '—',
@@ -95,6 +96,18 @@ export const Dashboard = () => {
         thumbnail_url: d.thumbnail_url,
       },
     };
+  });
+
+  // RECENT DEFECTS filters — train number / date / location (station)
+  const [defectTrain, setDefectTrain] = useState('');
+  const [defectDate, setDefectDate] = useState('');
+  const [defectLocation, setDefectLocation] = useState('ALL');
+  const defectLocationOptions = [...new Set(defectRows.map((r) => r.location).filter((l) => l && l !== '—'))].sort();
+  const filteredDefectRows = defectRows.filter((r) => {
+    const matchesTrain = !defectTrain || r.trainNo.toLowerCase().includes(defectTrain.toLowerCase());
+    const matchesDate = !defectDate || r.dateKey === defectDate;
+    const matchesLocation = defectLocation === 'ALL' || r.location === defectLocation;
+    return matchesTrain && matchesDate && matchesLocation;
   });
 
   // Live WS events — immediate refresh on pipeline events
@@ -142,14 +155,6 @@ export const Dashboard = () => {
         {[
           {
             show: true,
-            primary: true,
-            label: 'Start New Inspection',
-            sub: 'Upload camera footage',
-            icon: <Plus className="w-5 h-5" />,
-            onClick: () => navigate('/sessions'),
-          },
-          {
-            show: true,
             label: 'Review Defect Alerts',
             sub: `${kv('critical_defects', 0)} critical`,
             icon: <ShieldAlert className="w-5 h-5 text-destructive" />,
@@ -169,6 +174,14 @@ export const Dashboard = () => {
             icon: <Camera className="w-5 h-5 text-primary" />,
             onClick: () => navigate('/camera-health'),
           },
+          {
+            show: true,
+            primary: true,
+            label: 'Add Camera Footage',
+            sub: 'Start a new inspection',
+            icon: <Plus className="w-5 h-5" />,
+            onClick: () => navigate('/sessions'),
+          },
         ]
           .filter((a) => a.show)
           .map((a) => (
@@ -182,7 +195,7 @@ export const Dashboard = () => {
               }
             >
               <div className="flex items-center gap-3">
-                <span className={a.primary ? 'shrink-0' : 'shrink-0'}>{a.icon}</span>
+                <span className="shrink-0">{a.icon}</span>
                 <div>
                   <p className="text-sm font-bold leading-tight">{a.label}</p>
                   <p className={`text-xs mt-0.5 ${a.primary ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>{a.sub}</p>
@@ -224,8 +237,8 @@ export const Dashboard = () => {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-black text-foreground">LIVE TRAIN QUEUE</h2>
-              <p className="text-xs text-muted-foreground font-semibold mt-0.5">Active event-based capture jobs</p>
+              <h2 className="text-lg font-black text-foreground">PROCESSING QUEUE</h2>
+              <p className="text-xs text-muted-foreground font-semibold mt-0.5">Videos currently being processed</p>
             </div>
             <button 
               onClick={() => navigate('/live-queue')}
@@ -356,16 +369,47 @@ export const Dashboard = () => {
             <h2 className="text-lg font-black text-foreground">RECENT DEFECTS</h2>
             <p className="text-xs text-muted-foreground font-semibold mt-0.5">Latest flagged anomalies across all inspections</p>
           </div>
-          <button
-            onClick={() => navigate('/defect-console')}
-            className="text-xs font-bold bg-secondary hover:bg-slate-200 px-3 py-1.5 rounded uppercase tracking-wider text-primary border border-border transition-all cursor-pointer"
-          >
-            View All
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Recent Defects filters: train number / date / location */}
+            <input
+              value={defectTrain}
+              onChange={(e) => setDefectTrain(e.target.value)}
+              placeholder="Train number…"
+              className="px-3 py-1.5 bg-card border border-border rounded text-xs w-36 focus:outline-none focus:border-primary"
+            />
+            <input
+              type="date"
+              value={defectDate}
+              onChange={(e) => setDefectDate(e.target.value)}
+              className="px-3 py-1.5 bg-card border border-border rounded text-xs focus:outline-none focus:border-primary"
+            />
+            <select
+              value={defectLocation}
+              onChange={(e) => setDefectLocation(e.target.value)}
+              className="px-3 py-1.5 bg-card border border-border rounded text-xs font-bold text-primary focus:outline-none focus:border-primary"
+            >
+              <option value="ALL">All Locations</option>
+              {defectLocationOptions.map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
+            {(defectTrain || defectDate || defectLocation !== 'ALL') && (
+              <button
+                onClick={() => { setDefectTrain(''); setDefectDate(''); setDefectLocation('ALL'); }}
+                className="text-xs font-bold px-2.5 py-1.5 border border-border rounded hover:bg-secondary"
+              >
+                Clear
+              </button>
+            )}
+            <button
+              onClick={() => navigate('/defect-console')}
+              className="text-xs font-bold bg-secondary hover:bg-slate-200 px-3 py-1.5 rounded uppercase tracking-wider text-primary border border-border transition-all cursor-pointer"
+            >
+              View All
+            </button>
+          </div>
         </div>
         <div className="h-[420px]">
           <DetectionLogTable
-            rows={defectRows}
+            rows={filteredDefectRows}
             onViewFrame={(frame) => setPreviewDefect(frame)}
             onGoToReport={(row) => row.sessionId && navigate(`/reports?session=${row.sessionId}`)}
           />

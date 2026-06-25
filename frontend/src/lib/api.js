@@ -94,9 +94,9 @@ export const exportEvidence = (id)      => _fetch(`/api/sessions/${id}/evidence`
 export const getConfig = () => _fetch('/api/config');
 
 // ── Dashboard ───────────────────────────────────────────────────────────────
-export const getDashboardKpis   = () => _fetch('/api/dashboard/kpis');
-export const getLiveQueue       = () => _fetch('/api/dashboard/live-queue');
-export const getRecentDefects   = (limit = 30) => _fetch(`/api/dashboard/recent-defects?limit=${limit}`);
+export const getDashboardKpis   = (station = '') => _fetch(`/api/dashboard/kpis${station ? `?station=${encodeURIComponent(station)}` : ''}`);
+export const getLiveQueue       = (station = '') => _fetch(`/api/dashboard/live-queue${station ? `?station=${encodeURIComponent(station)}` : ''}`);
+export const getRecentDefects   = (limit = 30, station = '') => _fetch(`/api/dashboard/recent-defects?limit=${limit}${station ? `&station=${encodeURIComponent(station)}` : ''}`);
 export const getServicesHealth  = () => _fetch('/api/health/services');
 export const getSystemHealth    = () => _fetch('/api/health/system');
 export const getCameraHealth    = () => _fetch('/api/cameras/health');
@@ -201,7 +201,7 @@ export const generatePeriodicReport = (periodType) => _fetch('/api/periodic-repo
 });
 
 // ── Data Sync Hub ────────────────────────────────────────────────────────────
-export const getSync = () => _fetch('/api/sync/status');
+export const getSync = (station = '') => _fetch(`/api/sync/status${station ? `?station=${encodeURIComponent(station)}` : ''}`);
 export const getSyncHistory = (params = {}) => {
   const qs = new URLSearchParams(
     Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))

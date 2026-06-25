@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { getPassages, getTrainTrend, comparePassages } from '../lib/api';
+import { getPassages, getTrainTrend, comparePassages, getStations } from '../lib/api';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -263,8 +263,9 @@ function TrendPanel({ trainNumber, onClose }) {
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
-export function TrainPassageHistory() {
+export function TrainPassageHistory({ lockedStation = null }) {
   const navigate = useNavigate();
+  const embedded = !!lockedStation;
 
   const [passages, setPassages]   = useState([]);
   const [total,    setTotal]      = useState(0);
@@ -273,12 +274,20 @@ export function TrainPassageHistory() {
 
   const [filters, setFilters] = useState({
     train_number: '',
+    station:      '',
     date_from:    '',
     date_to:      '',
     status:       'completed',
     limit:        '25',
     offset:       '0',
   });
+  const [stationOptions, setStationOptions] = useState([]);
+
+  useEffect(() => {
+    getStations()
+      .then((list) => setStationOptions((list || []).map((s) => s.station_name).filter(Boolean)))
+      .catch(() => setStationOptions([]));
+  }, []);
 
   const [trendTrain,   setTrendTrain]   = useState(null);
   const [compareMode,  setCompareMode]  = useState(false);
@@ -292,6 +301,8 @@ export function TrainPassageHistory() {
     try {
       const params = {};
       if (f.train_number) params.train_number = f.train_number;
+      const stationParam = lockedStation || f.station;
+      if (stationParam)   params.station      = stationParam;
       if (f.date_from)    params.date_from    = f.date_from;
       if (f.date_to)      params.date_to      = f.date_to;
       if (f.status)       params.status       = f.status;
@@ -413,6 +424,19 @@ export function TrainPassageHistory() {
                 className="text-sm bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-slate-200 w-44"
               />
             </div>
+            {!embedded && (
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-muted-foreground">Station</label>
+                <select
+                  value={filters.station}
+                  onChange={e => setFilters(f => ({ ...f, station: e.target.value }))}
+                  className="text-sm bg-slate-800 border border-slate-700 rounded-md px-3 py-1.5 text-slate-200"
+                >
+                  <option value="">All stations</option>
+                  {stationOptions.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            )}
             <div className="flex flex-col gap-1">
               <label className="text-xs text-muted-foreground">From</label>
               <input
@@ -451,10 +475,10 @@ export function TrainPassageHistory() {
             >
               <Search className="w-3.5 h-3.5" /> Search
             </button>
-            {(filters.train_number || filters.date_from || filters.date_to || filters.status !== 'completed') && (
+            {(filters.train_number || filters.station || filters.date_from || filters.date_to || filters.status !== 'completed') && (
               <button
                 onClick={() => {
-                  const reset = { train_number: '', date_from: '', date_to: '', status: 'completed', limit: '25', offset: '0' };
+                  const reset = { train_number: '', station: '', date_from: '', date_to: '', status: 'completed', limit: '25', offset: '0' };
                   setFilters(reset);
                   load(reset);
                 }}
