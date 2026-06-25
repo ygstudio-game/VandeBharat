@@ -93,7 +93,7 @@ function RegisterModal({ onClose, onSaved }) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[10px] font-bold text-slate-500 uppercase">Name *</label>
-              <input className="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="YOLO Defect v2" />
+              <input className="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Model Pipeline Defect v2" />
             </div>
             <div>
               <label className="text-[10px] font-bold text-slate-500 uppercase">Version *</label>
@@ -179,7 +179,7 @@ function GenerateModal({ onClose, onSaved }) {
         <div className="p-5 space-y-3">
           {!result ? (
             <>
-              <p className="text-xs text-slate-500">Pulls all confirmed-status defects, builds a YOLO-format ZIP, uploads to Cloudinary, and registers it as a new dataset.</p>
+              <p className="text-xs text-slate-500">Pulls all confirmed-status defects, builds a Model Pipeline-format ZIP, uploads to Cloudinary, and registers it as a new dataset.</p>
               <div>
                 <label className="text-[10px] font-bold text-slate-500 uppercase">Dataset Name (optional)</label>
                 <input className="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Auto-named if blank" />

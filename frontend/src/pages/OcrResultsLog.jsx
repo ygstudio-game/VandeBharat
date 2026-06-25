@@ -58,9 +58,9 @@ export const OcrResultsLog = () => {
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">OCR RESULTS LOG</h1>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">COACH NUMBER LOG</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            All OCR readings with recognised coach numbers, confidence, and raw image.
+            All recognised coach numbers with confidence and raw image.
           </p>
         </div>
         <div className="flex gap-2">
@@ -128,7 +128,7 @@ export const OcrResultsLog = () => {
               {loading ? (
                 <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">Loading…</td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No OCR results found.</td></tr>
+                <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">No coach number readings found.</td></tr>
               ) : rows.map((r) => (
                 <tr key={r.id} className="hover:bg-slate-50/50">
                   <td className="p-3">

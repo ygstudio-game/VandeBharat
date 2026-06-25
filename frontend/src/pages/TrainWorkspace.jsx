@@ -20,7 +20,7 @@ const PROCESSING_STATUSES = new Set(['extracting', 'extraction_complete', 'ocr_r
 // ── Stage config ─────────────────────────────────────────────────────────────
 const STAGE_META = [
   { key: 'frame_extraction',    label: 'Frame Extraction',    icon: Camera },
-  { key: 'ocr_detection',       label: 'OCR Detection',       icon: Sparkles },
+  { key: 'ocr_detection',       label: 'Coach Number Detection',       icon: Sparkles },
   { key: 'synchronization',     label: 'Synchronization',     icon: Activity },
   { key: 'component_detection', label: 'Component Detection', icon: Cpu },
   { key: 'defect_analysis',     label: 'Defect Analysis',     icon: ShieldAlert },
@@ -202,7 +202,7 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xs font-black uppercase tracking-wide flex items-center gap-2 text-slate-800">
-                  <Sparkles className="w-4 h-4 text-primary" /> OCR Detection
+                  <Sparkles className="w-4 h-4 text-primary" /> Coach Number Detection
                 </CardTitle>
                 <Badge className={`text-[9px] font-black border flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${statusColor[ocr.status] || statusColor.pending}`}>
                   {statusDot(ocr.status)}
@@ -229,7 +229,7 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
                 </>
               )}
               {totalFrames > 0 && ocr.status === 'pending' && (
-                <p className="text-[10px] text-slate-400 font-semibold">{totalFrames} frames ready — waiting for OCR to start...</p>
+                <p className="text-[10px] text-slate-400 font-semibold">{totalFrames} frames ready — waiting for coach number detection to start...</p>
               )}
             </CardContent>
           </Card>
@@ -250,7 +250,7 @@ function PipelineProgressView({ rawSession, rawStages, sessionCameras, stageProg
             <CardContent className="pt-0">
               {sync.message
                 ? <p className="text-[10px] text-muted-foreground font-semibold">{sync.message}</p>
-                : <p className="text-[10px] text-slate-400 font-semibold">Maps OCR anchors to coach boundaries using gap detection.</p>
+                : <p className="text-[10px] text-slate-400 font-semibold">Maps coach number anchors to coach boundaries using gap detection.</p>
               }
               {rawSession?.total_coaches > 0 && (
                 <p className="text-[10px] font-mono text-emerald-700 font-bold mt-2">
@@ -360,7 +360,7 @@ export const TrainWorkspace = () => {
       const MAP = { running: 'IN_PROGRESS', completed: 'COMPLETED', failed: 'FAILED' };
       setStageOverrides(prev => ({ ...prev, [stage]: MAP[status] || status?.toUpperCase() }));
       if (status === 'completed') {
-        const labels = { frame_extraction: 'Frame Extraction', ocr_detection: 'OCR Detection', synchronization: 'Synchronization', component_detection: 'Component Detection', defect_analysis: 'Defect Analysis' };
+        const labels = { frame_extraction: 'Frame Extraction', ocr_detection: 'Coach Number Detection', synchronization: 'Synchronization', component_detection: 'Component Detection', defect_analysis: 'Defect Analysis' };
         toast.success(message || `${labels[stage] || stage} complete`, labels[stage] || 'Pipeline Update');
       }
     }
@@ -770,7 +770,7 @@ export const TrainWorkspace = () => {
           </span>
         </div>
         <div className="bg-[#faf9ff] border border-[#c3c6d6]/60 px-3 py-1.5 rounded-sm shadow-sm flex flex-col justify-center shrink-0">
-          <span className="text-[8px] font-black text-slate-400 uppercase tracking-wider leading-none mb-1">OCR CONFIDENCE</span>
+          <span className="text-[8px] font-black text-slate-400 uppercase tracking-wider leading-none mb-1">COACH NUMBER CONFIDENCE</span>
           <span className="text-sm font-black text-[#003d9b] leading-none">
             {session?.ocrConfidence ? `${(session.ocrConfidence * 100).toFixed(1)}%` : '—'}
           </span>
@@ -800,7 +800,7 @@ export const TrainWorkspace = () => {
       <div className="flex gap-1.5 items-center flex-wrap">
         {[
           stageChip(ps.frameExtraction,    'FRAMES',     'FRAMES'),
-          stageChip(ps.ocrDetection,       'OCR',        'OCR'),
+          stageChip(ps.ocrDetection,       'COACH #',    'COACH #'),
           stageChip(ps.synchronization,    'SYNC',       'SYNC'),
           stageChip(ps.componentDetection, 'COMPONENTS', 'COMPONENTS'),
           stageChip(ps.defectAnalysis,     'DEFECTS',    'DEFECTS'),
@@ -918,10 +918,10 @@ export const TrainWorkspace = () => {
                 <div className="flex items-center gap-1 bg-white border border-slate-200 rounded p-0.5 shadow-sm">
                   <button
                     onClick={() => setShowOcrBoxes(p => !p)}
-                    title="Toggle OCR bounding boxes"
+                    title="Toggle coach number bounding boxes"
                     className={`flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold transition-all ${showOcrBoxes ? 'bg-blue-100 text-blue-700 border border-blue-300' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <ScanSearch className="w-3 h-3" /> OCR
+                    <ScanSearch className="w-3 h-3" /> Coach #
                   </button>
                   <button
                     onClick={() => setShowDefectBoxes(p => !p)}
@@ -1176,7 +1176,7 @@ export const TrainWorkspace = () => {
                 <p><span className="text-slate-500">FRAME:</span> #{selectedFrame.sequence_number}</p>
                 <p><span className="text-slate-500">TRIGGER_ID:</span> {selectedFrame.trigger_id}</p>
                 {selectedFrame.ocr_results?.filter(r => r.is_valid).map((r, i) => (
-                  <p key={i}><span className="text-blue-400">OCR:</span> Coach {r.coach_number} ({(r.confidence * 100).toFixed(0)}%)</p>
+                  <p key={i}><span className="text-blue-400">COACH #:</span> Coach {r.coach_number} ({(r.confidence * 100).toFixed(0)}%)</p>
                 ))}
                 {selectedFrame.ocr_results?.some(r => !r.is_valid && r.bbox_x != null) && (
                   <p className="text-slate-500">+ {selectedFrame.ocr_results.filter(r => !r.is_valid && r.bbox_x != null).length} low-conf detection(s)</p>
@@ -1273,7 +1273,7 @@ export const TrainWorkspace = () => {
                     <CardTitle className="text-[10px] font-black tracking-wider uppercase text-slate-400">Pipeline Diagnostics</CardTitle>
                   </CardHeader>
                   <CardContent className="p-3 text-[10px] text-slate-500 font-medium space-y-1">
-                    <p><span className="text-primary font-bold">[OCR]</span> {intelligence.ocr_summary}</p>
+                    <p><span className="text-primary font-bold">[COACH #]</span> {intelligence.ocr_summary}</p>
                     {intelligence.sync_summary && <p><span className="text-primary font-bold">[SYNC]</span> {intelligence.sync_summary}</p>}
                   </CardContent>
                 </Card>
@@ -1307,10 +1307,10 @@ export const TrainWorkspace = () => {
               <div className="flex items-center gap-1 bg-[#e9edff] border border-[#c3c6d6]/50 rounded-sm p-0.5 shadow-sm">
                 <button
                   onClick={() => setShowOcrBoxes(p => !p)}
-                  title="Toggle OCR bounding boxes"
+                  title="Toggle coach number bounding boxes"
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-sm text-[10px] font-bold transition-all cursor-pointer ${showOcrBoxes ? 'bg-[#003d9b] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
                 >
-                  <ScanSearch className="w-3.5 h-3.5" /> OCR
+                  <ScanSearch className="w-3.5 h-3.5" /> Coach #
                 </button>
                 <button
                   onClick={() => setShowDefectBoxes(p => !p)}
@@ -1559,7 +1559,7 @@ export const TrainWorkspace = () => {
                           <CardTitle className="text-[10px] font-black tracking-wider uppercase text-[#051a3e]">Pipeline Diagnostics</CardTitle>
                         </CardHeader>
                         <CardContent className="p-3 text-[10px] text-[#737685] font-medium space-y-1">
-                          <p><span className="text-primary font-bold">[OCR]</span> {intelligence.ocr_summary}</p>
+                          <p><span className="text-primary font-bold">[COACH #]</span> {intelligence.ocr_summary}</p>
                           {intelligence.sync_summary && <p><span className="text-primary font-bold">[SYNC]</span> {intelligence.sync_summary}</p>}
                         </CardContent>
                       </Card>

@@ -382,7 +382,7 @@ export function AiTrainingWorkbench() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-bold text-gray-900">AI Training Workbench</h1>
-          <p className="text-xs text-gray-500 mt-0.5">Configure, launch, and track YOLOv8 training runs</p>
+          <p className="text-xs text-gray-500 mt-0.5">Configure, launch, and track Model Pipeline training runs</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={loadJobs} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50">

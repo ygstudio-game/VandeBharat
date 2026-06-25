@@ -21,7 +21,7 @@ export const LiveTrainCard = ({ session }) => {
 
   const steps = [
     { label: 'Frame Extraction', state: session.pipelineStates.frameExtraction },
-    { label: 'OCR Detection', state: session.pipelineStates.ocrDetection },
+    { label: 'Coach Number Detection', state: session.pipelineStates.ocrDetection },
     { label: 'Sync & Coach Mapping', state: session.pipelineStates.synchronization },
     { label: 'Component & Defect Detection', state: getComponentDefectStatus() },
     { label: 'Report Generation', state: session.pipelineStates.reportGeneration },
@@ -151,7 +151,7 @@ export const LiveTrainCard = ({ session }) => {
               </span>
             </div>
             <div>
-              <span>OCR_CONF: </span>
+              <span>COACH_CONF: </span>
               <span className="text-foreground">{(session.stats.ocrConfidence * 100).toFixed(0)}%</span>
             </div>
             <div>

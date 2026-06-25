@@ -216,7 +216,7 @@ export const LiveQueue = () => {
                         </div>
                         <div className="h-0.5 w-4 bg-border" />
                         <div className="flex flex-col items-center gap-1">
-                          <span>OCR Map</span>
+                          <span>Coach #</span>
                           {getStageBadge(job.stages.ocr)}
                         </div>
                         <div className="h-0.5 w-4 bg-border" />
@@ -330,7 +330,7 @@ export const LiveQueue = () => {
             <CardContent className="space-y-4 text-xs font-mono">
               <div className="divide-y divide-border">
                 <div className="py-2 flex justify-between">
-                  <span className="font-bold text-slate-700">TRG_PIN_01 (OCR Camera Right)</span>
+                  <span className="font-bold text-slate-700">TRG_PIN_01 (Coach Number Camera Right)</span>
                   <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200">ACTIVE</Badge>
                 </div>
                 <div className="py-2 flex justify-between">

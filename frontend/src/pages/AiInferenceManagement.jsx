@@ -199,7 +199,7 @@ export function AiInferenceManagement() {
         </div>
         <div className="flex items-center gap-2">
           <ServiceStatus label="Custom Model :5002" data={customModel} online={customModel !== null} />
-          <ServiceStatus label="OCR :5000"  data={ocr}  online={ocr  !== null} />
+          <ServiceStatus label="Coach Reader :5000"  data={ocr}  online={ocr  !== null} />
           <button
             onClick={() => { refreshVersions(); refreshMetrics(); }}
             className="p-2 border border-border rounded text-muted-foreground hover:text-foreground transition-all"
@@ -233,7 +233,7 @@ export function AiInferenceManagement() {
                 <div className="flex items-center gap-2">
                   {customModel.ocr_model_loaded ? <PackageCheck className="w-4 h-4 text-emerald-500" /> : <PackageX className="w-4 h-4 text-red-400" />}
                   <span className={customModel.ocr_model_loaded ? 'text-emerald-700 font-bold' : 'text-red-600 font-bold'}>
-                    {customModel.ocr_model_loaded ? 'OCR detector loaded' : 'OCR detector missing'}
+                    {customModel.ocr_model_loaded ? 'Coach number detector loaded' : 'Coach number detector missing'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
@@ -260,7 +260,7 @@ export function AiInferenceManagement() {
         <div className="bg-card border border-border rounded-lg p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-black text-foreground uppercase tracking-tight">OCR Service Metrics</h2>
+            <h2 className="text-sm font-black text-foreground uppercase tracking-tight">Coach Number Service Metrics</h2>
             {ocr === null && <span className="text-[9px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">OFFLINE</span>}
           </div>
           {ocr ? (
@@ -270,7 +270,7 @@ export function AiInferenceManagement() {
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <ChevronRight className="w-3.5 h-3.5" />
-                  <span>{ocr.requests_total} total OCR requests</span>
+                  <span>{ocr.requests_total} total coach number requests</span>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -285,7 +285,7 @@ export function AiInferenceManagement() {
           ) : (
             <div className="flex items-center gap-2 text-sm text-muted-foreground py-8 justify-center">
               <AlertTriangle className="w-4 h-4 text-amber-400" />
-              OCR service unreachable — start GPU/ocr/server.py on port 5000
+              Coach number service unreachable — start GPU/ocr/server.py on port 5000
             </div>
           )}
         </div>
@@ -302,7 +302,7 @@ export function AiInferenceManagement() {
               <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} unit="ms" width={45} />
               <Tooltip
                 contentStyle={{ fontSize: 11, border: '1px solid #e2e8f0', borderRadius: 6 }}
-                formatter={(v, name) => [`${v?.toFixed(1)} ms`, name === 'customModel' ? 'Custom Model' : 'OCR']}
+                formatter={(v, name) => [`${v?.toFixed(1)} ms`, name === 'customModel' ? 'Custom Model' : 'Coach Reader']}
               />
               <Line type="monotone" dataKey="customModel" stroke="#6366f1" strokeWidth={2} dot={false} name="customModel" />
               <Line type="monotone" dataKey="ocr"  stroke="#06b6d4" strokeWidth={2} dot={false} name="ocr" />
@@ -334,7 +334,7 @@ export function AiInferenceManagement() {
 
             {ocrVersions.length > 0 && (
               <div className="space-y-3">
-                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-wider">Train Number Detector (OCR)</h3>
+                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-wider">Train Number Detector</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                   {ocrVersions.map((v) => (
                     <ModelCard key={v.id} version={v} onActivate={handleActivate} activating={activating} />

@@ -154,7 +154,7 @@ export const Sessions = () => {
 
   // Handle Start Pipeline — upload videos; frame extractor calls /process when done
   const handleStartPipeline = async () => {
-    if (!ocrFile) { setUploadError('Please select an OCR / placard camera video.'); return; }
+    if (!ocrFile) { setUploadError('Please select a coach number / placard camera video.'); return; }
     if (componentFiles.length === 0) { setUploadError('Please add at least one component / assembly camera video.'); return; }
     setUploadError(null);
     setUploading(true);
@@ -446,7 +446,7 @@ export const Sessions = () => {
                   </label>
                 </div>
                 <Badge className="bg-primary/10 text-primary border border-primary/20 text-[9px] uppercase tracking-wider font-extrabold px-2 py-0.5 rounded">
-                  AI OCR & Sensor Sync
+                  AI Coach Number & Sensor Sync
                 </Badge>
               </div>
 
@@ -455,7 +455,7 @@ export const Sessions = () => {
                   <label className="text-xs font-bold text-slate-700">Train Number / Identifier</label>
                   <input
                     type="text"
-                    value={autoDetect ? 'Auto-detecting via OCR...' : newTrainNumber}
+                    value={autoDetect ? 'Auto-detecting coach number...' : newTrainNumber}
                     disabled={autoDetect}
                     onChange={(e) => setNewTrainNumber(e.target.value)}
                     className={`w-full px-3 py-2 border border-border text-xs font-semibold rounded focus:outline-none focus:border-primary transition-colors ${autoDetect ? 'bg-slate-100 text-slate-400 cursor-not-allowed select-none' : 'bg-white text-slate-800'}`}
@@ -526,7 +526,7 @@ export const Sessions = () => {
                 <div className="border border-border rounded-lg p-4 bg-white space-y-2">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-black text-slate-800">OCR / Placard Camera</p>
+                      <p className="text-xs font-black text-slate-800">Coach Number / Placard Camera</p>
                       <p className="text-[10px] text-muted-foreground font-semibold">
                         The camera that films the coach number placard — 1 video, required
                       </p>
@@ -560,7 +560,7 @@ export const Sessions = () => {
                   ) : (
                     <button type="button" onClick={() => document.getElementById('ocr-file-input').click()}
                       className="w-full py-3 border-2 border-dashed border-border rounded text-xs font-bold text-slate-500 hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 cursor-pointer">
-                      <Upload className="w-4 h-4" /> Select OCR camera video
+                      <Upload className="w-4 h-4" /> Select coach number camera video
                     </button>
                   )}
                 </div>
@@ -878,7 +878,7 @@ export const Sessions = () => {
                                   <span>{((session.progressPercent || 0) >= 25) ? '✓' : '~'}</span> Frame Extract
                                 </div>
                                 <div className={`p-2 border rounded-md flex items-center justify-center gap-1.5 ${(session.stages?.ocr === 'COMPLETED' || (session.progressPercent || 0) >= 45) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : (session.progressPercent || 0) >= 25 ? 'bg-cyan-55 border-cyan-200 text-cyan-700 animate-pulse' : 'bg-white border-border'}`}>
-                                  <span>{((session.progressPercent || 0) >= 50) ? '✓' : '•'}</span> OCR Placard
+                                  <span>{((session.progressPercent || 0) >= 50) ? '✓' : '•'}</span> Coach # Placard
                                 </div>
                                 <div className={`p-2 border rounded-md flex items-center justify-center gap-1.5 ${(session.stages?.sync === 'COMPLETED' || (session.progressPercent || 0) >= 65) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : (session.progressPercent || 0) >= 50 ? 'bg-cyan-55 border-cyan-200 text-cyan-700 animate-pulse' : 'bg-white border-border'}`}>
                                   <span>{((session.progressPercent || 0) >= 70) ? '✓' : '•'}</span> Sync Cameras
