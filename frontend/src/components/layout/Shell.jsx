@@ -30,6 +30,7 @@ import {
   Database,
   SearchCode,
   FlaskConical,
+  ChevronDown,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -55,7 +56,7 @@ const navGroups = [
       { name: 'Inspections',      path: '/sessions',            icon: Train,       roles: ALL_ROLES },
       { name: 'Defect Alerts',    path: '/defect-console',      icon: ShieldAlert, roles: ALL_ROLES },
       { name: 'Verify Defects',   path: '/defect-verification', icon: ShieldCheck, roles: [ADMIN, RDSO_INSPECTOR] },
-      { name: 'Coach Number Log', path: '/ocr-log',             icon: ScanText,    roles: ALL_ROLES, tip: 'Every coach number the cameras read (OCR)' },
+      { name: 'Coach Number Log', path: '/ocr-log',             icon: ScanText,    roles: ALL_ROLES, tip: 'Every coach number the cameras read' },
     ],
   },
   {
@@ -118,6 +119,14 @@ export const Shell = () => {
     .map((g) => ({ ...g, items: g.items.filter((i) => i.roles.includes(role)) }))
     .filter((g) => g.items.length > 0);
 
+  // Keep the group containing the active route pinned open so the current page stays visible.
+  useEffect(() => {
+    const activeGroup = navGroups.find((g) => g.items.some((i) => i.path === location.pathname));
+    if (activeGroup) {
+      setPinnedGroups((prev) => (prev.has(activeGroup.label) ? prev : new Set(prev).add(activeGroup.label)));
+    }
+  }, [location.pathname]);
+
   // Route guard: hiding a nav link is not enough — block direct-URL access to restricted pages.
   const requiredRoles = ROUTE_ROLES[location.pathname];
   const accessDenied = requiredRoles && !requiredRoles.includes(role);
@@ -128,6 +137,16 @@ export const Shell = () => {
   };
   // Auto-collapse on small screens (≤1366px / 14" laptops) and in train workspace
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.innerWidth < 1440);
+
+  // Group submenus: collapsed by default, toggled open by click.
+  const [pinnedGroups, setPinnedGroups] = useState(() => new Set());
+  const toggleGroup = (label) => {
+    setPinnedGroups((prev) => {
+      const next = new Set(prev);
+      next.has(label) ? next.delete(label) : next.add(label);
+      return next;
+    });
+  };
 
   useEffect(() => {
     const isSmall = window.innerWidth < 1440;
@@ -172,33 +191,50 @@ export const Shell = () => {
         {/* Nav Links */}
         <ScrollArea className="flex-1 min-h-0 py-4 px-3">
           <div className="space-y-5">
-            {visibleGroups.map((group) => (
-              <div key={group.label}>
-                <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
-                  {group.label}
-                </p>
-                <div className="space-y-0.5">
-                  {group.items.map((item) => (
-                    <NavLink
-                      key={item.path}
-                      to={item.path}
-                      title={item.tip || item.name}
-                      className={({ isActive }) =>
-                        cn(
-                          'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                          isActive
-                            ? 'bg-primary text-primary-foreground shadow-sm'
-                            : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                        )
-                      }
-                    >
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      {item.name}
-                    </NavLink>
-                  ))}
+            {visibleGroups.map((group) => {
+              const isOpen = pinnedGroups.has(group.label);
+              const groupHasActive = group.items.some((i) => i.path === location.pathname);
+              return (
+                <div key={group.label}>
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.label)}
+                    aria-expanded={isOpen}
+                    className={cn(
+                      'w-full flex items-center justify-between gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                      groupHasActive
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                    )}
+                  >
+                    <span>{group.label}</span>
+                    <ChevronDown className={cn('w-4 h-4 shrink-0 transition-transform', isOpen && 'rotate-180')} />
+                  </button>
+                  {isOpen && (
+                    <div className="mt-0.5 space-y-0.5 pl-2">
+                      {group.items.map((item) => (
+                        <NavLink
+                          key={item.path}
+                          to={item.path}
+                          title={item.tip || item.name}
+                          className={({ isActive }) =>
+                            cn(
+                              'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                              isActive
+                                ? 'bg-primary text-primary-foreground shadow-sm'
+                                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                            )
+                          }
+                        >
+                          <item.icon className="w-4 h-4 shrink-0" />
+                          {item.name}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </ScrollArea>
       </aside>

@@ -235,7 +235,7 @@ export const Analytics = () => {
         <ChartCard
           icon={Activity}
           title="Model Inference Latency Trend"
-          description="Average execution speed across pipeline stages (Custom Model, OCR, Sync, etc.)."
+          description="Average execution speed across pipeline stages (Custom Model, Coach Reader, Sync, etc.)."
           data={latency}
           emptyLabel="No latency data yet. Populates after the first pipeline runs."
         >

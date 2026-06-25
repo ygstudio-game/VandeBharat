@@ -35,7 +35,7 @@ const _coachShape = [
     cameras: [
       {
         id: "cam-ocr-01",
-        name: "OCR Camera (Front)",
+        name: "Coach Number Camera (Front)",
         frames: ["frame-ocr-b1-01.jpg", "frame-ocr-b1-02.jpg"]
       },
       {
@@ -62,7 +62,7 @@ const _coachShape = [
     cameras: [
       {
         id: "cam-ocr-02",
-        name: "OCR Camera (Front)",
+        name: "Coach Number Camera (Front)",
         frames: ["frame-ocr-b2-01.jpg"]
       },
       {
@@ -235,7 +235,7 @@ export const HierarchyTree = ({ onSelectNode, coaches: coachesProp, trainNumber,
                       )}
                     >
                       <span className="flex items-center gap-1.5">
-                        <FileText className="w-3.5 h-3.5" /> OCR Anchors
+                        <FileText className="w-3.5 h-3.5" /> Coach Number Anchors
                       </span>
                       <span className="text-[10px] font-bold">({coach.stats.ocrFramesCount})</span>
                     </div>

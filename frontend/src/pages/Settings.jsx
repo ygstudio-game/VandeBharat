@@ -306,7 +306,7 @@ export const Settings = () => {
 
               <div className="space-y-2">
                 <div className="flex justify-between text-xs font-semibold">
-                  <span className="text-slate-700">Coach Number OCR Match Acceptance</span>
+                  <span className="text-slate-700">Coach Number Match Acceptance</span>
                   <span className="font-mono text-primary font-bold">{ocrThresh}%</span>
                 </div>
                 <input type="range" min="60" max="99" value={ocrThresh} onChange={(e) => setOcrThresh(Number(e.target.value))} className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-primary" />

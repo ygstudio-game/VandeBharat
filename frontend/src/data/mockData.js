@@ -72,7 +72,7 @@ export const mockTrainHierarchy = {
       cameras: [
         {
           id: "cam-ocr-01",
-          name: "OCR Camera",
+          name: "Coach Number Camera",
           frames: ["frame-url-1", "frame-url-2"]
         },
         {

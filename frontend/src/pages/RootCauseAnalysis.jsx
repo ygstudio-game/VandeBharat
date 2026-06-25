@@ -188,10 +188,11 @@ export function RootCauseAnalysis() {
     setError('');
     try {
       const params = defectFilter ? `?defect_type=${encodeURIComponent(defectFilter)}` : '';
+      const defectQ = defectFilter ? `&defect_type=${encodeURIComponent(defectFilter)}` : '';
       const [corr, clust, trend, acts] = await Promise.all([
-        apiFetch(`/api/rca/correlation${params}&limit=15`),
+        apiFetch(`/api/rca/correlation?limit=15${defectQ}`),
         apiFetch(`/api/rca/defect-clusters${params}`),
-        apiFetch(`/api/rca/failure-trends${params}&days=30`),
+        apiFetch(`/api/rca/failure-trends?days=30${defectQ}`),
         apiFetch('/api/rca/corrective-actions?limit=50'),
       ]);
       setCorrelation(corr);

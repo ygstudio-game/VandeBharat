@@ -16,7 +16,7 @@ import {
 const POLL_MS = 30_000;
 
 const STAGE_LABELS = {
-  ocr_detection:     'OCR Detection',
+  ocr_detection:     'Coach Number Detection',
   synchronization:   'Sync Engine',
   correlation:       'Correlation',
   report_generation: 'Report Gen',
@@ -219,7 +219,7 @@ export function DataSyncHub() {
           <div className="flex items-center gap-1 overflow-x-auto pb-1">
             {[
               { key: 'upload',         label: 'Session Upload',  color: 'bg-slate-100 border-slate-200 text-slate-700' },
-              { key: 'ocr_detection',  label: 'OCR Detection',   color: 'bg-blue-50 border-blue-200 text-blue-700' },
+              { key: 'ocr_detection',  label: 'Coach Number Detection',   color: 'bg-blue-50 border-blue-200 text-blue-700' },
               { key: 'synchronization',label: 'Sync Engine',     color: 'bg-purple-50 border-purple-200 text-purple-700' },
               { key: 'correlation',    label: 'Correlation',     color: 'bg-amber-50 border-amber-200 text-amber-700' },
               { key: 'report',         label: 'Report Gen',      color: 'bg-green-50 border-green-200 text-green-700' },

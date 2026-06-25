@@ -106,7 +106,7 @@ export function DefectVerificationConsole() {
     setExporting(true);
     try {
       await downloadYoloDataset();
-      toast.success('YOLO dataset downloaded.', 'Export Complete');
+      toast.success('Model Pipeline dataset downloaded.', 'Export Complete');
     } catch (err) {
       toast.error(err.message || 'Export failed — need at least one confirmed defect with bbox + frame size.', 'Error');
     } finally {
@@ -132,7 +132,7 @@ export function DefectVerificationConsole() {
             className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 border border-border rounded hover:bg-secondary disabled:opacity-50 shrink-0"
           >
             {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-            Export YOLO Dataset
+            Export Model Pipeline Dataset
           </button>
         )}
       </div>
@@ -164,7 +164,7 @@ export function DefectVerificationConsole() {
             />
             {!current.frame_width && (
               <p className="text-[10px] text-amber-600 mt-2 flex items-center gap-1">
-                <AlertTriangle className="w-3 h-3" /> Frame dimensions unknown — bbox overlay not drawn, YOLO export will skip this one.
+                <AlertTriangle className="w-3 h-3" /> Frame dimensions unknown — bbox overlay not drawn, Model Pipeline export will skip this one.
               </p>
             )}
           </div>

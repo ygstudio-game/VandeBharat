@@ -335,7 +335,7 @@ export const Dashboard = () => {
                       </p>
                       <span className="text-[10px] font-mono font-bold text-muted-foreground">22m ago</span>
                     </div>
-                    <p className="text-xs font-bold text-foreground">Low OCR Confidence (62%)</p>
+                    <p className="text-xs font-bold text-foreground">Low Coach Number Confidence (62%)</p>
                     <p className="text-[10px] font-mono text-muted-foreground font-bold">Train VB-22901 • Coach B1 • Camera 4</p>
                   </div>
                 </div>

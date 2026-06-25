@@ -381,7 +381,7 @@ export function TrainMovementTimeline() {
                 </div>
                 <div className="flex items-center gap-1">
                   <svg width="13" height="13"><polygon points="6.5,0 12,6.5 6.5,13 1,6.5" fill="#60a5fa" /></svg>
-                  <span className="text-[10px] text-slate-500">OCR Anchor</span>
+                  <span className="text-[10px] text-slate-500">Coach Number Anchor</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <svg width="13" height="13">

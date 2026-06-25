@@ -1786,10 +1786,10 @@ export const Reports = () => {
               <div className="flex items-center gap-1 bg-[#e9edff] border border-[#c3c6d6]/50 rounded p-0.5 shadow-sm">
                 <button
                   onClick={() => setShowOcrBoxes(p => !p)}
-                  title="Toggle OCR bounding boxes"
+                  title="Toggle coach number bounding boxes"
                   className={`flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-bold transition-all cursor-pointer ${showOcrBoxes ? 'bg-[#003d9b] text-white' : 'text-[#434654] hover:text-[#051a3e]'}`}
                 >
-                  <ScanSearch className="w-3.5 h-3.5" /> OCR
+                  <ScanSearch className="w-3.5 h-3.5" /> Coach #
                 </button>
                 <button
                   onClick={() => setShowDefectBoxes(p => !p)}

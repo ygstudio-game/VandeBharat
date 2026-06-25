@@ -50,6 +50,8 @@ def build_dataset(manifest: dict, workdir: str) -> str:
     too but get NO label file (background-only image), which teaches the
     model the AI's own past mistake was not a defect.
     """
+    from PIL import Image
+
     images_dir = os.path.join(workdir, "images", "train")
     labels_dir = os.path.join(workdir, "labels", "train")
     os.makedirs(images_dir, exist_ok=True)
@@ -69,13 +71,23 @@ def build_dataset(manifest: dict, workdir: str) -> str:
         label_path = os.path.join(labels_dir, f"sample_{i}.txt")
         if sample["label_type"] in ("false_negative", "confirmed") and sample.get("bbox"):
             bbox = sample["bbox"]
-            # NOTE: bbox is stored in absolute pixel coords (bbox_x/y/w/h on the
-            # Defect row) — convert to YOLO's normalized cx,cy,w,h before real
-            # use. Reading actual image dimensions here (e.g. via PIL) is left
-            # as the one manual step an operator should verify before training,
-            # since frame resolution can vary by camera.
-            with open(label_path, "w") as f:
-                f.write(f"0 {bbox}\n")  # placeholder — normalize against real image size first
+            # bbox stored as absolute pixel coords (bbox_x/y/w/h on the Defect
+            # row). Normalize against the actual downloaded image's dimensions
+            # (frame resolution varies by camera) into YOLO's cx,cy,w,h in 0-1.
+            try:
+                with Image.open(img_path) as im:
+                    img_w, img_h = im.size
+                x, y, w, h = bbox["x"], bbox["y"], bbox["w"], bbox["h"]
+                cx = (x + w / 2) / img_w
+                cy = (y + h / 2) / img_h
+                nw = w / img_w
+                nh = h / img_h
+                with open(label_path, "w") as f:
+                    f.write(f"0 {cx:.6f} {cy:.6f} {nw:.6f} {nh:.6f}\n")
+            except Exception as exc:
+                print(f"  skip sample {i}: bbox normalization failed ({exc})")
+                os.remove(img_path)
+                continue
         # false_positive samples: image saved, no label file -> background example
         kept += 1
 
