@@ -260,7 +260,7 @@ export const getMaintenanceLogs = (id) => _fetch(`/api/assets/${id}/maintenance-
 
 // ── Stations ──────────────────────────────────────────────────────────────────
 export const getStations         = ()     => _fetch('/api/stations');
-export const getStationsOverview = ()     => _fetch('/api/stations/overview');
+export const getStationsOverview = (window) => _fetch(`/api/stations/overview${window ? `?window=${window}` : ''}`);
 export const getStationDetail    = (code) => _fetch(`/api/stations/${code}`);
 
 // ── Normalisation ────────────────────────────────────────────────────────────

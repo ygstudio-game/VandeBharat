@@ -19,7 +19,6 @@ import {
   ShieldAlert,
   Activity,
   Plus,
-  Camera,
   ChevronRight,
 } from 'lucide-react';
 
@@ -166,13 +165,6 @@ export const Dashboard = () => {
             sub: `${kv('unsigned_reports', 0)} awaiting signature`,
             icon: <FileCheck className="w-5 h-5 text-success" />,
             onClick: () => navigate('/reports'),
-          },
-          {
-            show: canSign,
-            label: 'Camera Status',
-            sub: 'Check cameras online',
-            icon: <Camera className="w-5 h-5 text-primary" />,
-            onClick: () => navigate('/camera-health'),
           },
           {
             show: true,

@@ -134,9 +134,9 @@ export const Analytics = () => {
             <Database className="w-5 h-5" />
           </div>
           <div>
-            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Total Sessions</div>
+            <div className="text-[10px] font-black text-muted-foreground uppercase tracking-wider">Total Detections</div>
             <div className="text-xl font-black text-foreground">
-              {loading ? '—' : fmt(kpis?.total_sessions)}
+              {loading ? '—' : fmt(kpis?.total_detections)}
             </div>
             <div className="text-[10px] text-slate-500 font-bold mt-0.5">All time</div>
           </div>

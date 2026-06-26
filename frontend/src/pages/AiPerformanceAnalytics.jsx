@@ -350,7 +350,7 @@ export function AiPerformanceAnalytics() {
         <CardHeader className="pb-2 pt-4 px-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Cpu className="w-4 h-4 text-muted-foreground" />
-            Model Version Comparison
+            Model Version
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4">

@@ -183,7 +183,8 @@ export function RootCauseAnalysis() {
   const [showModal, setShowModal]     = useState(false);
   const [activeTab, setActiveTab]     = useState('camera');
   const [fTrain, setFTrain]           = useState('');     // train number filter
-  const [fStation, setFStation]       = useState('ALL');  // station filter
+  const [fStation, setFStation]       = useState('ALL');  // station (location) filter
+  const [fDate, setFDate]             = useState('');     // date filter (YYYY-MM-DD)
   const [stationOptions, setStationOptions] = useState([]);
 
   useEffect(() => {
@@ -192,13 +193,24 @@ export function RootCauseAnalysis() {
       .catch(() => setStationOptions([]));
   }, []);
 
-  // Filter aggregated rows by train number (substring) + station (exact within the comma list).
+  // Filter aggregated rows by station (location) + train number (substring) + date.
   const applyFilter = (rows = []) => rows.filter((r) => {
     const trains = (r.train_numbers || '').toLowerCase();
     const stations = (r.stations || '').split(',').map((x) => x.trim());
     const matchTrain = !fTrain || trains.includes(fTrain.toLowerCase());
     const matchStation = fStation === 'ALL' || stations.includes(fStation);
-    return matchTrain && matchStation;
+    // Date filter only narrows rows that carry a date (clusters: first_seen/last_seen).
+    // Rows without a date field (correlation aggregates) are left untouched.
+    let matchDate = true;
+    if (fDate && (r.first_seen || r.last_seen)) {
+      const target = new Date(fDate).setHours(0, 0, 0, 0);
+      const first = r.first_seen ? new Date(r.first_seen).setHours(0, 0, 0, 0) : null;
+      const last  = r.last_seen  ? new Date(r.last_seen).setHours(0, 0, 0, 0)  : null;
+      const lo = first ?? last;
+      const hi = last ?? first;
+      matchDate = target >= lo && target <= hi;
+    }
+    return matchTrain && matchStation && matchDate;
   });
 
   const load = useCallback(async () => {
@@ -326,13 +338,6 @@ export function RootCauseAnalysis() {
       {/* Table filters — Train number + Station (apply to correlation + cluster tables) */}
       <div className="flex flex-wrap items-center gap-2 bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
         <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Table Filters:</span>
-        <input
-          type="text"
-          placeholder="Train number…"
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-xs w-40"
-          value={fTrain}
-          onChange={(e) => setFTrain(e.target.value)}
-        />
         <select
           className="border border-gray-300 rounded-md px-3 py-1.5 text-xs font-semibold text-primary"
           value={fStation}
@@ -341,9 +346,22 @@ export function RootCauseAnalysis() {
           <option value="ALL">All Stations</option>
           {stationOptions.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        {(fTrain || fStation !== 'ALL') && (
+        <input
+          type="text"
+          placeholder="Train number…"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-xs w-40"
+          value={fTrain}
+          onChange={(e) => setFTrain(e.target.value)}
+        />
+        <input
+          type="date"
+          className="border border-gray-300 rounded-md px-3 py-1.5 text-xs"
+          value={fDate}
+          onChange={(e) => setFDate(e.target.value)}
+        />
+        {(fTrain || fStation !== 'ALL' || fDate) && (
           <button
-            onClick={() => { setFTrain(''); setFStation('ALL'); }}
+            onClick={() => { setFTrain(''); setFStation('ALL'); setFDate(''); }}
             className="text-xs font-bold px-3 py-1.5 border border-gray-300 rounded-md hover:bg-gray-50"
           >
             Clear
@@ -396,7 +414,7 @@ export function RootCauseAnalysis() {
                     <th className="pb-2 pr-4">Camera</th>
                     <th className="pb-2 pr-4">Position</th>
                     <th className="pb-2 pr-4">Train No.</th>
-                    <th className="pb-2 pr-4">Station</th>
+                    <th className="pb-2 pr-4">Location</th>
                     <th className="pb-2 pr-4">Defect Type</th>
                     <th className="pb-2 pr-4">Count</th>
                     <th className="pb-2">Correlation Strength</th>
@@ -429,7 +447,7 @@ export function RootCauseAnalysis() {
                     <th className="pb-2 pr-4">Coach No.</th>
                     <th className="pb-2 pr-4">Coach Type</th>
                     <th className="pb-2 pr-4">Train No.</th>
-                    <th className="pb-2 pr-4">Station</th>
+                    <th className="pb-2 pr-4">Location</th>
                     <th className="pb-2 pr-4">Defect Type</th>
                     <th className="pb-2 pr-4">Count</th>
                     <th className="pb-2">Correlation Strength</th>

@@ -48,7 +48,7 @@ function fmt(dt) {
   return new Date(dt).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
 }
 
-function StationCard({ station, onClick }) {
+function StationCard({ station, onClick, windowHours }) {
   const cfg = STATUS_CONFIG[station.status] ?? STATUS_CONFIG.unknown;
   return (
     <button
@@ -84,6 +84,13 @@ function StationCard({ station, onClick }) {
         <p className="text-[10px] text-slate-400 uppercase mb-1">Camera Uptime</p>
         <UptimeBar pct={station.avg_uptime_pct} />
       </div>
+
+      {windowHours && (
+        <div className="flex items-center justify-between mt-2 px-2 py-1.5 bg-blue-50 rounded">
+          <span className="text-[10px] text-slate-500 uppercase">Last {windowHours}h Inspections</span>
+          <span className="text-xs font-bold text-blue-700">{station.recent_sessions ?? 0}</span>
+        </div>
+      )}
 
       {station.edge_machine && (
         <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100">
@@ -233,17 +240,18 @@ export function StationMonitoringDashboard() {
   const [error, setError]       = useState(null);
   const [selected, setSelected] = useState(null);
   const [lastRefresh, setLastRefresh] = useState(null);
+  const [window, setWindow]     = useState(null);   // null = all-time, else 6|12|24 (hours)
 
   const load = () => {
     setLoading(true);
     setError(null);
-    getStationsOverview()
+    getStationsOverview(window)
       .then((data) => { setOverview(data); setLastRefresh(new Date()); })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [window]);
 
   const counts = {
     total:    overview.length,
@@ -267,13 +275,32 @@ export function StationMonitoringDashboard() {
             </p>
           )}
         </div>
-        <button
-          onClick={load}
-          disabled={loading}
-          className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Time-window filter — scopes the recent-inspection count */}
+          <div className="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-1 text-xs font-bold">
+            {[
+              { label: 'All', value: null },
+              { label: '6h',  value: 6 },
+              { label: '12h', value: 12 },
+              { label: '24h', value: 24 },
+            ].map(({ label, value }) => (
+              <button
+                key={label}
+                onClick={() => setWindow(value)}
+                className={`px-3 py-1 rounded transition-all ${window === value ? 'bg-white shadow-sm text-primary' : 'text-slate-500'}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={load}
+            disabled={loading}
+            className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
+          </button>
+        </div>
       </div>
 
       {/* KPI Strip */}
@@ -326,6 +353,7 @@ export function StationMonitoringDashboard() {
                 <StationCard
                   key={station.id}
                   station={station}
+                  windowHours={window}
                   onClick={() => navigate(`/stations/${station.station_code}`)}
                 />
               ))}

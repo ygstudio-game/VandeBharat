@@ -6,7 +6,7 @@ async function dashboard(fastify) {
     const station = req.query.station?.trim();
     const sw = station ? { station: { station_name: station } } : {};
 
-    const [total, today, completed, active, queued, failed, unsignedReports, defectStats] = await Promise.all([
+    const [total, today, completed, active, queued, failed, unsignedReports, defectStats, totalDetections] = await Promise.all([
       prisma.inspectionSession.count({ where: { ...sw } }),
       prisma.inspectionSession.count({
         where: { ...sw, started_at: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } },
@@ -32,10 +32,14 @@ async function dashboard(fastify) {
         _sum: { critical_defects: true },
         _avg: { health_score: true },
       }),
+      prisma.defect.count({
+        where: station ? { session: sw } : {},
+      }),
     ]);
 
     return {
       total_sessions: total,
+      total_detections: totalDetections,
       sessions_today: today,
       completed_sessions: completed,
       active_sessions: active,

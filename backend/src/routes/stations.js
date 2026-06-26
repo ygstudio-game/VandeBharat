@@ -37,8 +37,14 @@ async function stations(fastify) {
     }));
   });
 
-  // GET /api/stations/overview — per-station aggregate
-  fastify.get('/overview', async () => {
+  // GET /api/stations/overview?window=<hours> — per-station aggregate.
+  // window (6|12|24) scopes the recent-inspection count to that trailing time range.
+  fastify.get('/overview', async (req) => {
+    const windowHours = [6, 12, 24].includes(parseInt(req.query.window, 10))
+      ? parseInt(req.query.window, 10)
+      : null;
+    const since = windowHours ? new Date(Date.now() - windowHours * 3600 * 1000) : null;
+
     const setups = await prisma.cameraSetup.findMany({
       orderBy: { station_name: 'asc' },
       include: {
@@ -71,6 +77,17 @@ async function stations(fastify) {
     });
     const activeByCode = Object.fromEntries(activeSessions.map((r) => [r.station_code, r._count.id]));
 
+    // Recent inspections within the selected window (null window = no scoping).
+    let recentByCode = {};
+    if (since) {
+      const recent = await prisma.inspectionSession.groupBy({
+        by: ['station_code'],
+        where: { started_at: { gte: since } },
+        _count: { id: true },
+      });
+      recentByCode = Object.fromEntries(recent.map((r) => [r.station_code, r._count.id]));
+    }
+
     return setups.map((s) => {
       const total   = s.cameras.length;
       const active  = s.cameras.filter((c) => c.is_active).length;
@@ -99,6 +116,7 @@ async function stations(fastify) {
         active_cameras:   active,
         avg_uptime_pct:   avgUptime,
         active_sessions:  activeByCode[s.station_code] ?? 0,
+        recent_sessions:  windowHours ? (recentByCode[s.station_code] ?? 0) : null,
         last_inspection:  lastSession,
         status,
       };
