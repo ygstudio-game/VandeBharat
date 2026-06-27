@@ -142,6 +142,13 @@ export const reviewDefect = (id, status, notes) => _fetch(`/api/defects/${id}/re
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ status, notes }),
 });
+// Per-frame verification — applies to every frame whether or not it has a
+// detected defect. Server propagates the decision to defect rows when present.
+export const reviewFrame = (frameId, status, notes) => _fetch(`/api/sessions/frames/${frameId}/review`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ status, notes }),
+});
 // Binary response (zip) — _fetch's json() parser would break on this, so this
 // triggers a real browser download instead of returning parsed data.
 export const downloadYoloDataset = async () => {

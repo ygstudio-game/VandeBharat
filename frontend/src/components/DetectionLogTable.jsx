@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Eye, ArrowUpDown, ArrowUp, ArrowDown, AlertTriangle, MapPin, Train, Camera, ExternalLink } from 'lucide-react';
+import { Search, Filter, Eye, ArrowUpDown, ArrowUp, ArrowDown, AlertTriangle, MapPin, Train, Camera, ExternalLink, Check, X, Loader2 } from 'lucide-react';
 
 const DetectionLogTable = ({
   frames = [],
@@ -12,11 +12,18 @@ const DetectionLogTable = ({
   onGoToReport = null,
   rows: rowsOverride = null,
   showActions = true,
+  // When provided, renders a "Defect Verification" column with Accept/Reject
+  // buttons on EVERY frame row (defect or not). Receives
+  // (frameId: string, status: 'confirmed'|'false_positive') and should return a
+  // Promise that resolves once the backend review is saved.
+  onReviewFrame = null,
 }) => {
   const [query, setQuery] = useState('');
   const [filterDefects, setFilterDefects] = useState(false);
   const [sortField, setSortField] = useState(null);
   const [sortAsc, setSortAsc] = useState(true);
+  // frameId -> { status, busy } optimistic verification state
+  const [reviewState, setReviewState] = useState({});
 
   const derivedRows = useMemo(() => frames.map(f => {
     const frameComponents = components.filter(
@@ -30,6 +37,9 @@ const DetectionLogTable = ({
     const defectStr = frameDefects.length > 0
       ? frameDefects.map(d => d.defect_type).join(', ')
       : 'None';
+
+    // Frame-level verification status — every frame carries one, defect or not.
+    const reviewStatus = f.review_status || 'pending';
 
     const allConfs = [
       ...frameComponents.map(c => c.confidence || 0),
@@ -60,6 +70,7 @@ const DetectionLogTable = ({
       component: componentStr,
       defect: defectStr,
       hasDefect: frameDefects.length > 0,
+      reviewStatus,
       severity: frameDefects[0]?.severity ?? null,
       confidence: maxConf > 0 ? `${Math.round(maxConf * 100)}%` : '—',
       detectionCount: frameComponents.length,
@@ -114,8 +125,20 @@ const DetectionLogTable = ({
     { key: 'cameraId',  label: 'CAMERA' },
     { key: 'component', label: 'COMPONENT' },
     { key: 'defect',    label: 'DEFECT' },
+    ...(onReviewFrame ? [{ key: null, label: 'DEFECT VERIFICATION' }] : []),
     ...(showActions ? [{ key: null, label: '' }] : []),
   ];
+
+  const handleReview = async (row, status) => {
+    if (!onReviewFrame) return;
+    setReviewState(prev => ({ ...prev, [row.id]: { status: prev[row.id]?.status, busy: true } }));
+    try {
+      await onReviewFrame(row.id, status);
+      setReviewState(prev => ({ ...prev, [row.id]: { status, busy: false } }));
+    } catch {
+      setReviewState(prev => ({ ...prev, [row.id]: { status: prev[row.id]?.status, busy: false } }));
+    }
+  };
 
   return (
     <div className="bg-white border border-slate-200 rounded shadow-sm flex flex-col overflow-hidden flex-1 min-h-0">
@@ -265,6 +288,52 @@ const DetectionLogTable = ({
                       <span className="text-slate-400">None</span>
                     )}
                   </td>
+
+                  {/* Defect Verification — Accept / Reject (every frame) */}
+                  {onReviewFrame && (
+                    <td className="px-3 py-2 whitespace-nowrap">
+                      {(() => {
+                        const live = reviewState[row.id];
+                        const status = live?.status ?? row.reviewStatus;
+                        const busy = live?.busy;
+                        if (busy) {
+                          return <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />;
+                        }
+                        if (status === 'confirmed') {
+                          return (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              <Check className="w-3 h-3" /> Accepted
+                            </span>
+                          );
+                        }
+                        if (status === 'false_positive') {
+                          return (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-1 rounded bg-slate-100 text-slate-500 border border-slate-200">
+                              <X className="w-3 h-3" /> Rejected
+                            </span>
+                          );
+                        }
+                        return (
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => handleReview(row, 'confirmed')}
+                              className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-emerald-200 text-emerald-700 hover:bg-emerald-600 hover:text-white hover:border-emerald-600"
+                              title="Accept defect (confirmed)"
+                            >
+                              <Check className="w-3 h-3" /> ACCEPT
+                            </button>
+                            <button
+                              onClick={() => handleReview(row, 'false_positive')}
+                              className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-red-200 text-red-700 hover:bg-red-600 hover:text-white hover:border-red-600"
+                              title="Reject defect (false positive)"
+                            >
+                              <X className="w-3 h-3" /> REJECT
+                            </button>
+                          </div>
+                        );
+                      })()}
+                    </td>
+                  )}
 
                   {/* Actions */}
                   {showActions && (

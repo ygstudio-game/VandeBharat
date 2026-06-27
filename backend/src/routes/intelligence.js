@@ -123,6 +123,7 @@ async function intelligence(fastify) {
         height_px: true,
         is_ocr_candidate: true,
         is_defect_flagged: true,
+        review_status: true,
         session_camera: { select: { id: true, camera_type: true, name: true } },
         coach_frame_map: { select: { assignment_method: true, confidence: true } },
         ocr_results: {
@@ -143,6 +144,7 @@ async function intelligence(fastify) {
             defect_type: true,
             severity: true,
             confidence: true,
+            review_status: true,
             bbox_x: true,
             bbox_y: true,
             bbox_w: true,
@@ -163,6 +165,7 @@ async function intelligence(fastify) {
         trigger_id: Number(f.trigger_id),
         sequence_number: f.sequence_number,
         captured_at_ms: Number(f.captured_at_ms),
+        review_status: f.review_status,
         cloudinary_url: f.cloudinary_url,
         thumbnail_url: f.thumbnail_url,
         width: f.width_px,
