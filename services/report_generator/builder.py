@@ -12,7 +12,6 @@ import requests
 from fpdf import FPDF
 import cloudinary
 import cloudinary.uploader
-import psycopg2.extras
 
 logger = logging.getLogger(__name__)
 

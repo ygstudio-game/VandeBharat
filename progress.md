@@ -1,7 +1,62 @@
 # VandeInspect AI — Backend Build Progress
 
 **Goal:** 2 videos in → inspection report visible in UI  
-**Updated:** 2026-05-20
+**Updated:** 2026-06-28
+
+---
+
+## Phase C Integration — Upgraded Correlation (2026-06-28)
+
+**What:** wired the Phase-C event-correlation pipeline (`correlate_v2`: tracking dedup → multi-camera voting → Bayesian fusion → composite score/route, algorithms C1–C5) into the **live** correlation engine (`services/correlation/engine.py`).
+
+**How (safe, additive):**
+- `engine.py` still writes the legacy per-frame `defects` + `component_detections` rows — **dashboard unaffected**.
+- After the legacy writes, `store_correlated_events()` runs the C-pipeline over the same collected detections and writes **one authoritative, deduplicated, multi-camera-scored row per defect** to the new `defect_events` table (route = `confirm` | `review`, fused confidence, agreement, composite score).
+- Guarded in try/except: if the new path fails (e.g. migration not yet applied), the legacy result is unaffected.
+- Toggle: env `CORRELATION_V2=1` (default on); threshold `CORRELATION_ALERT_THRESHOLD=0.92`. Mirrored in `config.yaml` → `correlation:`.
+
+**New pure helper:** `aggregate_candidates()` groups per-frame YOLO detections into per-(defect_class) multi-camera observations — unit-tested (`tests/test_engine_aggregate.py`, 4 tests).
+
+**REQUIRED before this persists in prod:** apply migration
+`services/correlation/migrations/001_defect_events.sql` to the Neon DB
+(creates `defect_events` with camera_id/agreement/alert_score/route columns).
+Until applied, the v2 write is skipped (logged) and legacy behavior is identical.
+
+**Status:** code + unit tests green (128 Python unit tests total). Not yet exercised against the live DB (needs migration + a real session).
+
+---
+
+## D3 Integration — Circuit Breakers on External Clients (2026-06-28)
+
+**What:** wrapped the shared Postgres + Cloudinary clients in the D3 circuit breaker.
+
+- `GPU/shared/db_client.py` — `get_conn()` connects through `_DB_BREAKER`. Repeated DB failures open the breaker → `get_conn()` fails fast (`CircuitOpen`) instead of every caller blocking on a connect timeout; probes for recovery after the reset window.
+- `GPU/shared/cloudinary_client.py` — `upload_frame()` uploads through `_CLOUDINARY_BREAKER`. When Cloudinary is down, frame uploads fail fast instead of each hanging ~30 s; callers' per-frame try/except skips the frame, breaker probes for recovery.
+- Tunables (env): `DB_CB_THRESHOLD`/`DB_CB_RESET`, `CLOUDINARY_CB_THRESHOLD`/`CLOUDINARY_CB_RESET`.
+
+**Tests:** `GPU/shared/tests/test_external_breakers.py` (3) — open-and-fail-fast for both clients (real dependency monkeypatched), + DB recovery after reset window.
+
+**Hot paths routed through the breakers (full coverage):**
+- All 4 Python services (`correlation`, `sync_engine`, `report_generator`, `frame_extractor`) `get_conn()` → `db_client.connect()` (fresh per-request connection through the Postgres breaker; callers keep their `conn.close()` lifecycle).
+- `frame_extractor` frame upload → `cloudinary_client.upload()` (generic breaker passthrough, keeps custom params: bytes payload, public_id, folder).
+- Added `db_client.connect()` (fresh-conn variant) + `cloudinary_client.upload(*args, **kwargs)` (generic passthrough). Removed now-unused `psycopg2` imports from the 3 servers (frame_extractor keeps it for bulk insert).
+
+**131 Python unit tests total.** Now the high-volume frame-upload + every service's DB traffic is breaker-protected (not just the shared clients in isolation).
+
+---
+
+## D2 Integration — Supervisor Watchdog in start.js (2026-06-28)
+
+**Gap closed:** `start.js` health-checked services only at startup, then left them unsupervised (and `killAll` on any spawn error). A crash/hang after boot was not recovered.
+
+**What:**
+- `backend/src/supervisor.js` — Node port of the tested `watchdog.py` state machine (HEALTHY/FAILING/RESTARTING/CRITICAL): probe → fail-threshold → restart with exponential backoff + cap → crash-loop guard (CRITICAL stops restarting). `graceMs` lets slow-warmup services (YOLO ~120 s) come up after a restart before the next probe.
+- `start.js` — after startup, an opt-in watchdog loop (`SUPERVISE=1`) probes each service's `/health` every `SUPERVISE_INTERVAL_MS` (default 10 s) and restarts only the dead/hung one via `restartService()` (kill that proc → free port → respawn), **not** `killAll`. Uses the standardized `/health`. In-flight jobs resume via the existing Redis Streams XAUTOCLAIM.
+- Flag-gated: default boot behavior unchanged; `SUPERVISE=1` enables self-healing.
+
+**Tests:** `backend/test/supervisor.test.js` (6, Node) — restart-after-threshold + recover, crash-loop→CRITICAL stops, backoff growth+cap, grace overrides short backoff, events recorded, input validation. Picked up by `npm test` / CI automatically.
+
+**Status:** logic green (10 Node tests pass). Live restart (kill a service, watch it respawn) is a host-verify step: `SUPERVISE=1 node start.js` then `taskkill` a service.
 
 ---
 

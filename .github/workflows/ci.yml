@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev20]
+
+jobs:
+  python-unit:
+    name: Python unit gate (health + shared)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dev deps (lightweight, no ML)
+        run: pip install -r requirements-dev.txt
+      - name: Lint changed/new code
+        run: ruff check GPU/shared services/ingestion tests
+      - name: Run unit tests (exclude integration)
+        run: pytest -m "not integration"
+
+  node-unit:
+    name: Node unit gate (queue helpers)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install backend deps
+        run: npm ci
+      - name: Run backend unit tests
+        run: npm test

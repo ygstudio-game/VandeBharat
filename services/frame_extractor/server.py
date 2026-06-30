@@ -21,6 +21,9 @@ from dotenv import load_dotenv
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "GPU", "shared"))
 from logging_utils import configure_logging, set_trace_id  # noqa: E402
+from health import health_payload  # noqa: E402
+import db_client  # noqa: E402
+import cloudinary_client  # noqa: E402
 
 # Load backend .env first (shared credentials), then service .env as override
 _root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend"))
@@ -51,7 +54,7 @@ class ExtractRequest(BaseModel):
 
 
 def get_conn():
-    return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+    return db_client.connect()   # breaker-wrapped (D3)
 
 
 def _all_cameras_done(conn, session_id: str) -> bool:
@@ -258,7 +261,7 @@ def run_extraction(req: ExtractRequest):
                     frame_number += 1
                     continue
 
-                result = cloudinary.uploader.upload(
+                result = cloudinary_client.upload(   # breaker-wrapped (D3)
                     buf.tobytes(),
                     folder=folder,
                     public_id=f"frame_{frame_number:07d}",
@@ -377,7 +380,7 @@ def run_extraction(req: ExtractRequest):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "frame_extractor", "port": 5003}
+    return health_payload("frame_extractor", port=5003)
 
 
 @app.post("/extract")
