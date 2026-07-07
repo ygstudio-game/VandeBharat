@@ -1,0 +1,58 @@
+# VandeInspect AI — versioned runtime config (no hardcoded values in services).
+# Carry-forward of competitor design rule #8: every tunable lives here.
+
+ingestion:
+  source_uri: sample.mp4        # B1: looping local video simulates a live camera
+  camera_id: 0
+  fps: 25
+  buffer_capacity: 200          # drop-oldest back-pressure threshold
+  jpeg_quality: 85
+  frame_store_dir: uploads/ingest
+  redis_url: redis://127.0.0.1:6379
+  max_reconnect_attempts: 5
+  backoff_base_s: 0.5
+
+# B2 — frame quality pre-screen (Algorithm 9): reject before the GPU
+quality:
+  enabled: true
+  blur_threshold: 100.0     # Laplacian-variance below this = blurry -> reject
+  brightness_min: 20.0      # mean pixel below this = too dark -> reject
+  brightness_max: 240.0     # mean pixel above this = overexposed -> reject
+
+# B3 — smart frame selection (Algo 10): only send useful frames to the GPU
+scheduler:
+  enabled: true
+  activity_threshold: 0.10  # normalized motion >= this = a coach is passing (ACTIVE)
+  active_stride: 4          # while ACTIVE, process 1 of every N frames
+  inter_coach_stride: 10    # between coaches, sparse-sample 1 of every N (catch onset)
+  gap_tolerance: 5          # low-activity frames tolerated mid-coach before splitting
+
+# Phase C — upgraded multi-camera event correlation (writes to defect_events)
+correlation:
+  v2_enabled: true
+  alert_threshold: 0.92      # composite score >= this => CONFIRMED (else human review)
+  default_image_quality: 0.8 # used until per-frame Laplacian quality is plumbed through
+
+# B4 — YOLO inference backend (PyTorch default; TensorRT FP16 batched on GPU host)
+inference:
+  backend: torch            # torch | trt
+  trt_loader: ultralytics   # ultralytics (loads .engine via YOLO, no pycuda) | pycuda
+  engine_path: GPU/yolo/models/best.engine
+  batch_size: 4             # must match the exported engine's fixed batch
+  conf: 0.35
+  nms_iou: 0.5
+
+# D1 — email alert service (email channel only; MQTT/SMS/WhatsApp intentionally excluded)
+alerts:
+  enabled: true
+  dedup_window_sec: 60      # one email per defect per coach within this window
+  score_threshold: 0.92     # only CONFIRMED events (score >= this) alert
+  smtp_host: 127.0.0.1
+  smtp_port: 1025           # MailHog dev default
+  smtp_user: ""
+  smtp_password: ""
+  sender: alerts@vandeinspect.local
+  recipients:
+    - ops@railway.local
+  max_attempts: 3
+  backoff_base_s: 0.5

@@ -16,7 +16,10 @@ from dotenv import load_dotenv
 from model_manager import resolve_weights_path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "shared"))
-from logging_utils import configure_logging, set_trace_id  # noqa: E402
+from logging_utils import configure_logging  # noqa: E402
+from health import health_payload  # noqa: E402
+from inference_common import format_detections, SEVERITY_MAP  # noqa: E402,F401
+from backends import build_backend  # noqa: E402
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
@@ -32,27 +35,16 @@ OCR_MODEL_PATH = os.environ.get(
     os.path.join(os.path.dirname(__file__), "models", "train_num_detector.pt"),
 )
 CONF_THRESHOLD = float(os.environ.get("YOLO_CONF", "0.35"))
-
-SEVERITY_MAP = {
-    "crack":          "CRITICAL",
-    "leakage":        "CRITICAL",
-    "smoke_emission": "CRITICAL",
-    "broken":         "HIGH",
-    "rust":           "HIGH",
-    "deformation":    "HIGH",
-    "hole":           "HIGH",
-    "missing_part":   "MEDIUM",
-    "puncture":       "MEDIUM",
-    "hanging":        "MEDIUM",
-    "loose":          "LOW",
-}
+# B4: torch (default/fallback) or trt (TensorRT FP16 batched). SEVERITY_MAP now lives
+# in inference_common (imported above) so both backends format detections identically.
 
 defect_model = None
 ocr_detector_model = None
+backend = None          # B4 DetectionBackend (torch|trt), built at startup
 
 # Rolling metrics — updated on every predict call
-import time
-import collections
+import time  # noqa: E402
+import collections  # noqa: E402
 _latency_window = collections.deque(maxlen=100)  # last 100 inference times (ms)
 _requests_total = 0
 _service_start = time.time()
@@ -62,7 +54,7 @@ app = FastAPI(title="VandeInspect YOLO Service", version="1.0.0")
 
 @app.on_event("startup")
 def load_models():
-    global defect_model, ocr_detector_model, DEFECT_MODEL_PATH, OCR_MODEL_PATH
+    global defect_model, ocr_detector_model, DEFECT_MODEL_PATH, OCR_MODEL_PATH, backend
     try:
         from ultralytics import YOLO
         import torch
@@ -92,6 +84,19 @@ def load_models():
         defect_model.to(device)
         defect_model(blank, verbose=False)
         logger.info("Defect model ready. Classes: %s", list(defect_model.names.values())[:6])
+        # B4: pick inference backend (torch default; trt if INFERENCE_BACKEND=trt + engine exists)
+        inference_cfg = {
+            "backend": os.environ.get("INFERENCE_BACKEND", "torch"),
+            "trt_loader": os.environ.get("TRT_LOADER", "ultralytics"),
+            "engine_path": os.environ.get(
+                "YOLO_ENGINE_PATH", os.path.join(os.path.dirname(__file__), "models", "best.engine")),
+            "batch_size": int(os.environ.get("YOLO_BATCH", "4")),
+            "conf": CONF_THRESHOLD,
+            "nms_iou": float(os.environ.get("YOLO_NMS_IOU", "0.5")),
+            "class_names": dict(defect_model.names),
+        }
+        backend = build_backend(inference_cfg, torch_model=defect_model)
+        logger.info("Inference backend: %s", backend.name)
     else:
         logger.warning("Defect model NOT found: %s (Phase 3 will fail)", DEFECT_MODEL_PATH)
 
@@ -115,15 +120,15 @@ def decode_bytes(data: bytes) -> np.ndarray:
 
 @app.get("/health")
 def health():
-    return {
-        "status": "ok",
-        "service": "yolo",
-        "port": 5002,
-        "defect_model_loaded": defect_model is not None,
-        "ocr_model_loaded": ocr_detector_model is not None,
-        "defect_model_path": DEFECT_MODEL_PATH,
-        "ocr_model_path": OCR_MODEL_PATH,
-    }
+    return health_payload(
+        "yolo",
+        port=5002,
+        defect_model_loaded=defect_model is not None,
+        ocr_model_loaded=ocr_detector_model is not None,
+        defect_model_path=DEFECT_MODEL_PATH,
+        ocr_model_path=OCR_MODEL_PATH,
+        inference_backend=(backend.name if backend else None),
+    )
 
 
 @app.get("/metrics")
@@ -168,27 +173,11 @@ async def predict(file: UploadFile = File(...)):
 
     frame = decode_bytes(await file.read())
     t0 = time.time()
-    results = defect_model(frame, conf=CONF_THRESHOLD, verbose=False)[0]
+    raw_dets = backend.infer(frame)        # B4: torch or trt, same raw shape
     _latency_window.append((time.time() - t0) * 1000)
     _requests_total += 1
     h, w = frame.shape[:2]
-
-    detections = []
-    for i, box in enumerate(results.boxes):
-        x1, y1, x2, y2 = box.xyxy[0].tolist()
-        label = defect_model.names[int(box.cls)]
-        conf = float(box.conf)
-        detections.append({
-            "id": i,
-            "label": label,
-            "confidence": round(conf, 3),
-            "bbox_xyxy": [int(x1), int(y1), int(x2), int(y2)],
-            "bbox_xywh": [int(x1), int(y1), int(x2 - x1), int(y2 - y1)],
-            "defect": label in SEVERITY_MAP,
-            "severity": SEVERITY_MAP.get(label),
-        })
-
-    return {"detections": detections, "frame_size": [w, h]}
+    return format_detections(raw_dets, w, h)   # identical public schema for both backends
 
 
 @app.post("/api/yolo/predict_train_number")

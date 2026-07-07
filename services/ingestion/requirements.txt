@@ -1,0 +1,5 @@
+fastapi>=0.110
+uvicorn>=0.29
+opencv-python-headless>=4.9
+redis>=5.0
+pyyaml>=6.0

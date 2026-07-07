@@ -91,7 +91,6 @@ def _run_training(req: TrainRequest):
 
     try:
         from ultralytics import YOLO
-        from ultralytics.utils.callbacks.base import add_integration_callbacks
 
         model = YOLO(req.base_model)
 
