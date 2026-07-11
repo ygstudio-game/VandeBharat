@@ -12,11 +12,7 @@ GPU/yolo/models/*.pth
 # Uploaded videos (temp storage)
 backend/uploads/
 
-<<<<<<< HEAD
 graphify-out/
-=======
-/graphify-out
->>>>>>> 604b5fa69613694ecf249fd7536ca138e504584d
 
 # Production/distribution builds
 dist/
