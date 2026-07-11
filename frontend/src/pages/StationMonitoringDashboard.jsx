@@ -1,23 +1,38 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getStationsOverview, getStationDetail } from '../lib/api';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  MapPin, Wifi, WifiOff, AlertTriangle, Camera, Activity,
-  ChevronLeft, RefreshCw, Server, Clock, Train,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import {
+  MapPin, Camera,
+  RefreshCw, Server, Train, ShieldAlert, FileText, History,
 } from 'lucide-react';
+import { getStationsOverview, getStationDetail } from '../lib/api';
+import { Sessions } from './Sessions';
+import { DefectAlertConsole } from './DefectAlertConsole';
+import { Reports } from './Reports';
+import { TrainPassageHistory } from './TrainPassageHistory';
 
 const STATUS_CONFIG = {
-  online:   { label: 'Online',   bg: 'bg-green-100',  text: 'text-green-700',  dot: 'bg-green-500',  border: 'border-green-200' },
-  degraded: { label: 'Degraded', bg: 'bg-amber-100',  text: 'text-amber-700',  dot: 'bg-amber-500',  border: 'border-amber-200' },
-  offline:  { label: 'Offline',  bg: 'bg-red-100',    text: 'text-red-700',    dot: 'bg-red-500',    border: 'border-red-200'   },
-  unknown:  { label: 'Unknown',  bg: 'bg-slate-100',  text: 'text-slate-600',  dot: 'bg-slate-400',  border: 'border-slate-200' },
+  online: { label: 'Online', bg: 'bg-green-100', text: 'text-green-700', dot: 'bg-green-500', border: 'border-green-200' },
+  degraded: { label: 'Degraded', bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-500', border: 'border-amber-200' },
+  offline: { label: 'Offline', bg: 'bg-red-100', text: 'text-red-700', dot: 'bg-red-500', border: 'border-red-200' },
+  unknown: { label: 'Unknown', bg: 'bg-slate-100', text: 'text-slate-600', dot: 'bg-slate-400', border: 'border-slate-200' },
 };
 
+const TABS = [
+  { key: 'inspections', label: 'Inspections', icon: Train },
+  { key: 'defects', label: 'Defect Alerts', icon: ShieldAlert },
+  { key: 'reports', label: 'Reports', icon: FileText },
+  { key: 'history', label: 'Train History', icon: History },
+];
+
 const CAM_STATUS = {
-  healthy:  { dot: 'bg-green-500', label: 'Healthy' },
+  healthy: { dot: 'bg-green-500', label: 'Healthy' },
   degraded: { dot: 'bg-amber-500', label: 'Degraded' },
-  offline:  { dot: 'bg-red-500',   label: 'Offline' },
-  unknown:  { dot: 'bg-slate-400', label: 'Unknown' },
+  offline: { dot: 'bg-red-500', label: 'Offline' },
+  unknown: { dot: 'bg-slate-400', label: 'Unknown' },
 };
 
 function StatusBadge({ status }) {
@@ -44,70 +59,8 @@ function UptimeBar({ pct }) {
 }
 
 function fmt(dt) {
-  if (!dt) return '—';
+  if (!dt) return '-';
   return new Date(dt).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
-}
-
-function StationCard({ station, onClick, windowHours }) {
-  const cfg = STATUS_CONFIG[station.status] ?? STATUS_CONFIG.unknown;
-  return (
-    <button
-      onClick={onClick}
-      className={`text-left w-full bg-white border-2 ${cfg.border} rounded-xl p-5 hover:shadow-md transition-all group`}
-    >
-      <div className="flex items-start justify-between mb-3">
-        <div>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">{station.station_code}</p>
-          <h3 className="text-sm font-bold text-slate-800 leading-tight">{station.station_name}</h3>
-        </div>
-        <StatusBadge status={station.status} />
-      </div>
-
-      <div className="grid grid-cols-3 gap-3 mb-3">
-        <div className="text-center">
-          <p className="text-lg font-bold text-slate-800">{station.total_cameras}</p>
-          <p className="text-[10px] text-slate-400 uppercase">Cameras</p>
-        </div>
-        <div className="text-center border-x border-slate-100">
-          <p className="text-lg font-bold text-slate-800">{station.active_cameras}</p>
-          <p className="text-[10px] text-slate-400 uppercase">Active</p>
-        </div>
-        <div className="text-center">
-          <p className={`text-lg font-bold ${station.active_sessions > 0 ? 'text-blue-600' : 'text-slate-800'}`}>
-            {station.active_sessions}
-          </p>
-          <p className="text-[10px] text-slate-400 uppercase">Sessions</p>
-        </div>
-      </div>
-
-      <div className="mb-2">
-        <p className="text-[10px] text-slate-400 uppercase mb-1">Camera Uptime</p>
-        <UptimeBar pct={station.avg_uptime_pct} />
-      </div>
-
-      {windowHours && (
-        <div className="flex items-center justify-between mt-2 px-2 py-1.5 bg-blue-50 rounded">
-          <span className="text-[10px] text-slate-500 uppercase">Last {windowHours}h Inspections</span>
-          <span className="text-xs font-bold text-blue-700">{station.recent_sessions ?? 0}</span>
-        </div>
-      )}
-
-      {station.edge_machine && (
-        <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-slate-100">
-          <Server className="w-3 h-3 text-slate-400" />
-          <span className="text-[10px] text-slate-500">{station.edge_machine.hostname}</span>
-          <span className="ml-auto text-[10px] text-slate-400">{station.edge_machine.ip_address ?? '—'}</span>
-        </div>
-      )}
-
-      {station.last_inspection && (
-        <div className="flex items-center gap-1.5 mt-1.5">
-          <Clock className="w-3 h-3 text-slate-400" />
-          <span className="text-[10px] text-slate-400">Last: {fmt(station.last_inspection.started_at)}</span>
-        </div>
-      )}
-    </button>
-  );
 }
 
 export function DetailPanel({ code, onBack, hideHeader = false }) {
@@ -132,33 +85,26 @@ export function DetailPanel({ code, onBack, hideHeader = false }) {
   return (
     <div>
       {!hideHeader && (
-        <>
-          <button onClick={onBack} className="flex items-center gap-2 text-sm text-primary hover:underline mb-4">
-            <ChevronLeft className="w-4 h-4" /> All Stations
-          </button>
-
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-              <MapPin className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-slate-400 uppercase">{detail.station_code}</p>
-              <h2 className="text-lg font-bold text-slate-800">{detail.station_name}</h2>
-            </div>
-            {detail.edge_machine && (
-              <div className="ml-auto flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
-                <Server className="w-4 h-4 text-slate-400" />
-                <div>
-                  <p className="text-xs font-bold text-slate-700">{detail.edge_machine.hostname}</p>
-                  <p className="text-[10px] text-slate-400">{detail.edge_machine.ip_address ?? '—'}</p>
-                </div>
-              </div>
-            )}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+            <MapPin className="w-5 h-5 text-primary" />
           </div>
-        </>
+          <div>
+            <p className="text-xs text-slate-400 uppercase">{detail.station_code}</p>
+            <h2 className="text-lg font-bold text-slate-800">{detail.station_name}</h2>
+          </div>
+          {detail.edge_machine && (
+            <div className="ml-auto flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+              <Server className="w-4 h-4 text-slate-400" />
+              <div>
+                <p className="text-xs font-bold text-slate-700">{detail.edge_machine.hostname}</p>
+                <p className="text-[10px] text-slate-400">{detail.edge_machine.ip_address ?? '-'}</p>
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
-      {/* Cameras */}
       <div className="mb-6">
         <h3 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
           <Camera className="w-4 h-4" /> Cameras ({detail.cameras.length})
@@ -183,7 +129,6 @@ export function DetailPanel({ code, onBack, hideHeader = false }) {
         </div>
       </div>
 
-      {/* Recent Sessions */}
       <div>
         <h3 className="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
           <Train className="w-4 h-4" /> Recent Sessions
@@ -204,7 +149,7 @@ export function DetailPanel({ code, onBack, hideHeader = false }) {
                 {detail.recent_sessions.map((s) => (
                   <tr key={s.id} className="hover:bg-slate-50">
                     <td className="px-3 py-2.5 font-mono font-bold text-slate-800">{s.train_number}</td>
-                    <td className="px-3 py-2.5 text-slate-500">{s.session_code ?? '—'}</td>
+                    <td className="px-3 py-2.5 text-slate-500">{s.session_code ?? '-'}</td>
                     <td className="px-3 py-2.5">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                         s.status === 'completed' ? 'bg-green-100 text-green-700' :
@@ -213,7 +158,7 @@ export function DetailPanel({ code, onBack, hideHeader = false }) {
                         'bg-slate-100 text-slate-600'
                       }`}>{s.status}</span>
                     </td>
-                    <td className="px-3 py-2.5 text-slate-600">{s.health_score != null ? `${Number(s.health_score).toFixed(1)}%` : '—'}</td>
+                    <td className="px-3 py-2.5 text-slate-600">{s.health_score != null ? `${Number(s.health_score).toFixed(1)}%` : '-'}</td>
                     <td className="px-3 py-2.5">
                       {s.critical_defects > 0 ? (
                         <span className="text-red-600 font-bold">{s.critical_defects}</span>
@@ -235,12 +180,17 @@ export function DetailPanel({ code, onBack, hideHeader = false }) {
 
 export function StationMonitoringDashboard() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedCode = searchParams.get('station') || '';
+  const activeTab = searchParams.get('tab') || 'inspections';
+
   const [overview, setOverview] = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState(null);
-  const [selected, setSelected] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [lastRefresh, setLastRefresh] = useState(null);
-  const [window, setWindow]     = useState(null);   // null = all-time, else 6|12|24 (hours)
+  const [window, setWindow] = useState(null);
 
   const load = () => {
     setLoading(true);
@@ -253,46 +203,60 @@ export function StationMonitoringDashboard() {
 
   useEffect(() => { load(); }, [window]);
 
-  const counts = {
-    total:    overview.length,
-    online:   overview.filter((s) => s.status === 'online').length,
-    degraded: overview.filter((s) => s.status === 'degraded').length,
-    offline:  overview.filter((s) => s.status === 'offline').length,
-    sessions: overview.reduce((sum, s) => sum + s.active_sessions, 0),
+  useEffect(() => {
+    if (!selectedCode) {
+      setDetail(null);
+      return;
+    }
+    setDetailLoading(true);
+    getStationDetail(selectedCode)
+      .then(setDetail)
+      .catch(() => setDetail(null))
+      .finally(() => setDetailLoading(false));
+  }, [selectedCode]);
+
+  const setStation = (code) => {
+    if (!code) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+    setSearchParams({ station: code, tab: activeTab }, { replace: true });
   };
 
+  const setTab = (tab) => {
+    if (!selectedCode) return;
+    setSearchParams(tab === 'inspections' ? { station: selectedCode } : { station: selectedCode, tab }, { replace: true });
+  };
+
+  const stationName = detail?.station_name || null;
+
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="p-5 space-y-4 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-primary" /> Station Monitoring Dashboard
-          </h1>
-          {lastRefresh && (
-            <p className="text-xs text-slate-400 mt-0.5">
-              Last updated {lastRefresh.toLocaleTimeString()}
-            </p>
-          )}
+          <h1 className="text-base font-extrabold uppercase tracking-wider">Stations Command Center</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Last refresh: {lastRefresh ? lastRefresh.toLocaleTimeString() : '-'} · Auto-refreshes on demand
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          {/* Time-window filter — scopes the recent-inspection count */}
-          <div className="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-1 text-xs font-bold">
-            {[
-              { label: 'All', value: null },
-              { label: '6h',  value: 6 },
-              { label: '12h', value: 12 },
-              { label: '24h', value: 24 },
-            ].map(({ label, value }) => (
-              <button
-                key={label}
-                onClick={() => setWindow(value)}
-                className={`px-3 py-1 rounded transition-all ${window === value ? 'bg-white shadow-sm text-primary' : 'text-slate-500'}`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          <Select value={selectedCode} onValueChange={setStation}>
+            <SelectTrigger className="text-xs h-8 w-56">
+              <SelectValue placeholder="Select station" />
+            </SelectTrigger>
+            <SelectContent>
+              {overview.map((station) => (
+                <SelectItem key={station.station_code} value={station.station_code}>
+                  {station.station_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {selectedCode && detail?.status && (
+            <Badge variant="secondary" className="text-xs gap-1.5">
+              <MapPin className="w-3 h-3" /> {detail.station_code}
+            </Badge>
+          )}
           <button
             onClick={load}
             disabled={loading}
@@ -303,62 +267,79 @@ export function StationMonitoringDashboard() {
         </div>
       </div>
 
-      {/* KPI Strip */}
-      {!selected && (
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-          {[
-            { label: 'Total Stations', value: counts.total, icon: MapPin, color: 'text-slate-600' },
-            { label: 'Online',  value: counts.online,   icon: Wifi,          color: 'text-green-600' },
-            { label: 'Degraded', value: counts.degraded, icon: AlertTriangle, color: 'text-amber-600' },
-            { label: 'Offline', value: counts.offline,  icon: WifiOff,       color: 'text-red-600'   },
-            { label: 'Active Sessions', value: counts.sessions, icon: Activity, color: 'text-blue-600' },
-          ].map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="bg-white border border-slate-200 rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-1">
-                <Icon className={`w-4 h-4 ${color}`} />
-                <span className="text-[10px] text-slate-400 uppercase font-bold">{label}</span>
-              </div>
-              <p className={`text-2xl font-bold ${color}`}>{value}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      {/* Content */}
-      {selected ? (
-        <DetailPanel code={selected} onBack={() => setSelected(null)} />
+      {!selectedCode ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50">
+          <Train className="w-10 h-10 text-slate-300" />
+          <p className="text-sm font-bold text-muted-foreground">Please select a station</p>
+          <p className="text-xs text-muted-foreground">Choose a station from the dropdown above to view its inspections, defects, reports, and history.</p>
+        </div>
+      ) : detailLoading ? (
+        <div className="flex h-64 items-center justify-center">
+          <RefreshCw className="w-5 h-5 animate-spin text-muted-foreground" />
+          <span className="ml-2 text-sm text-muted-foreground">Loading station workspace...</span>
+        </div>
+      ) : !detail ? (
+        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center">
+          <MapPin className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+          <p className="text-slate-500 font-medium">Station not found.</p>
+        </div>
       ) : (
         <>
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-slate-100 rounded-xl h-48 animate-pulse" />
-              ))}
+          <div className="bg-white border border-slate-200 rounded-xl p-4">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <MapPin className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">{detail.station_code}</p>
+                <h2 className="text-lg font-black text-slate-800 leading-tight">{detail.station_name}</h2>
+              </div>
+              {detail.status && <StatusBadge status={detail.status} />}
+              {detail.edge_machine && (
+                <div className="ml-auto flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                  <Server className="w-4 h-4 text-slate-400" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-700">{detail.edge_machine.hostname}</p>
+                    <p className="text-[10px] text-slate-400">{detail.edge_machine.ip_address ?? '-'}</p>
+                  </div>
+                </div>
+              )}
             </div>
-          ) : overview.length === 0 ? (
-            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center">
-              <MapPin className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500 font-medium">No stations configured.</p>
-              <p className="text-slate-400 text-sm mt-1">Add camera setups to see stations here.</p>
+
+            <div className="flex items-center gap-1 overflow-x-auto mt-4 border-t border-slate-100 pt-3">
+              {TABS.map((t) => {
+                const Icon = t.icon;
+                const active = activeTab === t.key;
+                return (
+                  <button
+                    key={t.key}
+                    onClick={() => setTab(t.key)}
+                    className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
+                      active
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {t.label}
+                  </button>
+                );
+              })}
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {overview.map((station) => (
-                <StationCard
-                  key={station.id}
-                  station={station}
-                  windowHours={window}
-                  onClick={() => navigate(`/stations/${station.station_code}`)}
-                />
-              ))}
-            </div>
-          )}
+          </div>
+
+          <div className="min-h-[420px]">
+            {activeTab === 'inspections' && <Sessions lockedStation={stationName} />}
+            {activeTab === 'defects' && <DefectAlertConsole lockedStation={stationName} />}
+            {activeTab === 'reports' && <Reports lockedStation={stationName} />}
+            {activeTab === 'history' && <TrainPassageHistory lockedStation={stationName} />}
+          </div>
         </>
       )}
     </div>

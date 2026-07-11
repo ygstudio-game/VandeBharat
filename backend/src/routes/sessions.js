@@ -316,7 +316,7 @@ async function sessions(fastify) {
           trigger_id: true, captured_at_ms: true,
           thumbnail_url: true, cloudinary_url: true,
           is_ocr_candidate: true, is_defect_flagged: true,
-          review_status: true,
+          review_status: true, review_notes: true,
           ocr_results: {
             select: {
               coach_number: true, confidence: true, is_valid: true,
@@ -345,14 +345,17 @@ async function sessions(fastify) {
     };
   });
 
-  // PATCH /api/sessions/frames/:frameId/review { status, notes }
+  // PATCH /api/sessions/frames/:frameId/review { status?, notes? }
   // Manual verification of a single frame/image. Works for every frame whether
   // or not it carries a detected defect. When the frame DOES have defects, the
   // same decision is propagated to those defect rows + the defect review log so
   // the training-export feed stays consistent with the older per-defect flow.
+  // `status` is optional — omit it to attach/update a note without touching
+  // the existing accept/reject decision (used by the "add note" pen icon).
   fastify.patch('/frames/:frameId/review', async (req, reply) => {
     const { status, notes } = req.body || {};
-    if (!FRAME_REVIEW_STATUSES.has(status)) {
+    const statusProvided = status !== undefined;
+    if (statusProvided && !FRAME_REVIEW_STATUSES.has(status)) {
       reply.status(400);
       return { error: `status must be one of: ${[...FRAME_REVIEW_STATUSES].join(', ')}` };
     }
@@ -367,44 +370,53 @@ async function sessions(fastify) {
     }
 
     const reviewedAt = new Date();
-    await prisma.frame.update({
-      where: { id: frame.id },
-      data: {
-        review_status: status,
-        reviewed_by: req.user.id,
-        reviewed_at: reviewedAt,
-        review_notes: notes || null,
-      },
-    });
+    const reviewNotes = notes !== undefined ? (notes || null) : frame.review_notes;
+    const frameData = { review_notes: reviewNotes };
+    if (statusProvided) {
+      frameData.review_status = status;
+      frameData.reviewed_by = req.user.id;
+      frameData.reviewed_at = reviewedAt;
+    }
+    await prisma.frame.update({ where: { id: frame.id }, data: frameData });
 
     // Propagate to any defects on this frame so per-defect review + training
     // export reflect the same decision.
     if (frame.defects.length > 0) {
       const defectIds = frame.defects.map((d) => d.id);
-      await prisma.defect.updateMany({
-        where: { id: { in: defectIds } },
-        data: { review_status: status, reviewed_by: req.user.id, reviewed_at: reviewedAt, review_notes: notes || null },
-      });
-      await prisma.defectReviewLog.createMany({
-        data: frame.defects.map((d) => ({
-          session_id: frame.session_id,
-          coach_id: d.coach_id,
-          defect_id: d.id,
-          log_type: status,
-          defect_type: d.defect_type,
-          notes: notes || null,
-          logged_by: req.user.id,
-        })),
-      });
+      const defectData = { review_notes: reviewNotes };
+      if (statusProvided) {
+        defectData.review_status = status;
+        defectData.reviewed_by = req.user.id;
+        defectData.reviewed_at = reviewedAt;
+      }
+      await prisma.defect.updateMany({ where: { id: { in: defectIds } }, data: defectData });
+      if (statusProvided) {
+        await prisma.defectReviewLog.createMany({
+          data: frame.defects.map((d) => ({
+            session_id: frame.session_id,
+            coach_id: d.coach_id,
+            defect_id: d.id,
+            log_type: status,
+            defect_type: d.defect_type,
+            notes: reviewNotes,
+            logged_by: req.user.id,
+          })),
+        });
+      }
     }
 
     await logAction({
-      userId: req.user.id, sessionId: frame.session_id, action: 'FRAME_REVIEWED',
+      userId: req.user.id, sessionId: frame.session_id, action: statusProvided ? 'FRAME_REVIEWED' : 'FRAME_NOTE_ADDED',
       resourceType: 'Frame', resourceId: frame.id, ip: req.ip,
-      metadata: { status, defect_count: frame.defects.length },
+      metadata: { status: statusProvided ? status : frame.review_status, defect_count: frame.defects.length },
     });
 
-    return { frame_id: frame.id, review_status: status, defects_updated: frame.defects.length };
+    return {
+      frame_id: frame.id,
+      review_status: statusProvided ? status : frame.review_status,
+      review_notes: reviewNotes,
+      defects_updated: frame.defects.length,
+    };
   });
 
   // POST /api/sessions/:id/process  (Phase 2)

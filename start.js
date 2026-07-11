@@ -41,7 +41,31 @@ const PY = WIN
   ? path.join('venv', 'Scripts', 'python.exe')
   : path.join('venv', 'bin', 'python');
 
+function servicePython(dir, fallbackDir) {
+  const primary = path.join(dir, PY);
+  if (fs.existsSync(path.join(ROOT, primary))) return path.join(ROOT, primary);
+  if (fallbackDir) {
+    const fallback = path.join(fallbackDir, PY);
+    if (fs.existsSync(path.join(ROOT, fallback))) return path.join(ROOT, fallback);
+  }
+  return PY;
+}
+
+const INGESTION_PY = servicePython('services/ingestion', 'services/frame_extractor');
+
 const SERVICES = [
+  // ── Edge ingestion publisher ───────────────────────────────────────────────
+  {
+    name:    'INGESTION',
+    color:   C.cyan,
+    dir:     'services/ingestion',
+    cmd:     INGESTION_PY,
+    args:    ['-m', 'uvicorn', 'server:app', '--host', '0.0.0.0', '--port', '5007'],
+    port:    5007,
+    health:  '/health',
+    waitMs:  30_000,
+  },
+
   // ── GPU services first (model warm-up is slow, give them 120 s) ──────────
   {
     name:    'YOLO',
@@ -135,6 +159,20 @@ const SERVICES = [
   },
 ];
 
+const INFRA = [
+  {
+    name:    'MAILHOG',
+    color:   C.magenta,
+    dir:     '.',
+    cmd:     WIN ? 'docker.exe' : 'docker',
+    inPath:  true,
+    args:    ['compose', '-f', 'docker-compose.test.yml', 'up', '-d', 'mailhog'],
+    port:    8025,
+    health:  '/api/v2/messages',
+    waitMs:  30_000,
+  },
+];
+
 // ── Runtime state ─────────────────────────────────────────────────────────
 const running  = [];   // { name, proc }
 let   shutting = false;
@@ -207,6 +245,41 @@ function probeHealth(port, urlPath) {
     req.on('error',   () => resolve(false));
     req.on('timeout', () => { req.destroy(); resolve(false); });
   });
+}
+
+async function ensureInfraReady(svc) {
+  log(svc.name, svc.color, 'ensuring development infra is running…');
+  await new Promise((resolve, reject) => {
+    const cwd = path.join(ROOT, svc.dir);
+    const proc = spawn(svc.cmd, svc.args, {
+      cwd,
+      stdio: 'pipe',
+      shell: svc.shell ?? false,
+      windowsHide: true,
+    });
+
+    let stderr = '';
+    proc.stdout.on('data', (buf) => {
+      buf.toString().trimEnd().split('\n').filter(Boolean)
+        .forEach((line) => log(svc.name, svc.color, line));
+    });
+    proc.stderr.on('data', (buf) => {
+      const text = buf.toString();
+      stderr += text;
+      text.trimEnd().split('\n').filter(Boolean)
+        .forEach((line) => log(svc.name, C.gray, line));
+    });
+    proc.on('error', reject);
+    proc.on('exit', (code) => {
+      if (code === 0) return resolve();
+      reject(new Error(`${svc.name} bootstrap failed (code=${code}): ${stderr.trim()}`));
+    });
+  });
+
+  if (svc.health) {
+    await pollHealth(svc.port, svc.health, svc.waitMs);
+    log(svc.name, svc.color, `${C.green}✓ ready${C.reset}`);
+  }
 }
 
 // ── Supervisor restart: kill the dead service's proc, free its port, respawn ──
@@ -335,6 +408,14 @@ async function main() {
     `${C.reset}\n`
   );
 
+  for (const svc of INFRA) {
+    try {
+      await ensureInfraReady(svc);
+    } catch (err) {
+      log(svc.name, C.yellow, `skipping optional infra — ${err.message}`);
+    }
+  }
+
   for (const svc of SERVICES) {
     try {
       // Free the port before starting each service so stale processes never block startup
@@ -352,12 +433,14 @@ async function main() {
     `\n${C.bold}${C.green}All services online.${C.reset}\n` +
     `  Frontend   →  http://localhost:5173\n` +
     `  Backend    →  http://localhost:8001\n` +
+    `  Ingestion  →  http://localhost:5007/health\n` +
     `  YOLO       →  http://localhost:5002/health\n` +
     `  OCR        →  http://localhost:5000/health\n` +
     `  Frame Ext  →  http://localhost:5003/health\n` +
     `  Sync Eng   →  http://localhost:5004/health\n` +
     `  Correlate  →  http://localhost:5005/health\n` +
     `  Report Gen →  http://localhost:5006/health\n` +
+    `  MailHog    →  http://localhost:8025\n` +
     `\n${C.gray}Ctrl+C to stop everything.${C.reset}\n`
   );
 

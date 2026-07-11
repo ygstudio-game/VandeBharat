@@ -14,6 +14,7 @@ import requests
 HOST = os.environ.get("HEALTH_HOST", "127.0.0.1")
 
 SERVICES = {
+    "ingestion": 5007,
     "ocr": 5000,
     "yolo": 5002,
     "frame_extractor": 5003,

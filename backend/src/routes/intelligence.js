@@ -124,6 +124,7 @@ async function intelligence(fastify) {
         is_ocr_candidate: true,
         is_defect_flagged: true,
         review_status: true,
+        review_notes: true,
         session_camera: { select: { id: true, camera_type: true, name: true } },
         coach_frame_map: { select: { assignment_method: true, confidence: true } },
         ocr_results: {
@@ -166,6 +167,7 @@ async function intelligence(fastify) {
         sequence_number: f.sequence_number,
         captured_at_ms: Number(f.captured_at_ms),
         review_status: f.review_status,
+        review_notes: f.review_notes,
         cloudinary_url: f.cloudinary_url,
         thumbnail_url: f.thumbnail_url,
         width: f.width_px,

@@ -7,7 +7,7 @@ import { RakeVisualization } from '../components/dashboard/RakeVisualization';
 import { usePolling } from '../hooks/usePolling';
 import { useSessionSocket } from '../hooks/useSessionSocket';
 import { toast } from '../hooks/useToast';
-import { getDashboardKpis, getLiveQueue, getRecentDefects, getHierarchy, normalizeSession } from '../lib/api';
+import { getDashboardKpis, getLiveQueue, getRecentDefects, getHierarchy, normalizeSession, getAiPerformance, getModelMetrics } from '../lib/api';
 import DetectionLogTable from '../components/DetectionLogTable';
 import { useAuth } from '../contexts/AuthContext';
 import { ROLES } from '../lib/roles';
@@ -20,6 +20,9 @@ import {
   Activity,
   Plus,
   ChevronRight,
+  Target,
+  TrendingUp,
+  Gauge,
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -30,9 +33,13 @@ export const Dashboard = () => {
   const { data: kpis,      refresh: refreshKpis }    = usePolling(getDashboardKpis, 10000);
   const { data: queueData, refresh: refreshQueue }   = usePolling(getLiveQueue, 5000);
   const { data: defectsData, refresh: refreshDefects } = usePolling(getRecentDefects, 15000);
+  const { data: aiPerf }    = usePolling(getAiPerformance, 30000);
+  const { data: modelMetrics } = usePolling(getModelMetrics, 30000);
 
   const liveSessions = (queueData?.sessions || []).map(normalizeSession);
   const kv = (key, fallback) => kpis?.[key] ?? fallback;
+  const pct = (v) => (v === null || v === undefined ? '—' : `${(v * 100).toFixed(1)}%`);
+  const avgLatencyMs = modelMetrics?.yolo?.avg_latency_ms ?? modelMetrics?.ocr?.avg_latency_ms ?? null;
   const [previewDefect, setPreviewDefect] = useState(null);
 
   // Rake visualization — fetch hierarchy for the first active (non-completed) session
@@ -206,6 +213,13 @@ export const Dashboard = () => {
         <KPICard label="Queued"          value={String(kv('queued_sessions', '—'))}     icon={<Activity className="w-4 h-4 text-muted-foreground" />} highlightColor="slate" />
         <KPICard label="Critical Alerts" value={String(kv('critical_defects', '—'))}   icon={<ShieldAlert className="w-4 h-4 text-destructive" />} highlightColor="red" />
         <KPICard label="Failed Sessions" value={String(kv('failed_sessions', '—'))}    icon={<AlertTriangle className="w-4 h-4 text-warning" />} highlightColor="amber" />
+      </div>
+
+      {/* AI Model Performance Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <KPICard label="Precision"    value={pct(aiPerf?.summary?.precision)} icon={<Target className="w-4 h-4 text-blue-600" />} highlightColor="blue" />
+        <KPICard label="Recall"       value={pct(aiPerf?.summary?.recall)}    icon={<TrendingUp className="w-4 h-4 text-success" />} highlightColor="emerald" />
+        <KPICard label="Avg Latency"  value={avgLatencyMs != null ? `${Math.round(avgLatencyMs)}ms` : '—'} icon={<Gauge className="w-4 h-4 text-processing" />} highlightColor="cyan" />
       </div>
 
       {/* Active Train Rake Visualization */}

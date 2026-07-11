@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Eye, ArrowUpDown, ArrowUp, ArrowDown, AlertTriangle, MapPin, Train, Camera, ExternalLink, Check, X, Loader2 } from 'lucide-react';
+import { Search, Filter, Eye, ArrowUpDown, ArrowUp, ArrowDown, AlertTriangle, MapPin, Train, Camera, ExternalLink, Check, X, Loader2, Pencil } from 'lucide-react';
 
 const DetectionLogTable = ({
   frames = [],
@@ -14,8 +14,9 @@ const DetectionLogTable = ({
   showActions = true,
   // When provided, renders a "Defect Verification" column with Accept/Reject
   // buttons on EVERY frame row (defect or not). Receives
-  // (frameId: string, status: 'confirmed'|'false_positive') and should return a
-  // Promise that resolves once the backend review is saved.
+  // (frameId: string, status: 'confirmed'|'false_positive'|undefined, notes?: string)
+  // and should return a Promise that resolves once the backend review is saved.
+  // Pass status as undefined to update only the note, leaving the decision as-is.
   onReviewFrame = null,
 }) => {
   const [query, setQuery] = useState('');
@@ -24,6 +25,8 @@ const DetectionLogTable = ({
   const [sortAsc, setSortAsc] = useState(true);
   // frameId -> { status, busy } optimistic verification state
   const [reviewState, setReviewState] = useState({});
+  // frameId -> { open, draft, busy, saved } — pen-icon "add note" popover state
+  const [noteState, setNoteState] = useState({});
 
   const derivedRows = useMemo(() => frames.map(f => {
     const frameComponents = components.filter(
@@ -71,6 +74,7 @@ const DetectionLogTable = ({
       defect: defectStr,
       hasDefect: frameDefects.length > 0,
       reviewStatus,
+      reviewNotes: f.review_notes || '',
       severity: frameDefects[0]?.severity ?? null,
       confidence: maxConf > 0 ? `${Math.round(maxConf * 100)}%` : '—',
       detectionCount: frameComponents.length,
@@ -137,6 +141,29 @@ const DetectionLogTable = ({
       setReviewState(prev => ({ ...prev, [row.id]: { status, busy: false } }));
     } catch {
       setReviewState(prev => ({ ...prev, [row.id]: { status: prev[row.id]?.status, busy: false } }));
+    }
+  };
+
+  const currentNote = (row) => noteState[row.id]?.saved ?? row.reviewNotes ?? '';
+
+  const openNote = (row) => {
+    setNoteState(prev => ({ ...prev, [row.id]: { ...prev[row.id], open: true, draft: currentNote(row) } }));
+  };
+  const closeNote = (rowId) => {
+    setNoteState(prev => ({ ...prev, [rowId]: { ...prev[rowId], open: false } }));
+  };
+  const changeNoteDraft = (rowId, val) => {
+    setNoteState(prev => ({ ...prev, [rowId]: { ...prev[rowId], draft: val } }));
+  };
+  const saveNote = async (row) => {
+    if (!onReviewFrame) return;
+    const draft = noteState[row.id]?.draft ?? '';
+    setNoteState(prev => ({ ...prev, [row.id]: { ...prev[row.id], busy: true } }));
+    try {
+      await onReviewFrame(row.id, undefined, draft);
+      setNoteState(prev => ({ ...prev, [row.id]: { open: false, busy: false, saved: draft } }));
+    } catch {
+      setNoteState(prev => ({ ...prev, [row.id]: { ...prev[row.id], busy: false } }));
     }
   };
 
@@ -289,49 +316,92 @@ const DetectionLogTable = ({
                     )}
                   </td>
 
-                  {/* Defect Verification — Accept / Reject (every frame) */}
+                  {/* Defect Verification — Accept / Reject (every frame) + note */}
                   {onReviewFrame && (
                     <td className="px-3 py-2 whitespace-nowrap">
-                      {(() => {
-                        const live = reviewState[row.id];
-                        const status = live?.status ?? row.reviewStatus;
-                        const busy = live?.busy;
-                        if (busy) {
-                          return <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />;
-                        }
-                        if (status === 'confirmed') {
+                      <div className="relative flex items-center gap-1.5">
+                        {(() => {
+                          const live = reviewState[row.id];
+                          const status = live?.status ?? row.reviewStatus;
+                          const busy = live?.busy;
+                          if (busy) {
+                            return <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />;
+                          }
+                          if (status === 'confirmed') {
+                            return (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <Check className="w-3 h-3" /> Accepted
+                              </span>
+                            );
+                          }
+                          if (status === 'false_positive') {
+                            return (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-1 rounded bg-slate-100 text-slate-500 border border-slate-200">
+                                <X className="w-3 h-3" /> Rejected
+                              </span>
+                            );
+                          }
                           return (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              <Check className="w-3 h-3" /> Accepted
-                            </span>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => handleReview(row, 'confirmed')}
+                                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-emerald-200 text-emerald-700 hover:bg-emerald-600 hover:text-white hover:border-emerald-600"
+                                title="Accept defect (confirmed)"
+                              >
+                                <Check className="w-3 h-3" /> ACCEPT
+                              </button>
+                              <button
+                                onClick={() => handleReview(row, 'false_positive')}
+                                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-red-200 text-red-700 hover:bg-red-600 hover:text-white hover:border-red-600"
+                                title="Reject defect (false positive)"
+                              >
+                                <X className="w-3 h-3" /> REJECT
+                              </button>
+                            </div>
                           );
-                        }
-                        if (status === 'false_positive') {
-                          return (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase px-2 py-1 rounded bg-slate-100 text-slate-500 border border-slate-200">
-                              <X className="w-3 h-3" /> Rejected
-                            </span>
-                          );
-                        }
-                        return (
-                          <div className="flex items-center gap-1.5">
-                            <button
-                              onClick={() => handleReview(row, 'confirmed')}
-                              className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-emerald-200 text-emerald-700 hover:bg-emerald-600 hover:text-white hover:border-emerald-600"
-                              title="Accept defect (confirmed)"
-                            >
-                              <Check className="w-3 h-3" /> ACCEPT
-                            </button>
-                            <button
-                              onClick={() => handleReview(row, 'false_positive')}
-                              className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 border rounded transition-colors border-red-200 text-red-700 hover:bg-red-600 hover:text-white hover:border-red-600"
-                              title="Reject defect (false positive)"
-                            >
-                              <X className="w-3 h-3" /> REJECT
-                            </button>
+                        })()}
+
+                        <button
+                          onClick={() => (noteState[row.id]?.open ? closeNote(row.id) : openNote(row))}
+                          className={`inline-flex items-center justify-center w-5 h-5 rounded border transition-colors shrink-0 ${
+                            currentNote(row)
+                              ? 'border-amber-300 bg-amber-50 text-amber-600'
+                              : 'border-slate-200 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+                          }`}
+                          title={currentNote(row) ? 'Edit note' : 'Add note'}
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </button>
+
+                        {noteState[row.id]?.open && (
+                          <div className="absolute z-20 top-6 left-0 w-64 bg-white border border-slate-200 rounded-lg shadow-lg p-2.5">
+                            <textarea
+                              autoFocus
+                              rows={3}
+                              value={noteState[row.id]?.draft ?? ''}
+                              onChange={(e) => changeNoteDraft(row.id, e.target.value)}
+                              placeholder="Add a note for this frame…"
+                              className="w-full text-xs border border-slate-200 rounded p-1.5 focus:outline-none focus:border-primary resize-none normal-case"
+                            />
+                            <div className="flex items-center justify-end gap-1.5 mt-1.5">
+                              <button
+                                onClick={() => closeNote(row.id)}
+                                className="text-[10px] font-bold px-2 py-1 rounded border border-slate-200 text-slate-500 hover:bg-slate-100"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => saveNote(row)}
+                                disabled={noteState[row.id]?.busy}
+                                className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded bg-primary text-white hover:opacity-90 disabled:opacity-50"
+                              >
+                                {noteState[row.id]?.busy && <Loader2 className="w-3 h-3 animate-spin" />}
+                                Save
+                              </button>
+                            </div>
                           </div>
-                        );
-                      })()}
+                        )}
+                      </div>
                     </td>
                   )}
 

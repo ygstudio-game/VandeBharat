@@ -175,14 +175,19 @@ export const Reports = ({ lockedStation = null }) => {
   // image whether or not it carries a defect. Persists frame.review_status (and
   // server-side propagates to defect rows + training-export feed), then patches
   // the in-memory frame so the row reflects the new status without a refetch.
-  const handleReviewFrame = useCallback(async (frameId, status) => {
-    await reviewFrame(frameId, status);
+  // `status` is optional — omit it to save/edit a note without changing the
+  // existing accept/reject decision (used by the "add note" pen icon).
+  const handleReviewFrame = useCallback(async (frameId, status, notes) => {
+    const result = await reviewFrame(frameId, status, notes);
     setCoachFrames(prev => prev.map(f => (
       f.id === frameId
         ? {
             ...f,
-            review_status: status,
-            defects: (f.defects || []).map(d => ({ ...d, review_status: status })),
+            review_status: result.review_status,
+            review_notes: result.review_notes,
+            defects: status !== undefined
+              ? (f.defects || []).map(d => ({ ...d, review_status: status }))
+              : f.defects,
           }
         : f
     )));

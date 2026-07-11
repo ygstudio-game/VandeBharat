@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, MapPin, Server, RefreshCw, LayoutDashboard, Train, ShieldAlert, ScanText, FileText, History } from 'lucide-react';
-import { getStationDetail } from '../lib/api';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
+import { ChevronLeft, MapPin, Server, RefreshCw, Train, ShieldAlert, FileText, History } from 'lucide-react';
+import { getStationDetail, getStations } from '../lib/api';
 import { DetailPanel } from './StationMonitoringDashboard';
 import { Sessions } from './Sessions';
 import { DefectAlertConsole } from './DefectAlertConsole';
@@ -10,17 +13,17 @@ import { Reports } from './Reports';
 import { TrainPassageHistory } from './TrainPassageHistory';
 
 const TABS = [
-  { key: 'inspections',  label: 'Inspections',     icon: Train },
-  { key: 'defects',      label: 'Defect Alerts',   icon: ShieldAlert },
-  { key: 'reports',      label: 'Reports',         icon: FileText },
-  { key: 'history',      label: 'Train History',   icon: History },
+  { key: 'inspections', label: 'Inspections', icon: Train },
+  { key: 'defects', label: 'Defect Alerts', icon: ShieldAlert },
+  { key: 'reports', label: 'Reports', icon: FileText },
+  { key: 'history', label: 'Train History', icon: History },
 ];
 
 const STATUS_BADGE = {
-  online:   'bg-green-100 text-green-700',
+  online: 'bg-green-100 text-green-700',
   degraded: 'bg-amber-100 text-amber-700',
-  offline:  'bg-red-100 text-red-700',
-  unknown:  'bg-slate-100 text-slate-600',
+  offline: 'bg-red-100 text-red-700',
+  unknown: 'bg-slate-100 text-slate-600',
 };
 
 export function StationWorkspace() {
@@ -31,11 +34,16 @@ export function StationWorkspace() {
 
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [stationOptions, setStationOptions] = useState([]);
 
   useEffect(() => {
     setLoading(true);
     getStationDetail(code).then(setDetail).finally(() => setLoading(false));
   }, [code]);
+
+  useEffect(() => {
+    getStations().then(setStationOptions).catch(() => setStationOptions([]));
+  }, []);
 
   const setTab = (key) => setSearchParams(key === 'inspections' ? {} : { tab: key }, { replace: true });
 
@@ -62,7 +70,6 @@ export function StationWorkspace() {
 
   return (
     <div className="flex flex-col">
-      {/* Sticky station header + tabs */}
       <div className="sticky top-0 z-20 bg-card border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-6 pt-4">
           <button
@@ -72,7 +79,7 @@ export function StationWorkspace() {
             <ChevronLeft className="w-4 h-4" /> All Stations
           </button>
 
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-4 flex-wrap">
             <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
               <MapPin className="w-5 h-5 text-primary" />
             </div>
@@ -85,18 +92,31 @@ export function StationWorkspace() {
                 {detail.status}
               </span>
             )}
-            {detail.edge_machine && (
-              <div className="ml-auto flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
-                <Server className="w-4 h-4 text-slate-400" />
-                <div>
-                  <p className="text-xs font-bold text-slate-700">{detail.edge_machine.hostname}</p>
-                  <p className="text-[10px] text-slate-400">{detail.edge_machine.ip_address ?? '—'}</p>
+            <div className="ml-auto flex items-center gap-3 flex-wrap">
+              <Select value={code} onValueChange={(nextCode) => navigate(`/stations/${nextCode}`)}>
+                <SelectTrigger className="w-60 bg-white">
+                  <SelectValue placeholder="Switch station" />
+                </SelectTrigger>
+                <SelectContent>
+                  {stationOptions.map((station) => (
+                    <SelectItem key={station.station_code} value={station.station_code}>
+                      {station.station_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {detail.edge_machine && (
+                <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
+                  <Server className="w-4 h-4 text-slate-400" />
+                  <div>
+                    <p className="text-xs font-bold text-slate-700">{detail.edge_machine.hostname}</p>
+                    <p className="text-[10px] text-slate-400">{detail.edge_machine.ip_address ?? '-'}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
-          {/* Tabs */}
           <div className="flex items-center gap-1 overflow-x-auto">
             {TABS.map((t) => {
               const Icon = t.icon;
@@ -120,7 +140,6 @@ export function StationWorkspace() {
         </div>
       </div>
 
-      {/* Tab content — pages locked to this station */}
       <div className="flex-1">
         {activeTab === 'overview' && (
           <div className="p-6 max-w-7xl mx-auto">
@@ -128,10 +147,10 @@ export function StationWorkspace() {
           </div>
         )}
         {activeTab === 'inspections' && <Sessions lockedStation={stationName} />}
-        {activeTab === 'defects'     && <DefectAlertConsole lockedStation={stationName} />}
-        {activeTab === 'coach-log'   && <OcrResultsLog lockedStation={stationName} />}
-        {activeTab === 'reports'     && <Reports lockedStation={stationName} />}
-        {activeTab === 'history'      && <TrainPassageHistory lockedStation={stationName} />}
+        {activeTab === 'defects' && <DefectAlertConsole lockedStation={stationName} />}
+        {activeTab === 'coach-log' && <OcrResultsLog lockedStation={stationName} />}
+        {activeTab === 'reports' && <Reports lockedStation={stationName} />}
+        {activeTab === 'history' && <TrainPassageHistory lockedStation={stationName} />}
       </div>
     </div>
   );

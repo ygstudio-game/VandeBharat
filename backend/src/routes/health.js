@@ -5,6 +5,7 @@ const { getDlqDepth } = require('../queue/queue');
 const PIPELINE_STREAMS = ['ocr_detection', 'synchronization', 'correlation', 'report_generation'];
 
 const SERVICES = [
+  { name: 'INGESTION',  port: 5007, label: 'Ingestion Service' },
   { name: 'YOLO',       port: 5002, label: 'Defect Detector' },
   { name: 'OCR',        port: 5000, label: 'PaddleOCR Engine' },
   { name: 'FRAME-EXT',  port: 5003, label: 'Frame Extractor' },
