@@ -73,7 +73,7 @@ const SERVICES = [
   {
     label: 'GPU/ocr',
     dir:   'GPU/ocr',
-    pkgs:  ['fastapi','uvicorn','paddleocr','opencv-python-headless',
+    pkgs:  ['fastapi','uvicorn','rapidocr','onnxruntime','opencv-python-headless',
             'requests','psycopg2-binary','cloudinary','python-dotenv'],
   },
   {
@@ -130,11 +130,11 @@ if (fs.existsSync(yoloPy)) {
 
 const ocrPy = pyExe('GPU/ocr');
 if (fs.existsSync(ocrPy)) {
-  const r = pyRun(ocrPy, 'import paddle; print(paddle.__version__)');
+  const r = pyRun(ocrPy, 'import onnxruntime; print(onnxruntime.__version__)');
   if (r) {
-    ok(`paddlepaddle ${r}`);
+    ok(`onnxruntime ${r}`);
   } else {
-    wn('paddlepaddle NOT installed in GPU/ocr/venv  (GPU inference will fail)');
+    wn('onnxruntime NOT installed in GPU/ocr/venv  (GPU inference will fail)');
   }
 } else {
   console.log('  [SKIP]  GPU/ocr venv missing');
