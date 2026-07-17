@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VandeInspect AI — Hardware Requirements</title>
+<style>
+  /* ── RESET & BASE ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 13px; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; background: #fff; line-height: 1.6; }
+
+  /* ── PRINT ── */
+  @media print {
+    @page { size: A4; margin: 15mm 12mm; }
+    .page-break { page-break-before: always; }
+    .no-break { page-break-inside: avoid; }
+    body { font-size: 11px; }
+    .cover { height: 100vh; }
+  }
+
+  /* ── COLOUR PALETTE ── */
+  :root {
+    --navy:   #0f172a;
+    --blue:   #1e3a5f;
+    --accent: #2563eb;
+    --green:  #16a34a;
+    --amber:  #d97706;
+    --purple: #7c3aed;
+    --red:    #dc2626;
+    --light:  #f1f5f9;
+    --border: #cbd5e1;
+    --min-c:  #16a34a;
+    --rec-c:  #2563eb;
+    --best-c: #7c3aed;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  h1 { font-size: 2.2rem; font-weight: 800; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 14px; color: var(--blue); border-left: 4px solid var(--accent); padding-left: 10px; }
+  h3 { font-size: 1.1rem; font-weight: 700; margin: 12px 0 8px; color: var(--navy); }
+  h4 { font-size: 0.95rem; font-weight: 600; margin: 8px 0 6px; color: #334155; }
+  p  { margin-bottom: 8px; color: #334155; }
+
+  /* ── LAYOUT ── */
+  .section { padding: 28px 32px; }
+  .section:nth-child(even) { background: #f8fafc; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* ── COVER ── */
+  .cover {
+    background: linear-gradient(145deg, var(--navy) 0%, var(--blue) 60%, #1e40af 100%);
+    color: white; display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start;
+    padding: 60px 56px; min-height: 100vh;
+  }
+  .cover .logo-line { font-size: 0.85rem; letter-spacing: 0.25em; text-transform: uppercase; color: #94a3b8; margin-bottom: 28px; }
+  .cover h1 { font-size: 2.8rem; line-height: 1.2; margin-bottom: 16px; color: #fff; }
+  .cover .subtitle { font-size: 1.15rem; color: #93c5fd; margin-bottom: 40px; }
+  .cover .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 520px; }
+  .cover .meta-item { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 14px 18px; }
+  .cover .meta-item .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: #94a3b8; }
+  .cover .meta-item .value { font-size: 1rem; font-weight: 700; color: #fff; margin-top: 2px; }
+  .cover .badge { display: inline-block; background: var(--accent); color: white; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.05em; }
+  .cover .divider { width: 60px; height: 4px; background: #3b82f6; border-radius: 2px; margin: 24px 0; }
+
+  /* ── TABLES ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.88rem; }
+  th { background: var(--navy); color: white; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.03em; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #eff6ff; }
+  .table-caption { font-size: 0.78rem; color: #64748b; margin-top: 4px; font-style: italic; }
+
+  /* ── TIER BADGES ── */
+  .tier { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; }
+  .tier-min  { background: #dcfce7; color: #15803d; }
+  .tier-rec  { background: #dbeafe; color: #1d4ed8; }
+  .tier-best { background: #ede9fe; color: #6d28d9; }
+
+  /* ── CARDS ── */
+  .card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .card.highlight { border-color: var(--accent); border-width: 2px; }
+  .card .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .card h3 { margin: 0; }
+  .card ul { padding-left: 16px; }
+  .card li { margin-bottom: 4px; color: #475569; font-size: 0.88rem; }
+
+  /* ── SPEC PILLS ── */
+  .spec-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .spec-pill { background: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 0.78rem; font-weight: 600; color: var(--navy); }
+  .spec-pill.blue  { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+  .spec-pill.green { background: #dcfce7; border-color: #86efac; color: #15803d; }
+  .spec-pill.purple{ background: #ede9fe; border-color: #c4b5fd; color: #5b21b6; }
+
+  /* ── BAR CHART ── */
+  .bar-chart { margin: 16px 0; }
+  .bar-row { display: flex; align-items: center; margin-bottom: 10px; gap: 10px; }
+  .bar-label { width: 120px; font-size: 0.82rem; font-weight: 600; color: #334155; flex-shrink: 0; text-align: right; }
+  .bar-track { flex: 1; background: #e2e8f0; border-radius: 4px; height: 22px; position: relative; overflow: hidden; }
+  .bar-fill  { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 0.75rem; font-weight: 700; color: white; transition: width 0.3s; }
+  .bar-value { width: 60px; font-size: 0.82rem; font-weight: 700; color: #334155; flex-shrink: 0; }
+  .bar-green  { background: linear-gradient(90deg, #16a34a, #22c55e); }
+  .bar-blue   { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+  .bar-purple { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+  .bar-navy   { background: linear-gradient(90deg, #0f172a, #334155); }
+  .bar-amber  { background: linear-gradient(90deg, #d97706, #fbbf24); }
+  .bar-red    { background: linear-gradient(90deg, #dc2626, #f87171); }
+  .chart-legend { display: flex; gap: 18px; margin-top: 10px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #475569; }
+  .legend-dot  { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow { display: flex; align-items: flex-start; gap: 0; flex-wrap: nowrap; overflow-x: auto; padding: 16px 0; }
+  .flow-node {
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 88px; max-width: 100px;
+  }
+  .flow-box {
+    background: var(--navy); color: white;
+    border-radius: 8px; padding: 10px 8px; text-align: center;
+    font-size: 0.72rem; font-weight: 700; width: 84px;
+    line-height: 1.3;
+  }
+  .flow-box.gpu   { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+  .flow-box.api   { background: linear-gradient(135deg, #1e3a5f, #2563eb); }
+  .flow-box.cpu   { background: linear-gradient(135deg, #0f4c27, #16a34a); }
+  .flow-box.ui    { background: linear-gradient(135deg, #b45309, #d97706); }
+  .flow-port { font-size: 0.68rem; color: #64748b; margin-top: 4px; font-weight: 600; }
+  .flow-arrow {
+    display: flex; align-items: center; padding: 0 2px;
+    margin-top: -28px; color: #94a3b8; font-size: 1.1rem; font-weight: 900;
+  }
+  .flow-tag { font-size: 0.62rem; color: #94a3b8; text-align: center; margin-top: 3px; }
+
+  /* ── COST CARD ── */
+  .cost-block { background: white; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 10px 0; }
+  .cost-block .cost-header { background: var(--navy); color: white; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; }
+  .cost-block .cost-header .name { font-weight: 700; font-size: 0.95rem; }
+  .cost-block .cost-header .tag  { font-size: 0.72rem; background: rgba(255,255,255,0.15); padding: 2px 10px; border-radius: 12px; }
+  .cost-block .cost-body { padding: 14px 18px; }
+  .cost-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+  .cost-row:last-child { border: none; }
+  .cost-row .type { font-size: 0.82rem; color: #475569; }
+  .cost-row .price { font-size: 0.95rem; font-weight: 700; color: var(--navy); }
+  .cost-row .price.best { color: var(--green); }
+  .cost-row .saving { font-size: 0.72rem; background: #dcfce7; color: #15803d; padding: 1px 8px; border-radius: 10px; font-weight: 600; }
+
+  /* ── CALLOUT ── */
+  .callout { border-radius: 8px; padding: 14px 16px; margin: 12px 0; display: flex; gap: 12px; }
+  .callout.info    { background: #eff6ff; border-left: 4px solid #3b82f6; }
+  .callout.warning { background: #fffbeb; border-left: 4px solid #f59e0b; }
+  .callout.success { background: #f0fdf4; border-left: 4px solid #22c55e; }
+  .callout.danger  { background: #fef2f2; border-left: 4px solid #ef4444; }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .callout-body p  { margin: 0; font-size: 0.85rem; color: #334155; }
+  .callout-body strong { color: var(--navy); }
+
+  /* ── BULLET LISTS ── */
+  .bullet-list { list-style: none; padding: 0; }
+  .bullet-list li { padding: 4px 0 4px 20px; position: relative; font-size: 0.88rem; color: #334155; }
+  .bullet-list li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 0.75rem; top: 5px; }
+
+  /* ── PAGE HEADER ── */
+  .page-header { background: var(--navy); color: white; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; }
+  .page-header .page-title { font-size: 1.05rem; font-weight: 700; }
+  .page-header .page-sub   { font-size: 0.78rem; color: #94a3b8; }
+  .section-number { display: inline-block; background: var(--accent); color: white; border-radius: 50%; width: 26px; height: 26px; text-align: center; line-height: 26px; font-size: 0.8rem; font-weight: 700; margin-right: 8px; }
+
+  /* ── SUMMARY RIBBON ── */
+  .summary-ribbon { display: flex; gap: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); margin: 16px 0; }
+  .ribbon-col { flex: 1; padding: 16px 18px; }
+  .ribbon-col.min  { background: #f0fdf4; border-right: 1px solid var(--border); }
+  .ribbon-col.rec  { background: #eff6ff; border-right: 1px solid var(--border); }
+  .ribbon-col.best { background: #faf5ff; }
+  .ribbon-col .rib-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .min  .rib-label { color: var(--green); }
+  .rec  .rib-label { color: var(--accent); }
+  .best .rib-label { color: var(--purple); }
+  .ribbon-col .rib-val { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+  .ribbon-col .rib-sub { font-size: 0.75rem; color: #64748b; }
+
+  /* ── GPU CARD ── */
+  .gpu-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 12px 0; }
+  .gpu-card-head { padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; }
+  .gpu-card-head .gpu-name { font-weight: 800; font-size: 1rem; color: white; }
+  .gpu-card-head .gpu-vram { font-size: 0.8rem; color: rgba(255,255,255,0.8); }
+  .gpu-card-body { padding: 14px 18px; }
+  .gpu-spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; margin: 10px 0; }
+  .gpu-spec-item .spec-name  { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+  .gpu-spec-item .spec-value { font-size: 0.92rem; font-weight: 700; color: var(--navy); }
+
+  /* ── FORMULA BOX ── */
+  .formula { background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 16px 20px; font-family: 'Consolas', monospace; font-size: 0.83rem; line-height: 1.8; margin: 12px 0; }
+  .formula .comment { color: #64748b; }
+  .formula .highlight { color: #60a5fa; font-weight: 700; }
+  .formula .result   { color: #4ade80; font-weight: 700; }
+
+  /* ── FOOTER ── */
+  .doc-footer { background: var(--navy); color: #64748b; text-align: center; padding: 20px; font-size: 0.75rem; margin-top: 20px; }
+
+  /* ── UTILITIES ── */
+  .mb-8  { margin-bottom: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mt-16 { margin-top: 16px; }
+  .text-center { text-align: center; }
+  .text-sm { font-size: 0.82rem; }
+  .text-xs { font-size: 0.75rem; color: #64748b; }
+  .bold { font-weight: 700; }
+  .green { color: var(--green); }
+  .blue  { color: var(--accent); }
+  .purple{ color: var(--purple); }
+  .red   { color: var(--red); }
+  strong { font-weight: 700; color: var(--navy); }
+
+  /* ── WORKLOAD TABLE ── */
+  .wl-table td:first-child { font-weight: 600; color: var(--navy); width: 45%; }
+  .wl-table td:nth-child(2){ color: #2563eb; font-weight: 700; }
+  .wl-table td:last-child  { color: #64748b; font-size: 0.82rem; }
+
+  /* ── ARCH BOX ── */
+  .arch-row { display: flex; gap: 12px; align-items: stretch; margin: 12px 0; flex-wrap: wrap; }
+  .arch-box { flex: 1; min-width: 140px; border-radius: 8px; padding: 12px 14px; }
+  .arch-box h4 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .arch-box ul { padding-left: 14px; }
+  .arch-box li { font-size: 0.78rem; margin-bottom: 3px; }
+  .arch-gpu  { background: #faf5ff; border: 1px solid #c4b5fd; }
+  .arch-gpu h4 { color: #6d28d9; }
+  .arch-cpu  { background: #f0fdf4; border: 1px solid #86efac; }
+  .arch-cpu h4 { color: #15803d; }
+  .arch-api  { background: #eff6ff; border: 1px solid #93c5fd; }
+  .arch-api h4 { color: #1d4ed8; }
+  .arch-ui   { background: #fffbeb; border: 1px solid #fcd34d; }
+  .arch-ui h4 { color: #92400e; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="logo-line">VandeInspect AI Platform · Platform Engineering</div>
+  <span class="badge">INTERNAL TECHNICAL DOCUMENT</span>
+  <h1>Hardware &amp;<br/>Infrastructure<br/>Requirements</h1>
+  <div class="divider"></div>
+  <p class="subtitle">GPU · CPU · RAM · Storage · Enterprise On-Premise · AWS &amp; GCP Cloud</p>
+
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="label">Document Version</div>
+      <div class="value">v1.0 — June 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Platform</div>
+      <div class="value">VandeInspect AI</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">AI Services</div>
+      <div class="value">8 Microservices</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">GPU Frameworks</div>
+      <div class="value">PyTorch · ONNX</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Cloud Platforms</div>
+      <div class="value">AWS · GCP</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Audience</div>
+      <div class="value">Ops · DevOps · Infra</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 1 — SYSTEM ARCHITECTURE
+══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="page-header">
+  <div>
+    <div class="page-title">VandeInspect AI — Hardware Requirements</div>
+    <div class="page-sub">Section 1 · System Architecture &amp; Workload</div>
+  </div>
+  <div class="text-xs">Confidential · June 2026</div>
+</div>
+
+<div class="section">
+  <h2><span class="section-number">1</span>System Architecture Overview</h2>
+
+  <p>VandeInspect AI runs as <strong>8 concurrent microservices</strong> that boot in strict dependency order. Two services use the GPU; the rest are CPU-only.</p>
+
+  <!-- Service Flow -->
+  <h3>Service Pipeline Flow</h3>
+  <p class="text-sm mb-8">Services start left → right. Each service must pass a <code>/health</code> check before the next one starts.</p>
+
+  <div class="flow">
+    <div class="flow-node">
+      <div class="flow-box gpu">YOLO<br/>Service</div>
+      <div class="flow-port">:5002</div>
+      <div class="flow-tag">GPU · PyTorch</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <div class="flow-box gpu">OCR<br/>Service</div>
+      <div class="flow-port">:5000</div>
+      <div class="flow-tag">GPU · ONNX</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <div class="flow-box cpu">Frame<br/>Extractor</div>
+      <div class="flow-port">:5003</div>
+      <div class="flow-tag">CPU · OpenCV</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <div class="flow-box cpu">Sync<br/>Engine</div>
+      <div class="flow-port">:5004</div>
+      <div class="flow-tag">CPU · NumPy</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <div class="flow-box cpu">Correlate</div>
+      <div class="flow-port">:5005</div>
+      <div class="flow-tag">CPU · FastAPI</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <div class="flow-box cpu">Report<br/>Generator</div>
+      <div class="flow-port">:5006</div>
+      <div class="flow-tag">CPU · fpdf2</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <div class="flow-box api">Backend<br/>API</div>
+      <div class="flow-port">:8001</div>
+      <div class="flow-tag">Node.js · Fastify</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <div class="flow-box ui">Frontend<br/>Dashboard</div>
+      <div class="flow-port">:5173</div>
+      <div class="flow-tag">React · Vite</div>
+    </div>
+  </div>
+
+  <!-- Service Categories -->
+  <h3 class="mt-16">Service Categories by Compute Type</h3>
+  <div class="arch-row">
+    <div class="arch-box arch-gpu">
+      <h4>⚡ GPU Services (2)</h4>
+      <ul>
+        <li>YOLO — 2 models on GPU</li>
+        <li>OCR — ONNX on GPU</li>
+        <li>CUDA 11.8 / 12.1 required</li>
+        <li>Separate processes (CUDA DLL isolation)</li>
+      </ul>
+    </div>
+    <div class="arch-box arch-cpu">
+      <h4>🖥 CPU Services (4)</h4>
+      <ul>
+        <li>Frame Extractor (OpenCV)</li>
+        <li>Sync Engine (NumPy)</li>
+        <li>Correlation</li>
+        <li>Report Generator (fpdf2)</li>
+      </ul>
+    </div>
+    <div class="arch-box arch-api">
+      <h4>🔗 Backend (1)</h4>
+      <ul>
+        <li>Node.js 18+ · Fastify</li>
+        <li>Prisma · PostgreSQL</li>
+        <li>Cloudinary file storage</li>
+        <li>Redis queue worker</li>
+      </ul>
+    </div>
+    <div class="arch-box arch-ui">
+      <h4>🌐 Frontend (1)</h4>
+      <ul>
+        <li>React 18 · Vite</li>
+        <li>Tailwind CSS</li>
+        <li>Live ingestion dashboard</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Workload Numbers -->
+  <h3 class="mt-16">Pipeline Workload Numbers <span class="text-xs">(from config.json)</span></h3>
+  <table class="wl-table no-break">
+    <tr><th>Parameter</th><th>Value</th><th>Source</th></tr>
+    <tr><td>Frame sampling rate</td><td>1 FPS</td><td>config.json → frames_per_second</td></tr>
+    <tr><td>OCR concurrency</td><td>1 job at a time</td><td>config.json → ocr_concurrency</td></tr>
+    <tr><td>Max cameras per session</td><td>10 (3 typical: LEFT, RIGHT, OCR)</td><td>config.json → max_cameras</td></tr>
+    <tr><td>Max video file size</td><td>2 GB per camera</td><td>config.json → max_file_size_gb</td></tr>
+    <tr><td>YOLO models on GPU simultaneously</td><td>2 (best.pt + train_num_detector.pt)</td><td>server.py → load_models()</td></tr>
+    <tr><td>YOLO inference resolution</td><td>640 × 640 pixels</td><td>server.py → blank = np.zeros((640,640,3))</td></tr>
+    <tr><td>GPU warm-up budget (health gate)</td><td>120 seconds</td><td>start.js orchestrator</td></tr>
+    <tr><td>CPU service health budget</td><td>30 seconds</td><td>start.js orchestrator</td></tr>
+  </table>
+
+  <!-- GPU VRAM Breakdown -->
+  <h3 class="mt-16">What Lives in GPU VRAM During a Session</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">PyTorch Runtime</div>
+      <div class="bar-track"><div class="bar-fill bar-navy" style="width:30%">~1.4 GB</div></div>
+      <div class="bar-value">1.4 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">YOLO best.pt</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:22%">~1.0 GB</div></div>
+      <div class="bar-value">~1.0 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">YOLO OCR detector</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:11%">~0.5 GB</div></div>
+      <div class="bar-value">~0.5 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Inference tensors</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:18%">~0.8 GB</div></div>
+      <div class="bar-value">~0.8 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">ONNX OCR</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:16%">~0.7 GB</div></div>
+      <div class="bar-value">~0.7 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">CUDA fragmentation</div>
+      <div class="bar-track"><div class="bar-fill bar-amber" style="width:8%">~0.4 GB</div></div>
+      <div class="bar-value">~0.4 GB</div>
+    </div>
+  </div>
+  <div class="callout info">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-body">
+      <p><strong>Total VRAM floor: ~4.8 GB.</strong> You need at least a 6 GB card to have a safe buffer. 8 GB is recommended for stability during multi-camera sessions.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 2 — GPU REQUIREMENTS
+══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="page-header">
+  <div>
+    <div class="page-title">VandeInspect AI — Hardware Requirements</div>
+    <div class="page-sub">Section 2 · GPU Requirements</div>
+  </div>
+  <div class="text-xs">Confidential · June 2026</div>
+</div>
+
+<div class="section">
+  <h2><span class="section-number">2</span>GPU Requirements</h2>
+
+  <div class="callout warning mb-8">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-body">
+      <p><strong>NVIDIA only.</strong> The stack requires NVIDIA CUDA. AMD and Intel GPUs are not supported. macOS must run in CPU-only mode.</p>
+    </div>
+  </div>
+
+  <!-- Tier Summary -->
+  <div class="summary-ribbon no-break">
+    <div class="ribbon-col min">
+      <div class="rib-label">Minimum</div>
+      <div class="rib-val">4–6 GB VRAM</div>
+      <div class="rib-sub">CUDA Compute 7.5+</div>
+      <div class="rib-sub">Consumer desktop card</div>
+      <div class="rib-sub">OCR must run on CPU</div>
+    </div>
+    <div class="ribbon-col rec">
+      <div class="rib-label">Recommended</div>
+      <div class="rib-val">8–12 GB VRAM</div>
+      <div class="rib-sub">CUDA Compute 8.6+</div>
+      <div class="rib-sub">GPU OCR supported</div>
+      <div class="rib-sub">Comfortable headroom</div>
+    </div>
+    <div class="ribbon-col best">
+      <div class="rib-label">Best</div>
+      <div class="rib-val">12–16 GB VRAM</div>
+      <div class="rib-sub">CUDA Compute 8.9+</div>
+      <div class="rib-sub">Full GPU pipeline</div>
+      <div class="rib-sub">Batch inference headroom</div>
+    </div>
+  </div>
+
+  <!-- CUDA Compute Table -->
+  <h3 class="mt-16">CUDA Compute Capability Requirements</h3>
+  <table class="no-break">
+    <tr><th>Tier</th><th>Min Compute Capability</th><th>Architecture</th><th>What It Enables</th></tr>
+    <tr>
+      <td><span class="tier tier-min">Minimum</span></td>
+      <td><strong>7.5</strong></td>
+      <td>Turing (RTX 20xx, GTX 16xx)</td>
+      <td>fp16 tensor cores, basic PyTorch CUDA</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-rec">Recommended</span></td>
+      <td><strong>8.6</strong></td>
+      <td>Ampere (RTX 30xx)</td>
+      <td>3rd-gen tensor cores, structural sparsity, CUDA 12.x native</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-best">Best</span></td>
+      <td><strong>8.9</strong></td>
+      <td>Ada Lovelace (RTX 40xx)</td>
+      <td>4th-gen tensor cores, fp8, fastest ONNX GPU path</td>
+    </tr>
+  </table>
+
+  <!-- GPU Specs Table -->
+  <h3 class="mt-16">Consumer GPU Comparison (by Tier)</h3>
+  <table class="no-break">
+    <tr><th>Tier</th><th>GPU Model</th><th>VRAM</th><th>Mem BW</th><th>CUDA Cores</th><th>Compute</th><th>Suitability</th></tr>
+    <tr>
+      <td><span class="tier tier-min">Min</span></td>
+      <td>RTX 3050 (8 GB)</td>
+      <td>8 GB GDDR6</td>
+      <td>224 GB/s</td>
+      <td>2,560</td>
+      <td>8.6</td>
+      <td>✅ Runs YOLO, CPU OCR only</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-min">Min</span></td>
+      <td>RTX 2060 (6 GB)</td>
+      <td>6 GB GDDR6</td>
+      <td>336 GB/s</td>
+      <td>1,920</td>
+      <td>7.5</td>
+      <td>⚠ Tight VRAM, single model at a time</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-rec">Rec</span></td>
+      <td>RTX 4060 (8 GB)</td>
+      <td>8 GB GDDR6</td>
+      <td>272 GB/s</td>
+      <td>3,072</td>
+      <td>8.9</td>
+      <td>✅ Ada cores, YOLO + GPU OCR</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-rec">Rec</span></td>
+      <td>RTX 3060 (12 GB)</td>
+      <td>12 GB GDDR6</td>
+      <td>360 GB/s</td>
+      <td>3,584</td>
+      <td>8.6</td>
+      <td>✅ Best Recommended value</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-rec">Rec</span></td>
+      <td>RTX 3070 (8 GB)</td>
+      <td>8 GB GDDR6</td>
+      <td>448 GB/s</td>
+      <td>5,888</td>
+      <td>8.6</td>
+      <td>✅ High bandwidth, great for batching</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-best">Best</span></td>
+      <td>RTX 4070 (12 GB)</td>
+      <td>12 GB GDDR6X</td>
+      <td>504 GB/s</td>
+      <td>5,888</td>
+      <td>8.9</td>
+      <td>🏆 Fast Ada, excellent YOLO speed</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-best">Best</span></td>
+      <td>RTX 4070 Super (12 GB)</td>
+      <td>12 GB GDDR6X</td>
+      <td>504 GB/s</td>
+      <td>7,168</td>
+      <td>8.9</td>
+      <td>🏆 Best price-performance ratio</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-best">Best</span></td>
+      <td>RTX 4080 (16 GB)</td>
+      <td>16 GB GDDR6X</td>
+      <td>716 GB/s</td>
+      <td>9,728</td>
+      <td>8.9</td>
+      <td>🏆 Future-proof, handles any YOLOv8 model</td>
+    </tr>
+  </table>
+
+  <!-- VRAM Visual Comparison -->
+  <h3 class="mt-16">VRAM Comparison — Consumer GPUs</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">RTX 2060</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:37%">6 GB</div></div>
+      <div class="bar-value">6 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">RTX 3050</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:50%">8 GB</div></div>
+      <div class="bar-value">8 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">RTX 4060</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:50%">8 GB</div></div>
+      <div class="bar-value">8 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">RTX 3070</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:50%">8 GB</div></div>
+      <div class="bar-value">8 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">RTX 3060</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:75%">12 GB</div></div>
+      <div class="bar-value">12 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">RTX 4070</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:75%">12 GB</div></div>
+      <div class="bar-value">12 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">RTX 4070 Super</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:75%">12 GB</div></div>
+      <div class="bar-value">12 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">RTX 4080</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:100%">16 GB</div></div>
+      <div class="bar-value">16 GB</div>
+    </div>
+  </div>
+  <div class="chart-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>Minimum Tier</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div>Recommended Tier</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div>Best Tier</div>
+  </div>
+
+  <!-- Software Stack -->
+  <h3 class="mt-16">GPU Framework Stack (Full Dependency Chain)</h3>
+  <div class="formula">
+    <span class="comment">## GPU Software Stack — VandeInspect AI</span>
+
+NVIDIA Driver
+    ├── ≥ 450.x    →  for CUDA 11.8
+    └── ≥ 525.x    →  for CUDA 12.1  (Recommended)
+
+CUDA Toolkit
+    ├── 11.8       →  Minimum
+    └── 12.1       →  Recommended  ← install this
+
+cuDNN
+    ├── 8.x        →  Minimum (for CUDA 11.8)
+    └── 8.9+       →  Recommended (for CUDA 12.1)
+
+    ├── <span class="highlight">PyTorch 2.4.0+cu121</span>          →  YOLO Service (Port 5002)
+    │       └── Ultralytics ≥ 8.3.40
+    │               ├── best.pt           (defect detection)
+    │               └── train_num_detector.pt (OCR ROI)
+    │
+    └── <span class="highlight">ONNX Runtime GPU ≥ 1.20.0</span>    →  OCR Service (Port 5000)
+            └── RapidOCR ≥ 3.0.0
+                    └── PP-OCR Det + Cls + Rec models
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 3 — CPU REQUIREMENTS
+══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="page-header">
+  <div>
+    <div class="page-title">VandeInspect AI — Hardware Requirements</div>
+    <div class="page-sub">Section 3 · CPU Requirements</div>
+  </div>
+  <div class="text-xs">Confidential · June 2026</div>
+</div>
+
+<div class="section">
+  <h2><span class="section-number">3</span>CPU Requirements</h2>
+
+  <p>All 8 services run as <strong>separate OS processes</strong>. Python's GIL is per-process — so 6 Python workers genuinely need dedicated CPU threads to stay responsive in parallel.</p>
+
+  <!-- Tier Summary -->
+  <div class="summary-ribbon no-break">
+    <div class="ribbon-col min">
+      <div class="rib-label">Minimum</div>
+      <div class="rib-val">4 Cores / 8 Threads</div>
+      <div class="rib-sub">2.9 GHz base / 4.0 GHz boost</div>
+      <div class="rib-sub">i5-10400 · Ryzen 5 3600</div>
+      <div class="rib-sub">Thread contention at full load</div>
+    </div>
+    <div class="ribbon-col rec">
+      <div class="rib-label">Recommended</div>
+      <div class="rib-val">6 Cores / 12 Threads</div>
+      <div class="rib-sub">3.3 GHz base / 4.5 GHz boost</div>
+      <div class="rib-sub">i5-12400F · Ryzen 5 5600</div>
+      <div class="rib-sub">Each service gets own thread</div>
+    </div>
+    <div class="ribbon-col best">
+      <div class="rib-label">Best</div>
+      <div class="rib-val">8+ Cores / 16+ Threads</div>
+      <div class="rib-sub">3.5 GHz base / 5.0 GHz boost</div>
+      <div class="rib-sub">i7-13700K · Ryzen 7 7700X</div>
+      <div class="rib-sub">Full headroom + multi-camera</div>
+    </div>
+  </div>
+
+  <!-- Core count chart -->
+  <h3 class="mt-16">Core / Thread Count Comparison</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">i5-10400 (Min)</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:25%">4C</div></div>
+      <div class="bar-value">4C / 8T</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Ryzen 5 3600</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:37%">6C</div></div>
+      <div class="bar-value">6C / 12T</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">i5-12400F (Rec)</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:37%">6C</div></div>
+      <div class="bar-value">6C / 12T</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Ryzen 5 5600</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:37%">6C</div></div>
+      <div class="bar-value">6C / 12T</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Ryzen 7 5800X</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:50%">8C</div></div>
+      <div class="bar-value">8C / 16T</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">i7-13700K (Best)</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:100%">16C</div></div>
+      <div class="bar-value">16C / 24T</div>
+    </div>
+  </div>
+
+  <!-- CPU Specs Table -->
+  <h3 class="mt-16">CPU Specifications Table</h3>
+  <table class="no-break">
+    <tr><th>Tier</th><th>CPU Model</th><th>Cores/Threads</th><th>Base GHz</th><th>Boost GHz</th><th>Cache</th><th>Arch</th></tr>
+    <tr>
+      <td><span class="tier tier-min">Min</span></td>
+      <td>Intel Core i5-10400</td><td>6C / 12T</td><td>2.9</td><td>4.3</td><td>12 MB</td><td>Comet Lake</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-min">Min</span></td>
+      <td>AMD Ryzen 5 3600</td><td>6C / 12T</td><td>3.6</td><td>4.2</td><td>32 MB</td><td>Zen 2</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-rec">Rec</span></td>
+      <td>Intel Core i5-12400F</td><td>6C / 12T</td><td>2.5</td><td>4.4</td><td>18 MB</td><td>Alder Lake</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-rec">Rec</span></td>
+      <td>AMD Ryzen 5 5600</td><td>6C / 12T</td><td>3.5</td><td>4.4</td><td>32 MB</td><td>Zen 3</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-rec">Rec</span></td>
+      <td>AMD Ryzen 5 5600X</td><td>6C / 12T</td><td>3.7</td><td>4.6</td><td>32 MB</td><td>Zen 3</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-best">Best</span></td>
+      <td>AMD Ryzen 7 5800X</td><td>8C / 16T</td><td>3.8</td><td>4.7</td><td>32 MB</td><td>Zen 3</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-best">Best</span></td>
+      <td>AMD Ryzen 7 7700X</td><td>8C / 16T</td><td>4.5</td><td>5.4</td><td>32 MB</td><td>Zen 4</td>
+    </tr>
+    <tr>
+      <td><span class="tier tier-best">Best</span></td>
+      <td>Intel Core i7-13700K</td><td>16C / 24T</td><td>3.4</td><td>5.4</td><td>54 MB</td><td>Raptor Lake</td>
+    </tr>
+  </table>
+
+  <!-- ISA Requirements -->
+  <h3 class="mt-16">CPU Instruction Set Requirements</h3>
+  <table class="no-break">
+    <tr><th>Instruction Set</th><th>Required?</th><th>Used By</th><th>First Intel</th><th>First AMD</th></tr>
+    <tr><td><strong>x86-64</strong></td><td>✅ Mandatory</td><td>All Python wheels, Node.js</td><td>Core 2 (2006)</td><td>Athlon 64 (2003)</td></tr>
+    <tr><td><strong>AVX2</strong></td><td>✅ Required</td><td>PyTorch CPU, NumPy, OpenCV</td><td>Haswell i5/i7 (2013)</td><td>Ryzen 1000 (2017)</td></tr>
+    <tr><td><strong>AVX-512</strong></td><td>⚡ Optional</td><td>ONNX Runtime CPU kernels</td><td>Skylake-SP (2017)</td><td>Ryzen 9000 (2024)</td></tr>
+  </table>
+
+  <!-- CPU-only mode callout -->
+  <div class="callout danger mt-16">
+    <div class="callout-icon">🚨</div>
+    <div class="callout-body">
+      <p><strong>CPU-Only Mode (No GPU):</strong> YOLO inference at 640×640 on CPU takes 2–15 seconds per frame depending on model size (vs ~30ms on GPU). Minimum becomes <strong>12 cores / 24 threads</strong> — Ryzen 9 5900X or Core i7-13700K class. Below that, the pipeline falls behind real-time and sessions queue up.</p>
+    </div>
+  </div>
+
+  <!-- RAM Section -->
+  <h3 class="mt-16">RAM Requirements</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">PyTorch YOLO</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:50%">~3–4 GB</div></div>
+      <div class="bar-value">3–4 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">ONNX OCR</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:25%">~1–2 GB</div></div>
+      <div class="bar-value">1–2 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Frame Extractor</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:25%">~1–2 GB</div></div>
+      <div class="bar-value">1–2 GB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Node.js + Vite</div>
+      <div class="bar-track"><div class="bar-fill bar-amber" style="width:8%">~0.6 GB</div></div>
+      <div class="bar-value">~600 MB</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">4× CPU Services</div>
+      <div class="bar-track"><div class="bar-fill bar-navy" style="width:12%">~0.8 GB</div></div>
+      <div class="bar-value">~800 MB</div>
+    </div>
+  </div>
+  <table class="no-break mt-16">
+    <tr><th>Tier</th><th>RAM Amount</th><th>Type</th><th>Why</th></tr>
+    <tr><td><span class="tier tier-min">Min</span></td><td>16 GB</td><td>DDR4-3200</td><td>Tight — sessions may slow under multi-camera load</td></tr>
+    <tr><td><span class="tier tier-rec">Rec</span></td><td>32 GB</td><td>DDR4-3200 / DDR5-4800</td><td>Comfortable — all services with buffer</td></tr>
+    <tr><td><span class="tier tier-best">Best</span></td><td>64 GB</td><td>DDR5-4800+</td><td>Full headroom for 10-camera sessions + batching</td></tr>
+  </table>
+
+  <!-- Storage -->
+  <h3 class="mt-16">Storage Requirements</h3>
+  <table class="no-break">
+    <tr><th>Tier</th><th>Size</th><th>Type</th><th>Seq Read</th><th>Why It Matters</th></tr>
+    <tr><td><span class="tier tier-min">Min</span></td><td>256 GB</td><td>SATA SSD</td><td>500 MB/s</td><td>Handles 6 venvs (~25 GB) + temp video files</td></tr>
+    <tr><td><span class="tier tier-rec">Rec</span></td><td>512 GB</td><td>NVMe Gen 3</td><td>3,500 MB/s</td><td>Fast video file reads for multi-camera</td></tr>
+    <tr><td><span class="tier tier-best">Best</span></td><td>1 TB</td><td>NVMe Gen 4</td><td>7,000 MB/s</td><td>Peak speed for 2 GB/file × 10 cameras simultaneous</td></tr>
+  </table>
+  <p class="text-xs mt-16">Storage breakdown: 6 Python venvs ≈ 20–30 GB · Node modules ≈ 1 GB · YOLO weights ≈ 100–500 MB · Temp video uploads ≈ up to 20 GB</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 4 — ENTERPRISE GPU OPTIONS
+══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="page-header">
+  <div>
+    <div class="page-title">VandeInspect AI — Hardware Requirements</div>
+    <div class="page-sub">Section 4 · Enterprise GPU Options &amp; Pricing</div>
+  </div>
+  <div class="text-xs">Confidential · June 2026</div>
+</div>
+
+<div class="section">
+  <h2><span class="section-number">4</span>Enterprise GPU Options — 24/7 Deployment</h2>
+
+  <p>Enterprise / data-center GPUs have no display output, passive cooling, ECC memory, and are rated for continuous 24/7 load. Suitable for server rack deployment at stations or a central hub.</p>
+
+  <div class="callout info mb-8">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-body">
+      <p><strong>Recommendation for VandeInspect single station:</strong> NVIDIA L4 (24 GB). It draws only 72W, fits in 1U racks, runs Ada Lovelace tensor cores, and has 19 GB headroom above the 4.8 GB VRAM floor.</p>
+    </div>
+  </div>
+
+  <!-- GPU Cards -->
+  <div class="gpu-card no-break">
+    <div class="gpu-card-head" style="background:linear-gradient(135deg,#0f172a,#374151)">
+      <div>
+        <div class="gpu-name">NVIDIA T4</div>
+        <div class="gpu-vram">Turing · Entry Enterprise</div>
+      </div>
+      <span class="tier tier-min" style="font-size:0.8rem;">Budget / Low Power</span>
+    </div>
+    <div class="gpu-card-body">
+      <div class="gpu-spec-grid">
+        <div class="gpu-spec-item"><div class="spec-name">VRAM</div><div class="spec-value">16 GB GDDR6</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Mem Bandwidth</div><div class="spec-value">300 GB/s</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">CUDA Cores</div><div class="spec-value">2,560</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Tensor Cores</div><div class="spec-value">320 (2nd Gen)</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Compute Capability</div><div class="spec-value">7.5</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">TDP (Power)</div><div class="spec-value">70 W ⚡</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">fp16 Performance</div><div class="spec-value">65 TFLOPS</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Form Factor</div><div class="spec-value">Low-profile PCIe</div></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-pill green">CUDA 11.8 / 12.x</div>
+        <div class="spec-pill">ECC Memory</div>
+        <div class="spec-pill">1U Rack</div>
+        <div class="spec-pill">New: ~$3,000</div>
+        <div class="spec-pill">Used: ~$900</div>
+      </div>
+      <ul class="bullet-list mt-16">
+        <li>Fits: YOLO inference + ONNX OCR comfortably within 16 GB</li>
+        <li>Weakest fp16 in the lineup — inference is 2–3× slower than A10/L4</li>
+        <li>Ideal for budget deployments or refurbished hardware setups</li>
+        <li>Most energy-efficient legacy option — 70W draws minimal power bill</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="gpu-card no-break" style="border-color:#2563eb;border-width:2px;">
+    <div class="gpu-card-head" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)">
+      <div>
+        <div class="gpu-name">NVIDIA L4 ← RECOMMENDED</div>
+        <div class="gpu-vram">Ada Lovelace · Mid Enterprise</div>
+      </div>
+      <span class="tier tier-rec" style="font-size:0.8rem;">Best for Single Station</span>
+    </div>
+    <div class="gpu-card-body">
+      <div class="gpu-spec-grid">
+        <div class="gpu-spec-item"><div class="spec-name">VRAM</div><div class="spec-value">24 GB GDDR6</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Mem Bandwidth</div><div class="spec-value">300 GB/s</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">CUDA Cores</div><div class="spec-value">7,424</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Tensor Cores</div><div class="spec-value">232 (4th Gen Ada)</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Compute Capability</div><div class="spec-value">8.9</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">TDP (Power)</div><div class="spec-value">72 W ⚡ (lowest watt/TFLOP)</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">fp16 Performance</div><div class="spec-value">242 TFLOPS</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">INT8 Performance</div><div class="spec-value">485 TOPS</div></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-pill blue">CUDA 12.x Native</div>
+        <div class="spec-pill blue">ECC Memory</div>
+        <div class="spec-pill blue">1U Rack</div>
+        <div class="spec-pill blue">New: ~$4,500</div>
+      </div>
+      <ul class="bullet-list mt-16">
+        <li>19 GB VRAM headroom above the 4.8 GB pipeline floor</li>
+        <li>Ada 4th-gen tensor cores — 3.7× faster YOLO than T4</li>
+        <li>Same low-profile slot as T4 — fits 8 cards in 2U rack</li>
+        <li>72W total draw — lowest power bill for 24/7 station operation</li>
+        <li>Can handle up to 3–4 simultaneous inspection pipelines on one card</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="gpu-card no-break">
+    <div class="gpu-card-head" style="background:linear-gradient(135deg,#14532d,#16a34a)">
+      <div>
+        <div class="gpu-name">NVIDIA A10</div>
+        <div class="gpu-vram">Ampere · Mid-High Enterprise</div>
+      </div>
+      <span class="tier tier-rec" style="font-size:0.8rem;">High Bandwidth</span>
+    </div>
+    <div class="gpu-card-body">
+      <div class="gpu-spec-grid">
+        <div class="gpu-spec-item"><div class="spec-name">VRAM</div><div class="spec-value">24 GB GDDR6</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Mem Bandwidth</div><div class="spec-value">600 GB/s (2× L4)</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">CUDA Cores</div><div class="spec-value">9,216</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Tensor Cores</div><div class="spec-value">288 (3rd Gen)</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Compute Capability</div><div class="spec-value">8.6</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">TDP (Power)</div><div class="spec-value">150 W</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">fp16 Performance</div><div class="spec-value">125 TFLOPS</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">INT8 Performance</div><div class="spec-value">250 TOPS</div></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-pill green">CUDA 11.8 / 12.x</div>
+        <div class="spec-pill">ECC Memory</div>
+        <div class="spec-pill">Full-height PCIe</div>
+        <div class="spec-pill">New: ~$7,500</div>
+      </div>
+      <ul class="bullet-list mt-16">
+        <li>Double the memory bandwidth of L4 — better for large frame batching</li>
+        <li>Ampere 3rd-gen tensor cores — slightly lower fp16 than L4 due to older arch</li>
+        <li>Best choice if heavy concurrent video batching is the priority over power</li>
+        <li>Requires full-height PCIe slot — larger server footprint than T4/L4</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="gpu-card no-break">
+    <div class="gpu-card-head" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
+      <div>
+        <div class="gpu-name">NVIDIA L40S</div>
+        <div class="gpu-vram">Ada Lovelace · High Enterprise</div>
+      </div>
+      <span class="tier tier-best" style="font-size:0.8rem;">Multi-Station Hub</span>
+    </div>
+    <div class="gpu-card-body">
+      <div class="gpu-spec-grid">
+        <div class="gpu-spec-item"><div class="spec-name">VRAM</div><div class="spec-value">48 GB GDDR6</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Mem Bandwidth</div><div class="spec-value">864 GB/s</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">CUDA Cores</div><div class="spec-value">18,176</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Tensor Cores</div><div class="spec-value">568 (4th Gen Ada)</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">Compute Capability</div><div class="spec-value">8.9</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">TDP (Power)</div><div class="spec-value">350 W</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">fp16 Performance</div><div class="spec-value">733 TFLOPS</div></div>
+        <div class="gpu-spec-item"><div class="spec-name">INT8 Performance</div><div class="spec-value">1,457 TOPS</div></div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-pill purple">CUDA 12.x Native</div>
+        <div class="spec-pill purple">ECC Memory</div>
+        <div class="spec-pill purple">PCIe 4.0</div>
+        <div class="spec-pill purple">New: ~$10,000</div>
+      </div>
+      <ul class="bullet-list mt-16">
+        <li>Designed to run 10–15 VandeInspect pipelines simultaneously on one card</li>
+        <li>43 GB VRAM headroom — can run multiple YOLO model versions in parallel</li>
+        <li>Justified only if consolidating multiple railway stations into one hub server</li>
+        <li>Overkill and over-budget for a single-station deployment</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Enterprise comparison chart -->
+  <h3 class="mt-16">Enterprise GPU — fp16 Performance Comparison</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">T4</div>
+      <div class="bar-track"><div class="bar-fill bar-navy" style="width:9%">65</div></div>
+      <div class="bar-value">65 TF</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">A10</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:17%">125</div></div>
+      <div class="bar-value">125 TF</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">L4 ★</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:33%">242</div></div>
+      <div class="bar-value">242 TF</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">L40S</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:100%">733</div></div>
+      <div class="bar-value">733 TF</div>
+    </div>
+  </table>
+
+  <h3 class="mt-16">Enterprise GPU — Power Draw (Lower is Better)</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">T4</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:20%">70W</div></div>
+      <div class="bar-value">70 W</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">L4 ★</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:21%">72W</div></div>
+      <div class="bar-value">72 W</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">A10</div>
+      <div class="bar-track"><div class="bar-fill bar-amber" style="width:43%">150W</div></div>
+      <div class="bar-value">150 W</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">L40S</div>
+      <div class="bar-track"><div class="bar-fill bar-red" style="width:100%">350W</div></div>
+      <div class="bar-value">350 W</div>
+    </div>
+  </div>
+
+  <!-- Enterprise summary table -->
+  <h3 class="mt-16">Enterprise GPU Quick-Select Table</h3>
+  <table class="no-break">
+    <tr><th>GPU</th><th>VRAM</th><th>TFLOPs fp16</th><th>Power</th><th>Best Use Case</th><th>New Price</th></tr>
+    <tr>
+      <td><strong>T4</strong></td><td>16 GB</td><td>65</td><td>70 W</td>
+      <td>Budget 24/7 single station</td><td>~$3,000</td>
+    </tr>
+    <tr style="background:#eff6ff">
+      <td><strong>L4 ★ Rec</strong></td><td>24 GB</td><td>242</td><td>72 W</td>
+      <td>Single station 24/7 — best efficiency</td><td>~$4,500</td>
+    </tr>
+    <tr>
+      <td><strong>A10</strong></td><td>24 GB</td><td>125</td><td>150 W</td>
+      <td>Heavy batch processing focus</td><td>~$7,500</td>
+    </tr>
+    <tr>
+      <td><strong>L40S</strong></td><td>48 GB</td><td>733</td><td>350 W</td>
+      <td>Multi-station hub (10–15 pipelines)</td><td>~$10,000</td>
+    </tr>
+  </table>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 5 — CLOUD COSTS
+══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="page-header">
+  <div>
+    <div class="page-title">VandeInspect AI — Hardware Requirements</div>
+    <div class="page-sub">Section 5 · Cloud Cost Analysis — AWS &amp; GCP</div>
+  </div>
+  <div class="text-xs">Confidential · June 2026</div>
+</div>
+
+<div class="section">
+  <h2><span class="section-number">5</span>Cloud Cost Analysis — AWS &amp; GCP</h2>
+  <p>GPU instance turned on only during active inspection. Instances are stopped between sessions. Cloud cost = active GPU hours only.</p>
+
+  <!-- Active Hours Calculation -->
+  <h3>Step 1 — Calculate Active GPU Hours/Month</h3>
+  <div class="formula no-break">
+<span class="comment">## How many GPU hours does one station need per month?</span>
+
+Trains per day (busy station)    = <span class="highlight">20 trains/day</span>
+Minutes GPU active per train     = <span class="highlight">20 min</span>  (YOLO + OCR + correlation)
+GPU active per day               = 20 × 20 ÷ 60 = <span class="highlight">6.67 hrs/day</span>
+Add warm-up time (cold start)    = 20 starts × 2 min ÷ 60 = <span class="highlight">+0.67 hr/day</span>
+──────────────────────────────────────────────
+Effective GPU hours/day          = <span class="highlight">7.5 hrs/day</span>
+Monthly GPU hours (×30 days)     = 7.5 × 30 = <span class="result">225 hrs/month</span>
+  </div>
+
+  <!-- Cost Formula -->
+  <h3>Step 2 — Cost Calculation Formula</h3>
+  <div class="formula no-break">
+<span class="comment">## Monthly Cloud Cost Formula</span>
+
+Monthly Cost = GPU hours/month × Hourly rate × (1 − Discount%)
+
+Where Discount% by pricing model:
+  On-Demand          →  0%   discount  (pay as you go)
+  Spot / Preemptible →  ~70% discount  (interruptible, cheapest)
+  Reserved / CUD 1yr →  ~37% discount  (stable, no interruption)
+
+<span class="comment">## Example with AWS g5.2xlarge at $1.212/hr:</span>
+On-Demand  = 225 hrs × $1.212 × (1 − 0.00) = <span class="result">$272.70/month</span>
+Reserved   = 225 hrs × $1.212 × (1 − 0.37) = <span class="result">$172.10/month</span>
+Spot       = 225 hrs × $1.212 × (1 − 0.70) = <span class="result">$81.81/month</span>
+  </div>
+
+  <!-- AWS Instances -->
+  <h3 class="mt-16">AWS GPU Instances</h3>
+  <table class="no-break">
+    <tr><th>Instance</th><th>GPU</th><th>VRAM</th><th>vCPU</th><th>RAM</th><th>On-Demand/hr</th><th>Fits Workload?</th></tr>
+    <tr>
+      <td><strong>g4dn.2xlarge</strong></td><td>NVIDIA T4</td><td>16 GB</td><td>8</td><td>32 GB</td>
+      <td>$0.752</td><td>✅ Budget option</td>
+    </tr>
+    <tr style="background:#eff6ff">
+      <td><strong>g5.2xlarge ★</strong></td><td>NVIDIA A10G</td><td>24 GB</td><td>8</td><td>32 GB</td>
+      <td>$1.212</td><td>✅ Best match</td>
+    </tr>
+    <tr>
+      <td><strong>g5.4xlarge</strong></td><td>NVIDIA A10G</td><td>24 GB</td><td>16</td><td>64 GB</td>
+      <td>$1.624</td><td>✅ More CPU/RAM</td>
+    </tr>
+    <tr>
+      <td><strong>p3.2xlarge</strong></td><td>NVIDIA V100</td><td>16 GB</td><td>8</td><td>61 GB</td>
+      <td>$3.060</td><td>⚠ Overkill / expensive</td>
+    </tr>
+  </table>
+
+  <!-- AWS Cost Cards -->
+  <div class="two-col mt-16 no-break">
+    <div class="cost-block">
+      <div class="cost-header">
+        <div class="name">AWS g4dn.2xlarge — T4 16 GB</div>
+        <div class="tag">Budget</div>
+      </div>
+      <div class="cost-body">
+        <div class="cost-row">
+          <div class="type">On-Demand (0% off)</div>
+          <div class="price">$169.20/mo</div>
+          <div class="saving">Base</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Reserved 1-year</div>
+          <div class="price">$106.65/mo</div>
+          <div class="saving">37% off</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Spot Instance</div>
+          <div class="price best">$50.85/mo</div>
+          <div class="saving">70% off</div>
+        </div>
+        <p class="text-xs mt-16">Calculation: 225 hrs × rate × (1 − discount)</p>
+      </div>
+    </div>
+    <div class="cost-block">
+      <div class="cost-header" style="background:#1e3a5f">
+        <div class="name">AWS g5.2xlarge ★ — A10G 24 GB</div>
+        <div class="tag">Recommended</div>
+      </div>
+      <div class="cost-body">
+        <div class="cost-row">
+          <div class="type">On-Demand (0% off)</div>
+          <div class="price">$272.70/mo</div>
+          <div class="saving">Base</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Reserved 1-year</div>
+          <div class="price">$172.10/mo</div>
+          <div class="saving">37% off</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Spot Instance</div>
+          <div class="price best">$81.81/mo</div>
+          <div class="saving">70% off</div>
+        </div>
+        <p class="text-xs mt-16">Calculation: 225 hrs × rate × (1 − discount)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GCP Instances -->
+  <h3 class="mt-16">GCP GPU Instances</h3>
+  <table class="no-break">
+    <tr><th>Instance</th><th>GPU</th><th>VRAM</th><th>vCPU</th><th>RAM</th><th>On-Demand/hr</th><th>Fits Workload?</th></tr>
+    <tr>
+      <td><strong>n1-std-8 + T4</strong></td><td>NVIDIA T4</td><td>16 GB</td><td>8</td><td>30 GB</td>
+      <td>$0.730</td><td>✅ Budget option</td>
+    </tr>
+    <tr style="background:#f0fdf4">
+      <td><strong>g2-standard-8 ★</strong></td><td>NVIDIA L4</td><td>24 GB</td><td>8</td><td>32 GB</td>
+      <td>$0.860</td><td>✅ Best value on GCP</td>
+    </tr>
+    <tr>
+      <td><strong>g2-standard-16</strong></td><td>NVIDIA L4</td><td>24 GB</td><td>16</td><td>64 GB</td>
+      <td>$1.190</td><td>✅ More CPU/RAM</td>
+    </tr>
+    <tr>
+      <td><strong>a2-highgpu-1g</strong></td><td>NVIDIA A100</td><td>40 GB</td><td>12</td><td>85 GB</td>
+      <td>$3.670</td><td>⚠ Overkill / expensive</td>
+    </tr>
+  </table>
+
+  <!-- GCP Cost Cards -->
+  <div class="two-col mt-16 no-break">
+    <div class="cost-block">
+      <div class="cost-header" style="background:#14532d">
+        <div class="name">GCP n1-std-8 + T4 16 GB</div>
+        <div class="tag">Budget</div>
+      </div>
+      <div class="cost-body">
+        <div class="cost-row">
+          <div class="type">On-Demand (0% off)</div>
+          <div class="price">$164.25/mo</div>
+          <div class="saving">Base</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Committed Use 1-yr</div>
+          <div class="price">$103.50/mo</div>
+          <div class="saving">37% off</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Spot (Preemptible)</div>
+          <div class="price best">$49.28/mo</div>
+          <div class="saving">70% off</div>
+        </div>
+        <p class="text-xs mt-16">Calculation: 225 hrs × rate × (1 − discount)</p>
+      </div>
+    </div>
+    <div class="cost-block">
+      <div class="cost-header" style="background:#065f46">
+        <div class="name">GCP g2-standard-8 ★ — L4 24 GB</div>
+        <div class="tag">Recommended</div>
+      </div>
+      <div class="cost-body">
+        <div class="cost-row">
+          <div class="type">On-Demand (0% off)</div>
+          <div class="price">$193.50/mo</div>
+          <div class="saving">Base</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Committed Use 1-yr</div>
+          <div class="price">$121.95/mo</div>
+          <div class="saving">37% off</div>
+        </div>
+        <div class="cost-row">
+          <div class="type">Spot (Preemptible)</div>
+          <div class="price best">$58.05/mo</div>
+          <div class="saving">70% off</div>
+        </div>
+        <p class="text-xs mt-16">Calculation: 225 hrs × rate × (1 − discount)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly cost visual comparison -->
+  <h3 class="mt-16">Monthly Cost Comparison — All Options (On-Demand)</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">GCP n1+T4</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:54%">$164</div></div>
+      <div class="bar-value">$164/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">AWS g4dn T4</div>
+      <div class="bar-track"><div class="bar-fill bar-amber" style="width:55%">$169</div></div>
+      <div class="bar-value">$169/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">GCP g2 L4 ★</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:63%">$194</div></div>
+      <div class="bar-value">$194/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">AWS g5 A10G ★</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:89%">$273</div></div>
+      <div class="bar-value">$273/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">AWS g5.4xl A10G</div>
+      <div class="bar-track"><div class="bar-fill bar-purple" style="width:100%">$365</div></div>
+      <div class="bar-value">$365/mo</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 6 — SCALING CALCULATOR
+══════════════════════════════════════════════════════════════ -->
+<div class="page-break"></div>
+<div class="page-header">
+  <div>
+    <div class="page-title">VandeInspect AI — Hardware Requirements</div>
+    <div class="page-sub">Section 6 · Cost Scaling Calculator &amp; Final Recommendation</div>
+  </div>
+  <div class="text-xs">Confidential · June 2026</div>
+</div>
+
+<div class="section">
+  <h2><span class="section-number">6</span>Cost Scaling Calculator</h2>
+  <p>Change the number of trains/day to get the exact monthly GPU cost. All values use the recommended GCP g2-standard-8 (L4 24 GB, $0.86/hr on-demand).</p>
+
+  <h3>Formula Applied at Different Train Volumes</h3>
+  <div class="formula no-break">
+<span class="comment">## Formula for any train volume:</span>
+
+GPU hrs/day  = (Trains × 20 min/train ÷ 60) + (Trains × 2 min warmup ÷ 60)
+Monthly hrs  = GPU hrs/day × 30
+Monthly cost = Monthly hrs × $0.86 (GCP g2, on-demand)
+
+<span class="comment">## Results by station size:</span>
+
+  5 trains/day  →  (5×20÷60)+(5×0.033) = 1.83 hr/day → 55 hrs/mo  → <span class="result">$47.30/mo</span>
+ 10 trains/day  →  (10×20÷60)+(10×0.033) = 3.67 hr/day → 110 hrs/mo → <span class="result">$94.60/mo</span>
+ 20 trains/day  →  7.34 hr/day → 220 hrs/mo → <span class="result">$189.20/mo</span>
+ 30 trains/day  →  11.0 hr/day → 330 hrs/mo → <span class="result">$283.80/mo</span>
+ 40 trains/day  →  14.7 hr/day → 441 hrs/mo → <span class="result">$379.26/mo</span>
+ 50 trains/day  →  18.3 hr/day → 549 hrs/mo → <span class="result">$472.14/mo</span>
+
+<span class="comment">## When does 24/7 Reserved beat on-demand stop/start?</span>
+24/7 Reserved = 720 hrs/mo × $0.86 × 0.63 = <span class="result">$390.10/mo</span>
+→ At ~45+ trains/day, leave it running 24/7 on Reserved. Cheaper than stopping/starting.
+  </div>
+
+  <!-- Scale chart -->
+  <h3 class="mt-16">Monthly Cost vs. Train Volume — GCP g2 (On-Demand)</h3>
+  <div class="bar-chart no-break">
+    <div class="bar-row">
+      <div class="bar-label">5 trains/day</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:10%">$47</div></div>
+      <div class="bar-value">$47/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">10 trains/day</div>
+      <div class="bar-track"><div class="bar-fill bar-green" style="width:20%">$95</div></div>
+      <div class="bar-value">$95/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">20 trains/day</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:40%">$189</div></div>
+      <div class="bar-value">$189/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">30 trains/day</div>
+      <div class="bar-track"><div class="bar-fill bar-blue" style="width:60%">$284</div></div>
+      <div class="bar-value">$284/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">40 trains/day</div>
+      <div class="bar-track"><div class="bar-fill bar-amber" style="width:80%">$379</div></div>
+      <div class="bar-value">$379/mo</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">45+ trains/day</div>
+      <div class="bar-track"><div class="bar-fill bar-red" style="width:90%">$426+</div></div>
+      <div class="bar-value">Switch to Reserved 24/7</div>
+    </div>
+  </div>
+
+  <div class="callout warning no-break">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-body">
+      <p><strong>Spot / Preemptible Warning:</strong> Spot instances can be interrupted mid-session with 2-min notice (AWS) or 30-sec (GCP). A YOLO inference in progress will be killed. Use Spot only for dev/test or if sessions are short and resumable. For production use <strong>On-Demand or Reserved</strong>.</p>
+    </div>
+  </div>
+
+  <!-- Spot vs reserved callout -->
+  <div class="callout success no-break mt-16">
+    <div class="callout-icon">✅</div>
+    <div class="callout-body">
+      <p><strong>Production Strategy:</strong> Use <strong>GCP g2-standard-8 with 1-year Committed Use Discount</strong> (~$122/mo at 20 trains/day). Start/stop instances via startup scripts tied to your inspection schedule. This gives stable, non-interruptible GPU compute at 37% off, without paying for idle hours.</p>
+    </div>
+  </div>
+
+  <!-- Final Master Recommendation Table -->
+  <h2 class="mt-16"><span class="section-number">7</span>Final Recommendation Summary</h2>
+
+  <table class="no-break">
+    <tr><th>Use Case</th><th>Component</th><th>Choice</th><th>Key Spec</th><th>Cost</th></tr>
+    <tr>
+      <td rowspan="5"><strong>Single Station<br/>On-Premise</strong></td>
+      <td>GPU</td><td><strong>NVIDIA L4</strong></td><td>24 GB · 72W · 242 TFLOPs fp16</td><td>~$4,500 one-time</td>
+    </tr>
+    <tr>
+      <td>CPU</td><td><strong>Ryzen 5 5600X</strong></td><td>6C/12T · 4.6 GHz · Zen 3</td><td>~$200</td>
+    </tr>
+    <tr>
+      <td>RAM</td><td><strong>32 GB DDR4-3200</strong></td><td>2×16 GB dual-channel</td><td>~$70</td>
+    </tr>
+    <tr>
+      <td>Storage</td><td><strong>512 GB NVMe Gen 3</strong></td><td>3,500 MB/s read</td><td>~$60</td>
+    </tr>
+    <tr>
+      <td>CUDA Stack</td><td><strong>CUDA 12.1 + cuDNN 8.9</strong></td><td>Driver ≥ 525.x</td><td>Free</td>
+    </tr>
+    <tr style="background:#f0fdf4">
+      <td rowspan="2"><strong>Cloud AWS<br/>(20 trains/day)</strong></td>
+      <td>Instance</td><td><strong>g5.2xlarge</strong></td><td>A10G 24 GB · 8 vCPU · 32 GB RAM</td><td>$172/mo Reserved</td>
+    </tr>
+    <tr style="background:#f0fdf4">
+      <td>Strategy</td><td><strong>Reserved 1-year</strong></td><td>Start/stop per session</td><td>37% off on-demand</td>
+    </tr>
+    <tr style="background:#eff6ff">
+      <td rowspan="2"><strong>Cloud GCP<br/>(20 trains/day)</strong></td>
+      <td>Instance</td><td><strong>g2-standard-8 ★</strong></td><td>L4 24 GB · 8 vCPU · 32 GB RAM</td><td>$122/mo CUD</td>
+    </tr>
+    <tr style="background:#eff6ff">
+      <td>Strategy</td><td><strong>Committed Use 1-yr</strong></td><td>Start/stop per session</td><td>37% off on-demand</td>
+    </tr>
+    <tr>
+      <td><strong>Multi-Station<br/>Hub On-Premise</strong></td>
+      <td>GPU</td><td><strong>NVIDIA L40S</strong></td><td>48 GB · 350W · 733 TFLOPs fp16</td><td>~$10,000 one-time</td>
+    </tr>
+  </table>
+
+  <!-- Cloud Annual -->
+  <h3 class="mt-16">Annual Cloud Cost (20 trains/day station)</h3>
+  <table class="no-break">
+    <tr><th>Provider + Instance</th><th>Pricing Model</th><th>Monthly</th><th>Annual</th></tr>
+    <tr><td>AWS g4dn.2xlarge (T4)</td><td>Spot</td><td>$51</td><td>$612</td></tr>
+    <tr><td>GCP g2-std-8 (L4)</td><td>Spot / Preemptible</td><td>$58</td><td>$696</td></tr>
+    <tr><td>GCP g2-std-8 (L4) ★</td><td>Committed Use 1-yr</td><td>$122</td><td><strong>$1,464</strong></td></tr>
+    <tr><td>AWS g5.2xlarge (A10G)</td><td>Reserved 1-yr</td><td>$172</td><td><strong>$2,064</strong></td></tr>
+    <tr><td>AWS g5.2xlarge (A10G)</td><td>On-Demand</td><td>$273</td><td>$3,276</td></tr>
+  </table>
+
+  <div class="callout info mt-16">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <p><strong>Bottom Line:</strong> For a single railway station, <strong>GCP g2-standard-8 on 1-year Committed Use (~$1,464/year)</strong> is the lowest stable production cost. For on-premise 24/7 deployment, the <strong>NVIDIA L4 ($4,500 one-time)</strong> pays for itself vs. cloud in under 3 years and gives full control over the GPU hardware.</p>
+    </div>
+  </div>
+</div>
+
+<div class="doc-footer">
+  VandeInspect AI Platform Engineering · Hardware Requirements v1.0 · June 2026 · Confidential
+  <br/>All prices are approximate market rates as of June 2026. Cloud pricing may vary by region and is subject to change.
+</div>
+
+</body>
+</html>

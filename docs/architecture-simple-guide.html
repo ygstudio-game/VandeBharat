@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VandeInspect AI — Architecture Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 13px; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a2e; background: #fff; line-height: 1.7; }
+
+  @media print {
+    @page { size: A4; margin: 15mm 12mm; }
+    .page-break { page-break-before: always; }
+    .no-break   { page-break-inside: avoid; }
+    body        { font-size: 11px; }
+    .cover      { min-height: 0; height: auto; }
+    .flowchart  { page-break-inside: avoid; overflow: visible; }
+    .fc-group   { page-break-inside: avoid; }
+  }
+
+  :root {
+    --navy:   #0f172a;
+    --blue:   #1e3a5f;
+    --accent: #2563eb;
+    --green:  #16a34a;
+    --amber:  #d97706;
+    --purple: #7c3aed;
+    --red:    #dc2626;
+    --teal:   #0d9488;
+    --gray:   #64748b;
+    --light:  #f8fafc;
+    --border: #e2e8f0;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 64px;
+    background: linear-gradient(145deg, #0f172a 0%, #1e3a5f 100%);
+    color: #fff;
+  }
+  .cover-badge {
+    display: inline-block; width: fit-content;
+    background: rgba(37,99,235,0.35); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px; padding: 5px 14px; font-size: 0.7rem;
+    letter-spacing: 2px; text-transform: uppercase; color: #93c5fd; margin-bottom: 28px;
+  }
+  .cover h1 { font-size: 2.8rem; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+  .cover h1 span { color: #60a5fa; }
+  .cover-sub { font-size: 1rem; color: #94a3b8; max-width: 580px; margin-bottom: 52px; }
+  .cover-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 6px 16px; font-size: 0.78rem; color: #cbd5e1;
+  }
+
+  /* ── LAYOUT ── */
+  .content { max-width: 820px; margin: 0 auto; padding: 56px 32px; }
+  section  { margin-bottom: 64px; }
+
+  /* ── LABELS & HEADINGS ── */
+  .section-label {
+    display: inline-block; font-size: 0.63rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px;
+    padding: 3px 10px; margin-bottom: 10px;
+  }
+  h2 {
+    font-size: 1.45rem; font-weight: 700; color: var(--navy);
+    border-left: 4px solid var(--accent); padding-left: 14px; margin-bottom: 18px;
+  }
+  h3 { font-size: 1.05rem; font-weight: 700; color: var(--blue); margin: 26px 0 10px; }
+  h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin: 14px 0 6px; }
+  p  { font-size: 0.9rem; color: #334155; margin-bottom: 12px; }
+
+  /* ── BULLET LISTS ── */
+  .blist { list-style: none; margin: 8px 0 16px; }
+  .blist li {
+    padding: 7px 12px 7px 26px; position: relative;
+    font-size: 0.87rem; color: #334155;
+    border-bottom: 1px solid var(--border);
+  }
+  .blist li:last-child { border-bottom: none; }
+  .blist li::before {
+    content: "●"; position: absolute; left: 9px;
+    color: var(--accent); font-size: 0.45rem; top: 13px;
+  }
+  .blist li strong { color: var(--navy); }
+  .blist.green li::before { color: var(--green); }
+  .blist.red   li::before { color: var(--red); }
+  .blist.amber li::before { color: var(--amber); }
+
+  /* ── SERVICE CARDS ── */
+  .service-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .scard {
+    border-radius: 8px; border: 1px solid var(--border);
+    padding: 16px 18px; background: var(--light);
+  }
+  .scard.gpu  { border-top: 3px solid var(--purple); }
+  .scard.cpu  { border-top: 3px solid var(--teal); }
+  .scard.key  { border-top: 3px solid var(--accent); background: #eff6ff; grid-column: 1 / -1; }
+  .scard.ui   { border-top: 3px solid var(--green);  grid-column: 1 / -1; }
+  .scard-tag {
+    display: inline-block; font-size: 0.62rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 3px; margin-bottom: 6px;
+  }
+  .tag-gpu { background: #f3e8ff; color: var(--purple); }
+  .tag-cpu { background: #ccfbf1; color: var(--teal);   }
+  .tag-key { background: #dbeafe; color: #1d4ed8;       }
+  .tag-ui  { background: #dcfce7; color: #166534;       }
+  .scard h4 { margin: 0 0 4px; }
+  .scard-port { font-size: 0.72rem; color: var(--gray); font-family: monospace; margin-bottom: 6px; display: block; }
+  .scard p  { font-size: 0.82rem; margin-top: 4px; color: #475569; }
+  .scard .blist li { font-size: 0.8rem; padding: 4px 8px 4px 20px; }
+  .scard .blist li::before { top: 9px; }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 8px; padding: 16px 20px; margin: 18px 0;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { font-size: 0.87rem; color: #334155; }
+  .callout-body strong { display: block; margin-bottom: 4px; color: var(--navy); font-size: 0.9rem; }
+  .callout.info    { background: #eff6ff; border-left: 4px solid var(--accent); }
+  .callout.success { background: #f0fdf4; border-left: 4px solid var(--green); }
+  .callout.warn    { background: #fffbeb; border-left: 4px solid var(--amber); }
+  .callout.key     { background: #f5f3ff; border-left: 4px solid var(--purple); }
+
+  /* ── ARCH HEADERS ── */
+  .arch-header {
+    border-radius: 8px 8px 0 0; padding: 22px 26px; color: #fff; margin-top: 8px;
+  }
+  .arch-header.cloud { background: linear-gradient(135deg, #1e3a5f 0%, #7c3aed 100%); }
+  .arch-header.spark { background: linear-gradient(135deg, #064e3b 0%, #0d9488 100%); }
+  .arch-header h2 { color: #fff; border-left-color: rgba(255,255,255,0.4); font-size: 1.2rem; padding-left: 14px; }
+  .arch-header p  { color: rgba(255,255,255,0.75); font-size: 0.85rem; margin: 6px 0 0 18px; }
+  .arch-body {
+    border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 8px 8px; padding: 26px 28px; margin-bottom: 48px;
+  }
+
+  /* ════════════════════════════════════════════
+     FLOWCHART — FULLY VERTICAL, PRINT-SAFE
+     All flow goes top→bottom. Nothing flows
+     horizontally beyond what fits on A4.
+  ════════════════════════════════════════════ */
+  .flowchart {
+    margin: 24px 0;
+    padding: 28px 24px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: visible; /* never clip — layout must fit page */
+    page-break-inside: avoid;
+  }
+  .flowchart-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--gray);
+    margin-bottom: 24px; text-align: center;
+  }
+
+  /* ── PIPELINE: vertical stack ── */
+  .fc-pipeline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* ── GROUP BOUNDARY BOX (site / cloud / spark) ── */
+  .fc-group {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background: rgba(255,255,255,0.65);
+    page-break-inside: avoid;
+  }
+  .fc-group.site-grp  { border-color: #d97706; background: rgba(254,249,195,0.25); }
+  .fc-group.cloud-grp { border-color: #7c3aed; background: rgba(243,232,255,0.25); }
+  .fc-group.spark-grp { border-color: #059669; background: rgba(209,250,229,0.25); }
+  .fc-group-label {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    background: #f8fafc; border: 1px solid var(--border); border-radius: 4px;
+    padding: 2px 10px; font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--gray);
+    white-space: nowrap;        /* label text is short — safe */
+    max-width: 90%;
+    text-align: center;
+  }
+
+  /* ── SINGLE BOX ── */
+  .fc-box {
+    border-radius: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    width: 220px;
+    max-width: 100%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .fc-box .sub {
+    display: block;
+    font-size: 0.67rem;
+    font-weight: 400;
+    opacity: 0.8;
+    margin-top: 3px;
+    white-space: normal;
+  }
+
+  /* colour variants */
+  .fc-camera  { background: #1e3a5f; color: #fff; border: 2px solid #2563eb; }
+  .fc-edge    { background: #fef9c3; color: #78350f; border: 2px solid #d97706; }
+  .fc-service { background: #eff6ff; color: #1e40af; border: 2px solid #2563eb; }
+  .fc-gpu     { background: #f3e8ff; color: #581c87; border: 2px solid #7c3aed; }
+  .fc-corr    { background: #dbeafe; color: #1e3a5f; border: 2px solid #2563eb; font-weight: 700; }
+  .fc-db      { background: #f0fdf4; color: #14532d; border: 2px solid #16a34a; }
+  .fc-report  { background: #fff7ed; color: #7c2d12; border: 2px solid #ea580c; }
+  .fc-dash    { background: #0f172a; color: #fff;    border: 2px solid #475569; }
+  .fc-spark   { background: #059669; color: #fff;    border: 2px solid #065f46; }
+  .fc-cloud   { background: #7c3aed; color: #fff;    border: 2px solid #5b21b6; }
+  .fc-localdb { background: #d1fae5; color: #064e3b; border: 2px solid #059669; }
+
+  /* ── PARALLEL ROW (two side-by-side, guaranteed to fit A4) ── */
+  .fc-parallel {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 16px;
+    flex-wrap: wrap;    /* wraps on very narrow print — safe fallback */
+    width: 100%;
+  }
+  .fc-parallel .fc-box {
+    width: 180px;
+    flex: 0 0 auto;
+  }
+
+  /* ── HORIZONTAL PAIR inside a group (cameras → edge pc) ── */
+  .fc-hpair {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .fc-hpair .fc-box {
+    width: 190px;
+  }
+
+  /* ── ARROWS ── */
+  /* Down arrow */
+  .fc-arrow-down {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 4px 0;
+  }
+  .fc-arrow-down .shaft {
+    width: 2px;
+    height: 26px;
+    background: #94a3b8;
+  }
+  .fc-arrow-down .tip {
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 9px solid #94a3b8;
+    margin-top: -1px;
+  }
+  .fc-arrow-down.purple .shaft { background: #7c3aed; }
+  .fc-arrow-down.purple .tip   { border-top-color: #7c3aed; }
+  .fc-arrow-down.green  .shaft { background: #059669; }
+  .fc-arrow-down.green  .tip   { border-top-color: #059669; }
+  .fc-arrow-down.gray   .shaft { background: #cbd5e1; }
+  .fc-arrow-down.gray   .tip   { border-top-color: #cbd5e1; }
+
+  /* Right arrow (used in hpair only) */
+  .fc-arrow-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+  .fc-arrow-right .shaft {
+    width: 28px; height: 2px; background: #94a3b8;
+  }
+  .fc-arrow-right .tip {
+    width: 0; height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 9px solid #94a3b8;
+    margin-left: -1px;
+  }
+  .fc-arrow-right.purple .shaft { background: #7c3aed; }
+  .fc-arrow-right.purple .tip   { border-left-color: #7c3aed; }
+
+  /* Arrow annotation text */
+  .fc-note {
+    font-size: 0.66rem;
+    color: var(--gray);
+    text-align: center;
+    padding: 1px 8px;
+    max-width: 300px;
+    white-space: normal;
+    line-height: 1.3;
+    margin: 0 auto;
+  }
+  .fc-note.purple { color: #7c3aed; font-weight: 600; }
+  .fc-note.green  { color: #059669; font-weight: 600; }
+  .fc-note.warn   { color: #b45309; font-weight: 600; }
+
+  /* Internet band — dashed border label between site and cloud */
+  .fc-internet-band {
+    width: 100%;
+    border: 2px dashed #7c3aed;
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #7c3aed;
+    background: rgba(243,232,255,0.3);
+    white-space: normal;
+    margin: 4px 0;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.84rem; }
+  th { background: var(--navy); color: #fff; padding: 10px 14px; text-align: left; font-size: 0.8rem; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: #334155; vertical-align: top; }
+  tr:nth-child(even) td { background: var(--light); }
+  tr:last-child td { border-bottom: none; }
+  .w { color: var(--green); font-weight: 600; }
+  .l { color: var(--red); }
+  .n { color: var(--amber); font-weight: 500; }
+
+  /* ── REASON CARDS ── */
+  .reason-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+  .reason-card {
+    border-radius: 8px; padding: 18px 20px;
+    background: #f0fdf4; border: 1px solid #bbf7d0; border-top: 3px solid var(--green);
+  }
+  .reason-card h4 { color: #065f46; margin: 0 0 8px; font-size: 0.88rem; }
+  .reason-card p  { font-size: 0.82rem; color: #047857; margin: 0; }
+
+  /* ── VERDICT ── */
+  .verdict {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    color: #fff; border-radius: 10px; padding: 36px 40px; margin-top: 40px;
+  }
+  .verdict .section-label { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); color: #93c5fd; }
+  .verdict h2 { color: #fff; border-left-color: #60a5fa; }
+  .verdict .blist li { color: #cbd5e1; border-bottom-color: rgba(255,255,255,0.08); }
+  .verdict .blist li strong { color: #fff; }
+  .verdict .blist.green li::before { color: #4ade80; }
+
+  /* FAILURE TABLE */
+  .fail-table th { background: #1e3a5f; }
+
+  /* FOOTER */
+  .doc-footer {
+    margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--gray);
+    flex-wrap: wrap; gap: 6px;
+  }
+
+  @media (max-width: 680px) {
+    .service-row { grid-template-columns: 1fr; }
+    .reason-grid { grid-template-columns: 1fr; }
+    .cover h1    { font-size: 2rem; }
+    .cover       { padding: 36px 24px; }
+    .content     { padding: 32px 16px; }
+    .fc-parallel .fc-box { width: 140px; }
+    .fc-hpair    { flex-direction: column; }
+    .fc-arrow-right { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ COVER ════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">Architecture Guide</div>
+  <h1>VandeInspect AI<br><span>System Architecture<br>&amp; Deployment Strategies</span></h1>
+  <p class="cover-sub">
+    A clear, plain-language explanation of every service in the system,
+    how they work together, and a visual comparison of two deployment strategies —
+    Cloud GPU Inference versus On-Site DGX Spark Inference.
+  </p>
+  <div class="cover-pills">
+    <span class="pill">Services Explained</span>
+    <span class="pill">Why CPU &amp; GPU</span>
+    <span class="pill">Cloud GPU Architecture</span>
+    <span class="pill">DGX Spark Architecture</span>
+    <span class="pill">Why Spark Is Best</span>
+    <span class="pill">Flow Diagrams Included</span>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 1 — WHAT THE SYSTEM DOES
+════════════════════════════════════════════════ -->
+<section>
+  <div class="section-label">Section 01</div>
+  <h2>What the System Does</h2>
+
+  <ul class="blist">
+    <li>A train arrives at an inspection site and slowly moves through a set of cameras mounted around the track</li>
+    <li>Cameras capture continuous video of the train — undercarriage, bogies, wheels, body panels — as it passes</li>
+    <li>The system reads that video in real time and uses AI to find problems: cracks, rust, holes, loose components, missing parts, or smoke</li>
+    <li>At the same time it reads the train number printed on the bogie so every defect is linked to the correct train</li>
+    <li>A site engineer gets a full inspection report the moment the train clears the station — no manual walk-around needed</li>
+  </ul>
+
+  <div class="callout info">
+    <div class="callout-icon">ℹ</div>
+    <div class="callout-body">
+      <strong>Why does this system need both a CPU and a GPU?</strong>
+      Reading camera feeds, moving data between services, writing to a database, and generating reports are
+      all general computing tasks — a CPU handles them perfectly well. But examining millions of pixels per
+      frame to detect a defect requires running a neural network, which a GPU does 50–100× faster than a CPU.
+      Both are needed, doing completely different jobs.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 2 — THE SERVICES
+════════════════════════════════════════════════ -->
+<section class="page-break">
+  <div class="section-label">Section 02</div>
+  <h2>The Seven Services — What Each One Does</h2>
+
+  <p>The system runs as seven smaller services, each with one specific responsibility. They run simultaneously and pass data to each other. This means if one needs to be updated or restarted, the other six keep running.</p>
+
+  <h3>GPU Services — Require the Graphics Card</h3>
+
+  <div class="service-row">
+    <div class="scard gpu">
+      <span class="scard-tag tag-gpu">GPU Required</span>
+      <h4>YOLO — Defect Detection Model</h4>
+      <span class="scard-port">Port 5002</span>
+      <p>The AI brain of the system. Runs two models simultaneously — one that scans every frame for defects and one that locates the bogie region for the OCR service.</p>
+      <ul class="blist">
+        <li>Detects 11 defect types: rust, crack, hole, leakage, smoke, loose parts, missing parts, deformation, puncture, broken, hanging</li>
+        <li>Returns: defect type, exact position in the image, severity score</li>
+        <li>Needs GPU — processes millions of pixels multiple times per second</li>
+      </ul>
+    </div>
+    <div class="scard gpu">
+      <span class="scard-tag tag-gpu">GPU Required</span>
+      <h4>OCR — Train Number Reader</h4>
+      <span class="scard-port">Port 5000</span>
+      <p>Reads the train number printed on the bogie. Without this, the system knows a defect exists but cannot link it to a specific train.</p>
+      <ul class="blist">
+        <li>Receives the cropped bogie region identified by YOLO</li>
+        <li>Returns the train number as readable text</li>
+        <li>Needs GPU for fast, accurate text recognition in varied lighting</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>The Most Important Service — Where It All Comes Together</h3>
+
+  <div class="service-row">
+    <div class="scard key">
+      <span class="scard-tag tag-key">Core Business Logic</span>
+      <h4>Correlation Engine — Where Defect Detection Becomes a Finding</h4>
+      <span class="scard-port">Port 5005 &nbsp;|&nbsp; CPU Service</span>
+      <p>
+        YOLO says: <em>"There is rust at this position in this frame."</em><br>
+        OCR says: <em>"This frame belongs to Train 12345."</em><br>
+        <strong>The Correlation Engine says: "Train 12345 has rust on its front-left bogie, detected by Camera 2 at 14:32:07."</strong>
+      </p>
+      <ul class="blist">
+        <li>Takes defect data from YOLO and train number from OCR and links them into one complete inspection finding</li>
+        <li>Tags every finding with: which train, which camera, which component, exact timestamp</li>
+        <li>This is where raw AI output becomes an actionable, reportable inspection result</li>
+        <li>Without this service, you have two separate streams of unconnected data — defects without train IDs, train IDs without defect details</li>
+        <li>Runs entirely on CPU — no AI model, just intelligent data matching and linking</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>CPU Services — Handle Everything Else</h3>
+
+  <div class="service-row">
+    <div class="scard cpu">
+      <span class="scard-tag tag-cpu">CPU Only</span>
+      <h4>Frame Extractor</h4>
+      <span class="scard-port">Port 5003</span>
+      <p>The entry point. Connects to all cameras, reads the video stream, cuts it into individual frames, and sends each frame to YOLO and OCR at the correct rate.</p>
+    </div>
+    <div class="scard cpu">
+      <span class="scard-tag tag-cpu">CPU Only</span>
+      <h4>Sync Engine</h4>
+      <span class="scard-port">Port 5004</span>
+      <p>Receives completed inspection findings from the Correlation Engine and writes them safely to the database. Handles retries if a write fails so no finding is ever lost.</p>
+    </div>
+    <div class="scard cpu">
+      <span class="scard-tag tag-cpu">CPU Only</span>
+      <h4>Report Generator</h4>
+      <span class="scard-port">Port 5006</span>
+      <p>Reads completed inspection sessions from the database and assembles formal reports listing all defects, severity scores, train numbers, and camera positions.</p>
+    </div>
+    <div class="scard ui">
+      <span class="scard-tag tag-ui">Backend + Frontend</span>
+      <h4>Backend API &amp; Engineer Dashboard</h4>
+      <span class="scard-port">API: Port 8001 &nbsp;|&nbsp; Dashboard: Port 5173</span>
+      <p>The backend serves all inspection data through an API. The frontend is the web interface engineers open in a browser to see live detections, camera health, and historical reports in real time.</p>
+    </div>
+  </div>
+
+  <!-- ── SERVICE COMMUNICATION FLOWCHART ── -->
+  <h3>How All Seven Services Talk to Each Other</h3>
+
+  <div class="flowchart no-break">
+    <div class="flowchart-title">Service Communication Pipeline — Top to Bottom</div>
+
+    <div class="fc-pipeline">
+
+      <!-- Step 1: Cameras -->
+      <div class="fc-box fc-camera">
+        📷 Cameras
+        <span class="sub">Live video from all tracks</span>
+      </div>
+
+      <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+      <!-- Step 2: Frame Extractor -->
+      <div class="fc-box fc-edge">
+        Frame Extractor
+        <span class="sub">Port 5003 · CPU · cuts video into frames</span>
+      </div>
+
+      <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+      <div class="fc-note">Each frame sent to both GPU services simultaneously</div>
+      <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+      <!-- Step 3: YOLO + OCR parallel -->
+      <div class="fc-parallel">
+        <div class="fc-box fc-gpu">
+          YOLO Detector
+          <span class="sub">Port 5002 · GPU<br>Returns: defect type + position</span>
+        </div>
+        <div class="fc-box fc-gpu">
+          OCR Reader
+          <span class="sub">Port 5000 · GPU<br>Returns: train number</span>
+        </div>
+      </div>
+
+      <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+      <div class="fc-note">Defect data + Train number merged into one record</div>
+      <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+      <!-- Step 4: Correlation -->
+      <div class="fc-box fc-corr" style="width:260px;">
+        ★ Correlation Engine
+        <span class="sub">Port 5005 · CPU · Core Business Logic<br>Produces: Train ID + Defect + Camera + Timestamp</span>
+      </div>
+
+      <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+      <!-- Step 5: Sync → DB -->
+      <div class="fc-parallel">
+        <div class="fc-box fc-service">
+          Sync Engine
+          <span class="sub">Port 5004 · CPU<br>Writes findings to database</span>
+        </div>
+        <div class="fc-box fc-db">
+          Database
+          <span class="sub">PostgreSQL<br>Stores all inspection findings</span>
+        </div>
+      </div>
+
+      <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+      <!-- Step 6: Report + Dashboard -->
+      <div class="fc-parallel">
+        <div class="fc-box fc-report">
+          Report Generator
+          <span class="sub">Port 5006 · CPU<br>Builds PDF/web reports</span>
+        </div>
+        <div class="fc-box fc-dash">
+          Engineer Dashboard
+          <span class="sub">Port 5173 · Browser<br>Live view for site staff</span>
+        </div>
+      </div>
+
+    </div><!-- /fc-pipeline -->
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 3 — ARCHITECTURE A: CLOUD GPU
+════════════════════════════════════════════════ -->
+<section class="page-break">
+  <div class="section-label">Section 03</div>
+  <h2>Architecture A — AI Detection Runs on Cloud GPU</h2>
+
+  <div class="arch-header cloud">
+    <h2>The Detection Model Lives in the Cloud</h2>
+    <p>Camera frames travel from the inspection site over the internet to a cloud GPU, which runs YOLO and OCR, then sends results back</p>
+  </div>
+  <div class="arch-body">
+
+    <h3>What This Architecture Looks Like</h3>
+    <ul class="blist">
+      <li>Cameras are mounted at the inspection site as normal</li>
+      <li><strong>A lightweight edge PC sits at the site</strong> — its only job is to capture frames from cameras and send them out</li>
+      <li>The edge PC does not run YOLO or OCR — it has no GPU required for inference</li>
+      <li>Every captured frame is compressed and <strong>sent over the internet to a cloud GPU server</strong> (AWS, RunPod, or similar)</li>
+      <li>The cloud GPU server runs the YOLO defect detection and OCR train number reading</li>
+      <li>Results (defect type, position, train number) are sent back to the site over the internet</li>
+      <li>The Correlation Engine, database, and dashboard run either on the edge PC or on a central server</li>
+      <li>One cloud GPU server can theoretically serve multiple inspection sites simultaneously</li>
+    </ul>
+
+    <h3>Why This Architecture Exists — The Reasoning</h3>
+    <ul class="blist">
+      <li><strong>No expensive GPU hardware at every site</strong> — the edge PC can be a cheap machine with no GPU. The GPU lives in the cloud and is shared</li>
+      <li><strong>Centrally managed</strong> — model updates happen on the cloud server once and all sites get the new model automatically</li>
+      <li><strong>Scales horizontally</strong> — one bigger cloud GPU can serve 5 or 10 sites at once without putting hardware at each location</li>
+      <li><strong>No hardware maintenance at remote sites</strong> — if the cloud GPU fails, you spin up a new one in minutes</li>
+    </ul>
+
+    <!-- ARCHITECTURE A FLOWCHART — fully vertical -->
+    <div class="flowchart no-break">
+      <div class="flowchart-title">Architecture A — Cloud GPU Inference Flow</div>
+
+      <div class="fc-pipeline">
+
+        <!-- SITE GROUP -->
+        <div class="fc-group site-grp" style="width:100%;">
+          <span class="fc-group-label">Inspection Site (no GPU here)</span>
+          <div style="height:12px;"></div>
+          <div class="fc-hpair">
+            <div class="fc-box fc-camera">
+              📷 Cameras
+              <span class="sub">4–8 video streams</span>
+            </div>
+            <div class="fc-arrow-right"><div class="shaft"></div><div class="tip"></div></div>
+            <div class="fc-box fc-edge">
+              Edge PC
+              <span class="sub">Frame capture only · No GPU</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Internet DOWN -->
+        <div class="fc-arrow-down purple"><div class="shaft" style="height:18px;"></div><div class="tip"></div></div>
+        <div class="fc-internet-band">⬆⬇ &nbsp; Frames sent over Internet &nbsp;⬆⬇ &nbsp; Results return over Internet</div>
+        <div class="fc-note warn" style="margin-bottom:4px;">⚠ Network latency: 20–300 ms per frame · Connection required at all times</div>
+        <div class="fc-arrow-down purple"><div class="shaft" style="height:18px;"></div><div class="tip"></div></div>
+
+        <!-- CLOUD GROUP -->
+        <div class="fc-group cloud-grp" style="width:100%;">
+          <span class="fc-group-label">Cloud GPU Server — AWS / RunPod</span>
+          <div style="height:12px;"></div>
+
+          <!-- YOLO + OCR parallel inside cloud -->
+          <div class="fc-parallel">
+            <div class="fc-box fc-gpu">
+              YOLO Detector
+              <span class="sub">GPU in cloud<br>Defect detection</span>
+            </div>
+            <div class="fc-box fc-gpu">
+              OCR Reader
+              <span class="sub">GPU in cloud<br>Train number</span>
+            </div>
+          </div>
+
+          <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+          <div class="fc-box fc-corr" style="width:240px;">
+            ★ Correlation Engine
+            <span class="sub">Links defect + train + camera + time</span>
+          </div>
+        </div>
+
+        <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+        <!-- Results: DB → Reports → Dashboard -->
+        <div class="fc-parallel">
+          <div class="fc-box fc-db">
+            Cloud Database
+            <span class="sub">Stores all findings</span>
+          </div>
+          <div class="fc-box fc-report">
+            Report Generator
+            <span class="sub">Builds inspection reports</span>
+          </div>
+          <div class="fc-box fc-dash" style="width:140px;">
+            Dashboard
+            <span class="sub">Engineer view</span>
+          </div>
+        </div>
+
+      </div><!-- /fc-pipeline -->
+    </div>
+
+    <h3>Weaknesses of This Architecture</h3>
+    <ul class="blist red">
+      <li><strong>Internet is mandatory during inspection</strong> — if the connection drops even briefly, frames are lost and detections are missed for that window. A missed crack on a bogie is a safety risk</li>
+      <li><strong>Network latency adds up</strong> — sending a frame to the cloud and getting a result back takes 20–300ms depending on connection quality. At 25 frames per second per camera, this creates a processing bottleneck and frames must be queued or dropped</li>
+      <li><strong>Bandwidth is heavy</strong> — sending 4 camera streams of compressed video to the cloud continuously requires a fast, stable internet connection at the inspection site. Many rail sites in remote locations do not have this</li>
+      <li><strong>Sensitive data leaves the site</strong> — every camera frame of railway infrastructure is sent to a third-party cloud server over the internet</li>
+      <li><strong>Ongoing cloud GPU cost</strong> — unlike training which runs for a few hours a year, inference is continuous. A 24/7 cloud GPU for live inspection costs significantly more over time</li>
+      <li><strong>Single point of failure is outside your control</strong> — if the cloud provider has an outage, your inspection system stops working and you cannot fix it yourself</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 4 — ARCHITECTURE B: DGX SPARK
+════════════════════════════════════════════════ -->
+<section class="page-break">
+  <div class="section-label">Section 04</div>
+  <h2>Architecture B — AI Detection Runs On-Site with DGX Spark</h2>
+
+  <div class="arch-header spark">
+    <h2>The Detection Model Lives at the Inspection Site</h2>
+    <p>The DGX Spark at each site runs YOLO, OCR, and all seven services locally — nothing is sent to the cloud during inspection</p>
+  </div>
+  <div class="arch-body">
+
+    <h3>What This Architecture Looks Like</h3>
+    <ul class="blist">
+      <li>Cameras are mounted at the inspection site as normal</li>
+      <li><strong>One DGX Spark unit sits at each site</strong> — roughly the size of a large hardcover book, fits in any standard cabinet</li>
+      <li>All seven services run inside Docker containers directly on the Spark</li>
+      <li>The Spark's built-in GPU runs YOLO and OCR on every camera frame <strong>without any internet connection</strong></li>
+      <li>The Correlation Engine, database, and report generator also run on the Spark — everything is self-contained</li>
+      <li><strong>Nothing leaves the site during inspection</strong> — frames, detections, and reports are all stored locally</li>
+      <li>Only finished inspection reports are optionally synced to a central dashboard when internet is available</li>
+      <li>For model training — a cloud GPU (RunPod) is rented on demand, used for 4–6 hours, then shut off. Training is completely separate from inference</li>
+    </ul>
+
+    <h3>Why This Architecture Exists — The Reasoning</h3>
+    <ul class="blist">
+      <li><strong>Zero latency for inference</strong> — the GPU is in the same box as the cameras. Processing happens in 2–5ms per frame. No network round trip ever</li>
+      <li><strong>Works without internet</strong> — the inspection never stops because of a network issue. The system is fully self-sufficient</li>
+      <li><strong>Data stays on-site</strong> — railway infrastructure inspection footage is sensitive data. It never leaves the inspection site</li>
+      <li><strong>Each site is independent</strong> — if one site's Spark has an issue, the other sites keep running. There is no shared central point of failure</li>
+      <li><strong>Training is separate and cheap</strong> — the cloud GPU is only used for periodic model retraining, not live inference. Training costs approximately ₹1,300 per run and runs a few times a year</li>
+    </ul>
+
+    <!-- ARCHITECTURE B FLOWCHART — fully vertical -->
+    <div class="flowchart no-break">
+      <div class="flowchart-title">Architecture B — DGX Spark On-Site Inference Flow</div>
+
+      <div class="fc-pipeline">
+
+        <!-- SPARK GROUP — everything lives here -->
+        <div class="fc-group spark-grp" style="width:100%;">
+          <span class="fc-group-label">Inspection Site — DGX Spark (all 7 services run here)</span>
+          <div style="height:14px;"></div>
+
+          <!-- Cameras + Frame Extractor side by side -->
+          <div class="fc-hpair">
+            <div class="fc-box fc-camera">
+              📷 Cameras
+              <span class="sub">4–8 video streams</span>
+            </div>
+            <div class="fc-arrow-right"><div class="shaft"></div><div class="tip"></div></div>
+            <div class="fc-box fc-spark">
+              Frame Extractor
+              <span class="sub">Reads camera feeds</span>
+            </div>
+          </div>
+
+          <div class="fc-arrow-down green"><div class="shaft"></div><div class="tip"></div></div>
+
+          <!-- YOLO + OCR parallel -->
+          <div class="fc-parallel">
+            <div class="fc-box fc-gpu">
+              YOLO Detector
+              <span class="sub">GPU on Spark<br>Defect detection</span>
+            </div>
+            <div class="fc-box fc-gpu">
+              OCR Reader
+              <span class="sub">GPU on Spark<br>Train number</span>
+            </div>
+          </div>
+
+          <div class="fc-arrow-down green"><div class="shaft"></div><div class="tip"></div></div>
+          <div class="fc-note green">⚡ Processing in 2–5 ms per frame · No internet needed</div>
+          <div class="fc-arrow-down green"><div class="shaft"></div><div class="tip"></div></div>
+
+          <!-- Correlation -->
+          <div class="fc-box fc-corr" style="width:260px;">
+            ★ Correlation Engine
+            <span class="sub">Links defect + train + camera + timestamp<br>Core business logic</span>
+          </div>
+
+          <div class="fc-arrow-down green"><div class="shaft"></div><div class="tip"></div></div>
+
+          <!-- Sync + Local DB -->
+          <div class="fc-parallel">
+            <div class="fc-box fc-service">
+              Sync Engine
+              <span class="sub">Writes to local database</span>
+            </div>
+            <div class="fc-box fc-localdb">
+              Local Database
+              <span class="sub">PostgreSQL on Spark<br>Data never leaves site</span>
+            </div>
+          </div>
+
+          <div class="fc-arrow-down green"><div class="shaft"></div><div class="tip"></div></div>
+
+          <!-- Report + Dashboard -->
+          <div class="fc-parallel">
+            <div class="fc-box fc-report">
+              Report Generator
+              <span class="sub">Instant report on train exit</span>
+            </div>
+            <div class="fc-box fc-dash">
+              Engineer Dashboard
+              <span class="sub">Live view in browser</span>
+            </div>
+          </div>
+
+        </div><!-- /spark-grp -->
+
+        <!-- Optional sync to central -->
+        <div class="fc-arrow-down gray"><div class="shaft" style="height:18px;"></div><div class="tip"></div></div>
+        <div class="fc-note" style="margin-bottom:4px;">Optional — finished reports synced to central server when internet is available. Inspection is unaffected if offline.</div>
+        <div class="fc-arrow-down gray"><div class="shaft" style="height:14px;"></div><div class="tip"></div></div>
+
+        <div class="fc-box fc-service" style="width:220px;">
+          Central Management Server
+          <span class="sub">Multi-site dashboard · Report archive</span>
+        </div>
+
+      </div><!-- /fc-pipeline -->
+    </div>
+
+    <!-- TRAINING FLOWCHART — vertical -->
+    <h3>How Model Training Works (Separate from Inspection)</h3>
+    <p>Training the AI model is completely separate from running the inspection. The DGX Spark never trains — it only does inference. Training happens on a cloud GPU on demand.</p>
+
+    <div class="flowchart no-break">
+      <div class="flowchart-title">Model Training Pipeline — Independent from Live Inspection</div>
+
+      <div class="fc-pipeline">
+
+        <div class="fc-box fc-edge" style="width:240px;">
+          New Labeled Frames
+          <span class="sub">Collected from all inspection sites</span>
+        </div>
+
+        <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+        <div class="fc-box fc-service" style="width:240px;">
+          Central Server
+          <span class="sub">Dataset storage &amp; training trigger</span>
+        </div>
+
+        <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+        <div class="fc-box fc-cloud" style="width:240px;">
+          RunPod 2× H100
+          <span class="sub">Trains YOLO11x · 4–6 hours · Then shut off</span>
+        </div>
+
+        <div class="fc-arrow-down"><div class="shaft"></div><div class="tip"></div></div>
+
+        <div class="fc-box fc-spark" style="width:240px;">
+          New best.pt Model File
+          <span class="sub">Pushed to all DGX Spark sites</span>
+        </div>
+
+      </div>
+
+      <div class="callout success" style="margin-top:20px;margin-bottom:0;">
+        <div class="callout-icon">✓</div>
+        <div class="callout-body">
+          <strong>Inspection never stops during training</strong>
+          Training happens on a completely separate cloud machine. The Spark keeps doing inspection with the current model while the new one is being trained. When training finishes, the Spark swaps in the new model in under 10 seconds without stopping any other service.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 5 — COMPARISON
+════════════════════════════════════════════════ -->
+<section class="page-break">
+  <div class="section-label">Section 05</div>
+  <h2>Comparison — Both Architectures Side by Side</h2>
+
+  <table>
+    <tr><th>What We Are Comparing</th><th>Architecture A — Cloud GPU Inference</th><th>Architecture B — DGX Spark On-Site</th></tr>
+    <tr>
+      <td><strong>Where AI runs</strong></td>
+      <td>Cloud GPU server (remote)</td>
+      <td class="w">On-site Spark (local)</td>
+    </tr>
+    <tr>
+      <td><strong>Internet needed during inspection</strong></td>
+      <td class="l">Yes — mandatory, every frame</td>
+      <td class="w">No — fully local</td>
+    </tr>
+    <tr>
+      <td><strong>Inference latency per frame</strong></td>
+      <td class="l">20–300ms (network round trip)</td>
+      <td class="w">2–5ms (local GPU)</td>
+    </tr>
+    <tr>
+      <td><strong>What happens if internet drops</strong></td>
+      <td class="l">Inspection stops — frames cannot reach GPU</td>
+      <td class="w">Inspection continues — nothing changes</td>
+    </tr>
+    <tr>
+      <td><strong>Inspection data leaves the site</strong></td>
+      <td class="l">Yes — every frame sent to cloud</td>
+      <td class="w">No — data stays on Spark</td>
+    </tr>
+    <tr>
+      <td><strong>Hardware at site</strong></td>
+      <td class="w">Cheap edge PC — no GPU needed</td>
+      <td class="n">DGX Spark at each site</td>
+    </tr>
+    <tr>
+      <td><strong>Continuous cloud GPU cost</strong></td>
+      <td class="l">Yes — 24/7 inference on cloud = high ongoing cost</td>
+      <td class="w">No — cloud GPU only for training (few hrs/year)</td>
+    </tr>
+    <tr>
+      <td><strong>If cloud provider has outage</strong></td>
+      <td class="l">All sites stop — no control</td>
+      <td class="w">Sites keep running — no dependency</td>
+    </tr>
+    <tr>
+      <td><strong>Bandwidth requirement at site</strong></td>
+      <td class="l">High — video frames streamed to cloud continuously</td>
+      <td class="w">Low — only final reports synced out</td>
+    </tr>
+    <tr>
+      <td><strong>Scales to remote/rural sites</strong></td>
+      <td class="l">Difficult — needs reliable high-speed internet</td>
+      <td class="w">Yes — works anywhere with power</td>
+    </tr>
+    <tr>
+      <td><strong>Service auto-recovery</strong></td>
+      <td class="n">Depends on cloud provider</td>
+      <td class="w">Yes — Docker restarts any crashed service automatically</td>
+    </tr>
+  </table>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     SECTION 6 — WHY SPARK IS THE RIGHT CHOICE
+════════════════════════════════════════════════ -->
+<section class="page-break">
+  <div class="section-label">Section 06</div>
+  <h2>Why the DGX Spark Is the Right Choice — And Why It Will Not Fail</h2>
+
+  <p>Railway inspection is safety-critical. A missed defect has real consequences. The hardware running this system must work every single time, without depending on external conditions like internet connectivity or cloud provider availability. Here is exactly why the DGX Spark meets those requirements.</p>
+
+  <div class="reason-grid">
+
+    <div class="reason-card">
+      <h4>Built Specifically for Always-On AI Workloads</h4>
+      <p>NVIDIA designed the DGX Spark and markets it specifically for "always-on agent workloads" — meaning continuous AI inference running 24 hours a day, every day. This is not a secondary use case. It is the primary use case the hardware was built for.</p>
+    </div>
+
+    <div class="reason-card">
+      <h4>Zero Thermal Throttling — Independently Tested</h4>
+      <p>Independent labs ran the Spark at full AI inference load continuously and recorded zero thermal throttling. The external power supply design keeps heat-generating components outside the chassis, giving the GPU far more thermal headroom than any desktop PC running a discrete GPU.</p>
+    </div>
+
+    <div class="reason-card">
+      <h4>Proven in Real-World Continuous Operation</h4>
+      <p>Real-world users have documented running the Spark at full AI workload for 9 consecutive days without any thermal issue or performance drop. This is documented evidence, not a marketing claim.</p>
+    </div>
+
+    <div class="reason-card">
+      <h4>Only 40% GPU Used Per Train — Massive Headroom</h4>
+      <p>Processing one train with 4 cameras uses approximately 40% of the Spark's GPU capacity. The remaining 60% sits idle. The system has enormous headroom — even if camera count doubles to 8, the GPU is at 80% with headroom remaining.</p>
+    </div>
+
+    <div class="reason-card">
+      <h4>128GB Memory — Never Runs Out</h4>
+      <p>Both AI models, all seven services, the local database, and the operating system together use approximately 12–15GB. The Spark has 128GB. There is more than 8 times the required memory available. The system will never slow down or crash because of memory pressure.</p>
+    </div>
+
+    <div class="reason-card">
+      <h4>Docker Auto-Recovery — Self-Healing System</h4>
+      <p>Docker's restart policy means if any service crashes for any reason, Docker detects it and restarts it in seconds — automatically, without any human intervention, without affecting the other six services. The inspection continues without an engineer needing to do anything.</p>
+    </div>
+
+    <div class="reason-card">
+      <h4>No Dependency on Internet or Cloud</h4>
+      <p>Unlike Architecture A where every inspection depends on a working internet connection to a cloud GPU, the Spark runs entirely independently. There is no external dependency that can cause an inspection failure. It works with power alone.</p>
+    </div>
+
+    <div class="reason-card">
+      <h4>NVIDIA Business Critical Support</h4>
+      <p>If the hardware itself fails completely, NVIDIA's Business Critical support tier commits to a 1-hour response for Severity 1 (complete system down) and dispatches onsite engineers for replacement. This is a defined contractual commitment, not a consumer helpline.</p>
+    </div>
+
+  </div>
+
+  <!-- FAILURE RECOVERY TABLE -->
+  <h3>How the Spark Recovers From Every Failure Scenario</h3>
+
+  <table class="fail-table">
+    <tr><th>What Fails</th><th>What Happens</th><th>How Long to Recover</th></tr>
+    <tr>
+      <td>YOLO or OCR service crashes</td>
+      <td>Docker detects it instantly and restarts the container. Other services keep running.</td>
+      <td class="w">5–10 seconds. Automatic. No human needed.</td>
+    </tr>
+    <tr>
+      <td>Any CPU service crashes</td>
+      <td>Docker restarts it automatically. Pipeline resumes.</td>
+      <td class="w">3–5 seconds. Automatic.</td>
+    </tr>
+    <tr>
+      <td>Internet connection drops</td>
+      <td>Inspection continues without interruption. Report sync waits and retries when connection returns.</td>
+      <td class="w">Zero impact on inspection.</td>
+    </tr>
+    <tr>
+      <td>Power cut (with UPS)</td>
+      <td>Spark draws only 240W so a standard UPS covers 15–30 minutes of continued operation.</td>
+      <td class="w">No interruption during UPS runtime.</td>
+    </tr>
+    <tr>
+      <td>Power cut (no UPS)</td>
+      <td>System shuts down. On power return, Docker Compose auto-starts all services.</td>
+      <td class="n">2–3 minutes to fully restart. Automatic.</td>
+    </tr>
+    <tr>
+      <td>Cloud training provider outage</td>
+      <td>Inspection is completely unaffected — training and inference are separate systems.</td>
+      <td class="w">Zero impact on inspection.</td>
+    </tr>
+    <tr>
+      <td>Bad AI model deployed</td>
+      <td>Roll back: replace with previous model file, restart YOLO container. Other services unaffected.</td>
+      <td class="w">Under 1 minute. Manual but simple.</td>
+    </tr>
+    <tr>
+      <td>Complete hardware failure</td>
+      <td>NVIDIA Business Critical support dispatched. Optional: temporary cloud fallback while awaiting replacement.</td>
+      <td class="n">Hours under NVIDIA SLA — not days.</td>
+    </tr>
+  </table>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     VERDICT
+════════════════════════════════════════════════ -->
+<div class="verdict">
+  <div class="section-label">Final Position</div>
+  <h2>The Bottom Line</h2>
+
+  <p style="color:#cbd5e1;margin-top:14px;font-size:0.92rem;">
+    The fundamental question is: should the AI model that detects railway defects run on a remote cloud
+    server reached over the internet, or on a dedicated machine sitting at the inspection site?
+  </p>
+
+  <p style="color:#94a3b8;margin-top:12px;font-size:0.88rem;">
+    For a safety-critical inspection system deployed at railway sites — including remote locations where
+    internet connectivity may be limited — the answer is clear. The detection must happen locally.
+    Every millisecond of network latency, every brief internet outage, every cloud provider downtime
+    event becomes a gap in inspection coverage. No gap in a railway inspection system is acceptable.
+  </p>
+
+  <h3 style="color:#4ade80;margin-top:28px;font-size:1rem;">The DGX Spark is the right choice because</h3>
+  <ul class="blist green" style="margin-top:10px;">
+    <li><strong>Inspection works with power alone</strong> — no internet, no cloud dependency, no third-party availability required</li>
+    <li><strong>Sub-5ms inference latency</strong> — frames are processed as fast as the camera produces them, with no network round trip</li>
+    <li><strong>Purpose-built hardware</strong> — designed and validated for exactly this type of continuous 24/7 AI workload</li>
+    <li><strong>Self-healing through Docker</strong> — crashed services restart in seconds without human intervention</li>
+    <li><strong>All data stays at the site</strong> — railway infrastructure data never travels to a third-party cloud server</li>
+    <li><strong>Enterprise support with defined SLAs</strong> — NVIDIA responds in 1 hour for a complete system failure</li>
+    <li><strong>Training remains cloud-based and cheap</strong> — the cloud GPU is used only for periodic model improvement, not live inspection</li>
+  </ul>
+</div>
+
+<div class="doc-footer">
+  <span>VandeInspect AI — Architecture Guide v2.1</span>
+  <span>Confidential — Internal &amp; Client Use</span>
+  <span>July 2026</span>
+</div>
+
+</div>
+</body>
+</html>
