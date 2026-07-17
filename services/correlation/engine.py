@@ -13,13 +13,22 @@ import logging
 import requests
 import psycopg2
 import psycopg2.extras
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+from correlate_v2 import correlate_candidate   # Phase C: tracking/voting/fusion/scoring
 
 logger = logging.getLogger(__name__)
 
 YOLO_URL = os.environ.get("YOLO_SERVICE_URL", "http://127.0.0.1:5002/api/yolo/predict")
 SAMPLE_EVERY_N = int(os.environ.get("CORRELATION_SAMPLE_N", "3"))
 YOLO_CONCURRENCY = int(os.environ.get("CORRELATION_CONCURRENCY", "4"))
+
+# Phase C — write upgraded, deduplicated, multi-camera-scored events to defect_events.
+# Augments the legacy per-frame defects table (dashboard unaffected). Toggle + tunables:
+CORRELATION_V2 = os.environ.get("CORRELATION_V2", "1") == "1"
+ALERT_THRESHOLD = float(os.environ.get("CORRELATION_ALERT_THRESHOLD", "0.92"))
+DEFAULT_IMAGE_QUALITY = float(os.environ.get("CORRELATION_DEFAULT_Q", "0.8"))
 
 SEVERITY_PENALTY = {
     "CRITICAL": 15,
@@ -82,6 +91,85 @@ def _process_frame(frame: dict) -> tuple[dict, list[dict]]:
     return frame, _run_yolo(frame_bytes)
 
 
+def aggregate_candidates(frame_results, ocr_confidence: float = 0.9,
+                         image_quality: float = DEFAULT_IMAGE_QUALITY):
+    """Pure: turn per-frame YOLO results into per-(defect_class) multi-camera
+    observations for the Phase-C pipeline.
+
+    frame_results: list[(frame_dict, detections)]; frame_dict has 'session_camera_id'.
+    Returns (candidates, camera_weights):
+      candidates    : list of (defect_class, bogie_id, observations)
+      camera_weights: equal weight per camera that saw the coach (vote normalizes)
+    """
+    cameras_seen: list = []
+    seen: set = set()
+    per_class = defaultdict(lambda: defaultdict(list))   # class -> camera -> [conf,...]
+    for frame, dets in frame_results:
+        cam = frame.get("session_camera_id")
+        if cam is None:
+            continue
+        if cam not in seen:
+            seen.add(cam)
+            cameras_seen.append(cam)
+        for det in dets:
+            label = _norm(det.get("label", ""))
+            if not det.get("defect", label in DEFECT_SEVERITY):
+                continue                               # only defects enter event correlation
+            per_class[label][cam].append(float(det.get("confidence", 0.0)))
+
+    camera_weights = {cam: 1.0 for cam in cameras_seen}
+    candidates = []
+    for label, cam_map in per_class.items():
+        obs = []
+        for cam in cameras_seen:
+            confs = cam_map.get(cam, [])
+            obs.append({
+                "camera_id": cam,
+                "detected": len(confs) > 0,
+                "confidence": max(confs) if confs else 0.0,
+                "frame_count": len(confs),
+                "image_quality": image_quality,
+                "ocr_confidence": ocr_confidence,
+            })
+        candidates.append((label, 0, obs))
+    return candidates, camera_weights
+
+
+def store_correlated_events(conn, session_id, coach_id, frame_results,
+                            ocr_confidence: float = 0.9) -> int:
+    """Run the Phase-C pipeline over collected detections and persist one
+    authoritative, deduplicated, scored row per defect to defect_events."""
+    candidates, weights = aggregate_candidates(frame_results, ocr_confidence)
+    rows = []
+    for defect_class, bogie_id, obs in candidates:
+        out = correlate_candidate(defect_class, bogie_id, obs, weights,
+                                  baseline=None, threshold=ALERT_THRESHOLD)
+        detecting = [o for o in obs if o["detected"]]
+        best_cam = max(detecting, key=lambda o: o["confidence"])["camera_id"] if detecting else None
+        state = "confirmed" if out.route == "confirm" else "correlated"
+        rows.append((
+            str(uuid.uuid4()), session_id, coach_id,
+            str(best_cam) if best_cam else None, defect_class,
+            round(out.fused_confidence, 4), round(out.agreement, 4),
+            round(out.score, 4), out.route, state, out.route == "confirm",
+        ))
+    if rows:
+        with conn.cursor() as cur:
+            psycopg2.extras.execute_values(
+                cur,
+                """
+                INSERT INTO defect_events
+                  (event_id, session_id, coach_id, camera_id, defect_class,
+                   yolo_confidence, agreement, alert_score, route, state, validated)
+                VALUES %s
+                ON CONFLICT DO NOTHING
+                """,
+                rows,
+            )
+        conn.commit()
+    return len(rows)
+
+
 def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
     """
     Run defect + component correlation for one coach.
@@ -90,7 +178,7 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
     # ── Load coach + frames ───────────────────────────────────────────────────
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT id, coach_type FROM coaches WHERE id = %s",
+            "SELECT id, coach_type, ocr_confidence FROM coaches WHERE id = %s",
             (coach_id,),
         )
         coach = cur.fetchone()
@@ -100,7 +188,7 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
         # Only use component camera frames — exclude the OCR/placard camera
         cur.execute(
             """
-            SELECT f.id, f.cloudinary_url, f.trigger_id
+            SELECT f.id, f.cloudinary_url, f.trigger_id, f.session_camera_id
             FROM frames f
             JOIN session_cameras sc ON f.session_camera_id = sc.id
             WHERE f.session_id = %s AND f.coach_id = %s AND sc.camera_type != 'ocr'
@@ -213,11 +301,25 @@ def correlate_coach(conn, session_id: str, coach_id: str) -> dict:
 
         conn.commit()
 
+    # ── Phase C: upgraded multi-camera correlation → defect_events (guarded) ──────
+    correlated_events = 0
+    if CORRELATION_V2:
+        try:
+            ocr_conf = float(coach["ocr_confidence"]) if coach.get("ocr_confidence") is not None else 0.9
+            correlated_events = store_correlated_events(
+                conn, session_id, coach_id, frame_results, ocr_conf)
+            logger.info("Coach %s: %d correlated event(s) written to defect_events",
+                        coach_id, correlated_events)
+        except Exception as exc:
+            # Never let the upgraded path break the legacy result (e.g. migration not applied)
+            logger.warning("v2 correlation skipped (legacy unaffected): %s", exc)
+
     summary = {
         "coach_id": coach_id,
         "frames_sampled": len(sampled),
         "components_detected": len(component_rows),
         "defects_found": len(defect_rows),
+        "correlated_events": correlated_events,
         "sev_counts": sev_counts,
         "health_score": health_score,
     }

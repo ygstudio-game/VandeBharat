@@ -7,6 +7,9 @@ const prisma = require('../db/client');
 const config = require('../config');
 const rootConfig = require(path.join(__dirname, '..', '..', '..', 'config.json'));
 const { publishJob } = require('../queue/queue');
+const { logAction } = require('../services/auditLog');
+
+const FRAME_REVIEW_STATUSES = new Set(['confirmed', 'false_positive']);
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'uploads');
 
@@ -313,6 +316,7 @@ async function sessions(fastify) {
           trigger_id: true, captured_at_ms: true,
           thumbnail_url: true, cloudinary_url: true,
           is_ocr_candidate: true, is_defect_flagged: true,
+          review_status: true,
           ocr_results: {
             select: {
               coach_number: true, confidence: true, is_valid: true,
@@ -322,7 +326,7 @@ async function sessions(fastify) {
           },
           defects: {
             select: {
-              id: true, defect_type: true, severity: true,
+              id: true, defect_type: true, severity: true, review_status: true,
               bbox_x: true, bbox_y: true, bbox_w: true, bbox_h: true,
             },
           },
@@ -339,6 +343,68 @@ async function sessions(fastify) {
       })),
       total,
     };
+  });
+
+  // PATCH /api/sessions/frames/:frameId/review { status, notes }
+  // Manual verification of a single frame/image. Works for every frame whether
+  // or not it carries a detected defect. When the frame DOES have defects, the
+  // same decision is propagated to those defect rows + the defect review log so
+  // the training-export feed stays consistent with the older per-defect flow.
+  fastify.patch('/frames/:frameId/review', async (req, reply) => {
+    const { status, notes } = req.body || {};
+    if (!FRAME_REVIEW_STATUSES.has(status)) {
+      reply.status(400);
+      return { error: `status must be one of: ${[...FRAME_REVIEW_STATUSES].join(', ')}` };
+    }
+
+    const frame = await prisma.frame.findUnique({
+      where: { id: req.params.frameId },
+      include: { defects: { select: { id: true, coach_id: true, defect_type: true } } },
+    });
+    if (!frame) {
+      reply.status(404);
+      return { error: 'Frame not found' };
+    }
+
+    const reviewedAt = new Date();
+    await prisma.frame.update({
+      where: { id: frame.id },
+      data: {
+        review_status: status,
+        reviewed_by: req.user.id,
+        reviewed_at: reviewedAt,
+        review_notes: notes || null,
+      },
+    });
+
+    // Propagate to any defects on this frame so per-defect review + training
+    // export reflect the same decision.
+    if (frame.defects.length > 0) {
+      const defectIds = frame.defects.map((d) => d.id);
+      await prisma.defect.updateMany({
+        where: { id: { in: defectIds } },
+        data: { review_status: status, reviewed_by: req.user.id, reviewed_at: reviewedAt, review_notes: notes || null },
+      });
+      await prisma.defectReviewLog.createMany({
+        data: frame.defects.map((d) => ({
+          session_id: frame.session_id,
+          coach_id: d.coach_id,
+          defect_id: d.id,
+          log_type: status,
+          defect_type: d.defect_type,
+          notes: notes || null,
+          logged_by: req.user.id,
+        })),
+      });
+    }
+
+    await logAction({
+      userId: req.user.id, sessionId: frame.session_id, action: 'FRAME_REVIEWED',
+      resourceType: 'Frame', resourceId: frame.id, ip: req.ip,
+      metadata: { status, defect_count: frame.defects.length },
+    });
+
+    return { frame_id: frame.id, review_status: status, defects_updated: frame.defects.length };
   });
 
   // POST /api/sessions/:id/process  (Phase 2)

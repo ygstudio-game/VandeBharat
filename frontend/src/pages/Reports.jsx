@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePolling } from '../hooks/usePolling';
-import { getSessions, getReport, generateReport, getHierarchy, getIntelligence, signReport, exportEvidence, normalizeSession, getCoachFrames, getFrames } from '../lib/api';
+import { getSessions, getReport, generateReport, getHierarchy, getIntelligence, signReport, exportEvidence, normalizeSession, getCoachFrames, getFrames, reviewFrame } from '../lib/api';
 import { PeriodicReportsPanel } from '../components/reports/PeriodicReportsPanel';
 import { 
   FileText, 
@@ -170,6 +170,23 @@ export const Reports = ({ lockedStation = null }) => {
   const [isSigningLoading, setIsSigningLoading] = useState(false);
   const [isDownloading, setIsDownloading] = useState(null); // report ID
   const [isExportingEvidence, setIsExportingEvidence] = useState(null); // report ID
+
+  // Manual verification of any frame in the Detection Log — applies to every
+  // image whether or not it carries a defect. Persists frame.review_status (and
+  // server-side propagates to defect rows + training-export feed), then patches
+  // the in-memory frame so the row reflects the new status without a refetch.
+  const handleReviewFrame = useCallback(async (frameId, status) => {
+    await reviewFrame(frameId, status);
+    setCoachFrames(prev => prev.map(f => (
+      f.id === frameId
+        ? {
+            ...f,
+            review_status: status,
+            defects: (f.defects || []).map(d => ({ ...d, review_status: status })),
+          }
+        : f
+    )));
+  }, []);
 
   const handleEvidence = async (report) => {
     if (!report) return;
@@ -874,6 +891,7 @@ export const Reports = ({ lockedStation = null }) => {
               trainNumber={sessionObj?.train_number}
               sessionStartedAt={sessionObj?.started_at}
               onViewFrame={(frame) => { setSelectedFrame(frame); setIsFrameModalOpen(true); }}
+              onReviewFrame={handleReviewFrame}
             />
 
           </section>

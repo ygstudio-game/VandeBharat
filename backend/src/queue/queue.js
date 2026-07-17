@@ -142,4 +142,8 @@ function consumeStream(stage, consumerName, handler, { maxAttempts = 3, blockMs 
   return () => { stopped = true; };
 }
 
-module.exports = { publishJob, publishToDlq, ensureGroup, getDlqDepth, claimStale, consumeStream };
+module.exports = {
+  publishJob, publishToDlq, ensureGroup, getDlqDepth, claimStale, consumeStream,
+  // pure key helpers exported for unit testing (no Redis required)
+  streamKey, dlqKey, groupName,
+};

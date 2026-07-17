@@ -33,6 +33,7 @@ from ocr_engine import run_ocr
 from preprocess import preprocess_frame
 from train_number_filter import filter_train_numbers
 from logging_utils import configure_logging, set_trace_id  # noqa: E402
+from health import health_payload  # noqa: E402
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
@@ -170,7 +171,7 @@ def warmup():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "ocr", "port": 5000}
+    return health_payload("ocr", port=5000)
 
 
 @app.get("/metrics")

@@ -6,8 +6,6 @@ import os
 import sys
 import json
 import logging
-import psycopg2
-import psycopg2.extras
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -15,6 +13,8 @@ from engine import run_sync
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "GPU", "shared"))
 from logging_utils import configure_logging, set_trace_id  # noqa: E402
+from health import health_payload  # noqa: E402
+import db_client  # noqa: E402
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
@@ -30,12 +30,12 @@ class SyncRequest(BaseModel):
 
 
 def get_conn():
-    return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+    return db_client.connect()   # breaker-wrapped (D3)
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "sync_engine", "port": 5004}
+    return health_payload("sync_engine", port=5004)
 
 
 @app.post("/sync")
