@@ -61,12 +61,13 @@ services:
 
   ingestion:
     <<: *common
+    restart: on-failure   # don't auto-restart after clean exit (DEMO_DURATION_S)
     build:
       context: .
       dockerfile: ingestion/Dockerfile
     env_file: .env
     volumes:
-      - ${HOST_CHUNK_DIR}:${CHUNK_DIR}   # host path set in .env
+      - ${HOST_CHUNK_DIR}:${CHUNK_DIR}
     ports:
       - "9100:9100"   # Prometheus metrics scrape
     depends_on:
@@ -74,6 +75,23 @@ services:
         condition: service_healthy
       nats:
         condition: service_started
+
+  dashboard:
+    <<: *common
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    env_file: .env
+    environment:
+      PROMETHEUS_URL: http://prometheus:9090
+      INGESTION_SERVICE: ingestion
+    volumes:
+      - ${HOST_CHUNK_DIR}:${CHUNK_DIR}   # read chunk dir for disk stats + delete
+      - /var/run/docker.sock:/var/run/docker.sock   # control sibling containers
+    ports:
+      - "${DASHBOARD_PORT:-5000}:5000"
+    depends_on:
+      - prometheus
 
   frame_fetcher:
     <<: *common
