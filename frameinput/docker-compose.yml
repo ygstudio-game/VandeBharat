@@ -1,0 +1,99 @@
+x-common: &common
+  restart: unless-stopped
+  platform: linux/arm64
+
+services:
+
+  # ── Infrastructure ────────────────────────────────────────────────────────────
+
+  postgres:
+    <<: *common
+    image: postgres:16
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB:       ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  nats:
+    <<: *common
+    image: nats:2.10-alpine
+    ports:
+      - "4222:4222"   # client
+      - "8222:8222"   # HTTP monitoring
+
+  prometheus:
+    <<: *common
+    image: prom/prometheus:latest
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - ingestion
+      - frame_fetcher
+
+  grafana:
+    <<: *common
+    image: grafana/grafana:latest
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana_dashboard.json:/var/lib/grafana/dashboards/daq.json:ro
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  # ── Application services ──────────────────────────────────────────────────────
+
+  ingestion:
+    <<: *common
+    build:
+      context: .
+      dockerfile: ingestion/Dockerfile
+    env_file: .env
+    volumes:
+      - chunk_data:${CHUNK_DIR}
+    ports:
+      - "9100:9100"   # Prometheus metrics scrape
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+
+  frame_fetcher:
+    <<: *common
+    build:
+      context: .
+      dockerfile: frame_fetcher/Dockerfile
+    env_file: .env
+    volumes:
+      - chunk_data:${CHUNK_DIR}
+    ports:
+      - "8000:8000"   # REST API
+      - "9101:9100"   # Prometheus metrics (mapped to avoid conflict with ingestion:9100)
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  grafana_data:
+  chunk_data:     # shared NVMe volume — both ingestion and frame_fetcher read/write here
+                  # On the DGX Spark, replace with a bind mount to the actual NVMe path:
+                  #   volumes:
+                  #     - /data/chunks:${CHUNK_DIR}
