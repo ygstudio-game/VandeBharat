@@ -66,7 +66,7 @@ services:
       dockerfile: ingestion/Dockerfile
     env_file: .env
     volumes:
-      - chunk_data:${CHUNK_DIR}
+      - /data/chunks:${CHUNK_DIR}   # bind mount → NVMe on DGX Spark
     ports:
       - "9100:9100"   # Prometheus metrics scrape
     depends_on:
@@ -82,7 +82,7 @@ services:
       dockerfile: frame_fetcher/Dockerfile
     env_file: .env
     volumes:
-      - chunk_data:${CHUNK_DIR}
+      - /data/chunks:${CHUNK_DIR}   # same host folder — both services share the chunks
     ports:
       - "8000:8000"   # REST API
       - "9101:9100"   # Prometheus metrics (mapped to avoid conflict with ingestion:9100)
@@ -93,7 +93,3 @@ services:
 volumes:
   pgdata:
   grafana_data:
-  chunk_data:     # shared NVMe volume — both ingestion and frame_fetcher read/write here
-                  # On the DGX Spark, replace with a bind mount to the actual NVMe path:
-                  #   volumes:
-                  #     - /data/chunks:${CHUNK_DIR}
