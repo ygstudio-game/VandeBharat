@@ -1,7 +1,7 @@
 """
 DAQ Ingestion Pipeline — main entry point.
 
-Wires together all components and runs until SIGTERM / Ctrl-C:
+Wires together all components and runs until stopped:
 
     8 simulator cameras  →  BoundedFrameBuffer  →  ChunkWriter  →  NVMe (.bin)
                                                         ↓               ↓
@@ -9,21 +9,27 @@ Wires together all components and runs until SIGTERM / Ctrl-C:
                                                    (PostgreSQL)       (NATS)
 
 Environment variables (set via .env / Docker):
-    POSTGRES_DSN      postgresql://daq:daq@postgres:5432/daq
-    NATS_URL          nats://nats:4222
-    CHUNK_DIR         /data/chunks
-    CHUNK_MAX_BYTES   536870912   (512 MB)
-    METRICS_PORT      9100
-    RING_CAPACITY     2048
+    POSTGRES_DSN          postgresql://daq:daq@postgres:5432/daq
+    NATS_URL              nats://nats:4222
+    CHUNK_DIR             /data/chunks
+    CHUNK_MAX_BYTES       536870912   (512 MB per chunk file)
+    METRICS_PORT          9100
+    RING_CAPACITY         2048
+
+Stop conditions (pipeline exits cleanly when ANY of these is hit):
+    DEMO_DURATION_S       0 = run forever (default).  Set e.g. 120 to auto-stop
+                          after 2 minutes.
+    MIN_FREE_DISK_GB      10 = stop when free space on CHUNK_DIR drops below
+                          this many GB.  Prevents filling the drive.
 """
 import logging
 import os
+import shutil
 import signal
 import sys
 import threading
+import time
 
-# Make 'core' and 'ingestion' importable when run as a module inside Docker
-# (PYTHONPATH=/app is set in the Dockerfile; this guard covers local dev runs).
 if __name__ == "__main__":
     import pathlib
     sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
@@ -47,15 +53,24 @@ logger = logging.getLogger("pipeline")
 
 # ── configuration ─────────────────────────────────────────────────────────────
 
-POSTGRES_DSN    = os.environ.get("POSTGRES_DSN",    "postgresql://daq:daq@postgres:5432/daq")
-NATS_URL        = os.environ.get("NATS_URL",         "nats://nats:4222")
-CHUNK_DIR       = os.environ.get("CHUNK_DIR",        "/data/chunks")
-CHUNK_MAX_BYTES = int(os.environ.get("CHUNK_MAX_BYTES", str(512 * 1024 * 1024)))
-METRICS_PORT    = int(os.environ.get("METRICS_PORT", "9100"))
-RING_CAPACITY   = int(os.environ.get("RING_CAPACITY", "2048"))
+POSTGRES_DSN      = os.environ.get("POSTGRES_DSN",      "postgresql://daq:daq@postgres:5432/daq")
+NATS_URL          = os.environ.get("NATS_URL",           "nats://nats:4222")
+CHUNK_DIR         = os.environ.get("CHUNK_DIR",          "/data/chunks")
+CHUNK_MAX_BYTES   = int(os.environ.get("CHUNK_MAX_BYTES",   str(512 * 1024 * 1024)))
+METRICS_PORT      = int(os.environ.get("METRICS_PORT",   "9100"))
+RING_CAPACITY     = int(os.environ.get("RING_CAPACITY",  "2048"))
+DEMO_DURATION_S   = int(os.environ.get("DEMO_DURATION_S", "0"))    # 0 = no time limit
+MIN_FREE_DISK_GB  = int(os.environ.get("MIN_FREE_DISK_GB", "10"))  # stop before disk fills
 
 
-# ── pipeline wiring ───────────────────────────────────────────────────────────
+def _free_disk_gb(path: str) -> float:
+    try:
+        return shutil.disk_usage(path).free / (1024 ** 3)
+    except Exception:
+        return 9999.0
+
+
+# ── pipeline ──────────────────────────────────────────────────────────────────
 
 def main() -> None:
 
@@ -74,15 +89,13 @@ def main() -> None:
         publisher.start(NATS_URL, timeout=15.0)
         logger.info("ChunkPublisher connected  url=%s", NATS_URL)
     except TimeoutError:
-        logger.warning(
-            "NATS unreachable at %s — chunk.ready events will be skipped", NATS_URL
-        )
+        logger.warning("NATS unreachable at %s — chunk.ready events disabled", NATS_URL)
 
     # 4. Shared ring buffer
     buffer = BoundedFrameBuffer(capacity=RING_CAPACITY)
     logger.info("Ring buffer: capacity=%d frames", RING_CAPACITY)
 
-    # 5. on_frame_written callback — wires writer → metadata + per-camera counter
+    # 5. on_frame_written callback
     def _on_frame_written(pkt, chunk_id, byte_offset):
         metadata_svc.enqueue(pkt, chunk_id, byte_offset)
         frames_received.labels(camera_id=str(pkt.camera_id)).inc()
@@ -96,12 +109,9 @@ def main() -> None:
         on_chunk_closed  = publisher.publish_chunk_ready,
     )
     writer.start()
-    logger.info(
-        "ChunkWriter started  dir=%s  max=%d MB",
-        CHUNK_DIR, CHUNK_MAX_BYTES // 1024 // 1024,
-    )
+    logger.info("ChunkWriter started  dir=%s  max=%d MB", CHUNK_DIR, CHUNK_MAX_BYTES // 1024 // 1024)
 
-    # 7. Camera rig — 8 simulated cameras
+    # 7. Camera rig
     numberer = GlobalFrameNumberer()
     rig = CameraRig(numberer=numberer, buffer=buffer)
     rig.start()
@@ -117,19 +127,56 @@ def main() -> None:
     stats = StatsThread(cameras=rig.cameras, buffer=buffer)
     stats.start()
 
-    # 9. Block until SIGTERM or SIGINT, then drain gracefully
+    # 9. Log active stop conditions
+    if DEMO_DURATION_S > 0:
+        logger.info("Auto-stop: DEMO_DURATION_S=%ds", DEMO_DURATION_S)
+    logger.info("Disk guard: will stop when free space < %d GB on %s", MIN_FREE_DISK_GB, CHUNK_DIR)
+
+    # 10. Stop event — set by signal OR watchdog thread
     stop_event = threading.Event()
 
     def _shutdown(signum, _frame):
-        logger.info("Signal %d received — initiating graceful shutdown", signum)
+        logger.info("Signal %d received — shutting down", signum)
         stop_event.set()
 
     signal.signal(signal.SIGTERM, _shutdown)
     signal.signal(signal.SIGINT,  _shutdown)
 
-    logger.info("Pipeline running — waiting for shutdown signal (Ctrl-C or SIGTERM)")
+    # 11. Watchdog: checks duration limit + disk space every 5 seconds
+    start_time = time.monotonic()
+
+    def _watchdog():
+        while not stop_event.is_set():
+            time.sleep(5)
+
+            # Duration limit
+            if DEMO_DURATION_S > 0:
+                elapsed = time.monotonic() - start_time
+                if elapsed >= DEMO_DURATION_S:
+                    logger.info(
+                        "DEMO_DURATION_S=%ds reached (elapsed %.0fs) — stopping pipeline",
+                        DEMO_DURATION_S, elapsed,
+                    )
+                    stop_event.set()
+                    return
+
+            # Disk space guard
+            free_gb = _free_disk_gb(CHUNK_DIR)
+            if free_gb < MIN_FREE_DISK_GB:
+                logger.warning(
+                    "Disk space low: %.1f GB free (threshold %d GB) — stopping pipeline",
+                    free_gb, MIN_FREE_DISK_GB,
+                )
+                stop_event.set()
+                return
+
+    watchdog = threading.Thread(target=_watchdog, name="watchdog", daemon=True)
+    watchdog.start()
+
+    logger.info("Pipeline running — press Ctrl-C or SIGTERM to stop")
     stop_event.wait()
 
+    # 12. Graceful shutdown
     logger.info("Stopping camera rig...")
     rig.stop()
     stats.stop()
@@ -144,7 +191,7 @@ def main() -> None:
     publisher.stop()
 
     logger.info(
-        "Shutdown complete — frames written: %d  bytes: %d  chunks: %d",
+        "Shutdown complete — frames: %d  bytes: %d  chunks: %d",
         writer.total_frames_written,
         writer.total_bytes_written,
         writer.chunks_written,
