@@ -4,6 +4,7 @@ DAQ Control Dashboard — FastAPI backend.
 Serves a single-page HTML dashboard and exposes a REST API for:
   - Live metrics  (proxied from Prometheus)
   - Container control  (start / stop ingestion via Docker socket)
+  - Bandwidth target  (1–25 GbE, written to shared config file + ingestion restart)
   - Disk management  (usage stats, delete .bin chunk files)
   - Live logs  (last N lines from the ingestion container)
 
@@ -13,37 +14,53 @@ import glob
 import logging
 import os
 import shutil
-from pathlib import Path
-from typing import Optional
 
 import docker
 import httpx
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
 
 # ── configuration ─────────────────────────────────────────────────────────────
 
-CHUNK_DIR        = os.environ.get("CHUNK_DIR",        "/data/chunks")
-PROMETHEUS_URL   = os.environ.get("PROMETHEUS_URL",   "http://prometheus:9090")
-INGESTION_SVC    = os.environ.get("INGESTION_SERVICE", "ingestion")
+CHUNK_DIR       = os.environ.get("CHUNK_DIR",        "/data/chunks")
+PROMETHEUS_URL  = os.environ.get("PROMETHEUS_URL",   "http://prometheus:9090")
+INGESTION_SVC   = os.environ.get("INGESTION_SERVICE", "ingestion")
+
+# Shared config file written by dashboard, read by ingestion at startup
+_BW_CONFIG_FILE = os.path.join(CHUNK_DIR, ".daq_bandwidth_gbe")
 
 log = logging.getLogger("dashboard")
 
-# ── Docker helper ─────────────────────────────────────────────────────────────
+# ── Docker helpers ─────────────────────────────────────────────────────────────
 
 def _docker():
     return docker.from_env()
 
 def _ingestion_container():
     c = _docker()
-    containers = c.containers.list(
+    hits = c.containers.list(
         all=True,
         filters={"label": f"com.docker.compose.service={INGESTION_SVC}"},
     )
-    return containers[0] if containers else None
+    return hits[0] if hits else None
 
 
-# ── Prometheus helper ─────────────────────────────────────────────────────────
+# ── Bandwidth config helpers ──────────────────────────────────────────────────
+
+def _read_bw_gbe() -> float:
+    try:
+        with open(_BW_CONFIG_FILE) as f:
+            return float(f.read().strip())
+    except Exception:
+        return float(os.environ.get("BANDWIDTH_GBE", "10.0"))
+
+def _write_bw_gbe(gbe: float) -> None:
+    os.makedirs(CHUNK_DIR, exist_ok=True)
+    with open(_BW_CONFIG_FILE, "w") as f:
+        f.write(f"{gbe:.2f}\n")
+
+
+# ── Prometheus helpers ────────────────────────────────────────────────────────
 
 _QUERIES = {
     "throughput_mbps":  "daq_throughput_mbps",
@@ -53,18 +70,16 @@ _QUERIES = {
     "chunks_written":   "sum(daq_chunks_written_total)",
     "buffer_fill":      "daq_buffer_fill_ratio",
     "frames_received":  "sum(daq_frames_received_total)",
-    "metadata_inserts": "sum(daq_metadata_inserts_total)",
 }
 
 async def _prom_metrics() -> dict:
-    out = {}
+    out: dict = {}
     try:
         async with httpx.AsyncClient(timeout=2.0) as client:
             for key, q in _QUERIES.items():
                 try:
                     r = await client.get(
-                        f"{PROMETHEUS_URL}/api/v1/query",
-                        params={"query": q},
+                        f"{PROMETHEUS_URL}/api/v1/query", params={"query": q}
                     )
                     result = r.json().get("data", {}).get("result", [])
                     out[key] = float(result[0]["value"][1]) if result else None
@@ -72,17 +87,20 @@ async def _prom_metrics() -> dict:
                     out[key] = None
     except Exception:
         out = {k: None for k in _QUERIES}
+    # Derive GbE from live throughput
+    mbps = out.get("throughput_mbps")
+    out["throughput_gbe"] = mbps / 125.0 if mbps is not None else None
     return out
 
 
-# ── FastAPI app ───────────────────────────────────────────────────────────────
+# ── FastAPI ───────────────────────────────────────────────────────────────────
 
 app = FastAPI(title="DAQ Dashboard", docs_url=None, redoc_url=None)
 
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    return _DASHBOARD_HTML
+    return _HTML
 
 
 @app.get("/health")
@@ -92,18 +110,14 @@ async def health():
 
 @app.get("/api/status")
 async def status():
-    # Container
     try:
         container = _ingestion_container()
         cstatus = container.status if container else "not_found"
-        cname   = container.name  if container else None
     except Exception:
-        cstatus, cname = "error", None
+        cstatus = "error"
 
-    # Prometheus metrics
     metrics = await _prom_metrics()
 
-    # Disk
     disk: dict = {}
     try:
         u = shutil.disk_usage(CHUNK_DIR)
@@ -121,19 +135,44 @@ async def status():
 
     return {
         "container_status": cstatus,
-        "container_name":   cname,
         "metrics": metrics,
-        "disk":    disk,
+        "disk": disk,
+        "bandwidth_gbe": _read_bw_gbe(),
     }
 
 
+@app.get("/api/bandwidth")
+async def get_bandwidth():
+    gbe = _read_bw_gbe()
+    return {"bandwidth_gbe": gbe, "target_mbps": gbe * 125}
+
+
+@app.post("/api/bandwidth")
+async def set_bandwidth(req: Request):
+    body = await req.json()
+    gbe  = float(body.get("gbe", 10.0))
+    gbe  = max(0.5, min(100.0, gbe))       # clamp: 0.5–100 GbE
+
+    _write_bw_gbe(gbe)
+
+    # restart ingestion so it picks up new bandwidth at startup
+    try:
+        container = _ingestion_container()
+        if container and container.status == "running":
+            container.restart(timeout=30)
+    except Exception as exc:
+        log.warning("Could not restart ingestion: %s", exc)
+
+    return {"ok": True, "bandwidth_gbe": gbe, "target_mbps": gbe * 125}
+
+
 @app.get("/api/logs")
-async def logs(lines: int = 20):
+async def logs(lines: int = 25):
     try:
         container = _ingestion_container()
         if not container:
             return {"lines": [], "error": "container not found"}
-        raw = container.logs(tail=lines, timestamps=True)
+        raw  = container.logs(tail=lines, timestamps=True)
         text = raw.decode("utf-8", errors="replace")
         return {"lines": [l for l in text.splitlines() if l.strip()][-lines:]}
     except Exception as exc:
@@ -143,12 +182,12 @@ async def logs(lines: int = 20):
 @app.post("/api/ingestion/start")
 async def start_ingestion():
     try:
-        container = _ingestion_container()
-        if not container:
+        c = _ingestion_container()
+        if not c:
             raise HTTPException(404, "Ingestion container not found")
-        if container.status == "running":
+        if c.status == "running":
             return {"ok": True, "message": "Already running"}
-        container.start()
+        c.start()
         return {"ok": True, "message": "Ingestion started"}
     except HTTPException:
         raise
@@ -159,12 +198,12 @@ async def start_ingestion():
 @app.post("/api/ingestion/stop")
 async def stop_ingestion():
     try:
-        container = _ingestion_container()
-        if not container:
+        c = _ingestion_container()
+        if not c:
             raise HTTPException(404, "Ingestion container not found")
-        if container.status != "running":
+        if c.status != "running":
             return {"ok": True, "message": "Already stopped"}
-        container.stop(timeout=30)
+        c.stop(timeout=30)
         return {"ok": True, "message": "Ingestion stopped"}
     except HTTPException:
         raise
@@ -191,7 +230,7 @@ async def delete_chunks():
 
 # ── Embedded dashboard HTML ───────────────────────────────────────────────────
 
-_DASHBOARD_HTML = """<!DOCTYPE html>
+_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -200,85 +239,79 @@ _DASHBOARD_HTML = """<!DOCTYPE html>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0f1117;color:#e0e0e0;font-family:'Segoe UI',system-ui,sans-serif;padding:28px 32px;min-height:100vh}
-a{color:inherit;text-decoration:none}
-
-/* header */
 .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;gap:16px;flex-wrap:wrap}
 .header h1{font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;color:#fff}
 .header .sub{font-size:0.8rem;color:#6b7280;margin-top:3px}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
 .dot.pulse{animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-
-/* status badge */
 .badge{display:inline-flex;align-items:center;padding:6px 16px;border-radius:20px;font-weight:700;font-size:0.85rem;letter-spacing:0.05em}
 .badge.running{background:#0d3d2f;color:#00d4aa;border:1px solid #00d4aa55}
 .badge.exited,.badge.stopped{background:#3d0d0d;color:#ff6b6b;border:1px solid #ff4d4d55}
-.badge.not_found,.badge.unknown,.badge.error{background:#1e1f2b;color:#6b7280;border:1px solid #2a2d3e}
-
-/* section */
+.badge.not_found,.badge.unknown,.badge.error,.badge.restarting{background:#1e1f2b;color:#6b7280;border:1px solid #2a2d3e}
 .section{margin-bottom:28px}
 .sec-title{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#4b5563;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:'';flex:1;height:1px;background:#1e1f2b}
-
-/* metric grid */
+/* metric cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
-.card{background:#13151f;border:1px solid #1e2030;border-radius:12px;padding:18px 16px;transition:border-color 0.2s}
-.card:hover{border-color:#2a2d3e}
+.card{background:#13151f;border:1px solid #1e2030;border-radius:12px;padding:18px 16px}
 .card-label{font-size:0.72rem;color:#6b7280;margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em}
-.card-value{font-size:1.75rem;font-weight:800;color:#e0e0e0;line-height:1;font-variant-numeric:tabular-nums}
+.card-value{font-size:1.75rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
 .card-value.teal{color:#00d4aa}
 .card-value.red{color:#ff6b6b}
-.card-unit{font-size:0.75rem;color:#6b7280;margin-left:4px;font-weight:400}
-
-/* disk card */
+.card-value.blue{color:#4d9fff}
+.card-unit{font-size:0.75rem;color:#6b7280;margin-left:4px}
+.card-sub{font-size:0.78rem;color:#4d9fff;margin-top:6px;font-weight:600}
+/* disk */
 .disk-card{background:#13151f;border:1px solid #1e2030;border-radius:12px;padding:18px 20px}
-.disk-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.disk-label{font-size:0.8rem;color:#9ca3af}
-.disk-path{font-size:0.75rem;color:#4b5563;font-family:monospace;background:#0f1117;padding:2px 8px;border-radius:4px}
-.bar-wrap{background:#0f1117;border-radius:6px;height:10px;overflow:hidden;margin:8px 0 6px}
+.bar-wrap{background:#0f1117;border-radius:6px;height:10px;overflow:hidden;margin:10px 0 6px}
 .bar-inner{height:100%;border-radius:6px;transition:width 0.4s,background 0.4s}
 .bar-ok{background:linear-gradient(90deg,#00d4aa,#4d9fff)}
 .bar-warn{background:linear-gradient(90deg,#f59e0b,#ef4444)}
 .bar-danger{background:#ef4444}
-.disk-stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:8px}
+.disk-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}
+.disk-path{font-size:0.75rem;color:#4b5563;font-family:monospace;background:#0f1117;padding:2px 8px;border-radius:4px}
+.disk-stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:4px}
 .disk-stat{font-size:0.82rem;color:#9ca3af}
 .disk-stat strong{color:#e0e0e0}
-
+/* bandwidth selector */
+.bw-card{background:#13151f;border:1px solid #1e2030;border-radius:12px;padding:18px 20px}
+.bw-desc{font-size:0.8rem;color:#6b7280;margin-bottom:14px;line-height:1.5}
+.bw-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.bw-btn{background:#0f1117;color:#9ca3af;border:1px solid #2a2d3e;border-radius:8px;padding:9px 20px;cursor:pointer;font-size:0.85rem;font-weight:700;transition:all 0.15s}
+.bw-btn:hover{border-color:#4d9fff;color:#4d9fff;background:#0c1726}
+.bw-btn.active{background:#0c1726;border-color:#4d9fff;color:#4d9fff}
+.bw-info{font-size:0.8rem;color:#6b7280;padding-top:12px;border-top:1px solid #1e2030}
+.bw-info strong{color:#e0e0e0}
 /* controls */
-.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;font-weight:700;transition:opacity 0.15s,transform 0.1s;letter-spacing:0.01em}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;font-weight:700;transition:opacity 0.15s,transform 0.1s}
 .btn:hover:not(:disabled){opacity:0.88;transform:translateY(-1px)}
 .btn:active:not(:disabled){transform:translateY(0)}
 .btn:disabled{opacity:0.35;cursor:not-allowed}
 .btn-start{background:#00d4aa;color:#0a1f1a}
 .btn-stop{background:#ff4d4d;color:#fff}
 .btn-delete{background:#13151f;color:#f59e0b;border:1px solid #f59e0b44}
-.btn-delete:hover:not(:disabled){background:#1e1907;border-color:#f59e0b88}
-
 /* log box */
-.log-box{background:#080a10;border:1px solid #1e2030;border-radius:12px;padding:14px 16px;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.75rem;color:#6b7280;max-height:240px;overflow-y:auto;line-height:1.6}
-.log-box .log-line{white-space:pre-wrap;word-break:break-all}
-.log-box .log-info{color:#6b7280}
-.log-box .log-warn{color:#f59e0b}
-.log-box .log-err{color:#ff6b6b}
-
-/* toast */
-.toast{position:fixed;bottom:24px;right:24px;background:#13151f;border-radius:10px;padding:12px 20px;font-size:0.875rem;font-weight:500;opacity:0;pointer-events:none;transition:opacity 0.25s;z-index:999;border:1px solid #1e2030;max-width:360px}
-.toast.show{opacity:1}
-.toast.ok{border-color:#00d4aa55;color:#00d4aa}
-.toast.err{border-color:#ff4d4d55;color:#ff6b6b}
-
+.log-box{background:#080a10;border:1px solid #1e2030;border-radius:12px;padding:14px 16px;font-family:'Cascadia Code','Fira Code',monospace;font-size:0.73rem;color:#6b7280;max-height:220px;overflow-y:auto;line-height:1.65}
+.log-line{white-space:pre-wrap;word-break:break-all}
+.log-warn{color:#f59e0b}
+.log-err{color:#ff6b6b}
 /* modal */
 .modal-bg{display:none;position:fixed;inset:0;background:#000000bb;z-index:100;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
 .modal{background:#13151f;border:1px solid #2a2d3e;border-radius:14px;padding:28px;max-width:420px;width:90%}
 .modal h2{font-size:1.1rem;font-weight:700;margin-bottom:10px;color:#fff}
-.modal p{font-size:0.88rem;color:#9ca3af;margin-bottom:20px;line-height:1.6}
+.modal p{font-size:0.88rem;color:#9ca3af;margin-bottom:16px;line-height:1.6}
 .modal-info{background:#0f1117;border-radius:8px;padding:10px 14px;font-size:0.82rem;color:#e0e0e0;margin-bottom:20px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end}
 .btn-cancel{background:#1e2030;color:#9ca3af;border:none}
 .btn-confirm-del{background:#ff4d4d;color:#fff;border:none}
+/* toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#13151f;border-radius:10px;padding:12px 20px;font-size:0.875rem;font-weight:500;opacity:0;pointer-events:none;transition:opacity 0.25s;z-index:999;border:1px solid #1e2030;max-width:380px}
+.toast.show{opacity:1}
+.toast.ok{border-color:#00d4aa55;color:#00d4aa}
+.toast.err{border-color:#ff4d4d55;color:#ff6b6b}
 </style>
 </head>
 <body>
@@ -288,12 +321,10 @@ a{color:inherit;text-decoration:none}
     <h1>DAQ Pipeline Dashboard</h1>
     <div class="sub">Last updated: <span id="updated">—</span></div>
   </div>
-  <div>
-    <span id="status-badge" class="badge unknown">
-      <span class="dot" id="status-dot"></span>
-      <span id="status-text">CONNECTING</span>
-    </span>
-  </div>
+  <span id="status-badge" class="badge unknown">
+    <span class="dot" id="status-dot"></span>
+    <span id="status-text">CONNECTING</span>
+  </span>
 </div>
 
 <!-- Live Metrics -->
@@ -303,6 +334,7 @@ a{color:inherit;text-decoration:none}
     <div class="card">
       <div class="card-label">Throughput</div>
       <div><span class="card-value teal" id="m-throughput">—</span><span class="card-unit">MB/s</span></div>
+      <div class="card-sub" id="m-gbe">— GbE</div>
     </div>
     <div class="card">
       <div class="card-label">Frames Written</div>
@@ -310,7 +342,7 @@ a{color:inherit;text-decoration:none}
     </div>
     <div class="card">
       <div class="card-label">Data Written</div>
-      <div><span class="card-value" id="m-bytes">—</span><span class="card-unit" id="m-bytes-unit">GB</span></div>
+      <div><span class="card-value" id="m-bytes">—</span><span class="card-unit">GB</span></div>
     </div>
     <div class="card">
       <div class="card-label">Chunks Written</div>
@@ -318,11 +350,34 @@ a{color:inherit;text-decoration:none}
     </div>
     <div class="card">
       <div class="card-label">Frames Dropped</div>
-      <div><span class="card-value" id="m-dropped" style="color:#e0e0e0">—</span></div>
+      <div><span class="card-value" id="m-dropped">—</span></div>
     </div>
     <div class="card">
       <div class="card-label">Buffer Fill</div>
       <div><span class="card-value" id="m-buffer">—</span><span class="card-unit">%</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Bandwidth Target -->
+<div class="section">
+  <div class="sec-title">Target Bandwidth</div>
+  <div class="bw-card">
+    <div class="bw-desc">
+      Select the simulated GigaEthernet link speed. Cameras' FPS will scale to match.<br>
+      <span style="color:#4b5563">1 GbE = 125 MB/s &nbsp;|&nbsp; 10 GbE = 1,250 MB/s &nbsp;|&nbsp; 25 GbE = 3,125 MB/s</span>
+    </div>
+    <div class="bw-presets">
+      <button class="bw-btn" data-gbe="1"  onclick="setBandwidth(1)">1 GbE</button>
+      <button class="bw-btn" data-gbe="5"  onclick="setBandwidth(5)">5 GbE</button>
+      <button class="bw-btn" data-gbe="10" onclick="setBandwidth(10)">10 GbE</button>
+      <button class="bw-btn" data-gbe="15" onclick="setBandwidth(15)">15 GbE</button>
+      <button class="bw-btn" data-gbe="25" onclick="setBandwidth(25)">25 GbE</button>
+    </div>
+    <div class="bw-info">
+      Current target: <strong id="bw-current">—</strong> GbE
+      &nbsp;=&nbsp; <strong id="bw-mbps">—</strong> MB/s theoretical
+      &nbsp;|&nbsp; Live: <strong id="bw-live">—</strong> GbE
     </div>
   </div>
 </div>
@@ -332,7 +387,7 @@ a{color:inherit;text-decoration:none}
   <div class="sec-title">Disk Storage</div>
   <div class="disk-card">
     <div class="disk-row">
-      <span class="disk-label">Drive Usage</span>
+      <span style="font-size:0.82rem;color:#9ca3af">Drive usage</span>
       <span class="disk-path" id="disk-path">/data/chunks</span>
     </div>
     <div class="bar-wrap"><div class="bar-inner bar-ok" id="disk-bar" style="width:0%"></div></div>
@@ -358,18 +413,18 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- Recent Logs -->
+<!-- Logs -->
 <div class="section">
   <div class="sec-title">Recent Logs (ingestion)</div>
-  <div class="log-box" id="log-box"><span class="log-info">Loading logs…</span></div>
+  <div class="log-box" id="log-box"><span>Loading…</span></div>
 </div>
 
-<!-- Delete confirm modal -->
+<!-- Delete modal -->
 <div class="modal-bg" id="modal">
   <div class="modal">
     <h2>Delete All Chunk Files?</h2>
-    <p>This will permanently delete all <code>.bin</code> files from the chunk directory. The data cannot be recovered.</p>
-    <div class="modal-info" id="modal-info">Loading disk info…</div>
+    <p>This permanently deletes all <code>.bin</code> files from the chunk directory. Data cannot be recovered.</p>
+    <div class="modal-info" id="modal-info">Loading…</div>
     <div class="modal-actions">
       <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn btn-confirm-del" onclick="confirmDelete()">Yes, Delete All</button>
@@ -377,21 +432,10 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── helpers ──────────────────────────────────────────────────────────────────
-
 function $(id){ return document.getElementById(id); }
-
-function fmtNum(n){
-  if(n===null||n===undefined) return '—';
-  if(n>=1e9) return (n/1e9).toFixed(1)+'B';
-  if(n>=1e6) return (n/1e6).toFixed(1)+'M';
-  if(n>=1e3) return (n/1e3).toFixed(1)+'K';
-  return Math.round(n).toString();
-}
 
 function fmtGB(gb){
   if(gb===null||gb===undefined) return '—';
@@ -399,66 +443,77 @@ function fmtGB(gb){
   if(gb<1) return (gb*1000).toFixed(0)+' MB';
   return gb.toFixed(2)+' GB';
 }
-
-let _toastTimer;
-function showToast(msg,ok=true){
-  const t=$('toast');
-  t.textContent=msg;
-  t.className='toast show '+(ok?'ok':'err');
-  clearTimeout(_toastTimer);
-  _toastTimer=setTimeout(()=>{ t.className='toast'; },4000);
+function fmtNum(n){
+  if(n===null||n===undefined) return '—';
+  if(n>=1e9) return (n/1e9).toFixed(1)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(1)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return Math.round(n).toLocaleString();
 }
 
-async function api(method,path){
-  const r=await fetch(path,{method,headers:{'Content-Type':'application/json'}});
+let _toastT;
+function showToast(msg,ok=true){
+  const t=$('toast');
+  t.textContent=msg; t.className='toast show '+(ok?'ok':'err');
+  clearTimeout(_toastT); _toastT=setTimeout(()=>{t.className='toast';},4500);
+}
+
+async function api(method,path,body=null){
+  const opts={method,headers:{'Content-Type':'application/json'}};
+  if(body) opts.body=JSON.stringify(body);
+  const r=await fetch(path,opts);
   if(!r.ok) throw new Error('HTTP '+r.status);
   return r.json();
 }
 
-// ── status refresh ────────────────────────────────────────────────────────────
+// ── status refresh (every 2s) ─────────────────────────────────────────────────
 
 async function refresh(){
   try{
     const d=await api('GET','/api/status');
     $('updated').textContent=new Date().toLocaleTimeString();
 
-    // Status badge
     const st=d.container_status||'unknown';
-    const badge=$('status-badge');
-    const dot=$('status-dot');
+    const badge=$('status-badge'), dot=$('status-dot');
     badge.className='badge '+st;
-    $('status-text').textContent=st.toUpperCase();
-    if(st==='running'){dot.style.background='#00d4aa';dot.classList.add('pulse');}
-    else{dot.style.background='#ff4d4d';dot.classList.remove('pulse');}
+    $('status-text').textContent=st.toUpperCase().replace('_',' ');
+    dot.style.background=st==='running'?'#00d4aa':'#ff4d4d';
+    if(st==='running') dot.classList.add('pulse'); else dot.classList.remove('pulse');
 
-    // Metrics
     const m=d.metrics||{};
     function setM(id,val,fn){ $(id).textContent=(val!==null&&val!==undefined)?fn(val):'—'; }
-    setM('m-throughput', m.throughput_mbps,  v=>v.toFixed(1));
-    setM('m-frames',     m.frames_written,   v=>fmtNum(Math.round(v)));
-    setM('m-chunks',     m.chunks_written,   v=>Math.round(v).toLocaleString());
-    setM('m-buffer',     m.buffer_fill,      v=>(v*100).toFixed(1));
-
-    const bw=m.bytes_written;
-    if(bw!==null&&bw!==undefined){
-      $('m-bytes').textContent=(bw/1e9).toFixed(2);
-      $('m-bytes-unit').textContent='GB';
-    }
+    setM('m-throughput', m.throughput_mbps, v=>v.toFixed(1));
+    setM('m-frames',     m.frames_written,  v=>fmtNum(Math.round(v)));
+    setM('m-bytes',      m.bytes_written,   v=>(v/1e9).toFixed(2));
+    setM('m-chunks',     m.chunks_written,  v=>Math.round(v).toLocaleString());
+    setM('m-buffer',     m.buffer_fill,     v=>(v*100).toFixed(1));
 
     const drops=m.frames_dropped;
     const dropEl=$('m-dropped');
     if(drops!==null&&drops!==undefined){
       dropEl.textContent=Math.round(drops).toLocaleString();
       dropEl.className='card-value '+(drops>0?'red':'teal');
-    } else {
-      dropEl.textContent='—';
-      dropEl.className='card-value';
+    } else { dropEl.textContent='—'; dropEl.className='card-value'; }
+
+    // GbE live reading
+    const gbe=m.throughput_gbe;
+    $('m-gbe').textContent=(gbe!==null&&gbe!==undefined)?gbe.toFixed(2)+' GbE':'— GbE';
+    $('bw-live').textContent=(gbe!==null&&gbe!==undefined)?gbe.toFixed(2):' —';
+
+    // Bandwidth target
+    const bwGbe=d.bandwidth_gbe;
+    if(bwGbe!==undefined){
+      $('bw-current').textContent=bwGbe.toFixed(1);
+      $('bw-mbps').textContent=(bwGbe*125).toFixed(0);
+      document.querySelectorAll('.bw-btn').forEach(btn=>{
+        btn.classList.toggle('active', Math.abs(parseFloat(btn.dataset.gbe)-bwGbe)<0.5);
+      });
     }
 
     // Disk
     const disk=d.disk||{};
     if(disk.total_gb){
-      const pct=(disk.used_gb/disk.total_gb*100);
+      const pct=disk.used_gb/disk.total_gb*100;
       const bar=$('disk-bar');
       bar.style.width=pct.toFixed(1)+'%';
       bar.className='bar-inner '+(pct>90?'bar-danger':pct>70?'bar-warn':'bar-ok');
@@ -470,9 +525,7 @@ async function refresh(){
       if(disk.chunk_dir) $('disk-path').textContent=disk.chunk_dir;
       window._diskInfo=disk;
     }
-  } catch(e){
-    $('updated').textContent='connection error';
-  }
+  } catch(e){ $('updated').textContent='connection error'; }
 }
 
 // ── log refresh (every 5s) ────────────────────────────────────────────────────
@@ -481,57 +534,51 @@ async function refreshLogs(){
   try{
     const d=await api('GET','/api/logs?lines=25');
     const box=$('log-box');
-    if(!d.lines||d.lines.length===0){
-      box.innerHTML='<span class="log-info">No logs available.</span>';
-      return;
-    }
-    box.innerHTML=d.lines.map(line=>{
-      const cls=line.includes('ERROR')||line.includes('WARN')?
-        (line.includes('ERROR')?'log-err':'log-warn'):'log-info';
-      return '<div class="log-line '+cls+'">'+escHtml(line)+'</div>';
+    if(!d.lines||!d.lines.length){ box.innerHTML='<span>No logs yet.</span>'; return; }
+    box.innerHTML=d.lines.map(l=>{
+      const cls=l.includes('ERROR')?'log-line log-err':l.includes('WARN')?'log-line log-warn':'log-line';
+      return '<div class="'+cls+'">'+l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>';
     }).join('');
     box.scrollTop=box.scrollHeight;
   } catch(e){}
 }
 
-function escHtml(s){
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ── bandwidth control ─────────────────────────────────────────────────────────
+
+async function setBandwidth(gbe){
+  const mbps=gbe*125;
+  if(!confirm('Set target bandwidth to '+gbe+' GbE ('+mbps+' MB/s)?\n\nIngestion will restart automatically to apply the new speed.')) return;
+  try{
+    await api('POST','/api/bandwidth',{gbe});
+    showToast('Bandwidth set to '+gbe+' GbE — ingestion restarting…',true);
+    setTimeout(refresh,3000);
+  } catch(e){ showToast('Failed: '+e,false); }
 }
 
-// ── controls ──────────────────────────────────────────────────────────────────
+// ── ingestion controls ────────────────────────────────────────────────────────
 
 async function startIngestion(){
-  const btn=$('btn-start');
-  btn.disabled=true;
-  try{
-    const r=await api('POST','/api/ingestion/start');
-    showToast(r.message||'Started',true);
-  } catch(e){ showToast('Failed to start: '+e,false); }
+  const btn=$('btn-start'); btn.disabled=true;
+  try{ const r=await api('POST','/api/ingestion/start'); showToast(r.message,true); }
+  catch(e){ showToast('Failed to start: '+e,false); }
+  finally{ btn.disabled=false; }
+}
+async function stopIngestion(){
+  const btn=$('btn-stop'); btn.disabled=true;
+  try{ const r=await api('POST','/api/ingestion/stop'); showToast(r.message,true); }
+  catch(e){ showToast('Failed to stop: '+e,false); }
   finally{ btn.disabled=false; }
 }
 
-async function stopIngestion(){
-  const btn=$('btn-stop');
-  btn.disabled=true;
-  try{
-    const r=await api('POST','/api/ingestion/stop');
-    showToast(r.message||'Stopped',true);
-  } catch(e){ showToast('Failed to stop: '+e,false); }
-  finally{ btn.disabled=false; }
-}
+// ── delete chunks ─────────────────────────────────────────────────────────────
 
 function openDeleteModal(){
   const info=window._diskInfo||{};
-  const count=info.bin_count||0;
-  const size=fmtGB(info.bin_size_gb||0);
+  const count=info.bin_count||0, size=fmtGB(info.bin_size_gb||0);
   $('modal-info').textContent=count+' files  •  '+size+' will be freed';
   $('modal').classList.add('open');
 }
-
-function closeModal(){
-  $('modal').classList.remove('open');
-}
-
+function closeModal(){ $('modal').classList.remove('open'); }
 async function confirmDelete(){
   closeModal();
   try{
@@ -540,16 +587,14 @@ async function confirmDelete(){
     refresh();
   } catch(e){ showToast('Delete failed: '+e,false); }
 }
-
-// close modal on backdrop click
 $('modal').addEventListener('click',e=>{ if(e.target===$('modal')) closeModal(); });
 
-// ── start ─────────────────────────────────────────────────────────────────────
+// ── boot ─────────────────────────────────────────────────────────────────────
 
 refresh();
 refreshLogs();
-setInterval(refresh,2000);
-setInterval(refreshLogs,5000);
+setInterval(refresh, 2000);
+setInterval(refreshLogs, 5000);
 </script>
 </body>
 </html>"""

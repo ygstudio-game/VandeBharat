@@ -149,6 +149,12 @@ class CameraRig:
 
     Camera IDs 0–3 : GV-5040CP  (1 456 × 1 088, 80 FPS, BayerRG8)
     Camera IDs 4–7 : GV-50C0CP  (1 936 × 1 216, 54 FPS, BayerRG8)
+
+    Pass bandwidth_gbe to scale all cameras' FPS so the combined pixel
+    throughput matches the target link speed:
+        1 GbE  =  125 MB/s
+        10 GbE = 1 250 MB/s  (default spec FPS ≈ 8.1 GbE)
+        25 GbE = 3 125 MB/s
     """
 
     _SPECS = {
@@ -156,16 +162,32 @@ class CameraRig:
         "GV-50C0CP": {"width": 1936, "height": 1216, "fps": 54.0, "count": 4},
     }
 
-    def __init__(self, numberer: GlobalFrameNumberer, buffer: BoundedFrameBuffer):
+    # Throughput of all cameras at their base FPS (bytes/s)
+    _BASE_THROUGHPUT_BPS: float = sum(
+        s["width"] * s["height"] * s["fps"] * s["count"]
+        for s in _SPECS.values()
+    )
+
+    def __init__(
+        self,
+        numberer:      GlobalFrameNumberer,
+        buffer:        BoundedFrameBuffer,
+        bandwidth_gbe: float = 10.0,
+    ):
+        target_bps = bandwidth_gbe * 125e6          # desired bytes/s
+        fps_scale  = target_bps / self._BASE_THROUGHPUT_BPS
+
+        self.target_bandwidth_gbe = bandwidth_gbe
         self.cameras: List[IdsSimulatorSource] = []
         cam_id = 0
         for model, spec in self._SPECS.items():
+            scaled_fps = spec["fps"] * fps_scale
             for _ in range(spec["count"]):
                 self.cameras.append(IdsSimulatorSource(
                     camera_id = cam_id,
                     width     = spec["width"],
                     height    = spec["height"],
-                    fps       = spec["fps"],
+                    fps       = scaled_fps,
                     numberer  = numberer,
                     buffer    = buffer,
                 ))

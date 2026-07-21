@@ -62,6 +62,19 @@ RING_CAPACITY     = int(os.environ.get("RING_CAPACITY",  "2048"))
 DEMO_DURATION_S   = int(os.environ.get("DEMO_DURATION_S", "0"))    # 0 = no time limit
 MIN_FREE_DISK_GB  = int(os.environ.get("MIN_FREE_DISK_GB", "10"))  # stop before disk fills
 
+# Written by the dashboard when the user changes bandwidth target
+_BANDWIDTH_CONFIG  = os.path.join(CHUNK_DIR, ".daq_bandwidth_gbe")
+
+
+def _read_bandwidth_gbe() -> float:
+    """Read target bandwidth from the shared config file, fallback to env var."""
+    try:
+        with open(_BANDWIDTH_CONFIG) as f:
+            return float(f.read().strip())
+    except Exception:
+        pass
+    return float(os.environ.get("BANDWIDTH_GBE", "10.0"))
+
 
 def _free_disk_gb(path: str) -> float:
     try:
@@ -112,13 +125,18 @@ def main() -> None:
     logger.info("ChunkWriter started  dir=%s  max=%d MB", CHUNK_DIR, CHUNK_MAX_BYTES // 1024 // 1024)
 
     # 7. Camera rig
+    bandwidth_gbe = _read_bandwidth_gbe()
     numberer = GlobalFrameNumberer()
-    rig = CameraRig(numberer=numberer, buffer=buffer)
+    rig = CameraRig(numberer=numberer, buffer=buffer, bandwidth_gbe=bandwidth_gbe)
     rig.start()
-    logger.info("CameraRig started: %d cameras", len(rig.cameras))
+    target_mbps = bandwidth_gbe * 125
+    logger.info(
+        "CameraRig started: %d cameras  target=%.1f GbE (%.0f MB/s)",
+        len(rig.cameras), bandwidth_gbe, target_mbps,
+    )
     for cam in rig.cameras:
         logger.info(
-            "  cam%d  %dx%d  %.0f FPS  (~%.0f MB/s each)",
+            "  cam%d  %dx%d  %.1f FPS  (~%.0f MB/s)",
             cam.camera_id, cam.width, cam.height, cam.fps,
             cam.fps * cam.width * cam.height / 1e6,
         )
